@@ -19,6 +19,8 @@ def cohort_start(self, element, time):
  #                        self.ATTM_Shr_HCP[element] + self.ATTM_Urban[element]   + \
  #                        self.ATTM_Rivers[element]  + self.ATTM_Ponds[element]   + \
  #                        self.ATTM_Lakes[element]
+ 
+ ### NOTE: could some of this be done for whole array at same time?
     fraction_start = self.ATTM_CLC_WT_Y[element] + self.ATTM_CLC_WT_M[element] + \
                      self.ATTM_CLC_WT_O[element] + self.ATTM_CoastalWaters_WT_O[element] + \
                      self.ATTM_DrainedSlope_WT_Y[element] + self.ATTM_DrainedSlope_WT_M[element] + \

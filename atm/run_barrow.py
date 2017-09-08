@@ -189,6 +189,7 @@ def run_barrow(self, time):
             # -------------------------------------------------
             cohort_check.cohort_check(self, element, time, cohort_start)
 
+            # NOTE: Just do this outside of loop
             if time == self.stop -1:
                 cohorts.final_barrow(self)
             # ========================================================================

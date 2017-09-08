@@ -235,6 +235,8 @@ def LakePond(self):
 
     
     """ Read files from the input directory """
+    ### NOTE: all of these if statmets/ chdir blocks could easily be refactored
+    ### NOTE: also chaing the directory is not nessary with os.path functions 
     if self.Simulation_area.lower() == 'barrow':
         os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
                      self.Control_directory)
@@ -251,6 +253,8 @@ def LakePond(self):
         os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE')
     
     self.LakePond = {}
+    
+    ### NOTE: reading of control files should be a object/module of it's own
     with open(self.Lake_Pond_Control, 'r') as f:
         for line in f:
             if line.startswith('#'):
@@ -535,6 +539,7 @@ def initialize(self):
 
     print '    Initializing the model'
     
+    ## NOTE: this could be greatly simplified 
     if self.Simulation_area.lower() == 'barrow':
         os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
                      self.control['Control_dir']+'/')
@@ -544,7 +549,7 @@ def initialize(self):
     elif self.Simulation_area.lower() == 'yukon':
         os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
                      self.control['Control_dir'])
-
+                     
     self.initialize = {}
     with open(self.Initialize_Control, 'r') as f:
         for line in f:

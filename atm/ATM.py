@@ -72,6 +72,7 @@ import archive
 #_______________________________________________________________________________
 class ATM(object):
 
+    # TODO contoll file IO out of ATM class
     Control_file        = sys.argv[1]
  
     def __init__(self):
@@ -100,6 +101,8 @@ class ATM(object):
         print '==================='
         print ' Initializing ATM'
         print '==================='
+        
+        ### ICK
         read_control.read_control(self)
         initialize.initialize(self)
         read_layers.read_layers(self)

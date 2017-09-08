@@ -131,6 +131,7 @@ def set_lake_pond_depth(self):
     #         of if/then statements required in this
     #         section.
     # ------------------------------------------------
+    ### NOTE: all of this save figure type code could probably be moved to it's own class/module
     if self.LakePond['Lake_Depth_Figure'].lower() == 'yes':
         # Small Lakes, Wetland Tundra, Young age
         os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/SmallLakes_WT_Y/')
