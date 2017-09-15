@@ -71,6 +71,3 @@ dependencies:
   - backports.shutil-get-terminal-size==1.0.0
   - ipython-genutils==0.2.0
   - prompt-toolkit==1.0.15
-  - utilitools (/Users/rawser/Desktop/utilitools)==0.1.0
-prefix: /Users/rawser/miniconda2/envs/bolton
-
