@@ -6,7 +6,7 @@ from decimal import *
 getcontext().prec = 4       # Set a new precision
 
 
-def lake_pond_expansion(self, element):
+def lake_pond_expansion(self, element, time=None):
     """
     If a lake or pond exists in an element, expand it by the prescribed rate.
 

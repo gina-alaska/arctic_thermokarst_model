@@ -29,7 +29,7 @@ ________________________________________________________________________________
 ################################################################################
 __author__     = "Bob Bolton"
 __copyright__  = "Copyright 2014, 2015, 2016, 2017, Bob Bolton"
-__credits__    = ["Bob Bolton", "Vladimir Romanovsky", "Dave McGuire", "AIEM Thermokarst Team"]
+__credits__    = ["Bob Bolton", "Vladimir Romanovsky", "Dave McGuire", "AIEM Thermokarst Team", "Rawser Spicer", "Jen Deleamere",]
 __license__    = "GPL"
 __version__    = "0.1"
 __maintainer__ = "Bob Bolton"
@@ -146,7 +146,25 @@ class ATM(object):
 
         initialize.run(self)
         if self.Simulation_area.lower() == 'barrow':
-            run_barrow.run_barrow(self, time)
+            barrow_checks = [ 
+                'lake_pond_expansion', 'pond_infill', 
+                'Meadow_WT_Y', 'Meadow_WT_M', 'Meadow_WT_O',
+                'LCP_WT_Y', 'LCP_WT_M', 'LCP_WT_O',
+                'CLC_WT_Y', 'CLC_WT_M', 'CLC_WT_O',
+                'FCP_WT_Y', 'FCP_WT_M', 'FCP_WT_O',
+                'HCP_WT_Y', 'HCP_WT_M', 'HCP_WT_O',
+                'check_Ponds_WT_Y', 'check_Ponds_WT_M', 'check_Ponds_WT_O',
+                'check_LargeLakes_WT_Y', 'check_LargeLakes_WT_M', 
+                    'check_LargeLakes_WT_O',
+                'check_MediumLakes_WT_Y', 'check_MediumLakes_WT_M', 
+                    'check_MediumLakes_WT_O',
+                'check_SmallLakes_WT_Y', 'check_SmallLakes_WT_M', 
+                    'check_SmallLakes_WT_O',
+            ] 
+            import run_general 
+            
+            from cohorts import initial_barrow
+            run_general.run(self, barrow_checks, initial_barrow)
         elif self.Simulation_area.lower() == 'tanana':
             run_tanana.run_tanana(self, time)
 
