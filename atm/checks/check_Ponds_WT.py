@@ -18,6 +18,12 @@ the same.
 """
 
 
+
+def check_Ponds_WT_NA(self, element, time):#, growth_time_required):
+    """No age place holder
+    """
+    pass
+    
 #=======================================================================
 def check_Ponds_WT_Y(self, element, time):#, growth_time_required):
 
