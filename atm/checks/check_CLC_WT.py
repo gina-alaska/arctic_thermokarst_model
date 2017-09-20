@@ -4,6 +4,11 @@ import pylab as pl
 from math import exp as exp
 
 #==================================================================================================
+def check_CLC_WT_NA(self, element, time):
+    """No age place holder
+    """
+    pass
+    
 def check_CLC_WT_Y(self, element, time):
 
     # ! Determine the position on the POI curve

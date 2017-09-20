@@ -4,6 +4,11 @@ import pylab as pl
 from math import exp as exp
 
 #-----------------------------------------------------------------------------------------------
+def check_LargeLakes_WT_NA(self, element, time):
+    """No age place holder
+    """
+    pass
+    
 def check_LargeLakes_WT_Y(self, element, time):
     
     if self.ATTM_LargeLakes_WT_Y[element] > 0.0:
@@ -52,6 +57,11 @@ def check_LargeLakes_WT_O(self, element, time):
             self.ATTM_LargeLakes_WT_O[element] = 0.0
 
 #-----------------------------------------------------------------------------------------------
+def check_MediumLakes_WT_NA(self, element, time):
+    """No age place holder
+    """
+    pass
+    
 def check_MediumLakes_WT_Y(self, element, time):
     
     if self.ATTM_MediumLakes_WT_Y[element] > 0.0:
@@ -100,6 +110,11 @@ def check_MediumLakes_WT_O(self, element, time):
             self.ATTM_MediumLakes_WT_O[element] = 0.0
             
 #-----------------------------------------------------------------------------------------------
+def check_SmallLakes_WT_NA(self, element, time):
+    """No age place holder
+    """
+    pass
+    
 def check_SmallLakes_WT_Y(self, element, time):
     
     if self.ATTM_SmallLakes_WT_Y[element] > 0.0:

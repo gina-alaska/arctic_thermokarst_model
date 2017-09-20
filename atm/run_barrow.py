@@ -11,15 +11,16 @@ import numpy as np
 #---------------------------------------------------------------------
 import active_layer_depth
 import check_climate_event
-#import check_Lakes
-#import check_Ponds
-import check_Lakes_WT
-import check_Ponds_WT
-import check_Meadow_WT
-import check_LCP_WT
-import check_CLC_WT
-import check_FCP_WT
-import check_HCP_WT
+#~ #import check_Lakes
+#~ #import check_Ponds
+#~ import check_Lakes_WT
+#~ import check_Ponds_WT
+#~ import check_Meadow_WT
+#~ import check_LCP_WT
+#~ import check_CLC_WT
+#~ import check_FCP_WT
+#~ import check_HCP_WT
+import checks
 import climate_expansion_arrays
 import cohorts
 import cohort_check
@@ -121,21 +122,21 @@ def run_barrow(self, time):
             # ----------------------------------
             # Cycle through terrestrial cohorts
             # ----------------------------------
-            check_Meadow_WT.check_Meadow_WT_Y(self, element, time)
-            check_Meadow_WT.check_Meadow_WT_M(self, element, time)
-            check_Meadow_WT.check_Meadow_WT_O(self, element, time)
-            check_LCP_WT.check_LCP_WT_Y(self, element, time)
-            check_LCP_WT.check_LCP_WT_M(self, element, time)
-            check_LCP_WT.check_LCP_WT_O(self, element, time)
-            check_CLC_WT.check_CLC_WT_Y(self, element, time)
-            check_CLC_WT.check_CLC_WT_M(self, element, time)
-            check_CLC_WT.check_CLC_WT_O(self, element, time)
-            check_FCP_WT.check_FCP_WT_Y(self, element, time)
-            check_FCP_WT.check_FCP_WT_M(self, element, time)
-            check_FCP_WT.check_FCP_WT_O(self, element, time)
-            check_HCP_WT.check_HCP_WT_Y(self, element, time)
-            check_HCP_WT.check_HCP_WT_M(self, element, time)
-            check_HCP_WT.check_HCP_WT_O(self, element, time)
+            checks.check_Meadow_WT.check_Meadow_WT_Y(self, element, time)
+            checks.check_Meadow_WT.check_Meadow_WT_M(self, element, time)
+            checks.check_Meadow_WT.check_Meadow_WT_O(self, element, time)
+            checks.check_LCP_WT.check_LCP_WT_Y(self, element, time)
+            checks.check_LCP_WT.check_LCP_WT_M(self, element, time)
+            checks.check_LCP_WT.check_LCP_WT_O(self, element, time)
+            checks.check_CLC_WT.check_CLC_WT_Y(self, element, time)
+            checks.check_CLC_WT.check_CLC_WT_M(self, element, time)
+            checks.check_CLC_WT.check_CLC_WT_O(self, element, time)
+            checks.check_FCP_WT.check_FCP_WT_Y(self, element, time)
+            checks.check_FCP_WT.check_FCP_WT_M(self, element, time)
+            checks.check_FCP_WT.check_FCP_WT_O(self, element, time)
+            checks.check_HCP_WT.check_HCP_WT_Y(self, element, time)
+            checks.check_HCP_WT.check_HCP_WT_M(self, element, time)
+            checks.check_HCP_WT.check_HCP_WT_O(self, element, time)
             #=====================================================
             # NOTE: 17 Oct 2016. The following are place holders
             # until we figure out if/how these sets of cohorts
@@ -172,18 +173,18 @@ def run_barrow(self, time):
             # ------------------------------
             # Cycle through ponds and lakes
             # ------------------------------
-            check_Ponds_WT.check_Ponds_WT_Y(self, element, time)
-            check_Ponds_WT.check_Ponds_WT_M(self, element, time)
-            check_Ponds_WT.check_Ponds_WT_O(self, element, time)
-            check_Lakes_WT.check_LargeLakes_WT_Y(self, element, time)
-            check_Lakes_WT.check_LargeLakes_WT_M(self, element, time)
-            check_Lakes_WT.check_LargeLakes_WT_O(self, element, time)
-            check_Lakes_WT.check_MediumLakes_WT_Y(self, element, time)
-            check_Lakes_WT.check_MediumLakes_WT_M(self, element, time)
-            check_Lakes_WT.check_MediumLakes_WT_O(self, element, time)
-            check_Lakes_WT.check_SmallLakes_WT_Y(self, element, time)
-            check_Lakes_WT.check_SmallLakes_WT_M(self, element, time)
-            check_Lakes_WT.check_SmallLakes_WT_O(self, element, time)
+            checks.check_Ponds_WT.check_Ponds_WT_Y(self, element, time)
+            checks.check_Ponds_WT.check_Ponds_WT_M(self, element, time)
+            checks.check_Ponds_WT.check_Ponds_WT_O(self, element, time)
+            checks.check_Lakes_WT.check_LargeLakes_WT_Y(self, element, time)
+            checks.check_Lakes_WT.check_LargeLakes_WT_M(self, element, time)
+            checks.check_Lakes_WT.check_LargeLakes_WT_O(self, element, time)
+            checks.check_Lakes_WT.check_MediumLakes_WT_Y(self, element, time)
+            checks.check_Lakes_WT.check_MediumLakes_WT_M(self, element, time)
+            checks.check_Lakes_WT.check_MediumLakes_WT_O(self, element, time)
+            checks.check_Lakes_WT.check_SmallLakes_WT_Y(self, element, time)
+            checks.check_Lakes_WT.check_SmallLakes_WT_M(self, element, time)
+            checks.check_Lakes_WT.check_SmallLakes_WT_O(self, element, time)
             # -------------------------------------------------
             # Cohort Fraction Check (mass balance of cohorts)
             # -------------------------------------------------
