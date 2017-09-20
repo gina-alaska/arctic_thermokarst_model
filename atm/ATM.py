@@ -61,10 +61,15 @@ import calc_degree_days
 import read_layers
 import model_domain
 import create_attm_cohort_arrays
+## still needed for initilzation stuff
 import run_barrow
 import run_tanana
 import run_yukon
 import initialize
+
+## new way of running model
+import run_general 
+from cohorts import initial_barrow, initial_tanana
 
 import Output_cohorts_by_year
 import results
@@ -146,6 +151,7 @@ class ATM(object):
 
         initialize.run(self)
         if self.Simulation_area.lower() == 'barrow':
+            ## move to else where
             barrow_checks = [ 
                 'lake_pond_expansion', 'pond_infill', 
                 'Meadow_WT_Y', 'Meadow_WT_M', 'Meadow_WT_O',
@@ -161,12 +167,11 @@ class ATM(object):
                 'check_SmallLakes_WT_Y', 'check_SmallLakes_WT_M', 
                     'check_SmallLakes_WT_O',
             ] 
-            import run_general 
             
-            from cohorts import initial_barrow
             run_general.run(self, barrow_checks, initial_barrow)
         elif self.Simulation_area.lower() == 'tanana':
-            run_tanana.run_tanana(self, time)
+            tanana_checks = []
+            run_general.run(self, tanana_checks, initial_tanana)
 
         print '=================================================='
         print '            Finished the MAIN LOOP '

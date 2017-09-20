@@ -188,7 +188,6 @@ def run(self, cohort_check_list, init_function):
     } 
     
     for time in range(0, self.stop):
-        print time , self.stop
         if time == 0:
             ## TODO fix this
             init_function(self)
@@ -203,7 +202,6 @@ def run(self, cohort_check_list, init_function):
         # Looping over elements
         # ----------------------------------------------------------
         for element in range(0, self.ATTM_nrows * self.ATTM_ncols):
-            print element, self.ATTM_nrows * self.ATTM_ncols
             #### NEW IDEA
             ## for cohort in cohort_list:
             ##      cohorts[cohort](self, element, time)
@@ -225,7 +223,6 @@ def run(self, cohort_check_list, init_function):
             ice_thickness.ice_thickness(self, time, element)
             
             for check in cohort_check_list:
-                print check
                 cohort_metadata[check](self, element, time)
             
             cohort_check.cohort_check(self, element, time, cohort_start)
