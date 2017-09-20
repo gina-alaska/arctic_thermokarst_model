@@ -104,88 +104,7 @@ def run(self, cohort_check_list, init_function):
     """
     cohort_list ordered list of cohorsts to run
     """
-    cohort_metadata = { 
-
-        'lake_pond_expansion': lake_pond_expansion.lake_pond_expansion,
-        'pond_infill': lake_pond_expansion.pond_infill,
-
-        'Meadow_WT_Y': checks.check_Meadow_WT.check_Meadow_WT_Y,
-        'Meadow_WT_M': checks.check_Meadow_WT.check_Meadow_WT_M,
-        'Meadow_WT_O': checks.check_Meadow_WT.check_Meadow_WT_O,
-        'Meadow_WT_NA': checks.check_Meadow_WT.check_Meadow_WT_NA,
-        
-        'LCP_WT_Y': checks.check_LCP_WT.check_LCP_WT_Y,
-        'LCP_WT_M': checks.check_LCP_WT.check_LCP_WT_M,
-        'LCP_WT_O': checks.check_LCP_WT.check_LCP_WT_O,
-        'LCP_WT_NA': checks.check_LCP_WT.check_LCP_WT_NA,
-        
-        'CLC_WT_Y': checks.check_CLC_WT.check_CLC_WT_Y,
-        'CLC_WT_M': checks.check_CLC_WT.check_CLC_WT_M,
-        'CLC_WT_O': checks.check_CLC_WT.check_CLC_WT_O,
-        'CLC_WT_NA': checks.check_CLC_WT.check_CLC_WT_NA,
-        
-        'FCP_WT_Y': checks.check_FCP_WT.check_FCP_WT_Y,
-        'FCP_WT_M': checks.check_FCP_WT.check_FCP_WT_M,
-        'FCP_WT_O': checks.check_FCP_WT.check_FCP_WT_O,
-        'FCP_WT_NA': checks.check_FCP_WT.check_FCP_WT_NA,
-        
-        'HCP_WT_Y': checks.check_HCP_WT.check_HCP_WT_Y,
-        'HCP_WT_M': checks.check_HCP_WT.check_HCP_WT_M,
-        'HCP_WT_O': checks.check_HCP_WT.check_HCP_WT_O,
-        'HCP_WT_NA': checks.check_HCP_WT.check_HCP_WT_NA,
-
-        
-        
-        
-        
-        ### NOTE: 17 Oct 2016. The following are place holders
-        ### until we figure out if/how these sets of cohorts
-        ### can transition into other cohorts.
-        #~ 'CoastalWaters_WT_O': checks.check_CoastalWaters_WT.check_CoastalWaters_WT_O,
-        #~ 'DrainedSlope_WT_Y': checks.check_DrainedSlope_WT.check_DrainedSlope_WT_Y,
-        #~ 'DrainedSlope_WT_M': checks.check_DrainedSlope_WT.check_DrainedSlope_WT_M,
-        #~ 'DrainedSlope_WT_O': checks.check_DrainedSlope_WT.check_DrainedSlope_WT_O,
-        #~ 'NoData_WT_O': checks.check_NoData_WT.check_NoData_WT_O,
-        #~ 'SandDunes_WT_Y': checks.check_SandDunes_WT.check_SandDunes_WT_Y,
-        #~ 'SandDunes_WT_M': checks.check_SandDunes_WT.check_SandDunes_WT_M,
-        #~ 'SandDunes_WT_O': checks.check_SandDunes_WT.check_SandDunes_WT_O,
-        #~ 'SaturatedBarrens_WT_Y': checks.check_SaturatedBarrens_WT.check_SaturatedBarrens_WT_Y,
-        #~ 'SaturatedBarrens_WT_M': checks.check_SaturatedBarrens_WT.check_SaturatedBarrens_WT_M,
-        #~ 'check_SaturatedBarrens_WT_O': checks.check_SaturatedBarrens_WT.check_SaturatedBarrens_WT_O,
-        #~ 'Shrubs_WT_O': checks.check_Shrubs_WT.check_Shrubs_WT_O,
-        #~ 'Urban_WT': checks.check_Urban_WT.check_Urban_WT,
-        
-        
-        ### Note: 17 Oct 2016. The following checks are pretty much obsolete
-        ### at this point. Will clean up once everything is working well.
-        #~ 'Wet_NPG': checks.check_Wet_NPG.check_Wet_NPG,
-        #~ 'Wet_LCP': checks.check_Wet_LCP.check_Wet_LCP,
-        #~ 'Wet_CLC': checks.check_Wet_CLC.check_Wet_CLC,
-        #~ 'Wet_FCP': checks.check_Wet_FCP.check_Wet_FCP,
-        #~ 'Wet_HCP': checks.check_Wet_HCP.check_Wet_HCP,
-        
-        
-        
-        'check_Ponds_WT_Y': checks.check_Ponds_WT.check_Ponds_WT_Y,
-        'check_Ponds_WT_M': checks.check_Ponds_WT.check_Ponds_WT_M,
-        'check_Ponds_WT_O': checks.check_Ponds_WT.check_Ponds_WT_O,
-        'check_Ponds_WT_NA': checks.check_Ponds_WT.check_Ponds_WT_NA,
-        
-        'check_LargeLakes_WT_Y': checks.check_Lakes_WT.check_LargeLakes_WT_Y,
-        'check_LargeLakes_WT_M': checks.check_Lakes_WT.check_LargeLakes_WT_M,
-        'check_LargeLakes_WT_O': checks.check_Lakes_WT.check_LargeLakes_WT_O,
-        'check_LargeLakes_WT_NA': checks.check_Lakes_WT.check_LargeLakes_WT_NA,
-        
-        'check_MediumLakes_WT_Y': checks.check_Lakes_WT.check_MediumLakes_WT_Y,
-        'check_MediumLakes_WT_M': checks.check_Lakes_WT.check_MediumLakes_WT_M,
-        'check_MediumLakes_WT_O': checks.check_Lakes_WT.check_MediumLakes_WT_O,
-        'check_MediumLakes_WT_NA': checks.check_Lakes_WT.check_MediumLakes_WT_NA,
-        
-        'check_SmallLakes_WT_Y': checks.check_Lakes_WT.check_SmallLakes_WT_Y,
-        'check_SmallLakes_WT_M': checks.check_Lakes_WT.check_SmallLakes_WT_M,
-        'check_SmallLakes_WT_O': checks.check_Lakes_WT.check_SmallLakes_WT_O,
-        'check_SmallLakes_WT_NA': checks.check_Lakes_WT.check_SmallLakes_WT_NA,
-    } 
+    
     
     for time in range(0, self.stop):
         if time == 0:
@@ -223,7 +142,7 @@ def run(self, cohort_check_list, init_function):
             ice_thickness.ice_thickness(self, time, element)
             
             for check in cohort_check_list:
-                cohort_metadata[check](self, element, time)
+                checks.cohort_metadata[check](self, element, time)
             
             cohort_check.cohort_check(self, element, time, cohort_start)
 

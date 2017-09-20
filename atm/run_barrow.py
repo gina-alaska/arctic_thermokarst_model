@@ -11,15 +11,6 @@ import numpy as np
 #---------------------------------------------------------------------
 import active_layer_depth
 import check_climate_event
-#~ #import check_Lakes
-#~ #import check_Ponds
-#~ import check_Lakes_WT
-#~ import check_Ponds_WT
-#~ import check_Meadow_WT
-#~ import check_LCP_WT
-#~ import check_CLC_WT
-#~ import check_FCP_WT
-#~ import check_HCP_WT
 import checks
 import climate_expansion_arrays
 import cohorts
