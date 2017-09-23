@@ -3,7 +3,7 @@ import os, sys
 import datetime, time
 from matplotlib.dates import date2num
 from matplotlib.dates import num2date
-
+from __init__ import __version__
 
 def on_screen(self):
     """
@@ -16,6 +16,7 @@ def on_screen(self):
     print '====================================================='
     print '       Simulation Results         '
     print '====================================================='
+    print 'ATM version: ',  __version__
     print 'Simulation name: ', self.simulation_name
     print 'Start Date / Time : ', self.start_time
     print 'End Date / Time : ', self.finish_time
@@ -748,6 +749,7 @@ def on_file(self):
     file.write('=====================================================\n')
     file.write('       Simulation Results        \n')
     file.write('=====================================================\n')
+    file.write('ATM version: '+  __version__ +str('\n'))
     file.write('Simulation name: '+ self.simulation_name +str('\n'))
     file.write('Start Date / Time : ' + self.start_time +str('\n'))
     file.write('End Date / Time : '+ self.finish_time +str('\n'))
