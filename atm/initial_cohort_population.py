@@ -31,6 +31,8 @@ def barrow_initial_cohort_population(self):
             # ============================================================
             #A = self.NPG[i:i+int(float(self.Y_resolution)/(self.y_res))-1, \
             #             j:j+int(float(self.X_resolution)/(self.x_res))-1]
+            
+            # BOB think the -1 is a bug here 
             A = self.Meadow_WT_Y[i:i+int(float(self.Y_resolution)/(self.y_res))-1, \
                                  j:j+int(float(self.X_resolution)/(self.x_res))-1]
             b = A > 0

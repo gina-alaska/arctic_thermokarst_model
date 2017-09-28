@@ -22,7 +22,6 @@ def barrow_initial_cohort_check(self):
     """
     # Statement for debugging
     print '    Checking initial cohorts, normalizing to 1.0'
-    
     # ----------------------------------------------------------------------
     # Determine the initial/original total fractional area of each element.
     # ----------------------------------------------------------------------
@@ -142,8 +141,8 @@ def barrow_initial_cohort_check(self):
     #self.ATTM_Urban   = np.round((self.ATTM_Urban)   / cohorts_required, decimals = 6)
     #self.ATTM_Rivers  = np.round((self.ATTM_Rivers)  / cohorts_required, decimals = 6)
     #self.ATTM_Lakes   = np.round((self.ATTM_Lakes)   / cohorts_required, decimals = 6)
-    #self.ATTM_Ponds   = np.round((self.ATTM_Ponds)   / cohorts_required, decimals = 6)
-
+    #self.ATTM_Ponds   = np.round((self.ATTM_Ponds)   / cohorts_required, decimals = 6) 
+    
     self.ATTM_CLC_WT_Y = np.round((self.ATTM_CLC_WT_Y) / cohorts_required, decimals = 6)
     self.ATTM_CLC_WT_M = np.round((self.ATTM_CLC_WT_M) / cohorts_required, decimals = 6)
     self.ATTM_CLC_WT_O = np.round((self.ATTM_CLC_WT_O) / cohorts_required, decimals = 6)
