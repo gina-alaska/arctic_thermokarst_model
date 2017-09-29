@@ -17,6 +17,18 @@ RASTER_METADATA = namedtuple('RASTER_METADATA',
 
 def load_raster (filename):
     """Load a raster file and it's medatadata
+    
+    Parameters
+    ----------
+    filename: str
+        path to raster file to read
+        
+    Returns 
+    -------
+    np.array
+        2d raster data
+    RASTER_METADATA
+        metadata on raster file read
     """
     dataset = gdal.Open(filename, gdal.GA_ReadOnly)
     #~ print type(dataset)
@@ -36,7 +48,11 @@ def load_raster (filename):
     data = dataset.GetRasterBand(1).ReadAsArray()
     return data, metadata
 
-### CANON NAMES
+# maps alternate name to the names used by ATM internally
+#
+# See Also
+# --------
+#   find_canon_name
 CANON_COHROT_NAMES = {
     ('CoalescentLowCenterPolygon_WetlandTundra_Medium',): 'CLC_WT_M',
     ('CoalescentLowCenterPolygon_WetlandTundra_Old',): 'CLC_WT_O',
@@ -159,6 +175,9 @@ def find_canon_name (name):
             return CANON_COHROT_NAMES[alt_names]
     raise KeyError, 'No canon cohort name for exists ' + name 
 
+
+# index names for rows and columns to make code easier to read/update
+#
 ROW, Y = 0, 0 ## index for dimenisons 
 COL, X = 1, 1 ## index for dimenisons 
 
@@ -411,7 +430,7 @@ class TerrainGrid(object):
             return np.array(self.data)[:,cohort]
         else:
             return np.array(self.data)[:,cohort].reshape(len(self.data),
-                self.shape[0], self.shape[1])
+                self.shape[ROW], self.shape[COL])
                 
     def get_all_cohorts_at_time_step (self, time_step = -1, flat = True):
         """Get all cohorts at a given time step
@@ -433,7 +452,7 @@ class TerrainGrid(object):
             return self.data[time_step]
         else:
             return self.data[time_step].reshape(len(self.init_data),
-                self.shape[0], self.shape[1])
+                self.shape[ROW], self.shape[COL])
                 
     def check_mass_balance (self, time_step=-1):
         """retruns true if mass balance is preserved. Raises an exception, 
