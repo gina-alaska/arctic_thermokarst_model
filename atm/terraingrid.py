@@ -6,6 +6,8 @@ import os
 
 from collections import namedtuple
 
+import matplotlib.pyplot as plt
+
 class MassBalaenceError (Exception):
     """Raised if there is a mass balance problem"""
 
@@ -47,6 +49,27 @@ def load_raster (filename):
     ## assumes one band, also gdal uses one based indexing here 
     data = dataset.GetRasterBand(1).ReadAsArray()
     return data, metadata
+    
+def save_bin (data, path):
+    """ Function doc """
+    data.tofile(path)
+
+    
+def save_img (data, path, title):
+    """ Function doc """
+    imgplot = plt.imshow(
+        data, 
+        interpolation = 'nearest', 
+        cmap = 'spectral', 
+        vmin = 0.0, 
+        vmax = 1.0
+    )
+    plt.title(title)
+    plt.colorbar(extend = 'neither', shrink = 0.92)
+    #~ imgplot.save(path)
+    #~ plt.imsave(path, imgplot)
+    plt.savefig(path)
+    plt.close()
 
 # maps alternate name to the names used by ATM internally
 #
@@ -484,12 +507,28 @@ class TerrainGrid(object):
             
         return True
     
-    def save (self):
+    def save_cohort_at_time_step (self, cohort, path,
+            time_step = -1, bin_only = True, binary_pixels = False):
         """various save functions should be created to save, reports, images, 
         or videos
         """
-        pass
+        cohort_data = self.get_cohort_at_time_step(
+            cohort, time_step, flat = False
+        )
         
+        if binary_pixels:
+            ## see if cohort is present or not
+            cohort_data[cohort_data>0] = 1
+        #~ self.ts_to_year(time_step)
+        year = 'TEMP_YEAR'
+        filename = cohort+ "_Fractional_Area_" + str(year)
+        bin_path = os.path.join(path, filename + '.bin')
+        save_bin(cohort_data, bin_path)
+        if not bin_only:
+            img_path = os.path.join(path, filename + '.png')
+            save_img(cohort_data, img_path, filename) # pretty names
+            
+            
         
 def test (files):
     """

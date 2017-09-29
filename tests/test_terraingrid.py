@@ -30,7 +30,7 @@ class TestTerrainGridClass(unittest.TestCase):
         pass
         
     def test_check_mass_balance_error_lt0 (self):
-        """test failure if a grid elements sum is greater > 1
+        """test failure if a grid elements sum is greater < 0
         """
         self.tg_class.data[-1][0] = -1000
         self.assertRaises(
