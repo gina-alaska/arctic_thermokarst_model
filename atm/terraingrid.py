@@ -2,7 +2,7 @@
 """
 import numpy as np
 import gdal
-
+import os
 
 from collections import namedtuple
 
@@ -16,9 +16,10 @@ RASTER_METADATA = namedtuple('RASTER_METADATA',
 )
 
 def load_raster (filename):
-    """
+    """Load a raster file and it's medatadata
     """
     dataset = gdal.Open(filename, gdal.GA_ReadOnly)
+    #~ print type(dataset)
     (X, deltaX, rotation, Y, rotation, deltaY) = dataset.GetGeoTransform()
 
     metadata = RASTER_METADATA(
@@ -163,9 +164,6 @@ COL, X = 1, 1 ## index for dimenisons
 
 class TerrainGrid(object):
     """ Concept Class for atm TerrainGrid that represents the data  """
-    
-   
-    
     def __init__ (self, input_data = [], target_resoloution = (1000,1000) ):
         """This class represents model area grid as fractional areas of each
         cohort that make up a grid element. In each grid element all
@@ -276,7 +274,8 @@ class TerrainGrid(object):
                 raise StandardError, 'Resoloution Size Mismatch'
             
             try:
-                name = find_canon_name(f.split('.')[0])
+                filename = os.path.split(f)[-1]
+                name = find_canon_name(filename.split('.')[0])
             except KeyError as e:
                 print e
                 continue
@@ -321,7 +320,6 @@ class TerrainGrid(object):
             new_layers.append(layer)
         new_layers = np.array(new_layers)
         return new_layers
-        
     
     ## make a static method?
     def resize_grid_elements (self, 
