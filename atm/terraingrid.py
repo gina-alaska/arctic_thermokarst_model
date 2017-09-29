@@ -6,6 +6,8 @@ import gdal
 
 from collections import namedtuple
 
+class MassBalaenceError (Exception):
+    """Raised if there is a mass balance problem"""
 
 RASTER_METADATA = namedtuple('RASTER_METADATA', 
     ['transform', 'projection', 
@@ -156,64 +158,122 @@ def find_canon_name (name):
             return CANON_COHROT_NAMES[alt_names]
     raise KeyError, 'No canon cohort name for exists ' + name 
 
+ROW, Y = 0, 0 ## index for dimenisons 
+COL, X = 1, 1 ## index for dimenisons 
+
 class TerrainGrid(object):
     """ Concept Class for atm TerrainGrid that represents the data  """
     
+   
+    
     def __init__ (self, input_data = [], target_resoloution = (1000,1000) ):
-        """ Class initialiser 
+        """This class represents model area grid as fractional areas of each
+        cohort that make up a grid element. In each grid element all
+        fractional cohorts should sum to one.
         
-        rows = Y
-        cols = X
         
-        target resoloution (row size m, col size m)
+        .. note:: Note on grid coordinates
+            Origin (Y,X) is top left. rows = Y, cols = X
+            Object will store diminsional(resoloution, dimensions) 
+            metadata as a tuple (Y val, X val).
+            
+        Parameters
+        ----------
+        input_data: list
+            list of tiff files to read
+        target_resoloution: tuple
+            (Y, X) target grid size in (m, m)
+            
+        Attributes
+        ----------
+        input_data : list
+            list of input files used
+        shape : tuple of ints
+            Shape of the grid (y,x) (rows,columns)
+        resoloution : tuple of ints
+            resoloution of grid elements in m (y,x)
+        data : array
+                This 3d array is the grid data at each time step. 
+            The first diminison is the time setp with 0 being the inital data.
+            The second dimision is the flat grid for given cohort, mapped using  
+            key_to_index. The third dimision is the grid element. Each cohort
+            can be reshaped using  shape to get the proper grid
+        init_data: np.ndarray 
+                The initial data corrected to the target resoloution. Each
+            row is one cohort precent grid flattened to a 1d array. The 
+            the index to get a given cohort can be looked up in the 
+            key_to_index attribute.
+        key_to_index : dict
+                Maps canon cohort names to the index for that cohort in the 
+            data object 
+        raster_info : dict of RASTER_METADATA
+            Metadata on each of the initial raster files read
+        
         
         """
-        self.start = (0,0) # (X,Y) position of first grid element, keep track in case data is split
-        #~ self.shape = (2,5) # (X,Y) shape of data 
         self.input_data = input_data
-        
         ## read input
+        ## rename init_grid??
         self.init_data, self.raster_info, self.key_to_index = \
             self.read_layers(target_resoloution)
         
+        ## rename grid_history?
+        self.data = [self.init_data]
         
+        self.check_mass_balance() ## check mass balance at inital time_step
+        
+        #get resoloution, andshape of gird data as read in
+        original = self.raster_info.values()[0]
+        o_shape = (original.nY, original.nX) 
+        o_res = (original.deltaY, original.deltaX) 
         self.shape = (
-            abs(int(self.shape[0] *self.resoloution[0] /target_resoloution[0])),
-            abs(int(self.shape[1] *self.resoloution[1] /target_resoloution[1])),
+            abs(int(o_shape[ROW] *o_res[ROW] /target_resoloution[ROW])),
+            abs(int(o_shape[COL] *o_res[COL] /target_resoloution[COL])),
         )
         self.resoloution = target_resoloution
         
-
-        self.data = [self.init_data]
-        
     def read_layers(self, target_resoloution):
-        """
+        """Read cohort layers from raster files
+        
+        Parameters
+        ----------
+        target_resoloution: tuple of ints
+            target resoloutin of each grid element (y,x)
+            
+        Returns
+        -------
+        Layers : np.ndarray
+            2d array of flattend cohort grids, corrected to the proper
+        resoloution, and normailzed. First dimision is layer index, which can be 
+        found with the keys_to_index dict. The second diminison is gird element 
+        index.
+        metadata_dict : dict
+            metadata for each raster loaded. Keys being canon name of layer
+        keys_to_index : dict
+            Maps each canon cohort name to the int index used in layer grid 
         """
         layers = []
         metadata_dict = {}
         key_to_index = {}
         idx = 0
+        shape, resoloution = None, None
+        
         for f in self.input_data:
             ## add path here
             path = f
             data, metadata = load_raster (path)
             
             ## set init shape and resoloution
-            try:
-                if self.shape != (metadata.nY,metadata.nX):
-                    raise StandardError, 'Raster Size Mismatch'
-            except AttributeError:
-                self.shape = (metadata.nY,metadata.nX)
+            ## TODO maybe do this differently 
+            if shape is None:
+                shape = (metadata.nY,metadata.nX)
+            elif shape != (metadata.nY,metadata.nX):
+                raise StandardError, 'Raster Size Mismatch'
                 
-            try:
-                if self.resoloution != \
-                        (abs(metadata.deltaY), abs(metadata.deltaX)):
-                    raise StandardError, 'Resoloution Size Mismatch'
-            except AttributeError:
-                self.resoloution = (abs(metadata.deltaY),abs(metadata.deltaX))
-                
-            
-                 
+            if resoloution is None:    
+                resoloution = (abs(metadata.deltaY),abs(metadata.deltaX))
+            elif resoloution != (abs(metadata.deltaY), abs(metadata.deltaX)):
+                raise StandardError, 'Resoloution Size Mismatch'
             
             try:
                 name = find_canon_name(f.split('.')[0])
@@ -224,22 +284,29 @@ class TerrainGrid(object):
             ## and increment index
             key_to_index[name] = idx
             metadata_dict[name] = metadata
-            layers.append(self.resize_cells(data, target_resoloution))
+            layers.append(
+                self.resize_grid_elements(data, resoloution, target_resoloution)
+            )
             idx += 1
         
-        layers = self.normalize_layers(np.array(layers), target_resoloution)
+        layers = self.normalize_layers(
+            np.array(layers), resoloution, target_resoloution
+        )
         
         return layers, metadata_dict, key_to_index
-        
-    def normalize_layers (self, layers, target_resoloution):
-        """ 
+       
+    ## make a static method?
+    def normalize_layers(self, layers, current_resoloution, target_resoloution):
+        """Normalize Layers. Ensures that the fractional cohort areas in each 
+        grid element sums to one. 
         """
-        total = layers.sum(0)#sum each cell 
+        total = layers.sum(0) #sum fractional cohorts at each grid element
         cohorts_required = \
-            (float(target_resoloution[0])/(self.resoloution[0])) * \
-            (float(target_resoloution[1])/(self.resoloution[1]))
+            (float(target_resoloution[ROW])/(current_resoloution[ROW])) * \
+            (float(target_resoloution[COL])/(current_resoloution[COL]))
 
         cohort_check = total / cohorts_required
+        ## the total is zero in non study cells. Fix warning there
         adjustment = float(cohorts_required)/total
 
         check_mask = cohort_check > .5
@@ -247,51 +314,74 @@ class TerrainGrid(object):
         for layer in layers:
             
             layer_mask = np.logical_and(check_mask,(layer > 0))
-            layer[layer_mask] = np.multiply(layer, adjustment, where=layer_mask)[layer_mask]
+            layer[layer_mask] = np.multiply(
+                layer,adjustment, where=layer_mask)[layer_mask]
             
             layer = np.round((layer) / cohorts_required, decimals = 6)
             new_layers.append(layer)
         new_layers = np.array(new_layers)
-        ATTM_Total_Fractional_Area = np.round(new_layers.sum(0), decimals = 6 )
-        if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
-            print 'mass balence problem 1'
-        if (np.round(ATTM_Total_Fractional_Area, decimals = 4) < 0.0).any():
-            print 'mass balence problem 2'
         return new_layers
         
-    def resize_cells (self, data, target_resoloution):
-        """"""
-        ## check thati is is correct
-        if target_resoloution == self.resoloution:
-            data[data<=0] = 0
-            data[data>0] = 1
-            return data.flatten()
+    
+    ## make a static method?
+    def resize_grid_elements (self, 
+        layer, current_resoloution, target_resoloution):
+        """resize cells to target resoloution
+        
+        Parameters
+        ----------
+        layer : np.ndarray
+            2d raster data
+        current_resoloution: tuple of ints
+            current resoloutin of each grid element (y,x)
+        target_resoloution: tuple of ints
+            target resoloutin of each grid element (y,x)
+            
+        Returns 
+        -------
+        np.ndarray
+            flatened representation of resized layer
+        """
+        ## check that this is correct
+        if target_resoloution == current_resoloution:
+            layer[layer<=0] = 0
+            layer[layer>0] = 1
+            return layer.flatten()
         
         resize_num = (
-            abs(int(target_resoloution[0]/self.resoloution[0])),
-            abs(int(target_resoloution[1]/self.resoloution[1]))
+            abs(int(target_resoloution[ROW]/current_resoloution[ROW])),
+            abs(int(target_resoloution[COL]/current_resoloution[COL]))
         )
-        new_data = []
-        ## regroup at neresoloution
-        #~ print resize_num
-        for i in range(0, int(self.shape[0]), resize_num[0]):
-            for j in range(0, int(self.shape[1]), resize_num[1]):
-                A = data[i:i+resize_num [0],j:j+resize_num[1]]
-                b = A > 0
-                new_data.append(len(A[b]))
+        resized_layer = []
         
-        return new_data
+        shape = layer.shape
+        
+        ## regroup at new resoloution
+        for row in range(0, int(shape[ROW]), resize_num[ROW]):
+            for col in range(0, int(shape[COL]), resize_num[COL]):
+                A = layer[row : row+resize_num [ROW], col:col + resize_num[COL]]
+                b = A > 0
+                resized_layer.append(len(A[b]))
+        
+        return np.array(resized_layer)
         
         
     def get_cohort_at_time_step (self, cohort, time_step = -1, flat = True):
         """Get a cohort at a given time step
         
-        Note: cohort, would be passed as strings, and converted to index using
-        a well defined maping structure (i.e lakes->0, lcp_wt_y -> 1,...)
-        
-        cohort: int (enentually string)
-        time_step: int, (add ability to retrive slice
-        flat: bool, keep the data flat, or convert to 2d grid
+        Parameters
+        ----------
+        cohort: str
+            canon cohort name
+        time_step: int, defaults -1
+            time step to retrive, default is last time step
+        flat: bool
+            keep the data flat, or convert to 2d grid with corret dimisions
+            
+        Returns
+        -------
+        np.array
+            The cohorts fractional area grid at a given time step. 
         """
         cohort = self.key_to_index[cohort]
         
@@ -299,16 +389,24 @@ class TerrainGrid(object):
             return self.data[time_step][cohort]
         else: 
             return self.data[time_step][cohort].reshape(
-                self.shape[0], self.shape[1])
-        
+                self.shape[ROW], self.shape[COL]
+            )
+    
+    ## NEED TO TEST
     def get_cohort (self, cohort, flat = True):
         """Get a cohort at all time steps
         
-        Note: cohort, would be passed as strings, and converted to index using
-        a well defined maping structure (i.e lakes->0, lcp_wt_y -> 1,...)
-        
-        cohort: int (enentually string)
-        flat: bool, keep the data flat, or convert to 2d grid
+        Parameters
+        ----------
+        cohort: str
+            canon cohort name
+        flat: bool
+            keep the data flat, or convert to 2d grid with corret dimisions
+            
+        Returns
+        -------
+        np.array
+            The cohorts fractional area grid at all time steps. 
         """
         cohort = self.key_to_index[cohort]
         if flat:
@@ -318,7 +416,20 @@ class TerrainGrid(object):
                 self.shape[0], self.shape[1])
                 
     def get_all_cohorts_at_time_step (self, time_step = -1, flat = True):
-        """get all cohort data at a single time step
+        """Get all cohorts at a given time step
+        
+        Parameters
+        ----------
+        time_step: int, defaults -1
+            time step to retrive, default is last time step
+        flat: bool
+            keep the data flat, or convert to 2d grid with corret dimisions
+            
+        Returns
+        -------
+        np.array
+            all cohorts fractional area grids at a given time step in a 2d 
+        array. 
         """
         if flat:
             return self.data[time_step]
@@ -326,10 +437,35 @@ class TerrainGrid(object):
             return self.data[time_step].reshape(len(self.init_data),
                 self.shape[0], self.shape[1])
                 
-    def check_balance (self, time_step):
-        """checks to ensure that no mass was added or removed
+    def check_mass_balance (self, time_step=-1):
+        """retruns true if mass balance is preserved. Raises an exception, 
+        otherwise
+        
+        Parameters 
+        ----------
+        time_step : int, defaults -1
+            time step to test
+        
+        Raises
+        ------
+        MassBalaenceError
+            if any grid elemnt at time_step is <0 or >1
+        
+        Returns
+        -------
+        Bool
+            True if no mass balence problem found.
         """
-        pass
+        grid = self.data[time_step]
+        
+        ATTM_Total_Fractional_Area = np.round(grid.sum(0), decimals = 6 )
+        if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
+            raise MassBalaenceError, 'mass balence problem 1'
+            ## write a check to locate mass balance error
+        if (np.round(ATTM_Total_Fractional_Area, decimals = 4) < 0.0).any():
+            raise MassBalaenceError, 'mass balence problem 2'
+            
+        return True
     
     def save (self):
         """various save functions should be created to save, reports, images, 
