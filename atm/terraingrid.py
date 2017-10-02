@@ -679,6 +679,8 @@ class CohortGrid(object):
             time_step = -1, bin_only = True, binary_pixels = False):
         """various save functions should be created to save, reports, images, 
         or videos
+        
+        returns base file name
         """
         cohort_data = self.get_cohort_at_time_step(
             cohort, time_step, flat = False
@@ -696,7 +698,7 @@ class CohortGrid(object):
             img_path = os.path.join(path, filename + '.png')
             save_img(cohort_data, img_path, filename) # pretty names
             
-    
+        return filename
             
             
         
