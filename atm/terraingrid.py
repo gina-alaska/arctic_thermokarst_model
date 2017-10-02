@@ -8,7 +8,7 @@ from collections import namedtuple
 
 import matplotlib.pyplot as plt
 
-class MassBalaenceError (Exception):
+class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
 
 RASTER_METADATA = namedtuple('RASTER_METADATA', 
@@ -204,9 +204,9 @@ def find_canon_name (name):
 ROW, Y = 0, 0 ## index for dimenisons 
 COL, X = 1, 1 ## index for dimenisons 
 
-class TerrainGrid(object):
+class CohortGrid(object):
     """ Concept Class for atm TerrainGrid that represents the data  """
-    def __init__ (self, input_data = [], target_resoloution = (1000,1000) ):
+    def __init__ (self, config):
         """This class represents model area grid as fractional areas of each
         cohort that make up a grid element. In each grid element all
         fractional cohorts should sum to one.
@@ -232,13 +232,13 @@ class TerrainGrid(object):
             Shape of the grid (y,x) (rows,columns)
         resoloution : tuple of ints
             resoloution of grid elements in m (y,x)
-        data : array
+        grid : array
                 This 3d array is the grid data at each time step. 
             The first diminison is the time setp with 0 being the inital data.
             The second dimision is the flat grid for given cohort, mapped using  
             key_to_index. The third dimision is the grid element. Each cohort
             can be reshaped using  shape to get the proper grid
-        init_data: np.ndarray 
+        init_grid: np.ndarray 
                 The initial data corrected to the target resoloution. Each
             row is one cohort precent grid flattened to a 1d array. The 
             the index to get a given cohort can be looked up in the 
@@ -251,14 +251,18 @@ class TerrainGrid(object):
         
         
         """
+        input_data = config['input data'] 
+        target_resoloution = config['target resoloution']
+        self.start_year = int(config['start year'])
+        
         self.input_data = input_data
         ## read input
         ## rename init_grid??
-        self.init_data, self.raster_info, self.key_to_index = \
+        self.init_grid, self.raster_info, self.key_to_index = \
             self.read_layers(target_resoloution)
         
         ## rename grid_history?
-        self.data = [self.init_data]
+        self.grid = [self.init_grid]
         
         self.check_mass_balance() ## check mass balance at inital time_step
         
@@ -271,6 +275,49 @@ class TerrainGrid(object):
             abs(int(o_shape[COL] *o_res[COL] /target_resoloution[COL])),
         )
         self.resoloution = target_resoloution
+        
+    def __getitem__ (self, key):
+        """Gets cohort data.
+        
+        Can get data for a cohort at all timesteps, all cohorts at a ts, 
+        or a cohort at a given ts
+        
+        Parameters
+        ----------
+        key: Str, int, or tuple(int,str)
+            if key is a string, it should be a canon cohort name.
+            if key is an int, it should be a year >= start_year, 
+            but < start_year + len(grid)
+            if key is tuple, the int should fit the int requirments, and the 
+            string the string requirments. 
+            
+        Returns
+        -------
+        np.array
+            if key is a string, 3D, dimsions are [timestep][grid row][grid col],
+            timesetp is year(key) - start year
+            if key is a int, 3D, dimsions are [cohort #][grid row][grid col],
+            use key_to_int to find cohort #
+            if key is tuple, 2D, [grid row][grid col]
+        """
+        if type(key) is str: ## cohort at all ts
+            get_type = 'cohort' 
+        elif type(key) is int: ## all cohorts at a ts
+            get_type = 'ts' 
+        else: # tuple ## a cohort at a ts
+            get_type = 'cohort at ts' 
+            
+            
+        if 'cohort' == get_type: 
+            return self.get_cohort(key, False)
+        elif 'ts' == get_type:
+            year = key - self.start_year
+            return self.get_all_cohorts_at_time_step(year, False)
+        elif 'cohort at ts' == get_type:
+            year, cohort = key
+            year = year-self.start_year
+            return self.get_cohort_at_time_step(cohort, year, False)
+        
         
     def read_layers(self, target_resoloution):
         """Read cohort layers from raster files
@@ -426,9 +473,9 @@ class TerrainGrid(object):
         cohort = self.key_to_index[cohort]
         
         if flat:
-            return self.data[time_step][cohort]
+            return self.grid[time_step][cohort]
         else: 
-            return self.data[time_step][cohort].reshape(
+            return self.grid[time_step][cohort].reshape(
                 self.shape[ROW], self.shape[COL]
             )
     
@@ -450,9 +497,9 @@ class TerrainGrid(object):
         """
         cohort = self.key_to_index[cohort]
         if flat:
-            return np.array(self.data)[:,cohort]
+            return np.array(self.grid)[:,cohort]
         else:
-            return np.array(self.data)[:,cohort].reshape(len(self.data),
+            return np.array(self.grid)[:,cohort].reshape(len(self.grid),
                 self.shape[ROW], self.shape[COL])
                 
     def get_all_cohorts_at_time_step (self, time_step = -1, flat = True):
@@ -472,9 +519,9 @@ class TerrainGrid(object):
         array. 
         """
         if flat:
-            return self.data[time_step]
+            return self.grid[time_step]
         else:
-            return self.data[time_step].reshape(len(self.init_data),
+            return self.grid[time_step].reshape(len(self.init_grid),
                 self.shape[ROW], self.shape[COL])
                 
     def check_mass_balance (self, time_step=-1):
@@ -488,7 +535,7 @@ class TerrainGrid(object):
         
         Raises
         ------
-        MassBalaenceError
+        MassBalanceError
             if any grid elemnt at time_step is <0 or >1
         
         Returns
@@ -496,16 +543,137 @@ class TerrainGrid(object):
         Bool
             True if no mass balence problem found.
         """
-        grid = self.data[time_step]
+        grid = self.grid[time_step]
         
         ATTM_Total_Fractional_Area = np.round(grid.sum(0), decimals = 6 )
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
-            raise MassBalaenceError, 'mass balence problem 1'
+            raise MassBalanceError, 'mass balence problem 1'
             ## write a check to locate mass balance error
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) < 0.0).any():
-            raise MassBalaenceError, 'mass balence problem 2'
+            raise MassBalanceError, 'mass balence problem 2'
             
         return True
+        
+    ## don't need a set_cohort, because we only want to set one ts at a time
+    ## really only the most recent time_step.
+    def set_cohort (self, cohort, data):
+        """If implmented should set a cohort at all time steps
+        
+        Parameters
+        ----------
+        cohort: str
+            canon name of cohort
+        data: array like
+        """
+        raise NotImplementedError, 'cannot set a cohort at all time steps'
+    
+    def set_cohort_at_time_step(self, cohort, time_step, data):
+        """Set a cohort at a given time step
+        
+        Parameters
+        ----------
+        cohort: str
+            canon name of cohort
+        time_step: int
+            0 <= # < len(grid)
+        data: np.ndarray
+            2D array with shape matching shape attribute
+            
+        Raises
+        ------
+        StandardError
+            bad shape
+        """
+        idx = self.key_to_index[cohort]
+        if data.shape != self.shape:
+            raise StandardError, 'Set shape Error'
+        
+        self.grid[time_step][idx] = data.flatten()
+        
+    def set_all_cohorts_at_time_step(self, time_step, data):
+        """Sets all cohorts at a time step
+        
+        
+        Parameters
+        ----------
+        time_step: int
+            0 <= # < len(grid)
+        data: np.ndarray
+            2D array with shape rebroadcastable to init_grid.shape())
+        """
+        shape = self.init_grid.shape
+        self.grid[time_step] = data.reshape(shape)
+        
+         
+    def __setitem__ (self, key, data):
+        """Set cohort data. 
+        
+        Can set a grid for a cohort(or all cohorts) at a timesetp. Will add 
+        time step id desired time step == len(grid)
+        
+        Parameters
+        ----------
+        key: Str, int, or tuple(int,str)
+            if key is a string, raises NotImplementedErro
+            if key is an int, it should be a year >= start_year, 
+            but <= start_year + len(grid)
+            if key is tuple, the int should fit the int requirments, and the 
+            string should be a canon cohort name
+        data: np.ndarray
+            data of the proper shape. for tuple key shape = shape attribute, 
+            else rebroadcatable to shape of init_grid
+            
+        Raises
+        ------
+        NotImplementedError
+            if key is str, 'cannot set a cohort at all time steps'
+        KeyError, 
+            if key's year value < star_year or > star_year + len(grid)
+        """
+        if type(key) is str: ## cohort at all ts
+            #~ get_type = 'cohort' 
+            raise NotImplementedError, 'cannot set a cohort at all time steps'
+        elif type(key) is int: ## all cohorts at a ts
+            get_type = 'ts' 
+            year = key
+        else: # tuple ## a cohort at a ts
+            get_type = 'cohort at ts' 
+            year, cohort = key
+            
+        if year == self.start_year + len(self.grid):
+            ## year == end year + 1 
+            ## (I.e start_year == 1900, len(grid) =10, year = 1910)
+            ## time steps from 0 - 9, (1900 - 1909)
+            ## year - star_year = 10, no 10 as a time,
+            ## but 10 == year - star_year, or 1910 == start_year+len(grid)
+            ## so, will add a new grid year, becasue it is end +1, and set 
+            ## values to 0
+            self.append_grid_year(True)
+        elif year > self.start_year + len(self.grid):
+            raise KeyError, 'Year too far after current end'
+        elif year < self.start_year:
+            raise KeyError, 'Year before start year'
+        
+            
+        if  'ts' == get_type:
+            ts = year - self.start_year
+            self.set_all_cohorts_at_time_step(ts, data)
+        elif  'cohort at ts' == get_type:
+            ts = year - self.start_year
+            self.set_cohort_at_time_step(cohort, ts, data)
+            
+        
+    def append_grid_year (self, zeros=False):
+        """adds a new grid timestep and exact copy of the previous timestep
+        
+        Parameters
+        ----------
+        zeros : bool
+            set new years data to 0 if true
+        """
+        self.grid.append(self.grid[-1])
+        if zeros:
+            self.grid[-1] = self.grid[-1]*0
     
     def save_cohort_at_time_step (self, cohort, path,
             time_step = -1, bin_only = True, binary_pixels = False):
@@ -528,9 +696,17 @@ class TerrainGrid(object):
             img_path = os.path.join(path, filename + '.png')
             save_img(cohort_data, img_path, filename) # pretty names
             
+    
+            
             
         
 def test (files):
     """
     """
-    return TerrainGrid(files)
+    config = {
+        'target resoloution': (1000,1000),
+        'start year': 1900,
+        'input data': files,
+    }
+    
+    return CohortGrid(config)
