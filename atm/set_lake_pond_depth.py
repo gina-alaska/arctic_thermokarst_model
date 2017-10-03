@@ -3,7 +3,7 @@ import gdal, os, sys, glob, random
 import pylab as pl
 
 def set_lake_pond_depth(self):
-    
+
     """
     The purpose of this module is to set the lake and pond depths for each
     element that has a lake or pond cohort within the element of interest.
@@ -36,7 +36,7 @@ def set_lake_pond_depth(self):
     self.SmallLake_WT_Y_Depth  = np.zeros(self.ATTM_nrows * self.ATTM_ncols)
     self.SmallLake_WT_M_Depth  = np.zeros(self.ATTM_nrows * self.ATTM_ncols)
     self.SmallLake_WT_O_Depth  = np.zeros(self.ATTM_nrows * self.ATTM_ncols)
-    
+
     #self.Pond_Depth = np.zeros(self.ATTM_nrows * self.ATTM_ncols)
     self.Pond_WT_Y_Depth = np.zeros(self.ATTM_nrows * self.ATTM_ncols)
     self.Pond_WT_M_Depth = np.zeros(self.ATTM_nrows * self.ATTM_ncols)
@@ -67,12 +67,12 @@ def set_lake_pond_depth(self):
                                                    self.LakePond['Upper_SmallLake_WT_M_Depth'])
             SmallLake_WT_O_Depth  = random.uniform(self.LakePond['Lower_SmallLake_WT_O_Depth'], \
                                                    self.LakePond['Upper_SmallLake_WT_O_Depth'])
-                                        
+
         elif self.LakePond['Lake_Distribution'].lower() == 'uniform':
             #Lake_Depth = self.LakePond['Uniform_Lake_Depth']
             LargeLake_WT_Y_Depth  = self.LakePond['Uniform_Lake_Depth']
             LargeLake_WT_M_Depth  = self.LakePond['Uniform_Lake_Depth']
-            LargeLake_WT_O_Depth  = self.LakePond['Uniform_Lake_Depht']
+            LargeLake_WT_O_Depth  = self.LakePond['Uniform_Lake_Depth']
             MediumLake_WT_Y_Depth = self.LakePond['Uniform_Lake_Depth']
             MediumLake_WT_M_Depth = self.LakePond['Uniform_Lake_Depth']
             MediumLake_WT_O_Depth = self.LakePond['Uniform_Lake_Depth']
@@ -96,7 +96,7 @@ def set_lake_pond_depth(self):
             Pond_WT_Y_Depth = self.LakePond['Uniform_Pond_Depth']
             Pond_WT_M_Depth = self.LakePond['Uniform_Pond_Depth']
             Pond_WT_O_Depth = self.LakePond['Uniform_Pond_Depth']
-            
+
         #--------------------------
         # Set Lake and Pond Depths
         # -------------------------
@@ -116,9 +116,9 @@ def set_lake_pond_depth(self):
         if self.ATTM_Ponds_WT_Y[i] > 0.       : self.Pond_WT_Y_Depth[i] = Pond_WT_Y_Depth
         if self.ATTM_Ponds_WT_M[i] > 0.       : self.Pond_WT_M_Depth[i] = Pond_WT_M_Depth
         if self.ATTM_Ponds_WT_O[i] > 0.       : self.Pond_WT_O_Depth[i] = Pond_WT_O_Depth
-            
+
     print '    done. \n  '
-    
+
     # ------------------------------------------------
     # Create output files, plots, figures if desired
     # Update: 18 January 2018, Bolton
@@ -162,7 +162,7 @@ def set_lake_pond_depth(self):
         pl.title('Inital Lake Depth \n Small Lakes, Wetland Tundra, Old age')
         pl.savefig('Initial_SmallLake_WT_O_Depth.jpg', format = 'jpg')
         lake_depth.tofile('Initial_SmallLake_WT_O_Depth.bin')
-        pl.close()        
+        pl.close()
         # Medium Lakes, Wetland Tundra, Young age
         os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/MediumLakes_WT_Y/')
         lake_depth = np.reshape(self.MediumLake_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
@@ -182,7 +182,7 @@ def set_lake_pond_depth(self):
         pl.title('Inital Lake Depth \n Medium Lakes, Wetland Tundra, Medium age')
         pl.savefig('Initial_MediumLake_WT_M_Depth.jpg', format = 'jpg')
         lake_depth.tofile('Initial_MediumLake_WT_M_Depth.bin')
-        pl.close()  
+        pl.close()
         # Medium Lakes, Wetland Tundra, Old age
         os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/MediumLakes_WT_O/')
         lake_depth = np.reshape(self.MediumLake_WT_O_Depth, [self.ATTM_nrows, self.ATTM_ncols])
@@ -192,7 +192,7 @@ def set_lake_pond_depth(self):
         pl.title('Inital Lake Depth \n Medium Lakes, Wetland Tundra, Old age')
         pl.savefig('Initial_MediumLake_WT_O_Depth.jpg', format = 'jpg')
         lake_depth.tofile('Initial_MediumLake_WT_O_Depth.bin')
-        pl.close()  
+        pl.close()
         # Large Lakes, Wetland Tundra, Young age
         os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/LargeLakes_WT_Y/')
         lake_depth = np.reshape(self.LargeLake_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
@@ -257,7 +257,7 @@ def set_lake_pond_depth(self):
         pl.title('Inital Depth \n Ponds, Wetland Tundra, Old age')
         pl.savefig('Initial_Pond_WT_O_Depth.jpg', format = 'jpg')
         lake_depth.tofile('Initial_Pond_WT_O_Depth.bin')
-        pl.close()        
-        
+        pl.close()
+
         # Return to Run Directory
         os.chdir(self.control['Run_dir'])
