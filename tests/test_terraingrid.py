@@ -26,9 +26,14 @@ class TestCohortGridClass(unittest.TestCase):
         data_dir = os.path.join(path,'example_data')
         
         if not os.path.exists(data_dir):
-            tar.extractall(path=datadir)
+            with tarfile.open(os.path.join(path, 'example_data.tar')) as tar:
+                tar.extractall(path)
+            for f in [f for f in os.listdir( data_dir ) if f.find('._')!=-1 ]:
+                os.remove(os.path.join(data_dir, f))
+            
+            
         files = [ os.path.join(data_dir, f) for f in os.listdir( data_dir )] 
-        
+        #~ print files
         config = {
             'target resoloution': (1000,1000),
             'start year': 1900,
