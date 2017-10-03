@@ -9,7 +9,7 @@ __credits__    = [
     "Jen Deleamere",
 ]
 __license__    = "GPL"
-__version__    = "0.2.0"
+__version__    = "0.2.1"
 __maintainer__ = "Bob Bolton"
 __email__      = "bbolton@iarc.uaf.edu"
 __status__     = "Development"

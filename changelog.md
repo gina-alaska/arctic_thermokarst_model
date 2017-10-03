@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.1] - 2017-10-03
+### added 
+- documents directory
+
+### fixed 
+- depth typo in LakePond
+
 ## [0.2.0] - 2017-09-21
 ### added
 - run_general.py with run function that can run a list of checks for any checks defined
