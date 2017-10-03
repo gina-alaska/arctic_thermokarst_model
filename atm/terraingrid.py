@@ -1,4 +1,4 @@
-"""Contains objests to represent internal grid cohort data in ATM
+"""Contains objects to represent internal grid cohort data in ATM
 """
 import numpy as np
 import gdal
@@ -76,7 +76,7 @@ def save_img (data, path, title):
 # See Also
 # --------
 #   find_canon_name
-CANON_COHROT_NAMES = {
+CANON_COHORT_NAMES = {
     ('CoalescentLowCenterPolygon_WetlandTundra_Medium',): 'CLC_WT_M',
     ('CoalescentLowCenterPolygon_WetlandTundra_Old',): 'CLC_WT_O',
     ('CoalescentLowCenterPolygon_WetlandTundra_Young',): 'CLC_WT_Y',
@@ -143,7 +143,7 @@ CANON_COHROT_NAMES = {
     ('Lakes',): 'Lakes',
     ('FlatCenter',): 'FCP',
     ('Urban',): 'Urban',
-    ('Medows',): 'Medows',
+    ('Meadows',): 'Meadows',
     ('CoalescentLowCenter',): 'CLC',
     ('HighCenter',) : 'HCP',
     
@@ -171,7 +171,7 @@ CANON_COHROT_NAMES = {
 }
 
 def find_canon_name (name):
-    """find canonical name of cohort given an alterate name
+    """find canonical name of cohort given an alternate name
     
     Parameters
     ----------
@@ -189,20 +189,20 @@ def find_canon_name (name):
         Canon name of cohort
     """
     ## is name a canon name
-    if name in CANON_COHROT_NAMES.values():
+    if name in CANON_COHORT_NAMES.values():
         return name
     
     ## loop to find canon name
-    for alt_names in CANON_COHROT_NAMES:
+    for alt_names in CANON_COHORT_NAMES:
         if name in alt_names:
-            return CANON_COHROT_NAMES[alt_names]
+            return CANON_COHORT_NAMES[alt_names]
     raise KeyError, 'No canon cohort name for exists ' + name 
 
 
 # index names for rows and columns to make code easier to read/update
 #
-ROW, Y = 0, 0 ## index for dimenisons 
-COL, X = 1, 1 ## index for dimenisons 
+ROW, Y = 0, 0 ## index for dimensions 
+COL, X = 1, 1 ## index for dimensions 
 
 class CohortGrid(object):
     """ Concept Class for atm TerrainGrid that represents the data  """
@@ -214,14 +214,14 @@ class CohortGrid(object):
         
         .. note:: Note on grid coordinates
             Origin (Y,X) is top left. rows = Y, cols = X
-            Object will store diminsional(resoloution, dimensions) 
+            Object will store dimensional(resolution, dimensions) 
             metadata as a tuple (Y val, X val).
             
         Parameters
         ----------
         input_data: list
             list of tiff files to read
-        target_resoloution: tuple
+        target_resolution: tuple
             (Y, X) target grid size in (m, m)
             
         Attributes
@@ -230,17 +230,17 @@ class CohortGrid(object):
             list of input files used
         shape : tuple of ints
             Shape of the grid (y,x) (rows,columns)
-        resoloution : tuple of ints
-            resoloution of grid elements in m (y,x)
+        resolution : tuple of ints
+            resolution of grid elements in m (y,x)
         grid : array
                 This 3d array is the grid data at each time step. 
-            The first diminison is the time setp with 0 being the inital data.
-            The second dimision is the flat grid for given cohort, mapped using  
-            key_to_index. The third dimision is the grid element. Each cohort
+            The first dimension is the time step with 0 being the initial data.
+            The second dimension is the flat grid for given cohort, mapped using  
+            key_to_index. The third dimension is the grid element. Each cohort
             can be reshaped using  shape to get the proper grid
         init_grid: np.ndarray 
-                The initial data corrected to the target resoloution. Each
-            row is one cohort precent grid flattened to a 1d array. The 
+                The initial data corrected to the target resolution. Each
+            row is one cohort percent grid flattened to a 1d array. The 
             the index to get a given cohort can be looked up in the 
             key_to_index attribute.
         key_to_index : dict
@@ -252,34 +252,34 @@ class CohortGrid(object):
         
         """
         input_data = config['input data'] 
-        target_resoloution = config['target resoloution']
+        target_resolution = config['target resolution']
         self.start_year = int(config['start year'])
         
         self.input_data = input_data
         ## read input
         ## rename init_grid??
         self.init_grid, self.raster_info, self.key_to_index = \
-            self.read_layers(target_resoloution)
+            self.read_layers(target_resolution)
         
         ## rename grid_history?
         self.grid = [self.init_grid]
         
-        self.check_mass_balance() ## check mass balance at inital time_step
+        self.check_mass_balance() ## check mass balance at initial time_step
         
-        #get resoloution, andshape of gird data as read in
+        #get resolution, and shape of gird data as read in
         original = self.raster_info.values()[0]
         o_shape = (original.nY, original.nX) 
         o_res = (original.deltaY, original.deltaX) 
         self.shape = (
-            abs(int(o_shape[ROW] *o_res[ROW] /target_resoloution[ROW])),
-            abs(int(o_shape[COL] *o_res[COL] /target_resoloution[COL])),
+            abs(int(o_shape[ROW] *o_res[ROW] /target_resolution[ROW])),
+            abs(int(o_shape[COL] *o_res[COL] /target_resolution[COL])),
         )
-        self.resoloution = target_resoloution
+        self.resolution = target_resolution
         
     def __getitem__ (self, key):
         """Gets cohort data.
         
-        Can get data for a cohort at all timesteps, all cohorts at a ts, 
+        Can get data for a cohort at all time steps, all cohorts at a ts, 
         or a cohort at a given ts
         
         Parameters
@@ -288,15 +288,15 @@ class CohortGrid(object):
             if key is a string, it should be a canon cohort name.
             if key is an int, it should be a year >= start_year, 
             but < start_year + len(grid)
-            if key is tuple, the int should fit the int requirments, and the 
-            string the string requirments. 
+            if key is tuple, the int should fit the int requirements, and the 
+            string the string requirements. 
             
         Returns
         -------
         np.array
-            if key is a string, 3D, dimsions are [timestep][grid row][grid col],
-            timesetp is year(key) - start year
-            if key is a int, 3D, dimsions are [cohort #][grid row][grid col],
+            if key is a string, 3D, dimension are [timestep][grid row][grid col],
+            timestep is year(key) - start year
+            if key is a int, 3D, dimension are [cohort #][grid row][grid col],
             use key_to_int to find cohort #
             if key is tuple, 2D, [grid row][grid col]
         """
@@ -319,20 +319,20 @@ class CohortGrid(object):
             return self.get_cohort_at_time_step(cohort, year, False)
         
         
-    def read_layers(self, target_resoloution):
+    def read_layers(self, target_resolution):
         """Read cohort layers from raster files
         
         Parameters
         ----------
-        target_resoloution: tuple of ints
-            target resoloutin of each grid element (y,x)
+        target_resolution: tuple of ints
+            target resolution of each grid element (y,x)
             
         Returns
         -------
         Layers : np.ndarray
-            2d array of flattend cohort grids, corrected to the proper
-        resoloution, and normailzed. First dimision is layer index, which can be 
-        found with the keys_to_index dict. The second diminison is gird element 
+            2d array of flattened cohort grids, corrected to the proper
+        resolution, and normalized. First dimension is layer index, which can be 
+        found with the keys_to_index dict. The second dimension is gird element 
         index.
         metadata_dict : dict
             metadata for each raster loaded. Keys being canon name of layer
@@ -343,24 +343,24 @@ class CohortGrid(object):
         metadata_dict = {}
         key_to_index = {}
         idx = 0
-        shape, resoloution = None, None
+        shape, resolution = None, None
         
         for f in self.input_data:
             ## add path here
             path = f
             data, metadata = load_raster (path)
             
-            ## set init shape and resoloution
+            ## set init shape and resolution
             ## TODO maybe do this differently 
             if shape is None:
                 shape = (metadata.nY,metadata.nX)
             elif shape != (metadata.nY,metadata.nX):
                 raise StandardError, 'Raster Size Mismatch'
                 
-            if resoloution is None:    
-                resoloution = (abs(metadata.deltaY),abs(metadata.deltaX))
-            elif resoloution != (abs(metadata.deltaY), abs(metadata.deltaX)):
-                raise StandardError, 'Resoloution Size Mismatch'
+            if resolution is None:    
+                resolution = (abs(metadata.deltaY),abs(metadata.deltaX))
+            elif resolution != (abs(metadata.deltaY), abs(metadata.deltaX)):
+                raise StandardError, 'Resolution Size Mismatch'
             
             try:
                 filename = os.path.split(f)[-1]
@@ -373,25 +373,25 @@ class CohortGrid(object):
             key_to_index[name] = idx
             metadata_dict[name] = metadata
             layers.append(
-                self.resize_grid_elements(data, resoloution, target_resoloution)
+                self.resize_grid_elements(data, resolution, target_resolution)
             )
             idx += 1
         
         layers = self.normalize_layers(
-            np.array(layers), resoloution, target_resoloution
+            np.array(layers), resolution, target_resolution
         )
         
         return layers, metadata_dict, key_to_index
        
     ## make a static method?
-    def normalize_layers(self, layers, current_resoloution, target_resoloution):
+    def normalize_layers(self, layers, current_resolution, target_resolution):
         """Normalize Layers. Ensures that the fractional cohort areas in each 
         grid element sums to one. 
         """
         total = layers.sum(0) #sum fractional cohorts at each grid element
         cohorts_required = \
-            (float(target_resoloution[ROW])/(current_resoloution[ROW])) * \
-            (float(target_resoloution[COL])/(current_resoloution[COL]))
+            (float(target_resolution[ROW])/(current_resolution[ROW])) * \
+            (float(target_resolution[COL])/(current_resolution[COL]))
 
         cohort_check = total / cohorts_required
         ## the total is zero in non study cells. Fix warning there
@@ -412,38 +412,38 @@ class CohortGrid(object):
     
     ## make a static method?
     def resize_grid_elements (self, 
-        layer, current_resoloution, target_resoloution):
-        """resize cells to target resoloution
+        layer, current_resolution, target_resolution):
+        """resize cells to target resolution
         
         Parameters
         ----------
         layer : np.ndarray
             2d raster data
-        current_resoloution: tuple of ints
-            current resoloutin of each grid element (y,x)
-        target_resoloution: tuple of ints
-            target resoloutin of each grid element (y,x)
+        current_resolution: tuple of ints
+            current resolution of each grid element (y,x)
+        target_resolution: tuple of ints
+            target resolution of each grid element (y,x)
             
         Returns 
         -------
         np.ndarray
-            flatened representation of resized layer
+            flattened representation of resized layer
         """
         ## check that this is correct
-        if target_resoloution == current_resoloution:
+        if target_resolution == current_resolution:
             layer[layer<=0] = 0
             layer[layer>0] = 1
             return layer.flatten()
         
         resize_num = (
-            abs(int(target_resoloution[ROW]/current_resoloution[ROW])),
-            abs(int(target_resoloution[COL]/current_resoloution[COL]))
+            abs(int(target_resolution[ROW]/current_resolution[ROW])),
+            abs(int(target_resolution[COL]/current_resolution[COL]))
         )
         resized_layer = []
         
         shape = layer.shape
         
-        ## regroup at new resoloution
+        ## regroup at new resolution
         for row in range(0, int(shape[ROW]), resize_num[ROW]):
             for col in range(0, int(shape[COL]), resize_num[COL]):
                 A = layer[row : row+resize_num [ROW], col:col + resize_num[COL]]
@@ -461,9 +461,9 @@ class CohortGrid(object):
         cohort: str
             canon cohort name
         time_step: int, defaults -1
-            time step to retrive, default is last time step
+            time step to retrieve, default is last time step
         flat: bool
-            keep the data flat, or convert to 2d grid with corret dimisions
+            keep the data flat, or convert to 2d grid with correct dimension
             
         Returns
         -------
@@ -488,7 +488,7 @@ class CohortGrid(object):
         cohort: str
             canon cohort name
         flat: bool
-            keep the data flat, or convert to 2d grid with corret dimisions
+            keep the data flat, or convert to 2d grid with correct dimensions
             
         Returns
         -------
@@ -508,9 +508,9 @@ class CohortGrid(object):
         Parameters
         ----------
         time_step: int, defaults -1
-            time step to retrive, default is last time step
+            time step to retrieve, default is last time step
         flat: bool
-            keep the data flat, or convert to 2d grid with corret dimisions
+            keep the data flat, or convert to 2d grid with correct divisions
             
         Returns
         -------
@@ -525,7 +525,7 @@ class CohortGrid(object):
                 self.shape[ROW], self.shape[COL])
                 
     def check_mass_balance (self, time_step=-1):
-        """retruns true if mass balance is preserved. Raises an exception, 
+        """reruns true if mass balance is preserved. Raises an exception, 
         otherwise
         
         Parameters 
@@ -536,28 +536,28 @@ class CohortGrid(object):
         Raises
         ------
         MassBalanceError
-            if any grid elemnt at time_step is <0 or >1
+            if any grid element at time_step is <0 or >1
         
         Returns
         -------
         Bool
-            True if no mass balence problem found.
+            True if no mass balance problem found.
         """
         grid = self.grid[time_step]
         
         ATTM_Total_Fractional_Area = np.round(grid.sum(0), decimals = 6 )
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
-            raise MassBalanceError, 'mass balence problem 1'
+            raise MassBalanceError, 'mass balance problem 1'
             ## write a check to locate mass balance error
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) < 0.0).any():
-            raise MassBalanceError, 'mass balence problem 2'
+            raise MassBalanceError, 'mass balance problem 2'
             
         return True
         
     ## don't need a set_cohort, because we only want to set one ts at a time
     ## really only the most recent time_step.
     def set_cohort (self, cohort, data):
-        """If implmented should set a cohort at all time steps
+        """If implemented should set a cohort at all time steps
         
         Parameters
         ----------
@@ -608,20 +608,20 @@ class CohortGrid(object):
     def __setitem__ (self, key, data):
         """Set cohort data. 
         
-        Can set a grid for a cohort(or all cohorts) at a timesetp. Will add 
+        Can set a grid for a cohort(or all cohorts) at a timestep. Will add 
         time step id desired time step == len(grid)
         
         Parameters
         ----------
         key: Str, int, or tuple(int,str)
-            if key is a string, raises NotImplementedErro
+            if key is a string, raises NotImplementedError
             if key is an int, it should be a year >= start_year, 
             but <= start_year + len(grid)
-            if key is tuple, the int should fit the int requirments, and the 
+            if key is tuple, the int should fit the int requirements, and the 
             string should be a canon cohort name
         data: np.ndarray
             data of the proper shape. for tuple key shape = shape attribute, 
-            else rebroadcatable to shape of init_grid
+            else rebroadcastable to shape of init_grid
             
         Raises
         ------
@@ -646,7 +646,7 @@ class CohortGrid(object):
             ## time steps from 0 - 9, (1900 - 1909)
             ## year - star_year = 10, no 10 as a time,
             ## but 10 == year - star_year, or 1910 == start_year+len(grid)
-            ## so, will add a new grid year, becasue it is end +1, and set 
+            ## so, will add a new grid year, because it is end +1, and set 
             ## values to 0
             self.append_grid_year(True)
         elif year > self.start_year + len(self.grid):
@@ -706,7 +706,7 @@ def test (files):
     """
     """
     config = {
-        'target resoloution': (1000,1000),
+        'target resolution': (1000,1000),
         'start year': 1900,
         'input data': files,
     }

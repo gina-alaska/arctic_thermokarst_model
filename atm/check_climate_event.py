@@ -16,9 +16,9 @@ def check_climate_event(self):#, climate_blocks, climate_event_probability):
     happening (~ 1/75 years).
 
     ################################################################3
-    Update: 20 Ocotober 2014:
+    Update: 20 October 2014:
     After talking with Vladimir last week (Friday), we decided to
-    create 'blocks' of influece for the climate event to happen.
+    create 'blocks' of influence for the climate event to happen.
     Before, if a climate event happened, the entire model domain
     was influenced.
 
@@ -39,7 +39,7 @@ def check_climate_event(self):#, climate_blocks, climate_event_probability):
     If Lakes + Ponds is between 0.001 to .01, the drainage
     rate is 8.5%.
 
-    If Lakes + Ponds is between 0.01 and 0.1, the draingage
+    If Lakes + Ponds is between 0.01 and 0.1, the drainage
     rate is 5.75
 
     If Lakes + Ponds is between 0.1 and 0.4, the drainage
@@ -78,7 +78,7 @@ def check_climate_event(self):#, climate_blocks, climate_event_probability):
     for j in range(0, self.ATTM_ncols, climate_blocks):
         for k in range(0, self.ATTM_nrows, climate_blocks):
             # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-            # Set the climate event probability of occuring in each block
+            # Set the climate event probability of occurring in each block
             # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             climate_event = random.uniform(0.0, 1.0)
             

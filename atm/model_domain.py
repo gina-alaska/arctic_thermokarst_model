@@ -47,7 +47,7 @@ def model_domain(self):
             np.size(self.Lake_Yukon) == np.size(self.Pond_Yukon) == \
             np.size(self.River_Yukon) == np.size(self.ShrubScrub_Yukon) == \
             np.size(self.Unclassified_Yukon)):
-            print '    All data arrays have the same diminsions'
+            print '    All data arrays have the same dimensions'
     else:
         print '      Initial data array sizes are not all equal.'
         exit()

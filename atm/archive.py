@@ -876,7 +876,7 @@ def archive(self):
 
             """ Clean the Low Center Polygons directories """
             if self.archive['clean_lcp'].lower() == 'yes':
-                # Low Center Polgyons -- Wetland Tundra, Young age
+                # Low Center Polygons -- Wetland Tundra, Young age
                 os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/LCP_WT_Y/')
                 bin_files = glob.glob('*.bin')
                 png_files = glob.glob('*.png')
@@ -1010,7 +1010,7 @@ def archive(self):
 
             """ Clean the Coalescent Low Center Polygons directories """
             if self.archive['clean_clc'].lower() == 'yes':
-                # Coalescent Low Center Polgyons -- Wetland Tundra, Young age
+                # Coalescent Low Center Polygons -- Wetland Tundra, Young age
                 os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/CLC_WT_Y/')
                 bin_files = glob.glob('*.bin')
                 png_files = glob.glob('*.png')
@@ -1143,7 +1143,7 @@ def archive(self):
 
             """ Clean the Flat Center Polygons directories """
             if self.archive['clean_fcp'].lower() == 'yes':
-                # Flat Center Polgyons -- Wetland Tundra, Young age
+                # Flat Center Polygons -- Wetland Tundra, Young age
                 os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/FCP_WT_Y/')
                 bin_files = glob.glob('*.bin')
                 png_files = glob.glob('*.png')
@@ -1277,7 +1277,7 @@ def archive(self):
 
             """ Clean the High Center Polygons directories """
             if self.archive['clean_hcp'].lower() == 'yes':
-                # High Center Polgyons -- Wetland Tundra, Young age
+                # High Center Polygons -- Wetland Tundra, Young age
                 os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/HCP_WT_Y/')
                 bin_files = glob.glob('*.bin')
                 png_files = glob.glob('*.png')

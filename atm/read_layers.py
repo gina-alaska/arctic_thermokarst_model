@@ -57,7 +57,7 @@ def read_layers(self):
     Graminoid Tundra - Non-polygonal
     Shrub Tundra - Low Center Polygon
     Shrub Tundra - Flat Center Polygon
-    Shrub Tundar - High Center Polygon
+    Shrub Tundra - High Center Polygon
     """
     print '    Initial Cohort Input'
     if self.Read_Geotiff.lower() == 'yes':

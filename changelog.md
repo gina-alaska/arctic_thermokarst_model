@@ -22,4 +22,4 @@ All notable changes to this project will be documented in this file.
 - backup files 
 
 
-## [0.1.0] - intital code from Bob Bolton
+## [0.1.0] - initial code from Bob Bolton
