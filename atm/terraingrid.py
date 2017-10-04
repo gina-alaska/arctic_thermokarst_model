@@ -372,15 +372,25 @@ class CohortGrid(object):
             ## and increment index
             key_to_index[name] = idx
             metadata_dict[name] = metadata
+            
+            cohort_year_0 = self.resize_grid_elements(
+                data, resoloution, target_resoloution
+            )
+            
+            flat_grid_size = len(cohort_year_0) 
+            num_years = 1 # < to be set based on cohort age range later
+            cohort_with_age = np.zeros( [num_years, flat_grid_size] )
+            ## set input to age bucket 0
+            cohort_with_age[0] = cohort_year_0
             layers.append(
-                self.resize_grid_elements(data, resoloution, target_resoloution)
+                cohort_with_age 
             )
             idx += 1
         
         layers = self.normalize_layers(
             np.array(layers), resoloution, target_resoloution
         )
-        
+        #~ print layers
         return layers, metadata_dict, key_to_index
        
     ## make a static method?
@@ -473,9 +483,10 @@ class CohortGrid(object):
         cohort = self.key_to_index[cohort]
         
         if flat:
-            return self.grid[time_step][cohort]
+            # sum all age buckets for cohort
+            return self.grid[time_step][cohort].sum(0)
         else: 
-            return self.grid[time_step][cohort].reshape(
+            return self.grid[time_step][cohort].sum(0).reshape(
                 self.shape[ROW], self.shape[COL]
             )
     
@@ -497,9 +508,10 @@ class CohortGrid(object):
         """
         cohort = self.key_to_index[cohort]
         if flat:
-            return np.array(self.grid)[:,cohort]
+            # sum all age buckets for cohort(check1)
+            return np.array(self.grid)[:,cohort].sum(1) 
         else:
-            return np.array(self.grid)[:,cohort].reshape(len(self.grid),
+            return np.array(self.grid)[:,cohort].sum(1).reshape(len(self.grid),
                 self.shape[ROW], self.shape[COL])
                 
     def get_all_cohorts_at_time_step (self, time_step = -1, flat = True):
@@ -519,9 +531,10 @@ class CohortGrid(object):
         array. 
         """
         if flat:
-            return self.grid[time_step]
+            # sum all age buckets for cohort
+            return self.grid[time_step].sum(1) 
         else:
-            return self.grid[time_step].reshape(len(self.init_grid),
+            return self.grid[time_step].sum(1).reshape(len(self.init_grid),
                 self.shape[ROW], self.shape[COL])
                 
     def check_mass_balance (self, time_step=-1):
@@ -588,7 +601,9 @@ class CohortGrid(object):
         if data.shape != self.shape:
             raise StandardError, 'Set shape Error'
         
-        self.grid[time_step][idx] = data.flatten()
+        # always sets new data in to bucket for age 0
+        ## may chage if differnt action is desired
+        self.grid[time_step][idx][0] = data.flatten()
         
     def set_all_cohorts_at_time_step(self, time_step, data):
         """Sets all cohorts at a time step
@@ -599,7 +614,8 @@ class CohortGrid(object):
         time_step: int
             0 <= # < len(grid)
         data: np.ndarray
-            2D array with shape rebroadcastable to init_grid.shape())
+            3D array with shape rebroadcastable to init_grid.shape())
+            i.e [cohorts][ages][grid]
         """
         shape = self.init_grid.shape
         self.grid[time_step] = data.reshape(shape)

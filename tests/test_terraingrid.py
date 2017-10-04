@@ -49,9 +49,9 @@ class TestCohortGridClass(unittest.TestCase):
         self.assertEqual( ( 50, 67 ), self.tg_class.shape )
         self.assertEqual( 1900, self.tg_class.start_year )
         self.assertIs( np.ndarray, type(self.tg_class.init_grid) )
-        self.assertEqual( (43, 50 * 67 ), self.tg_class.init_grid.shape )
+        self.assertEqual( (43, 1, 50 * 67 ), self.tg_class.init_grid.shape )
         self.assertEqual( 1, len(self.tg_class.grid) )
-        self.assertEqual( (1, 43, 50 * 67 ), 
+        self.assertEqual( (1, 43, 1, 50 * 67 ), 
             np.array(self.tg_class.grid).shape)
        
     def test_read_layers (self):
@@ -125,7 +125,6 @@ class TestCohortGridClass(unittest.TestCase):
         # str mode
         lcp = self.tg_class['LCP_WT_O']
         hcp = self.tg_class['HCP_WT_O']
-        
         ## type
         self.assertIs(np.ndarray, type(lcp))
         ## shape
@@ -145,7 +144,7 @@ class TestCohortGridClass(unittest.TestCase):
         
         
         # tuple mode
-        lcp =self.tg_class[1900,'LCP_WT_O']
+        lcp = self.tg_class[1900,'LCP_WT_O']
         hcp = self.tg_class[1900,'HCP_WT_O']
         ## type
         self.assertIs(np.ndarray, type(lcp))
