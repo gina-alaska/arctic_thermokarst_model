@@ -49,9 +49,9 @@ class TestCohortGridClass(unittest.TestCase):
         self.assertEqual( ( 50, 67 ), self.tg_class.shape )
         self.assertEqual( 1900, self.tg_class.start_year )
         self.assertIs( np.ndarray, type(self.tg_class.init_grid) )
-        self.assertEqual( (43, 1, 50 * 67 ), self.tg_class.init_grid.shape )
+        self.assertEqual( (43, 50 * 67 ), self.tg_class.init_grid.shape )
         self.assertEqual( 1, len(self.tg_class.grid) )
-        self.assertEqual( (1, 43, 1, 50 * 67 ), 
+        self.assertEqual( (1, 43, 50 * 67 ), 
             np.array(self.tg_class.grid).shape)
        
     def test_read_layers (self):
@@ -60,7 +60,9 @@ class TestCohortGridClass(unittest.TestCase):
         res_target = self.tg_class.resoloution
         data, meta, key_map = self.tg_class.read_layers(res_target)
         self.assertIs( np.ndarray, type(data) )
-        self.assertEqual (data.shape[0] , len(key_map.keys()))
+        self.assertEqual (data.shape[0],
+            len([k for k in key_map.keys() if k.find('--') == -1])
+        )
         
     def test_resize_grid_elements (self):
         """test resize
@@ -140,7 +142,9 @@ class TestCohortGridClass(unittest.TestCase):
         self.assertIs(np.ndarray, type(_1900))
         
         ## shape
-        self.assertEqual((len(self.tg_class.key_to_index), 50, 67), _1900.shape)
+        num_cohorts = [c for c in self.tg_class.key_to_index \
+            if c.find('--') == -1]
+        self.assertEqual((len(num_cohorts), 50, 67), _1900.shape)
         
         
         # tuple mode
