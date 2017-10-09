@@ -193,7 +193,7 @@ class TestCohortGridClass(unittest.TestCase):
                 'LCP_WT_O', 0, cohort_ex.flatten()
             )
         
-        self.tg_class[1900, 'LCP_WT_O'] = cohort_ex
+        self.tg_class[1900, 'LCP_WT_O--0'] = cohort_ex
         self.assertTrue( (cohort_ex == self.tg_class[1900, 'LCP_WT_O']).all() )
         
         self.tg_class[1900] = all_cohort_ex
@@ -203,7 +203,7 @@ class TestCohortGridClass(unittest.TestCase):
         cohort_ex += 1
         all_cohort_ex += 1
         
-        self.tg_class[1901, 'LCP_WT_O'] = cohort_ex
+        self.tg_class[1901, 'LCP_WT_O--0'] = cohort_ex
         self.assertTrue( (cohort_ex == self.tg_class[1901, 'LCP_WT_O']).all() )
         
         self.tg_class[1901] = all_cohort_ex

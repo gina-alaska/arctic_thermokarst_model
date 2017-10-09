@@ -619,9 +619,7 @@ class CohortGrid(object):
         if data.shape != self.shape:
             raise StandardError, 'Set shape Error'
         
-        # always sets new data in to bucket for age 0
-        ## may chage if differnt action is desired
-        self.grid[time_step][idx][0] = data.flatten()
+        self.grid[time_step][idx] = data.flatten()
         
     def set_all_cohorts_at_time_step(self, time_step, data):
         """Sets all cohorts at a time step
