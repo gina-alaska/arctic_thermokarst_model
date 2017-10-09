@@ -370,17 +370,31 @@ class CohortGrid(object):
                 continue
             ## update key to index map, metadata dict, layers, 
             ## and increment index
-            key_to_index[name] = idx
-            metadata_dict[name] = metadata
-            layers.append(
-                self.resize_grid_elements(data, resolution, target_resolution)
-            )
-            idx += 1
+            key_to_index[name + '--0'] = idx
+            slice_start = idx
+            idx += 1 # < moved here because of the loop in a bit
         
+            metadata_dict[name] = metadata
+
+            
+            cohort_year_0 = self.resize_grid_elements(
+                data, resoloution, target_resoloution
+            )
+            layers.append( cohort_year_0 ) 
+            
+            flat_grid_size = len(cohort_year_0) 
+            num_years = 1 # < to be set based on cohort age range later
+            for age in range(1, num_years):
+                layers.append(np.zeros(flat_grid_size))
+                key_to_index[name + '--' + str(idx) ] = idx
+                idx += 1
+            slice_end = idx
+            key_to_index[name] = slice(slice_start,slice_end)
+           
         layers = self.normalize_layers(
             np.array(layers), resolution, target_resolution
         )
-        
+        #~ print layers
         return layers, metadata_dict, key_to_index
        
     ## make a static method?
@@ -472,10 +486,16 @@ class CohortGrid(object):
         """
         cohort = self.key_to_index[cohort]
         
+        
+        r_val = self.grid[time_step][cohort]
+        if type(cohort) is slice:
+            # sum all age buckets for cohort      
+            r_val = r_val.sum(0)
+       
         if flat:
-            return self.grid[time_step][cohort]
+            return r_val
         else: 
-            return self.grid[time_step][cohort].reshape(
+            return r_val.reshape(
                 self.shape[ROW], self.shape[COL]
             )
     
@@ -496,10 +516,18 @@ class CohortGrid(object):
             The cohorts fractional area grid at all time steps. 
         """
         cohort = self.key_to_index[cohort]
+        
+        
+        r_val = np.array(self.grid)[:,cohort]
+        if type(cohort) is slice:
+            # sum all age buckets for cohort      
+            r_val = r_val.sum(1)
+        
         if flat:
-            return np.array(self.grid)[:,cohort]
+            # sum all age buckets for cohort(check1)
+            return r_val
         else:
-            return np.array(self.grid)[:,cohort].reshape(len(self.grid),
+            return r_val.reshape(len(self.grid),
                 self.shape[ROW], self.shape[COL])
                 
     def get_all_cohorts_at_time_step (self, time_step = -1, flat = True):
@@ -518,8 +546,10 @@ class CohortGrid(object):
             all cohorts fractional area grids at a given time step in a 2d 
         array. 
         """
+        ## do we want this to sum the age buckets
         if flat:
-            return self.grid[time_step]
+            # sum all age buckets for cohort
+            return self.grid[time_step] 
         else:
             return self.grid[time_step].reshape(len(self.init_grid),
                 self.shape[ROW], self.shape[COL])
@@ -584,6 +614,8 @@ class CohortGrid(object):
         StandardError
             bad shape
         """
+        if cohort.find('--') == -1:
+            raise StandardError, 'needs the age set'
         idx = self.key_to_index[cohort]
         if data.shape != self.shape:
             raise StandardError, 'Set shape Error'
@@ -599,7 +631,8 @@ class CohortGrid(object):
         time_step: int
             0 <= # < len(grid)
         data: np.ndarray
-            2D array with shape rebroadcastable to init_grid.shape())
+            3D array with shape rebroadcastable to init_grid.shape())
+            i.e [cohorts][ages][grid]
         """
         shape = self.init_grid.shape
         self.grid[time_step] = data.reshape(shape)

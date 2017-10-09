@@ -60,7 +60,9 @@ class TestCohortGridClass(unittest.TestCase):
         res_target = self.tg_class.resoloution
         data, meta, key_map = self.tg_class.read_layers(res_target)
         self.assertIs( np.ndarray, type(data) )
-        self.assertEqual (data.shape[0] , len(key_map.keys()))
+        self.assertEqual (data.shape[0],
+            len([k for k in key_map.keys() if k.find('--') == -1])
+        )
         
     def test_resize_grid_elements (self):
         """test resize
@@ -125,7 +127,6 @@ class TestCohortGridClass(unittest.TestCase):
         # str mode
         lcp = self.tg_class['LCP_WT_O']
         hcp = self.tg_class['HCP_WT_O']
-        
         ## type
         self.assertIs(np.ndarray, type(lcp))
         ## shape
@@ -141,11 +142,13 @@ class TestCohortGridClass(unittest.TestCase):
         self.assertIs(np.ndarray, type(_1900))
         
         ## shape
-        self.assertEqual((len(self.tg_class.key_to_index), 50, 67), _1900.shape)
+        num_cohorts = [c for c in self.tg_class.key_to_index \
+            if c.find('--') == -1]
+        self.assertEqual((len(num_cohorts), 50, 67), _1900.shape)
         
         
         # tuple mode
-        lcp =self.tg_class[1900,'LCP_WT_O']
+        lcp = self.tg_class[1900,'LCP_WT_O']
         hcp = self.tg_class[1900,'HCP_WT_O']
         ## type
         self.assertIs(np.ndarray, type(lcp))
@@ -190,7 +193,7 @@ class TestCohortGridClass(unittest.TestCase):
                 'LCP_WT_O', 0, cohort_ex.flatten()
             )
         
-        self.tg_class[1900, 'LCP_WT_O'] = cohort_ex
+        self.tg_class[1900, 'LCP_WT_O--0'] = cohort_ex
         self.assertTrue( (cohort_ex == self.tg_class[1900, 'LCP_WT_O']).all() )
         
         self.tg_class[1900] = all_cohort_ex
@@ -200,7 +203,7 @@ class TestCohortGridClass(unittest.TestCase):
         cohort_ex += 1
         all_cohort_ex += 1
         
-        self.tg_class[1901, 'LCP_WT_O'] = cohort_ex
+        self.tg_class[1901, 'LCP_WT_O--0'] = cohort_ex
         self.assertTrue( (cohort_ex == self.tg_class[1901, 'LCP_WT_O']).all() )
         
         self.tg_class[1901] = all_cohort_ex
