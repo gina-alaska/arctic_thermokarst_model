@@ -35,7 +35,7 @@ class TestCohortGridClass(unittest.TestCase):
         files = [ os.path.join(data_dir, f) for f in os.listdir( data_dir )] 
         #~ print files
         config = {
-            'target resoloution': (1000,1000),
+            'target resolution': (1000,1000),
             'start year': 1900,
             'input data': files,
         }
@@ -45,7 +45,7 @@ class TestCohortGridClass(unittest.TestCase):
     def test_init(self):
         """test init results are correct
         """
-        self.assertEqual( (1000,1000), self.tg_class.resoloution )
+        self.assertEqual( (1000,1000), self.tg_class.resolution )
         self.assertEqual( ( 50, 67 ), self.tg_class.shape )
         self.assertEqual( 1900, self.tg_class.start_year )
         self.assertIs( np.ndarray, type(self.tg_class.init_grid) )
@@ -57,7 +57,7 @@ class TestCohortGridClass(unittest.TestCase):
     def test_read_layers (self):
         """test read_layers
         """
-        res_target = self.tg_class.resoloution
+        res_target = self.tg_class.resolution
         data, meta, key_map = self.tg_class.read_layers(res_target)
         self.assertIs( np.ndarray, type(data) )
         self.assertEqual (data.shape[0],
@@ -74,7 +74,7 @@ class TestCohortGridClass(unittest.TestCase):
         
         ## test resize 
         res_0 = (abs(metadata.deltaY), abs(metadata.deltaX))
-        res_1 = self.tg_class.resoloution
+        res_1 = self.tg_class.resolution
         resized = self.tg_class.resize_grid_elements(raster, res_0, res_1) 
         self.assertEqual(resized.shape, self.tg_class[1900][0].flatten().shape)
         

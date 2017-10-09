@@ -378,7 +378,7 @@ class CohortGrid(object):
 
             
             cohort_year_0 = self.resize_grid_elements(
-                data, resoloution, target_resoloution
+                data, resolution, target_resolution
             )
             layers.append( cohort_year_0 ) 
             
