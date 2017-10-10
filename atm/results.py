@@ -37,7 +37,7 @@ def on_screen(self):
         print '  No outputs generated.'
     else:
         if self.initialize['Meadow_WT_Y_Figure'].lower() == 'yes':
-            print '  Inital Meadow, Wetland Tundra, Young age Figure [Output/Barrow/Meadow_WT_Y]'
+            print '  Initial Meadow, Wetland Tundra, Young age Figure [Output/Barrow/Meadow_WT_Y]'
         if self.initialize['Meadow_WT_M_Figure'].lower() == 'yes':
             print '  Initial Meadow, Wetland Tundra, Medium age Figure [Output/Barrow/Meadow_WT_M]'
         if self.initialize['Meadow_WT_O_Figure'].lower() == 'yes':
@@ -101,7 +101,7 @@ def on_screen(self):
         if self.initialize['SandDunes_WT_Y_Figure'].lower() == 'yes':
             print '  Initial Sand Dunes, Wetland Tundra, Young age Figure [Output/Barrow/SandDunes/WT_Y]'
         if self.initialize['SandDunes_WT_M_Figure'].lower() == 'yes':
-            print '  Initial Sand Dunes, Wetland Tundra, Medium age Figure [Ouput/Barrow/SandDunes_WT_M]'
+            print '  Initial Sand Dunes, Wetland Tundra, Medium age Figure [Output/Barrow/SandDunes_WT_M]'
         if self.initialize['SandDunes_WT_O_Figure'].lower() == 'yes':
             print '  Initial Sand Dunes, Wetland Tundra, Old age Figure [Output/Barrow/SandDunes_WT_O]'
         if self.initialize['SaturatedBarrens_WT_Y_Figure'].lower()  == 'yes':
@@ -119,7 +119,7 @@ def on_screen(self):
         if self.initialize['Rivers_WT_M_Figure'].lower() == 'yes':
             print '  Initial Rivers, Wetland Tundra, Medium age Figure [Output/Barrow/Rivers_WT_M]'
         if self.initialize['Rivers_WT_O_Figure'].lower() == 'yes':
-            print '  Initial Rivers, Wetland Tunrda, old age Figure [Output/Barrow/Rivers_WT_O]'
+            print '  Initial Rivers, Wetland Tundra, old age Figure [Output/Barrow/Rivers_WT_O]'
         
 #        if self.initialize['WetNPG_Figure'].lower() == 'yes':
 #            print '  Initial Wetland Non-polygonal Ground Figure [Output/Wet_NPG]'
@@ -138,7 +138,7 @@ def on_screen(self):
 #        if self.initialize['Rivers_Figure'].lower() == 'yes':
 #            print '  Initial Rivers Figure [Output/Other_Cohorts]'
 #        if self.initialize['Urban_Figure'].lower() == 'yes':
-#            print '  Initial Ubran Figure [Output/Other_Cohorts]'
+#            print '  Initial Urban Figure [Output/Other_Cohorts]'
         if self.initialize['All_Cohorts_Figure'].lower() == 'yes':
             print '  Total Cohorts Figure [Output/Barrow/All_Cohorts]'
     print ' '
@@ -148,7 +148,7 @@ def on_screen(self):
         print '  No outputs generated.'
     else:
         if self.initialize['Meadow_WT_Y_Normal'].lower() == 'yes':
-            print '  Inital Meadow, Wetland Tundra, Young age Normalized [Output/Barrow/Meadow_WT_Y]'
+            print '  Initial Meadow, Wetland Tundra, Young age Normalized [Output/Barrow/Meadow_WT_Y]'
         if self.initialize['Meadow_WT_M_Normal'].lower() == 'yes':
             print '  Initial Meadow, Wetland Tundra, Medium age Normalized [Output/Barrow/Meadow_WT_M]'
         if self.initialize['Meadow_WT_O_Normal'].lower() == 'yes':
@@ -212,7 +212,7 @@ def on_screen(self):
         if self.initialize['SandDunes_WT_Y_Normal'].lower() == 'yes':
             print '  Initial Sand Dunes, Wetland Tundra, Young age Normalized [Output/Barrow/SandDunes/WT_Y]'
         if self.initialize['SandDunes_WT_M_Normal'].lower() == 'yes':
-            print '  Initial Sand Dunes, Wetland Tundra, Medium age Normalized [Ouput/Barrow/SandDunes_WT_M]'
+            print '  Initial Sand Dunes, Wetland Tundra, Medium age Normalized [Output/Barrow/SandDunes_WT_M]'
         if self.initialize['SandDunes_WT_O_Normal'].lower() == 'yes':
             print '  Initial Sand Dunes, Wetland Tundra, Old age Normalized [Output/Barrow/SandDunes_WT_O]'
         if self.initialize['SaturatedBarrens_WT_Y_Normal'].lower()  == 'yes':
@@ -230,7 +230,7 @@ def on_screen(self):
         if self.initialize['Rivers_WT_M_Normal'].lower() == 'yes':
             print '  Initial Rivers, Wetland Tundra, Medium age Normalized [Output/Barrow/Rivers_WT_M]'
         if self.initialize['Rivers_WT_O_Normal'].lower() == 'yes':
-            print '  Initial Rivers, Wetland Tunrda, old age Normalized [Output/Barrow/Rivers_WT_O]'
+            print '  Initial Rivers, Wetland Tundra, old age Normalized [Output/Barrow/Rivers_WT_O]'
         
         
 #        if self.initialize['WetNPG_Normal'].lower() == 'yes':
@@ -250,7 +250,7 @@ def on_screen(self):
 #        if self.initialize['Rivers_Normal'].lower() == 'yes':
 #            print '  Normalized Rivers Figure [Output/Other_Cohorts]'
 #        if self.initialize['Urban_Normal'].lower() == 'yes':
-#            print '  Normalized Ubran Figure [Output/Other_Cohorts]'
+#            print '  Normalized Urban Figure [Output/Other_Cohorts]'
         if self.initialize['Total_Cohorts_Normal'].lower() == 'yes':
             print '  Normalize Total Cohorts [Output/All_Cohorts]'
     print ' '
@@ -260,7 +260,7 @@ def on_screen(self):
         print '  No outputs generated.'
     else:
         if self.initialize['Meadow_WT_Y_Age'].lower() == 'yes':
-            print '  Inital Meadow, Wetland Tundra, Young age distribution [Output/Barrow/Meadow_WT_Y]'
+            print '  Initial Meadow, Wetland Tundra, Young age distribution [Output/Barrow/Meadow_WT_Y]'
         if self.initialize['Meadow_WT_M_Age'].lower() == 'yes':
             print '  Initial Meadow, Wetland Tundra, Medium age distribution [Output/Barrow/Meadow_WT_M]'
         if self.initialize['Meadow_WT_O_Age'].lower() == 'yes':
@@ -324,7 +324,7 @@ def on_screen(self):
         if self.initialize['SandDunes_WT_Y_Age'].lower() == 'yes':
             print '  Initial Sand Dunes, Wetland Tundra, Young age distribution [Output/Barrow/SandDunes/WT_Y]'
         if self.initialize['SandDunes_WT_M_Age'].lower() == 'yes':
-            print '  Initial Sand Dunes, Wetland Tundra, Medium age distribution [Ouput/Barrow/SandDunes_WT_M]'
+            print '  Initial Sand Dunes, Wetland Tundra, Medium age distribution [Output/Barrow/SandDunes_WT_M]'
         if self.initialize['SandDunes_WT_O_Age'].lower() == 'yes':
             print '  Initial Sand Dunes, Wetland Tundra, Old age distribution [Output/Barrow/SandDunes_WT_O]'
         if self.initialize['SaturatedBarrens_WT_Y_Age'].lower()  == 'yes':
@@ -342,7 +342,7 @@ def on_screen(self):
         if self.initialize['Rivers_WT_M_Age'].lower() == 'yes':
             print '  Initial Rivers, Wetland Tundra, Medium age distribution [Output/Barrow/Rivers_WT_M]'
         if self.initialize['Rivers_WT_O_Age'].lower() == 'yes':
-            print '  Initial Rivers, Wetland Tunrda, old age distribution [Output/Barrow/Rivers_WT_O]'
+            print '  Initial Rivers, Wetland Tundra, old age distribution [Output/Barrow/Rivers_WT_O]'
 
 #        if self.initialize['WetNPG_Age'].lower() == 'yes':
 #            print '  Wetland Non-polygonal Ground Age [Output/Wet_NPG]'
@@ -366,7 +366,7 @@ def on_screen(self):
     if self.Met['met_distribution'].lower() == 'point':
         print 'Point meteorologic data is used.'
     else:
-        print 'Meterologic data is distributed.'
+        print 'Meteorologic data is distributed.'
     print 'Meteorologic Data File: ', self.met_file
     if self.Met['degree_day_method'].lower() == 'read':
         print 'Degree Days read from files: ',self.Met['TDD_file'] +' and '+self.Met['FDD_file']
@@ -771,7 +771,7 @@ def on_file(self):
         file.write( '  No outputs generated. \n')
     else:
         if self.initialize['Meadow_WT_Y_Figure'].lower() == 'yes':
-            file.write( '  Inital Meadow, Wetland Tundra, Young age Figure [Output/Barrow/Meadow_WT_Y] \n')
+            file.write( '  Initial Meadow, Wetland Tundra, Young age Figure [Output/Barrow/Meadow_WT_Y] \n')
         if self.initialize['Meadow_WT_M_Figure'].lower() == 'yes':
             file.write( '  Initial Meadow, Wetland Tundra, Medium age Figure [Output/Barrow/Meadow_WT_M] \n')
         if self.initialize['Meadow_WT_O_Figure'].lower() == 'yes':
@@ -835,7 +835,7 @@ def on_file(self):
         if self.initialize['SandDunes_WT_Y_Figure'].lower() == 'yes':
             file.write( '  Initial Sand Dunes, Wetland Tundra, Young age Figure [Output/Barrow/SandDunes/WT_Y] \n')
         if self.initialize['SandDunes_WT_M_Figure'].lower() == 'yes':
-            file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age Figure [Ouput/Barrow/SandDunes_WT_M] \n')
+            file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age Figure [Output/Barrow/SandDunes_WT_M] \n')
         if self.initialize['SandDunes_WT_O_Figure'].lower() == 'yes':
             file.write( '  Initial Sand Dunes, Wetland Tundra, Old age Figure [Output/Barrow/SandDunes_WT_O] \n')
         if self.initialize['SaturatedBarrens_WT_Y_Figure'].lower()  == 'yes':
@@ -853,7 +853,7 @@ def on_file(self):
         if self.initialize['Rivers_WT_M_Figure'].lower() == 'yes':
             file.write( '  Initial Rivers, Wetland Tundra, Medium age Figure [Output/Barrow/Rivers_WT_M] \n')
         if self.initialize['Rivers_WT_O_Figure'].lower() == 'yes':
-            file.write( '  Initial Rivers, Wetland Tunrda, old age Figure [Output/Barrow/Rivers_WT_O] \n')
+            file.write( '  Initial Rivers, Wetland Tundra, old age Figure [Output/Barrow/Rivers_WT_O] \n')
         if self.initialize['All_Cohorts_Figure'].lower() == 'yes':
             file.write( '  Total Cohorts Figure [Output/All_Cohorts] \n \n')
         
@@ -874,7 +874,7 @@ def on_file(self):
  #       if self.initialize['Rivers_Figure'].lower() == 'yes':
  #           file.write( '  Initial Rivers Figure [Output/Other_Cohorts] \n')
  #       if self.initialize['Urban_Figure'].lower() == 'yes':
- #           file.write( '  Initial Ubran Figure [Output/Other_Cohorts] \n')
+ #           file.write( '  Initial Urban Figure [Output/Other_Cohorts] \n')
 
     
     file.write( 'Outputs of Initial Cohort Fractional Distribution:\n')
@@ -883,7 +883,7 @@ def on_file(self):
         file.write( '  No outputs generated. \n')
     else:
         if self.initialize['Meadow_WT_Y_Normal'].lower() == 'yes':
-            file.write( '  Inital Meadow, Wetland Tundra, Young age Normalized [Output/Barrow/Meadow_WT_Y] \n')
+            file.write( '  Initial Meadow, Wetland Tundra, Young age Normalized [Output/Barrow/Meadow_WT_Y] \n')
         if self.initialize['Meadow_WT_M_Normal'].lower() == 'yes':
             file.write( '  Initial Meadow, Wetland Tundra, Medium age Normalized [Output/Barrow/Meadow_WT_M] \n')
         if self.initialize['Meadow_WT_O_Normal'].lower() == 'yes':
@@ -947,7 +947,7 @@ def on_file(self):
         if self.initialize['SandDunes_WT_Y_Normal'].lower() == 'yes':
             file.write( '  Initial Sand Dunes, Wetland Tundra, Young age Normalized [Output/Barrow/SandDunes/WT_Y] \n')
         if self.initialize['SandDunes_WT_M_Normal'].lower() == 'yes':
-            file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age Normalized [Ouput/Barrow/SandDunes_WT_M] \n')
+            file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age Normalized [Output/Barrow/SandDunes_WT_M] \n')
         if self.initialize['SandDunes_WT_O_Normal'].lower() == 'yes':
             file.write( '  Initial Sand Dunes, Wetland Tundra, Old age Normalized [Output/Barrow/SandDunes_WT_O] \n')
         if self.initialize['SaturatedBarrens_WT_Y_Normal'].lower()  == 'yes':
@@ -965,7 +965,7 @@ def on_file(self):
         if self.initialize['Rivers_WT_M_Normal'].lower() == 'yes':
             file.write( '  Initial Rivers, Wetland Tundra, Medium age Normalized [Output/Barrow/Rivers_WT_M] \n')
         if self.initialize['Rivers_WT_O_Normal'].lower() == 'yes':
-            file.write( '  Initial Rivers, Wetland Tunrda, old age Normalized [Output/Barrow/Rivers_WT_O] \n')        
+            file.write( '  Initial Rivers, Wetland Tundra, old age Normalized [Output/Barrow/Rivers_WT_O] \n')        
 
 #        if self.initialize['WetNPG_Normal'].lower() == 'yes':
 #            file.write( '  Normalized Wetland Non-polygonal Ground Figure [Output/Wet_NPG] \n')
@@ -984,7 +984,7 @@ def on_file(self):
 #        if self.initialize['Rivers_Normal'].lower() == 'yes':
 #            file.write( '  Normalized Rivers Figure [Output/Other_Cohorts] \n')
 #        if self.initialize['Urban_Normal'].lower() == 'yes':
-#            file.write( '  Normalized Ubran Figure [Output/Other_Cohorts] \n')
+#            file.write( '  Normalized Urban Figure [Output/Other_Cohorts] \n')
 #        if self.initialize['Total_Cohorts_Normal'].lower() == 'yes':
 #            file.write( '  Normalized Total Cohorts [Output/All_Cohorts] \n \n')
 
@@ -994,7 +994,7 @@ def on_file(self):
         file.write( '  No outputs generated. \n')
     else:
         if self.initialize['Meadow_WT_Y_Age'].lower() == 'yes':
-            file.write( '  Inital Meadow, Wetland Tundra, Young age distribution [Output/Barrow/Meadow_WT_Y] \n')
+            file.write( '  Initial Meadow, Wetland Tundra, Young age distribution [Output/Barrow/Meadow_WT_Y] \n')
         if self.initialize['Meadow_WT_M_Age'].lower() == 'yes':
             file.write( '  Initial Meadow, Wetland Tundra, Medium age distribution [Output/Barrow/Meadow_WT_M] \n')
         if self.initialize['Meadow_WT_O_Age'].lower() == 'yes':
@@ -1058,7 +1058,7 @@ def on_file(self):
         if self.initialize['SandDunes_WT_Y_Age'].lower() == 'yes':
             file.write( '  Initial Sand Dunes, Wetland Tundra, Young age distribution [Output/Barrow/SandDunes/WT_Y] \n')
         if self.initialize['SandDunes_WT_M_Age'].lower() == 'yes':
-            file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age distribution [Ouput/Barrow/SandDunes_WT_M] \n')
+            file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age distribution [Output/Barrow/SandDunes_WT_M] \n')
         if self.initialize['SandDunes_WT_O_Age'].lower() == 'yes':
             file.write( '  Initial Sand Dunes, Wetland Tundra, Old age distribution [Output/Barrow/SandDunes_WT_O] \n')
         if self.initialize['SaturatedBarrens_WT_Y_Age'].lower()  == 'yes':
@@ -1076,7 +1076,7 @@ def on_file(self):
         if self.initialize['Rivers_WT_M_Age'].lower() == 'yes':
             file.write( '  Initial Rivers, Wetland Tundra, Medium age distribution [Output/Barrow/Rivers_WT_M] \n')
         if self.initialize['Rivers_WT_O_Age'].lower() == 'yes':
-            file.write( '  Initial Rivers, Wetland Tunrda, old age distribution [Output/Barrow/Rivers_WT_O] \n')        
+            file.write( '  Initial Rivers, Wetland Tundra, old age distribution [Output/Barrow/Rivers_WT_O] \n')        
         
 #        if self.initialize['WetNPG_Age'].lower() == 'yes':
 #            file.write( '  Wetland Non-polygonal Ground Age [Output/Wet_NPG] \n')
@@ -1100,7 +1100,7 @@ def on_file(self):
     if self.Met['met_distribution'].lower() == 'point':
         file.write( 'Point meteorologic data is used. \n')
     else:
-        file.write( 'Meterologic data is distributed. \n')
+        file.write( 'Meteorologic data is distributed. \n')
     file.write( 'Meteorologic Data File: '+ self.met_file +str('\n'))
     if self.Met['degree_day_method'].lower() == 'read':
         file.write('Degree Days read from files: '+ self.Met['TDD_file'] +' and '+ \
@@ -1160,7 +1160,7 @@ def on_file(self):
     file.write( '  Drained Slope, Wetland Tundra, Medium age: '+str(self.Terrestrial['DrainedSlope_WT_M_PLF'])+str('\n'))
     file.write( '  Drained Slope, Wetland Tundra, Old age: '+str(self.Terrestrial['DrainedSlope_WT_O_PLF'])+str('\n'))
     file.write( '  Coastal Waters, Wetland Tundra, Old age: '+str(self.Terrestrial['CoastalWaters_WT_O_PLF'])+str('\n'))
-    file.write( '  Sand Dunes, Wetland Tunda, Young age: '+str(self.Terrestrial['SandDunes_WT_Y_PLF'])+str('\n'))
+    file.write( '  Sand Dunes, Wetland Tundra, Young age: '+str(self.Terrestrial['SandDunes_WT_Y_PLF'])+str('\n'))
     file.write( '  Sand Dunes, Wetland Tundra, Medium age: '+str(self.Terrestrial['SandDunes_WT_M_PLF'])+str('\n'))
     file.write( '  Sand Dunes, Wetland Tundra, Old age: '+str(self.Terrestrial['SandDunes_WT_O_PLF'])+str('\n'))
     file.write( '  Saturated Barrens, Wetland Tundra, Young age: '+str(self.Terrestrial['SaturatedBarrens_WT_Y_PLF'])+str('\n'))
@@ -1222,7 +1222,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.Meadow_WT_Y['a_above'])+\
                    str(' | ')+str(self.Meadow_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.Meadow_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.Meadow_WT_Y['b_above']) +\
                    str(' | ')+str(self.Meadow_WT_Y['b_below'])+str('\n \n'))
     elif self.Meadow_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1284,7 +1284,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.Meadow_WT_M['a_above'])+\
                    str(' | ')+str(self.Meadow_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.Meadow_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.Meadow_WT_M['b_above']) +\
                    str(' | ')+str(self.Meadow_WT_M['b_below'])+str('\n \n'))
     elif self.Meadow_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1343,7 +1343,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.Meadow_WT_O['a_above'])+\
                    str(' | ')+str(self.Meadow_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.Meadow_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.Meadow_WT_O['b_above']) +\
                    str(' | ')+str(self.Meadow_WT_O['b_below'])+str('\n \n'))
     elif self.Meadow_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1382,7 +1382,7 @@ def on_file(self):
         file.write('  No output written to disk. \n')
         
     file.write( '=============================================================\n')
-    file.write( '       Wetland Tundra, Low Center Polgyons \n')
+    file.write( '       Wetland Tundra, Low Center Polygons \n')
     file.write( '=============================================================\n')
     file.write( '-----------------------------------  \n')
     file.write( ' Low Center Polygons, Wetland Tundra, All ages \n')
@@ -1417,7 +1417,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.LCP_WT_Y['a_above'])+\
                    str(' | ')+str(self.LCP_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.LCP_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.LCP_WT_Y['b_above']) +\
                    str(' | ')+str(self.LCP_WT_Y['b_below'])+str('\n \n'))
     elif self.LCP_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1479,7 +1479,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.LCP_WT_M['a_above'])+\
                    str(' | ')+str(self.LCP_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.LCP_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.LCP_WT_M['b_above']) +\
                    str(' | ')+str(self.LCP_WT_M['b_below'])+str('\n \n'))
     elif self.LCP_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1540,7 +1540,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.LCP_WT_O['a_above'])+\
                    str(' | ')+str(self.LCP_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.LCP_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.LCP_WT_O['b_above']) +\
                    str(' | ')+str(self.LCP_WT_O['b_below'])+str('\n \n'))
     elif self.LCP_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1579,7 +1579,7 @@ def on_file(self):
         file.write('  No output written to disk. \n')
         
     file.write( '=============================================================\n')
-    file.write( '       Wetland Tundra, Coalescent Low Center Polgyons \n')
+    file.write( '       Wetland Tundra, Coalescent Low Center Polygons \n')
     file.write( '=============================================================\n')
     file.write( '-----------------------------------  \n')
     file.write( ' Coalescent Low Center Polygons, Wetland Tundra, All ages \n')
@@ -1614,7 +1614,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.CLC_WT_Y['a_above'])+\
                    str(' | ')+str(self.CLC_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.CLC_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.CLC_WT_Y['b_above']) +\
                    str(' | ')+str(self.CLC_WT_Y['b_below'])+str('\n \n'))
     elif self.CLC_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1674,7 +1674,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.CLC_WT_M['a_above'])+\
                    str(' | ')+str(self.CLC_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.CLC_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.CLC_WT_M['b_above']) +\
                    str(' | ')+str(self.CLC_WT_M['b_below'])+str('\n \n'))
     elif self.CLC_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1734,7 +1734,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.CLC_WT_O['a_above'])+\
                    str(' | ')+str(self.CLC_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.CLC_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.CLC_WT_O['b_above']) +\
                    str(' | ')+str(self.CLC_WT_O['b_below'])+str('\n \n'))
     elif self.CLC_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1774,7 +1774,7 @@ def on_file(self):
         
 
     file.write( '=============================================================\n')
-    file.write( '       Wetland Tundra, Flat Center Polgyons \n')
+    file.write( '       Wetland Tundra, Flat Center Polygons \n')
     file.write( '=============================================================\n')
     file.write( '-----------------------------------  \n')
     file.write( ' Flat Center Polygons, Wetland Tundra, All ages \n')
@@ -1809,7 +1809,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.FCP_WT_Y['a_above'])+\
                    str(' | ')+str(self.FCP_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.FCP_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.FCP_WT_Y['b_above']) +\
                    str(' | ')+str(self.FCP_WT_Y['b_below'])+str('\n \n'))
     elif self.FCP_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1873,7 +1873,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.FCP_WT_M['a_above'])+\
                    str(' | ')+str(self.FCP_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.FCP_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.FCP_WT_M['b_above']) +\
                    str(' | ')+str(self.FCP_WT_M['b_below'])+str('\n \n'))
     elif self.FCP_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1933,7 +1933,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.FCP_WT_O['a_above'])+\
                    str(' | ')+str(self.FCP_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.FCP_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.FCP_WT_O['b_above']) +\
                    str(' | ')+str(self.FCP_WT_O['b_below'])+str('\n \n'))
     elif self.FCP_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -1971,7 +1971,7 @@ def on_file(self):
         file.write('  No output written to disk. \n')
         
     file.write( '=============================================================\n')
-    file.write( '       Wetland Tundra, High Center Polgyons \n')
+    file.write( '       Wetland Tundra, High Center Polygons \n')
     file.write( '=============================================================\n')
     file.write( '-----------------------------------  \n')
     file.write( ' High Center Polygons, Wetland Tundra, All ages \n')
@@ -2006,7 +2006,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.HCP_WT_Y['a_above'])+\
                    str(' | ')+str(self.HCP_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.HCP_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.HCP_WT_Y['b_above']) +\
                    str(' | ')+str(self.HCP_WT_Y['b_below'])+str('\n \n'))
     elif self.HCP_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2067,7 +2067,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.HCP_WT_M['a_above'])+\
                    str(' | ')+str(self.HCP_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.HCP_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.HCP_WT_M['b_above']) +\
                    str(' | ')+str(self.HCP_WT_M['b_below'])+str('\n \n'))
     elif self.HCP_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2130,7 +2130,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.HCP_WT_O['a_above'])+\
                    str(' | ')+str(self.HCP_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.HCP_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.HCP_WT_O['b_above']) +\
                    str(' | ')+str(self.HCP_WT_O['b_below'])+str('\n \n'))
     elif self.HCP_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2458,7 +2458,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.DrainedSlope_WT_Y['a_above'])+\
                    str(' | ')+str(self.DrainedSlope_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.DrainedSlope_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.DrainedSlope_WT_Y['b_above']) +\
                    str(' | ')+str(self.DrainedSlope_WT_Y['b_below'])+str('\n \n'))
     elif self.DrainedSlope_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2520,7 +2520,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.DrainedSlope_WT_M['a_above'])+\
                    str(' | ')+str(self.DrainedSlope_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.DrainedSlope_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.DrainedSlope_WT_M['b_above']) +\
                    str(' | ')+str(self.DrainedSlope_WT_M['b_below'])+str('\n \n'))
     elif self.DrainedSlope_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2582,7 +2582,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.DrainedSlope_WT_O['a_above'])+\
                    str(' | ')+str(self.DrainedSlope_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.DrainedSlope_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.DrainedSlope_WT_O['b_above']) +\
                    str(' | ')+str(self.DrainedSlope_WT_O['b_below'])+str('\n \n'))
     elif self.DrainedSlope_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2657,7 +2657,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.SandDunes_WT_Y['a_above'])+\
                    str(' | ')+str(self.SandDunes_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.SandDunes_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.SandDunes_WT_Y['b_above']) +\
                    str(' | ')+str(self.SandDunes_WT_Y['b_below'])+str('\n \n'))
     elif self.SandDunes_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2719,7 +2719,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.SandDunes_WT_M['a_above'])+\
                    str(' | ')+str(self.SandDunes_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.SandDunes_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.SandDunes_WT_M['b_above']) +\
                    str(' | ')+str(self.SandDunes_WT_M['b_below'])+str('\n \n'))
     elif self.SandDunes_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2781,7 +2781,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.SandDunes_WT_O['a_above'])+\
                    str(' | ')+str(self.SandDunes_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.SandDunes_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.SandDunes_WT_O['b_above']) +\
                    str(' | ')+str(self.SandDunes_WT_O['b_below'])+str('\n \n'))
     elif self.SandDunes_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2857,7 +2857,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.SaturatedBarrens_WT_Y['a_above'])+\
                    str(' | ')+str(self.SaturatedBarrens_WT_Y['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.SaturatedBarrens_WT_Y['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.SaturatedBarrens_WT_Y['b_above']) +\
                    str(' | ')+str(self.SaturatedBarrens_WT_Y['b_below'])+str('\n \n'))
     elif self.SaturatedBarrens_WT_Y['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2919,7 +2919,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.SaturatedBarrens_WT_M['a_above'])+\
                    str(' | ')+str(self.SaturatedBarrens_WT_M['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.SaturatedBarrens_WT_M['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.SaturatedBarrens_WT_M['b_above']) +\
                    str(' | ')+str(self.SaturatedBarrens_WT_M['b_below'])+str('\n \n'))
     elif self.SaturatedBarrens_WT_M['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -2982,7 +2982,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.SaturatedBarrens_WT_O['a_above'])+\
                    str(' | ')+str(self.SaturatedBarrens_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.SaturatedBarrens_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.SaturatedBarrens_WT_O['b_above']) +\
                    str(' | ')+str(self.SaturatedBarrens_WT_O['b_below'])+str('\n \n'))
     elif self.SaturatedBarrens_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -3084,7 +3084,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.Shrubs_WT_O['a_above'])+\
                    str(' | ')+str(self.Shrubs_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.Shrubs_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.Shrubs_WT_O['b_above']) +\
                    str(' | ')+str(self.Shrubs_WT_O['b_below'])+str('\n \n'))
     elif self.Shrubs_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -3147,7 +3147,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.CoastalWaters_WT_O['a_above'])+\
                    str(' | ')+str(self.CoastalWaters_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.CoastalWaters_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.CoastalWaters_WT_O['b_above']) +\
                    str(' | ')+str(self.CoastalWaters_WT_O['b_below'])+str('\n \n'))
     elif self.CoastalWaters_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -3210,7 +3210,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.Urban_WT['a_above'])+\
                    str(' | ')+str(self.Urban_WT['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.Urban_WT['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.Urban_WT['b_above']) +\
                    str(' | ')+str(self.Urban_WT['b_below'])+str('\n \n'))
     elif self.Urban_WT['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')
@@ -3275,7 +3275,7 @@ def on_file(self):
         file.write(' POI = a + (b * x) \n')
         file.write('  a [above | below drainage threshold]: '+str(self.NoData_WT_O['a_above'])+\
                    str(' | ')+str(self.NoData_WT_O['a_below'])+str('\n'))
-        file.write('  b [above | below draingage threshold]: '+str(self.NoData_WT_O['b_above']) +\
+        file.write('  b [above | below drainage threshold]: '+str(self.NoData_WT_O['b_above']) +\
                    str(' | ')+str(self.NoData_WT_O['b_below'])+str('\n \n'))
     elif self.NoData_WT_O['POI_Function'].lower() == 'sigmoid2':
         file.write(' POI = K / (C + (A*x**B)) \n')

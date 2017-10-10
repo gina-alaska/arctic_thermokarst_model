@@ -13,7 +13,7 @@ def calc_degree_days(self):
 
     A spline is used to fit the data, after which the 'roots' are
     determined. The roots are the location (x-axis) where the spline
-    intercects y=0.  The area between the roots will be either positive
+    intersects y=0.  The area between the roots will be either positive
     or negative (since basically a sine-function).  The area above
     or below the x-axis is integrated to determine the area (or total
     number of degree days).

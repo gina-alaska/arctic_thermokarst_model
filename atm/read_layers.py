@@ -57,7 +57,7 @@ def read_layers(self):
     Graminoid Tundra - Non-polygonal
     Shrub Tundra - Low Center Polygon
     Shrub Tundra - Flat Center Polygon
-    Shrub Tundar - High Center Polygon
+    Shrub Tundra - High Center Polygon
     """
     print '    Initial Cohort Input'
     if self.Read_Geotiff.lower() == 'yes':
@@ -115,6 +115,8 @@ def read_layers(self):
                 #print self.base, 'number columns (x-dimension): ', self.LayerInformation['self.base+str(_Nx)']
                 #print self.base, 'number rows (y-dimension): ', self.LayerInformation['self.base+str(_Ny)']
 
+
+                ### Q: what is this for?
                 """ Assuming that the (0,0) element is located in the Upper Left Corner """
                 if self.base == "LowCenterPolygon_WetlandTundra_Medium" or self.base == "Deciduous_PermafrostPlateau" or \
                    self.base == "Fen_Yukon":
@@ -124,6 +126,7 @@ def read_layers(self):
                     self.y_res = abs(self.LayerInformation['self.base+str(_deltaY)'])  # y-resolution [m, absolute value]
 
                 """ Read Initial cohort data from geotiff into an array """
+                ## BOB, This seems very bad.
                 self.InitialCohorts['self.base'] = np.array(ds.GetRasterBand(1).ReadAsArray())
                 # Data Arrays Below
                 if self.base == "CoalescentLowCenterPolygon_WetlandTundra_Medium":

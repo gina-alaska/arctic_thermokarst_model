@@ -5,7 +5,7 @@ import pylab as pl
 def barrow_initial_cohort_check(self):
     """
     The purpose of this module is to ensure that all fractional land-surface cohorts, in each element,
-    sums to one.  There are errors introducted in the the interpolation process
+    sums to one.  There are errors introduced in the the interpolation process
     (from Mark Lara files to 25x25m resolution).
 
     The initial step is to compare the total number of fine-resolution cohorts to the total number
@@ -22,7 +22,6 @@ def barrow_initial_cohort_check(self):
     """
     # Statement for debugging
     print '    Checking initial cohorts, normalizing to 1.0'
-    
     # ----------------------------------------------------------------------
     # Determine the initial/original total fractional area of each element.
     # ----------------------------------------------------------------------
@@ -142,8 +141,8 @@ def barrow_initial_cohort_check(self):
     #self.ATTM_Urban   = np.round((self.ATTM_Urban)   / cohorts_required, decimals = 6)
     #self.ATTM_Rivers  = np.round((self.ATTM_Rivers)  / cohorts_required, decimals = 6)
     #self.ATTM_Lakes   = np.round((self.ATTM_Lakes)   / cohorts_required, decimals = 6)
-    #self.ATTM_Ponds   = np.round((self.ATTM_Ponds)   / cohorts_required, decimals = 6)
-
+    #self.ATTM_Ponds   = np.round((self.ATTM_Ponds)   / cohorts_required, decimals = 6) 
+    
     self.ATTM_CLC_WT_Y = np.round((self.ATTM_CLC_WT_Y) / cohorts_required, decimals = 6)
     self.ATTM_CLC_WT_M = np.round((self.ATTM_CLC_WT_M) / cohorts_required, decimals = 6)
     self.ATTM_CLC_WT_O = np.round((self.ATTM_CLC_WT_O) / cohorts_required, decimals = 6)
@@ -260,7 +259,7 @@ def barrow_initial_cohort_check(self):
             print 'Sand Dunes, Wetland Tundra, Medium age: ', self.SandDunes_WT_M[i]
             print 'Sand Dunes, Wetland Tundra, Old age: ', self.SandDunes_WT_O[i]
             print 'Saturated Barrens, Wetland Tundra, Young age: ', self.SaturatedBarrens_WT_Y[i]
-            print 'Saturated Barrens, Wetland Tundra, Medium age: ', self.SatureatedBarrens_WT_M[i]
+            print 'Saturated Barrens, Wetland Tundra, Medium age: ', self.SaturatedBarrens_WT_M[i]
             print 'Saturated Barrens, Wetland Tundra, Old age: ', self.SaturatedBarrens_WT_O[i]
             print 'Shrubs, Wetland Tundra, Old age: ', self.Shrubs_WT_O[i]
             print 'Small Lakes, Wetland Tundra, Young age: ', self.ATTM_SmallLakes_WT_Y[i]
@@ -328,7 +327,7 @@ def barrow_initial_cohort_check(self):
             print 'Sand Dunes, Wetland Tundra, Medium age: ', self.SandDunes_WT_M[i]
             print 'Sand Dunes, Wetland Tundra, Old age: ', self.SandDunes_WT_O[i]
             print 'Saturated Barrens, Wetland Tundra, Young age: ', self.SaturatedBarrens_WT_Y[i]
-            print 'Saturated Barrens, Wetland Tundra, Medium age: ', self.SatureatedBarrens_WT_M[i]
+            print 'Saturated Barrens, Wetland Tundra, Medium age: ', self.SaturatedBarrens_WT_M[i]
             print 'Saturated Barrens, Wetland Tundra, Old age: ', self.SaturatedBarrens_WT_O[i]
             print 'Shrubs, Wetland Tundra, Old age: ', self.Shrubs_WT_O[i]
             print 'Small Lakes, Wetland Tundra, Young age: ', self.ATTM_SmallLakes_WT_Y[i]
@@ -888,7 +887,7 @@ def barrow_initial_cohort_check(self):
 def tanana_initial_cohort_check(self):
     """
     The purpose of this module is to ensure that all fractional land-surface cohorts, in each element,
-    sums to one.  There are errors introducted in the the interpolation process
+    sums to one.  There are errors introduced in the the interpolation process
     (from Mark Lara files to 25x25m resolution).
 
     The initial step is to compare the total number of fine-resolution cohorts to the total number
@@ -1092,7 +1091,7 @@ def tanana_initial_cohort_check(self):
 def yukon_initial_cohort_check(self):
     """
     The purpose of this module is to ensure that all fractional land-surface cohorts, in each element,
-    sums to one.  There are errors introducted in the the interpolation process
+    sums to one.  There are errors introduced in the the interpolation process
     (from Mark Lara files to 25x25m resolution).
 
     The initial step is to compare the total number of fine-resolution cohorts to the total number

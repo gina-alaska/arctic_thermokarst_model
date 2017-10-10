@@ -6,7 +6,7 @@ __credits__    = [
     "Dave McGuire", 
     "AIEM Thermokarst Team", 
     "Rawser Spicer", 
-    "Jen Deleamere",
+    "Jen Delamere",
 ]
 __license__    = "GPL"
 __version__    = "0.2.1"

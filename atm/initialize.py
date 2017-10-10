@@ -236,7 +236,7 @@ def LakePond(self):
     
     """ Read files from the input directory """
     ### NOTE: all of these if statmets/ chdir blocks could easily be refactored
-    ### NOTE: also chaing the directory is not nessary with os.path functions 
+    ### NOTE: also chaining the directory is not necessary with os.path functions 
     if self.Simulation_area.lower() == 'barrow':
         os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
                      self.Control_directory)

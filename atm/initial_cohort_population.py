@@ -31,6 +31,8 @@ def barrow_initial_cohort_population(self):
             # ============================================================
             #A = self.NPG[i:i+int(float(self.Y_resolution)/(self.y_res))-1, \
             #             j:j+int(float(self.X_resolution)/(self.x_res))-1]
+            
+            # BOB think the -1 is a bug here 
             A = self.Meadow_WT_Y[i:i+int(float(self.Y_resolution)/(self.y_res))-1, \
                                  j:j+int(float(self.X_resolution)/(self.x_res))-1]
             b = A > 0
@@ -1120,7 +1122,7 @@ def yukon_initial_cohort_population(self):
             b = A > 0
             self.ATTM_ShrubScrub_Yukon[count] = len(A[b])
             #--------------------------------------------------------------------------
-            # Unclassfied, Yukon Flats
+            # Unclassified, Yukon Flats
             #--------------------------------------------------------------------------
             A = self.Unclassified_Yukon[i:i+int(float(self.Y_resolution)/(self.y_res))-1, \
                                         j:j+int(float(self.X_resolution)/(self.x_res))-1]
@@ -1131,7 +1133,7 @@ def yukon_initial_cohort_population(self):
 
 
     # =============================================================================
-    # If the Young_Fen/Bog_Flag is set to "yes", create artifical young fens/bogs
+    # If the Young_Fen/Bog_Flag is set to "yes", create artificial young fens/bogs
     # based upon a random distribution between specified boundaries in the
     # Control file
     # =============================================================================
@@ -1142,8 +1144,8 @@ def yukon_initial_cohort_population(self):
             young_fen_count = self.ATTM_Fen_Yukon[i] * young_fen_percentage
             # Remove the young fen fraction from the total fen
             self.ATTM_Fen_Yukon[i] = self.ATTM_Fen_Yukon[i] - young_fen_count
-            # Determine fraction of the young fen that will be uniformally distributed through time
-            # at initialziation (young fen = 0-99 years age)
+            # Determine fraction of the young fen that will be uniformly distributed through time
+            # at initialization (young fen = 0-99 years age)
             young_fen_fraction = young_fen_count / 100.0
             # Populate young bog cohort data arrays
             self.ATTM_Fen_Yukon_00[i] = young_fen_fraction
@@ -1265,8 +1267,8 @@ def yukon_initial_cohort_population(self):
             young_bog_count = self.ATTM_Bog_Yukon[i] * young_bog_percentage
             # Remove the young bog fraction from the total bog
             self.ATTM_Bog_Yukon[i] = self.ATTM_Bog_Yukon[i] - young_bog_count
-            # Determine fraction of the young bog that will be uniformally distributed through time
-            # at initialziation (young bog = 0-99 years age)
+            # Determine fraction of the young bog that will be uniformly distributed through time
+            # at initialization (young bog = 0-99 years age)
             young_bog_fraction = young_bog_count / 100.0
             # Populate young bog cohort data arrays
             self.ATTM_Bog_Yukon_00[i] = young_bog_fraction
