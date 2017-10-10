@@ -73,13 +73,58 @@ class ALDGrid(object):
         """Read init ald from file or object"""
         raise NotImplementedError
         
-    def get_ald_at_time_step (self, time_step):
-        """ Function doc """
-        pass
+    def get_ald_at_time_step (self, time_step = -1, flat = True):
+        """returns ald at a given time step
         
-    def set_ald_at_time_step (self, time_step):
-        """ Function doc """
-        pass
+        Parameters
+        ----------
+        time_step: int, default -1
+            timestep to get ald at
+        flat: bool
+            if true returns 1d array, else reshapes to shape
+            
+        Returns
+        -------
+        np.array
+            ald at time step
+        """
+        shape = self.ald_grid[time_step].shape
+        if not flat:
+            shape = self.shape
+        return self.ald_grid[time_step].reshape(shape)
+        
+    def get_ald (self, flat = True):
+        """gets ald grid
+        
+         Parameters
+        ----------
+        flat: bool
+            if true each year is a 1d array, else each year reshapes to shape
+        
+        Returns
+        -------
+        np.array
+            the ald grid at all time steps
+        """
+        shape = tuple([len(self.ald_grid)] + list(self.ald_grid[0].shape))
+        if not flat:
+            shape = tuple([len(self.ald_grid)] + list(self.shape))
+            
+        return np.array(self.ald_grid).reshape(shape)
+        
+    def set_ald_at_time_step (self, time_step, grid):
+        """Sets the ALD grid at a time step
+        
+        Parameters
+        ----------
+        time_step: int
+            time step to set
+        grid: np.array
+            2D array with shape matching shape attribute
+        """
+        if grid.shape != self.shape:
+            raise StandardError('grid shapes do not match')
+        self.ald_grid[time_step] = grid.flatten()
         
     def get_pl_at_time_step (self, time_step, cohort = None):
         """ Function doc """
@@ -97,6 +142,9 @@ class ALDGrid(object):
         # else set cohort
         pass
         
+    def add_time_step (self):
+        """ Function doc """
+        pass
         
     def save_ald (self, time_step):
         """ save ald at time step """
