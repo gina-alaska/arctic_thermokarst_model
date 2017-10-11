@@ -5,14 +5,23 @@ and PL (or pl) to Protective layer
 """
 import numpy as np
 
+from terraingrid import ROW, COL
 
 
 class ALDGrid(object):
     """ Class doc """
     
-    def __init__ (self, shape, cohort_list, init_ald):
+    def __init__ (self, config):
         """ Class initialiser """
         
+        shape = config['shape']
+        cohort_list = config['cohort list']
+        init_ald = config ['init ald']
+        
+        ## setup soil properites
+        self.porosity = config['porosity map']
+        self.protective_layer_factor = ['PL factor map']
+       
         ald, pl, pl_map = self.setup_grid ( shape, cohort_list, init_ald)
         self.init_ald_grid = ald
         self.init_pl_grid = pl
@@ -22,6 +31,7 @@ class ALDGrid(object):
         self.shape = shape
         self.ald_grid = [ self.init_ald_grid ]
         self.pl_grid = [ self.init_pl_grid ]
+    
         
     def __getitem__ (self, key):
         """ Function doc """
@@ -129,22 +139,45 @@ class ALDGrid(object):
     def get_pl_at_time_step (self, time_step, cohort = None):
         """ Function doc """
         if cohort is None:
-            ## get all
-            pass
+            if flat:
+                return pl_self.grid[time_step] 
+            else:
+                return self.pl_grid[time_step].reshape(
+                    len(self.init_grid),
+                    self.shape[ROW],
+                    self.shape[COL]
+                )
         # else get cohort
-        pass
+        cohort = self.pl_key_to_index[cohort]
+        r_val = self.pl_grid[time_step][cohort]
+        if flat:
+            return r_val
+        else: 
+            return r_val.reshape(self.shape[ROW], self.shape[COL])
         
-    def set_pl_at_time_step (self, time_step, cohort = None):
-        """ Function doc """
-        if cohort is None:
-            ## set all
-            pass
-        # else set cohort
-        pass
         
-    def add_time_step (self):
+    def set_pl_at_time_step (self, time_step, data):
         """ Function doc """
-        pass
+        shape = self.init_pl_grid.shape
+        self.pl_grid[time_step] = data.reshape(shape)
+
+    def set_pl_cohort_at_time_step (self, time_step, cohort, data):
+        """ Function doc """
+        idx = self.key_to_index[cohort]
+        if data.shape != self.shape:
+            raise StandardError, 'Set shape Error'
+        
+        self.grid[time_step][idx] = data.flatten()
+        
+    def add_time_step (self, zeros = False):
+        """adds a time step for ald_grid and pl_grid"""
+        self.ald_grid.append(self.ald_grid[-1])
+        self.pl_grid.append(self.pl_grid[-1])
+        if zeros:
+            self.ald_grid[-1] = self.ald_grid[-1]*0
+            self.pl_grid[-1] = self.pl_grid[-1]*0
+        
+        
         
     def save_ald (self, time_step):
         """ save ald at time step """
