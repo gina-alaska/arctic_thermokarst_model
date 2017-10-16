@@ -13,14 +13,20 @@ class TestALDGridClass(unittest.TestCase):
     """
     def setUp(self):
         """setup class for tests
-        
-        Make a pickle for faster loading?
         """
-        shape = (10,10)
-        cohort_list = ['HCP','FCP','CLC','LCP','POND'] ## replace with canon names
         
-        init_ald = (.3,.3)
-        self.ALD = ald_grid.ALDGrid(shape, cohort_list, init_ald)
+        
+        config = {
+            'shape': (10,10),
+            'cohort list': ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
+            'init ald': (.3,.3),
+            'start year': 1900,
+        }
+        
+        config['porosities'] = {k: 1 for k in config['cohort list']}
+        config['PL factors'] = {k: 1 for k in config['cohort list']}
+        
+        self.ALD = ald_grid.ALDGrid(config)
     
     def test_init(self):
         """test init results are correct
@@ -36,7 +42,7 @@ class TestALDGridClass(unittest.TestCase):
         )
 
     def test_getters(self):
-        """ test __getitem__ and other get functions """ 
+        """ test other get functions """ 
         flat = self.ALD.get_ald_at_time_step()
         grid = self.ALD.get_ald_at_time_step(flat=False)
         self.assertEqual( (10 * 10,), flat.shape)
@@ -55,8 +61,49 @@ class TestALDGridClass(unittest.TestCase):
         
         self.assertTrue((flat != self.ALD.get_ald_at_time_step(2)).all())
         
+    def tests__getitem__(self):
+        """ __getitem__  """
+        
+        
+        
+        self.ALD.add_time_step(True)
+        self.assertTrue((self.ALD['ALD',1900] != self.ALD['ALD', 1901]).all())
+        self.assertTrue((self.ALD['PL',1900] != self.ALD['PL', 1901]).all())
+        
+        self.assertEqual((2, 10, 10), self.ALD['ALD'].shape)
+        self.assertEqual( (10, 10), self.ALD['ALD',1900].shape)
+        
+        self.assertEqual(( 5, 10, 10), self.ALD['PL', 1900].shape)
+        self.assertEqual(( 10, 10), self.ALD['FCP', 1900].shape)
+        
+        
+        
+        
+        with self.assertRaises(NotImplementedError):
+            self.ALD['PL']
+        
+        with self.assertRaises(KeyError):
+            self.ALD['BAD KEY']
+            
+        with self.assertRaises(KeyError):
+            self.ALD[1]
+        
+        with self.assertRaises(KeyError):
+            self.ALD['ADL', 'BAD']
+        
+        with self.assertRaises(KeyError):
+            self.ALD['PL', 'BAD']
+            
+        with self.assertRaises(KeyError):
+            self.ALD['HCP', 'BAD']
+        
+        with self.assertRaises(KeyError):
+            self.ALD[1, 'BAD']
+            
+        
+        
     def test_setters(self):
-        """"""
+        """test setters"""
          # add some scratch data
         self.ALD.ald_grid.append(np.zeros(10*10))
         self.ALD.ald_grid.append(np.zeros(10*10))
@@ -77,6 +124,17 @@ class TestALDGridClass(unittest.TestCase):
         
         with self.assertRaises(IndexError):
             self.ALD.set_ald_at_time_step(3, new_grid)
+            
+    def test_add_time_step (self):
+        """
+        """
+        self.ALD.add_time_step()
+        self.assertTrue((self.ALD['ALD',1900] == self.ALD['ALD', 1901]).all())
+        self.assertTrue((self.ALD['PL',1900] == self.ALD['PL', 1901]).all())
+        
+        self.ALD.add_time_step(True)
+        self.assertTrue((self.ALD['ALD',1902] == 0).all())
+        self.assertTrue((self.ALD['PL',1902] == 0).all())
 
 if __name__ == '__main__':
     unittest.main()

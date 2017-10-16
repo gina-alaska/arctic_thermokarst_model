@@ -17,10 +17,11 @@ class ALDGrid(object):
         shape = config['shape']
         cohort_list = config['cohort list']
         init_ald = config ['init ald']
+        self.start_year = config ['start year']
         
         ## setup soil properites
-        self.porosity = config['porosity map']
-        self.protective_layer_factor = ['PL factor map']
+        self.porosity = config['porosities']
+        self.protective_layer_factor = ['PL factors']
        
         ald, pl, pl_map = self.setup_grid ( shape, cohort_list, init_ald)
         self.init_ald_grid = ald
@@ -34,8 +35,67 @@ class ALDGrid(object):
     
         
     def __getitem__ (self, key):
-        """ Function doc """
-        pass
+        """Gets ALD or PL or PL for a cohort
+        
+        Parameters
+        ----------
+        key: tuple
+        
+        Raises
+        ------
+        NotImplementedError:
+            get ALD or PL at all time steps functions not implemented
+        KeyError:
+            if key is does not meet key requirments
+        
+        Returns
+        -------
+        np.array
+            requested grid, each grid will match the shape attribute
+        """
+        if type(key) is str:
+            if key == 'ALD':
+                return self.get_ald(flat = False)
+            elif key == 'PL':
+                #return self.get_pl()
+                raise NotImplementedError, 'get all PL ts not implemented'
+            else:
+                raise KeyError, 'String key must be ALD, or PL'
+               
+        elif type(key) is tuple:
+            if key[0] == 'ALD':
+                if type(key[1]) is int:
+                    ts = key[1] - self.start_year
+                    return self.get_ald_at_time_step(ts, False)
+                else:
+                    raise KeyError, 'Tuple key(ALD) index 1 must be an int'
+                
+            elif key[0] == 'PL':
+                if type(key[1]) is int:
+                    ts = key[1] - self.start_year
+                    return self.get_pl_at_time_step(ts, flat = False)
+                else:
+                    raise KeyError, 'Tuple key(PL) index 1 must be an int'
+            
+            elif key[0] in self.pl_key_to_index.keys():
+                if type(key[1]) is int:
+                    ts = key[1] - self.start_year
+                    return self.get_pl_at_time_step(ts,
+                        cohort = key[0], flat = False)
+                else:
+                    raise KeyError, 'Tuple key(cohort) index 1 must be an int'
+            
+            else:
+                msg = ('Tuple keys first item must be ALD,'
+                        ' or PL, or a cohort in pl_grid')
+                raise KeyError, msg
+                    
+            
+        else:
+            raise KeyError, 'Key is not a str or tuple.'
+        
+        
+        
         
     def __setitem__ (self, key, value):
         """ Function doc """
@@ -72,7 +132,7 @@ class ALDGrid(object):
             pl_key_to_index[ cohort ] = index
             index += 1
             
-        return ald_grid, pl_grid, pl_key_to_index
+        return ald_grid, np.array(pl_grid), pl_key_to_index
         ## need to add random chance + setup for future reading of values
 
     def random_grid (self, shape, init_ald):
@@ -136,14 +196,31 @@ class ALDGrid(object):
             raise StandardError('grid shapes do not match')
         self.ald_grid[time_step] = grid.flatten()
         
-    def get_pl_at_time_step (self, time_step, cohort = None):
-        """ Function doc """
+    def get_pl_at_time_step (self, time_step, cohort = None, flat = True):
+        """gets the ALD grid at a time step
+        
+        Parameters
+        ----------
+        time_step: int
+            time step to get
+        cohort: Str or None
+            cohort to return
+        flat: bool
+            keeps grid flat if true
+            
+        Returns
+        -------
+        np.array
+            the grid of the cohort, if a cohort is provided, other wise
+            returns all cohorts. Data is reshaped to grid shape if flat is
+            false
+        """
         if cohort is None:
             if flat:
                 return pl_self.grid[time_step] 
             else:
                 return self.pl_grid[time_step].reshape(
-                    len(self.init_grid),
+                    len(self.init_pl_grid),
                     self.shape[ROW],
                     self.shape[COL]
                 )
@@ -157,12 +234,30 @@ class ALDGrid(object):
         
         
     def set_pl_at_time_step (self, time_step, data):
-        """ Function doc """
+        """Sets the PL grid at a time step
+        
+        Parameters
+        ----------
+        time_step: int
+            time step to set
+        grid: np.array
+            3D array that can be reshaped to match inital_l_grid shape
+        """
         shape = self.init_pl_grid.shape
         self.pl_grid[time_step] = data.reshape(shape)
 
     def set_pl_cohort_at_time_step (self, time_step, cohort, data):
-        """ Function doc """
+        """Sets the PL grid for a cohort at a time step
+        
+        Parameters
+        ----------
+        time_step: int
+            time step to set
+        cohort: str
+            cohort to set
+        grid: np.array
+            2d array that can has shape equal to  self.shape
+        """
         idx = self.key_to_index[cohort]
         if data.shape != self.shape:
             raise StandardError, 'Set shape Error'
@@ -170,7 +265,14 @@ class ALDGrid(object):
         self.grid[time_step][idx] = data.flatten()
         
     def add_time_step (self, zeros = False):
-        """adds a time step for ald_grid and pl_grid"""
+        """adds a time step for ald_grid and pl_grid
+        
+        Parameters
+        ----------
+        zeros: bool
+            if set to true data is set as all zeros
+        
+        """
         self.ald_grid.append(self.ald_grid[-1])
         self.pl_grid.append(self.pl_grid[-1])
         if zeros:
