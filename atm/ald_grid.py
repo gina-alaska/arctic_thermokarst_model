@@ -39,7 +39,7 @@ class ALDGrid(object):
         
         Parameters
         ----------
-        key: tuple
+        key: str, tuple (str, int)
         
         Raises
         ------
@@ -89,17 +89,68 @@ class ALDGrid(object):
                 msg = ('Tuple keys first item must be ALD,'
                         ' or PL, or a cohort in pl_grid')
                 raise KeyError, msg
-                    
-            
+
         else:
             raise KeyError, 'Key is not a str or tuple.'
         
-        
-        
-        
     def __setitem__ (self, key, value):
-        """ Function doc """
-        pass
+        """Set ALD or PL data. 
+        
+        
+        Parameters
+        ----------
+        key: Str, or tuple(str, int)
+            if key is a string, raises NotImplementedError
+            if key is tuple, the str should be ALD, PL, or a cohort in the 
+            PL grid. the int should start_year <= int <= start_year + len(grid)
+        data: np.ndarray
+            data of the proper shape, for key provided
+            
+            
+        Raises
+        ------
+        KeyError: 
+            if key does not match key parameters
+        NotImplementedError:
+            if key is str
+        """
+        if type(key) is str:
+            raise NotImplementedError, 'cannont set whole ALD or PL array'
+            
+        elif type(key) is tuple:
+            if type(key[1]) is int:
+                year = key[1]
+                if year == self.start_year + len(self.ald_grid):
+                ## year == end year + 1 
+                ## (I.e start_year == 1900, len(grid) =10, year = 1910)
+                ## time steps from 0 - 9, (1900 - 1909)
+                ## year - star_year = 10, no 10 as a time,
+                ## but 10 == year - star_year, or 1910 == start_year+len(grid)
+                ## so, will add a new grid year, because it is end +1, and set 
+                ## values to 0
+                    self.add_time_step(True)
+                elif year > self.start_year + len(self.ald_grid):
+                    raise KeyError, 'Year too far after current end'
+                elif year < self.start_year:
+                    raise KeyError, 'Year before start year'
+            else:
+                raise KeyError, 'tuple index 1 should be int'
+            
+            ts = year - self.start_year
+            
+            if key[0] is 'ALD':
+                self.set_ald_at_time_step(ts, value)
+            elif key[0] == 'PL':
+                self.set_pl_at_time_step(ts, value)
+            elif key[0] in self.pl_key_to_index.keys():
+                self.set_pl_cohort_at_time_step(ts, key[0], value)
+            else: 
+                msg = ('Tuple keys first item must be ALD,'
+                        ' or PL, or a cohort in pl_grid')
+                raise KeyError, msg
+        else:
+            raise KeyError, 'Key is not a str or tuple.'
+        
         
     def setup_grid (self, shape, cohorts, init_ald, pl_modifiers = {}):
         """
@@ -258,11 +309,11 @@ class ALDGrid(object):
         grid: np.array
             2d array that can has shape equal to  self.shape
         """
-        idx = self.key_to_index[cohort]
+        idx = self.pl_key_to_index[cohort]
         if data.shape != self.shape:
             raise StandardError, 'Set shape Error'
         
-        self.grid[time_step][idx] = data.flatten()
+        self.pl_grid[time_step][idx] = data.flatten()
         
     def add_time_step (self, zeros = False):
         """adds a time step for ald_grid and pl_grid

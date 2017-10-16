@@ -71,12 +71,10 @@ class TestALDGridClass(unittest.TestCase):
         self.assertTrue((self.ALD['PL',1900] != self.ALD['PL', 1901]).all())
         
         self.assertEqual((2, 10, 10), self.ALD['ALD'].shape)
-        self.assertEqual( (10, 10), self.ALD['ALD',1900].shape)
+        self.assertEqual((10, 10), self.ALD['ALD',1900].shape)
         
         self.assertEqual(( 5, 10, 10), self.ALD['PL', 1900].shape)
         self.assertEqual(( 10, 10), self.ALD['FCP', 1900].shape)
-        
-        
         
         
         with self.assertRaises(NotImplementedError):
@@ -124,6 +122,46 @@ class TestALDGridClass(unittest.TestCase):
         
         with self.assertRaises(IndexError):
             self.ALD.set_ald_at_time_step(3, new_grid)
+            
+    def test__setitem__ (self):
+        """
+        """
+        self.ALD['ALD', 1901] = np.ones((10,10))
+        self.ALD['PL', 1901] = np.ones((5,10,10))
+        
+        self.assertTrue((self.ALD['ALD',1901] == 1).all())
+        self.assertTrue((self.ALD['PL',1901] == 1).all())
+        
+        self.ALD['LCP', 1901] = np.zeros((10,10)) + 5
+        
+        self.assertTrue((self.ALD['LCP', 1901] == 5).all())
+        self.assertFalse((self.ALD['PL',1901] == 1).all())
+        
+        with self.assertRaises(NotImplementedError):
+            self.ALD['PL'] = np.zeros((5, 10,10))
+        
+        with self.assertRaises(NotImplementedError):
+            self.ALD['ALD'] = np.zeros((10,10))
+        
+        #~ with self.assertRaises(KeyError):
+            #~ self.ALD['BAD KEY'] = np.zeros((10,10))
+            
+        with self.assertRaises(KeyError):
+            self.ALD[1] = np.zeros((10,10))
+        
+        with self.assertRaises(KeyError):
+            self.ALD['ADL', 'BAD'] = np.zeros((10,10))
+        
+        with self.assertRaises(KeyError):
+            self.ALD['PL', 'BAD'] = np.zeros((10,10))
+            
+        with self.assertRaises(KeyError):
+            self.ALD['HCP', 'BAD'] = np.zeros((10,10))
+        
+        with self.assertRaises(KeyError):
+            self.ALD[1, 'BAD']
+        
+        
             
     def test_add_time_step (self):
         """
