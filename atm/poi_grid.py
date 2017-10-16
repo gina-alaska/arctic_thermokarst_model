@@ -17,9 +17,8 @@ class POIGrid (object):
     """ Class doc """
 
     def __init__ (self, config):
-        """This class represents model area grid as fractional areas of each
-        cohort that make up a grid element. In each grid element all
-        fractional cohorts should sum to one.
+        """This class represents each cohorts POI for the model grid at
+        each time step
         
         
         .. note:: Note on grid coordinates
@@ -30,6 +29,7 @@ class POIGrid (object):
         Parameters
         ----------
         Config: Dict
+            should have keys 'start year', 'cohort list', and 'shape'
             
         Attributes
         ----------
@@ -42,10 +42,7 @@ class POIGrid (object):
             key_to_index. The third dimension is the grid element. Each cohort
             can be reshaped using  shape to get the proper grid
         init_grid: np.ndarray 
-                The initial data corrected to the target resolution. Each
-            row is one cohort percent grid flattened to a 1d array. The 
-            the index to get a given cohort can be looked up in the 
-            key_to_index attribute.
+                starting POI grid
         key_to_index : dict
                 Maps canon cohort names to the index for that cohort in the 
             data object 
