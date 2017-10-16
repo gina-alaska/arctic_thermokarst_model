@@ -142,9 +142,6 @@ class TestALDGridClass(unittest.TestCase):
         
         with self.assertRaises(NotImplementedError):
             self.ALD['ALD'] = np.zeros((10,10))
-        
-        #~ with self.assertRaises(KeyError):
-            #~ self.ALD['BAD KEY'] = np.zeros((10,10))
             
         with self.assertRaises(KeyError):
             self.ALD[1] = np.zeros((10,10))
