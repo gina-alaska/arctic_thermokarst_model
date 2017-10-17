@@ -1,6 +1,6 @@
 """ald_grid.py
 
-for the puproses of this file ALD(or ald) refers to Active layer depth,
+for the purposes of this file ALD(or ald) refers to Active layer depth,
 and PL (or pl) to Protective layer
 """
 import numpy as np
@@ -19,7 +19,7 @@ class ALDGrid(object):
         init_ald = config ['init ald']
         self.start_year = config ['start year']
         
-        ## setup soil properites
+        ## setup soil properties
         self.porosity = config['porosities']
         self.protective_layer_factor = ['PL factors']
        
@@ -46,7 +46,7 @@ class ALDGrid(object):
         NotImplementedError:
             get ALD or PL at all time steps functions not implemented
         KeyError:
-            if key is does not meet key requirments
+            if key is does not meet key requirements
         
         Returns
         -------
@@ -115,7 +115,7 @@ class ALDGrid(object):
             if key is str
         """
         if type(key) is str:
-            raise NotImplementedError, 'cannont set whole ALD or PL array'
+            raise NotImplementedError, 'cannot set whole ALD or PL array'
             
         elif type(key) is tuple:
             if type(key[1]) is int:
@@ -292,7 +292,7 @@ class ALDGrid(object):
         time_step: int
             time step to set
         grid: np.array
-            3D array that can be reshaped to match inital_l_grid shape
+            3D array that can be reshaped to match initial_l_grid shape
         """
         shape = self.init_pl_grid.shape
         self.pl_grid[time_step] = data.reshape(shape)
