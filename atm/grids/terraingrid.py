@@ -554,6 +554,22 @@ class CohortGrid(object):
             return self.grid[time_step].reshape(len(self.init_grid),
                 self.shape[ROW], self.shape[COL])
                 
+    def total_franctonal_area(self, time_step):
+        """get total fractional area for each grid element at a time step 
+        
+        Parameters
+        ----------
+        time_step: int
+        
+        Returns
+        -------
+        np.array
+            total fractional area array
+        """            
+        grid = self.grid[time_step]
+        
+        return np.round(grid.sum(0), decimals = 6 )
+                
     def check_mass_balance (self, time_step=-1):
         """reruns true if mass balance is preserved. Raises an exception, 
         otherwise
@@ -573,9 +589,7 @@ class CohortGrid(object):
         Bool
             True if no mass balance problem found.
         """
-        grid = self.grid[time_step]
-        
-        ATTM_Total_Fractional_Area = np.round(grid.sum(0), decimals = 6 )
+        ATTM_Total_Fractional_Area = self.total_franctonal_area(time_step)
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
             raise MassBalanceError, 'mass balance problem 1'
             ## write a check to locate mass balance error
@@ -707,7 +721,21 @@ class CohortGrid(object):
         self.grid.append(self.grid[-1])
         if zeros:
             self.grid[-1] = self.grid[-1]*0
-    
+            
+    def area_of_intrest (self, time_step = 0):
+        """get area of interest at a time step
+        
+        Parameters
+        ----------
+        time_step: int, default 0
+        
+        Returns
+        -------
+        np.array
+            a grid of booleans where true elements are in AOI, false are not
+        """
+        return (self.total_franctonal_area(time_step) > 0.0).reshape(self.shape)
+        
     def save_cohort_at_time_step (self, cohort, path,
             time_step = -1, bin_only = True, binary_pixels = False):
         """various save functions should be created to save, reports, images, 

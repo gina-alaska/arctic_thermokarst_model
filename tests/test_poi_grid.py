@@ -1,7 +1,7 @@
 """test POI Grid class
 """
 from context import atm
-from atm import poi_grid
+from atm.grids import poi_grid
 
 import unittest
 import numpy as np
@@ -21,7 +21,8 @@ class TestPOIGridClass(unittest.TestCase):
             'cohort list': ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
             'start year': 1900,
         }
-        
+        config['AOI mask'] = \
+            np.ones(config['shape']) == np.ones(config['shape'])
         
         self.POI = poi_grid.POIGrid(config)
     
@@ -57,11 +58,15 @@ class TestPOIGridClass(unittest.TestCase):
     def test__setitem__ (self):
         """
         """
-        self.POI[1901, 'LCP'] = np.zeros((10, 10)) + 5
-        self.POI[1902, 'LCP'] = np.zeros((10, 10)) + 6
+        self.POI[1901, 'LCP'] = np.zeros((10, 10)) + .5
+        self.POI[1902, 'LCP'] = np.zeros((10, 10)) + .6
+        self.POI[1903, 'LCP'] = np.zeros((10, 10)) + 1.6
+        self.POI[1904, 'LCP'] = np.zeros((10, 10)) + -1.6
         
-        self.assertTrue((self.POI[1901, 'LCP'] == 5).all())
-        self.assertTrue((self.POI[1902, 'LCP'] == 6).all())
+        self.assertTrue((self.POI[1901, 'LCP'] == .5).all())
+        self.assertTrue((self.POI[1902, 'LCP'] == .6).all())
+        self.assertTrue((self.POI[1903, 'LCP'] == 1).all())
+        self.assertTrue((self.POI[1904, 'LCP'] == 0).all())
         self.assertFalse((self.POI[1901, 'LCP'] == self.POI[1902, 'LCP']).all())
         
         with self.assertRaises(NotImplementedError):
@@ -69,7 +74,7 @@ class TestPOIGridClass(unittest.TestCase):
             self.POI['LCP'] = ''
             
         with self.assertRaises(KeyError):
-            self.POI[1905] =  ''
+            self.POI[1910] =  ''
             self.POI[1805] =  ''
         
         

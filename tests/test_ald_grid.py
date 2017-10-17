@@ -1,7 +1,7 @@
 """test ald Grid class
 """
 from context import atm
-from atm import ald_grid
+from atm.grids import ald_grid
 
 import unittest
 import numpy as np
@@ -25,6 +25,8 @@ class TestALDGridClass(unittest.TestCase):
         
         config['porosities'] = {k: 1 for k in config['cohort list']}
         config['PL factors'] = {k: 1 for k in config['cohort list']}
+        config['AOI mask'] = \
+            np.ones(config['shape']) == np.ones(config['shape'])
         
         self.ALD = ald_grid.ALDGrid(config)
     
@@ -63,9 +65,6 @@ class TestALDGridClass(unittest.TestCase):
         
     def tests__getitem__(self):
         """ __getitem__  """
-        
-        
-        
         self.ALD.add_time_step(True)
         self.assertTrue((self.ALD['ALD',1900] != self.ALD['ALD', 1901]).all())
         self.assertTrue((self.ALD['PL',1900] != self.ALD['PL', 1901]).all())

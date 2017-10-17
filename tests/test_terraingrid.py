@@ -3,7 +3,7 @@ testing code for terraingrid.py
 -------------------------------
 """
 from context import atm
-from atm import terraingrid
+from atm.grids import terraingrid
 
 import numpy as np
 import unittest

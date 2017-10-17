@@ -21,9 +21,16 @@ class ALDGrid(object):
         
         ## setup soil properties
         self.porosity = config['porosities']
-        self.protective_layer_factor = ['PL factors']
-       
-        ald, pl, pl_map = self.setup_grid ( shape, cohort_list, init_ald)
+        self.protective_layer_factor = config['PL factors']
+        self.aoi_mask = config['AOI mask']
+        
+        ald, pl, pl_map = self.setup_grid ( 
+            shape, 
+            cohort_list, 
+            init_ald, 
+            self.aoi_mask, 
+            self.protective_layer_factor 
+        )
         self.init_ald_grid = ald
         self.init_pl_grid = pl
         self.pl_key_to_index = pl_map
@@ -152,7 +159,7 @@ class ALDGrid(object):
             raise KeyError, 'Key is not a str or tuple.'
         
         
-    def setup_grid (self, shape, cohorts, init_ald, pl_modifiers = {}):
+    def setup_grid (self, shape, cohorts, init_ald, aoi_mask, pl_factors = {}):
         """
         
         Parameters
@@ -167,28 +174,50 @@ class ALDGrid(object):
         ## TODO READ pl_modifiers from config
         
         if type(init_ald) is tuple:
-            ald_grid = self.random_grid(shape, init_ald)
+            ald_grid = self.random_grid(shape, init_ald, aoi_mask)
         else:
             ald_grid = self.read_grid(init_ald)
         
-        if pl_modifiers == {}:
-            pl_modifiers = {key: 1 for key in cohorts}
+        if pl_factors == {}:
+            pl_factors = {key: 1 for key in cohorts}
         
         ## protective layer (pl)
         pl_grid = []
         pl_key_to_index = {}
         index = 0 
         for cohort in cohorts:
-            pl_grid.append(ald_grid * pl_modifiers[cohort]) 
+            pl_grid.append(ald_grid * pl_factors[cohort]) 
             pl_key_to_index[ cohort ] = index
             index += 1
             
         return ald_grid, np.array(pl_grid), pl_key_to_index
         ## need to add random chance + setup for future reading of values
 
-    def random_grid (self, shape, init_ald):
-        """ Function doc """
-        return np.random.uniform(init_ald[0],init_ald[1], shape ).flatten()
+    def random_grid (self, shape, init_ald, aoi_mask = None):
+        """create a random ALD grid
+        
+        Parameters
+        ----------
+        shape:  
+        
+        init_ald: tuple (2 floats)
+            (min, max) ald in each element is set to min <= ald < max
+        aoi_mask: np.array of bools( optional)
+            if provided ALD is set where mask is true, other wise 0
+        
+        Returns
+        -------
+        np.array
+            random ald grid
+        """
+        grid = np.random.uniform(init_ald[0], init_ald[1], shape ).flatten()
+        if aoi_mask is None:
+            aoi_mask = grid == grid
+        
+        grid[ aoi_mask.flatten() == False ] = 0
+        
+        
+        return grid
     
     def read_grid (self, init_ald):
         """Read init ald from file or object"""

@@ -290,7 +290,8 @@ class POIGrid (object):
         raise NotImplementedError, 'cannot set POI grid at all time steps'
     
     def set_cohort_at_time_step(self, cohort, time_step, data):
-        """Set a cohort POI grid at a given time step
+        """Set a cohort POI grid at a given time step, ensures the max
+        value is 1 and the min value is 0.
         
         Parameters
         ----------
@@ -310,7 +311,10 @@ class POIGrid (object):
         if data.shape != self.shape:
             raise StandardError, 'Set shape Error'
         
-        self.grid[time_step][idx] = data.flatten()
+        d = data.flatten()
+        d[ d>1 ] = 1.0
+        d[ d<0 ] = 0.0
+        self.grid[time_step][idx] = d
         
     def set_all_cohorts_at_time_step(self, time_step, data):
         """Sets all POI cohorts at a time step
