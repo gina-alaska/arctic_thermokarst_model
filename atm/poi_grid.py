@@ -36,7 +36,7 @@ class POIGrid (object):
         shape : tuple of ints
             Shape of the grid (y,x) (rows,columns)
         grid : array
-                This 3d array is the grid data at each time step. 
+            This 3d array is the grid data at each time step. 
             The first dimension is the time step with 0 being the initial data.
             The second dimension is the flat grid for given cohort, mapped using  
             key_to_index. The third dimension is the grid element. Each cohort
