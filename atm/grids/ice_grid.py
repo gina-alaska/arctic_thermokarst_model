@@ -16,16 +16,16 @@ class IceGrid(object):
         """ Class initialiser """
         
         shape = config['shape']
-        cohort_list = config['cohort list']
+        #~ cohort_list = config['cohort list']
         init_ice = config ['init ice']
-        self.start_year = config ['start year']
         
         ## setup soil properties
         self.aoi_mask = config['AOI mask']
         
+        self.cohort_coeffs = config['cohort ice slopes']
+        
         self.grid = self.setup_grid ( 
             shape, 
-            cohort_list, 
             init_ice, 
             self.aoi_mask, 
         )
@@ -47,9 +47,9 @@ class IceGrid(object):
         Returns
         -------
         np.array
-            requested Ice grid
+            requested Ice slope grid
         """
-        return self.grid[key].reshape(self.shape)
+        return self.get_ice_slope_grid(key, False)
         
         
     def __setitem__ (self, key, value):
@@ -76,7 +76,7 @@ class IceGrid(object):
         raise NotImplementedError, 'cannot set ICE arrays once initilized'
         
         
-    def setup_grid (self, shape, cohorts, init_ice, aoi_mask):
+    def setup_grid (self, shape, init_ice, aoi_mask):
         """
         
         Parameters
@@ -127,6 +127,20 @@ class IceGrid(object):
     def read_grid (self, init_ice):
         """Read init ice from file or object"""
         raise NotImplementedError
+        
+    def get_ice_slope_grid(self, cohort, flat = True):
+        """Get the ice content coefficient values for a cohort
+        """
+        coeffs = self.cohort_coeffs[cohort]
+        coeffs['none'] = 0
+        grid = self.grid
+        for c in coeffs:
+            grid[ grid == c ] = coeffs[c]
+        
+        shape = grid.shape if flat else self.shape
+    
+        return grid.astype(float).reshape(shape)
+        
         
     def save_ice (self, time_step):
         """ save ice at time step """
