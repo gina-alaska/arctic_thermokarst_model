@@ -1,208 +1,17 @@
 """Contains objects to represent internal grid cohort data in ATM
 """
 import numpy as np
-import gdal
 import os
 
-from collections import namedtuple
+from ..cohorts import find_canon_name
+from ..io import binary, image, raster
 
-import matplotlib.pyplot as plt
+from constants import ROW, COL
+
+
 
 class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
-
-RASTER_METADATA = namedtuple('RASTER_METADATA', 
-    ['transform', 'projection', 
-        'nX', 'nY', 'deltaX', 'deltaY', 'originX', 'originY'
-    ]
-)
-
-def load_raster (filename):
-    """Load a raster file and it's medatadata
-    
-    Parameters
-    ----------
-    filename: str
-        path to raster file to read
-        
-    Returns 
-    -------
-    np.array
-        2d raster data
-    RASTER_METADATA
-        metadata on raster file read
-    """
-    dataset = gdal.Open(filename, gdal.GA_ReadOnly)
-    #~ print type(dataset)
-    (X, deltaX, rotation, Y, rotation, deltaY) = dataset.GetGeoTransform()
-
-    metadata = RASTER_METADATA(
-        transform = (X, deltaX, rotation, Y, rotation, deltaY),
-        projection = dataset.GetProjection(),  
-        nX = dataset.RasterXSize,
-        nY = dataset.RasterYSize,
-        deltaX = deltaX,
-        deltaY = deltaY,
-        originX = X,
-        originY = Y
-    )
-    ## assumes one band, also gdal uses one based indexing here 
-    data = dataset.GetRasterBand(1).ReadAsArray()
-    return data, metadata
-    
-def save_bin (data, path):
-    """ Function doc """
-    data.tofile(path)
-
-    
-def save_img (data, path, title):
-    """ Function doc """
-    imgplot = plt.imshow(
-        data, 
-        interpolation = 'nearest', 
-        cmap = 'spectral', 
-        vmin = 0.0, 
-        vmax = 1.0
-    )
-    plt.title(title)
-    plt.colorbar(extend = 'neither', shrink = 0.92)
-    #~ imgplot.save(path)
-    #~ plt.imsave(path, imgplot)
-    plt.savefig(path)
-    plt.close()
-
-# maps alternate name to the names used by ATM internally
-#
-# See Also
-# --------
-#   find_canon_name
-CANON_COHORT_NAMES = {
-    ('CoalescentLowCenterPolygon_WetlandTundra_Medium',): 'CLC_WT_M',
-    ('CoalescentLowCenterPolygon_WetlandTundra_Old',): 'CLC_WT_O',
-    ('CoalescentLowCenterPolygon_WetlandTundra_Young',): 'CLC_WT_Y',
-    
-    ('CoastalWaters_WetlandTundra_Old',): 'CoastalWaters_WT_O',
-    
-    ('DrainedSlope_WetlandTundra_Medium',): 'DrainedSlope_WT_M',
-    ('DrainedSlope_WetlandTundra_Old',): 'DrainedSlope_WT_O',
-    ('DrainedSlope_WetlandTundra_Young',): 'DrainedSlope_WT_Y',
-    
-    ('FlatCenterPolygon_WetlandTundra_Medium',): 'FCP_WT_M',
-    ('FlatCenterPolygon_WetlandTundra_Old',): 'FCP_WT_O',
-    ('FlatCenterPolygon_WetlandTundra_Young',): 'FCP_WT_Y',
-    
-    ('HighCenterPolygon_WetlandTundra_Medium',): 'HCP_WT_M',
-    ('HighCenterPolygon_WetlandTundra_Old',): 'HCP_WT_O',
-    ('HighCenterPolygon_WetlandTundra_Young',): 'HCP_WT_Y',
-    
-    ('LargeLakes_WetlandTundra_Medium',): 'LargeLakes_WT_M',
-    ('LargeLakes_WetlandTundra_Old',): 'LargeLakes_WT_O',
-    ('LargeLakes_WetlandTundra_Young',): 'LargeLakes_WT_Y',
-    
-    ('LowCenterPolygon_WetlandTundra_Medium',): 'LCP_WT_M',
-    ('LowCenterPolygon_WetlandTundra_Old',): 'LCP_WT_O',
-    ('LowCenterPolygon_WetlandTundra_Young',): 'LCP_WT_Y',
-    
-    ('Meadow_WetlandTundra_Medium',): 'Meadow_WT_M',
-    ('Meadow_WetlandTundra_Old',): 'Meadow_WT_O',
-    ('Meadow_WetlandTundra_Young',): 'Meadow_WT_Y',
-    
-    ('MediumLakes_WetlandTundra_Medium',): 'MediumLakes_WT_M ',
-    ('MediumLakes_WetlandTundra_Old',): 'MediumLakes_WT_O',
-    ('MediumLakes_WetlandTundra_Young',): 'MediumLakes_WT_Y' ,
-    
-    ('NoData_WetlandTundra_Old', ): 'NoData_WT_O',
-    
-    ('Ponds_WetlandTundra_Medium',): 'Ponds_WT_M',
-    ('Ponds_WetlandTundra_Old',): 'Ponds_WT_O',
-    ('Ponds_WetlandTundra_Young',): 'Ponds_WT_Y',
-    
-    ('Rivers_WetlandTundra_Medium',): 'Rivers_WT_M',
-    ('Rivers_WetlandTundra_Old',): 'Rivers_WT_O',
-    ('Rivers_WetlandTundra_Young',): 'Rivers_WT_Y',
-    
-    ('SandDunes_WetlandTundra_Medium',): 'SandDunes_WT_M',
-    ('SandDunes_WetlandTundra_Old',): 'SandDunes_WT_O',
-    ('SandDunes_WetlandTundra_Young',): 'SandDunes_WT_Y',
-    
-    ('SaturatedBarrens_WetlandTundra_Medium',): 'SaturatedBarrens_WT_M',
-    ('SaturatedBarrens_WetlandTundra_Old',): 'SaturatedBarrens_WT_O',
-    ('SaturatedBarrens_WetlandTundra_Young',): 'SaturatedBarrens_WT_Y',
-    
-    ('Shrubs_WetlandTundra_Old',): 'Shrubs_WT_O',
-    
-    ('SmallLakes_WetlandTundra_Medium',): 'SmallLakes_WT_M',
-    ('SmallLakes_WetlandTundra_Old',): 'SmallLakes_WT_O',
-    ('SmallLakes_WetlandTundra_Young',): 'SmallLakes_WT_Y',
-    
-    ('Urban_WetlandTundra_Old',): 'Urban_WetlandTundra_Old',
-    
-    ## barrow NO AGE STUFF ?? ask bob.
-    ('Rivers',): 'Rivers',
-    ('Ponds',): 'Ponds',
-    ('Lakes',): 'Lakes',
-    ('FlatCenter',): 'FCP',
-    ('Urban',): 'Urban',
-    ('Meadows',): 'Meadows',
-    ('CoalescentLowCenter',): 'CLC',
-    ('HighCenter',) : 'HCP',
-    
-    ## Tanana flats
-    ('OldBog',): 'TF_OB',
-    ('OldFen',): 'TF_OF',
-    ('Coniferous_PermafrostPlateau',): 'TF_Con_PP',
-    ('Deciduous_PermafrostPlateau',): 'TF_Dec_PP',
-    ('ThermokarstLake',): 'TF_TL',
-    ('YoungBog',): 'TF_YB',
-    ('YoungFen',): 'TF_YF',
-    
-    ## Yukon Flats
-    ('Barren_Yukon',): 'Barren_Yukon',
-    ('Bog_Yukon',): 'Bog_Yukon',
-    ('DeciduousForest_Yukon',): 'DeciduousForest_Yukon',
-    ('DwarfShrub_Yukon',): 'DwarfShrub_Yukon',
-    ('EvergreenForest_Yukon',): 'EvergreenForest_Yukon',
-    ('Fen_Yukon',): 'Fen_Yukon',
-    ('Lake_Yukon',): 'Lake_Yukon',
-    ('Pond_Yukon',): 'Pond_Yukon',
-    ('River_Yukon',): 'River_Yukon',
-    ('ShrubScrub_Yukon',): 'ShrubScrub_Yukon',
-    ('Unclassified_Yukon',): 'Unclassified_Yukon',
-}
-
-def find_canon_name (name):
-    """find canonical name of cohort given an alternate name
-    
-    Parameters
-    ----------
-    name: str
-        the alternative name
-        
-    Raises
-    ------
-    KeyError
-        if canon name not found
-    
-    Returns
-    -------
-    Str
-        Canon name of cohort
-    """
-    ## is name a canon name
-    if name in CANON_COHORT_NAMES.values():
-        return name
-    
-    ## loop to find canon name
-    for alt_names in CANON_COHORT_NAMES:
-        if name in alt_names:
-            return CANON_COHORT_NAMES[alt_names]
-    raise KeyError, 'No canon cohort name for exists ' + name 
-
-
-# index names for rows and columns to make code easier to read/update
-#
-ROW, Y = 0, 0 ## index for dimensions 
-COL, X = 1, 1 ## index for dimensions 
 
 class CohortGrid(object):
     """ Concept Class for atm TerrainGrid that represents the data  """
@@ -348,7 +157,7 @@ class CohortGrid(object):
         for f in self.input_data:
             ## add path here
             path = f
-            data, metadata = load_raster (path)
+            data, metadata = raster.load_raster (path)
             
             ## set init shape and resolution
             ## TODO maybe do this differently 
@@ -754,10 +563,10 @@ class CohortGrid(object):
         year = 'TEMP_YEAR'
         filename = cohort+ "_Fractional_Area_" + str(year)
         bin_path = os.path.join(path, filename + '.bin')
-        save_bin(cohort_data, bin_path)
+        binary.save_bin(cohort_data, bin_path)
         if not bin_only:
             img_path = os.path.join(path, filename + '.png')
-            save_img(cohort_data, img_path, filename) # pretty names
+            image.save_img(cohort_data, img_path, filename) # pretty names
             
         return filename
             

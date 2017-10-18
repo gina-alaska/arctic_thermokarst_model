@@ -4,7 +4,7 @@
 """
 import numpy as np
 
-from terraingrid import ROW, COL
+from constants import ROW, COL
 
 
 ICE_TYPES = ('poor', 'pore', 'wedge', 'massive')

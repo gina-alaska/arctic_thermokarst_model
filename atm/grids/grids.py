@@ -1,10 +1,14 @@
+"""
+grids
+-----
 
+object to manage all grid objects
+"""
 
 from terraingrid import CohortGrid
 from ald_grid import ALDGrid
 from poi_grid import POIGrid
 from ice_grid import IceGrid
-
 
 class ModelGrids (object):
     """Model Grids Class"""

@@ -4,6 +4,7 @@ testing code for terraingrid.py
 """
 from context import atm
 from atm.grids import terraingrid
+from atm import io
 
 import numpy as np
 import unittest
@@ -70,7 +71,7 @@ class TestCohortGridClass(unittest.TestCase):
         path = os.path.abspath(os.path.dirname(__file__))
         data_dir = os.path.join(path,'example_data')
         files = [ os.path.join(data_dir, f) for f in os.listdir( data_dir )] 
-        raster, metadata = terraingrid.load_raster(files[0])
+        raster, metadata = io.raster.load_raster(files[0])
         
         ## test resize 
         res_0 = (abs(metadata.deltaY), abs(metadata.deltaX))

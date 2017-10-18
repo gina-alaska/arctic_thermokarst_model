@@ -6,11 +6,7 @@ POI: probablity of instantiation
 import numpy as np
 import os
 
-
-import matplotlib.pyplot as plt
-
-ROW, Y = 0, 0 ## index for dimensions 
-COL, X = 1, 1 ## index for dimensions 
+from constants import ROW, COL
 
 
 class POIGrid (object):

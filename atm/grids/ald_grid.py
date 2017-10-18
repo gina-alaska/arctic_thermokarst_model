@@ -5,7 +5,7 @@ and PL (or pl) to Protective layer
 """
 import numpy as np
 
-from terraingrid import ROW, COL
+from constants import ROW, COL
 
 
 class ALDGrid(object):
