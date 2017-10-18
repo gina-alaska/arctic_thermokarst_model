@@ -1,4 +1,6 @@
-"""POI_grid.py
+"""
+POI_grid
+--------
 
 POI: probablity of instantiation
 """

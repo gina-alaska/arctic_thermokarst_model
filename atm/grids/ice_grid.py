@@ -1,5 +1,6 @@
-"""ice_grid.py
-
+"""
+ice_grid
+--------
 
 """
 import numpy as np

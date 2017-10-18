@@ -1,4 +1,8 @@
-"""Contains objects to represent internal grid cohort data in ATM
+"""
+area_grid
+---------
+
+Contains objects to represent internal grid cohort data in ATM
 """
 import numpy as np
 import os
@@ -13,8 +17,9 @@ from constants import ROW, COL
 class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
 
-class CohortGrid(object):
-    """ Concept Class for atm TerrainGrid that represents the data  """
+class AreaGrid(object):
+    """ AreaGrid represents fractional areas of each cohort in a grid element
+    """
     def __init__ (self, config):
         """This class represents model area grid as fractional areas of each
         cohort that make up a grid element. In each grid element all

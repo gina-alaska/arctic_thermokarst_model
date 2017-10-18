@@ -5,7 +5,7 @@ grids
 object to manage all grid objects
 """
 
-from terraingrid import CohortGrid
+from area_grid import AreaGrid
 from ald_grid import ALDGrid
 from poi_grid import POIGrid
 from ice_grid import IceGrid
@@ -23,7 +23,7 @@ class ModelGrids (object):
             
         Attributes
         ----------
-        area: CohortGrid
+        area: AreaGrid
             object representing fractional area grids for each cohort
         ald: ALDGrid
             ALD, and PL grid object
@@ -37,7 +37,7 @@ class ModelGrids (object):
             a grid of booleans where true elements are in AOI, false are not
         
         """
-        self.area = CohortGrid(config)
+        self.area = AreaGrid(config)
         
         self.shape = self.area.shape
         self.aoi = self.area.area_of_intrest()

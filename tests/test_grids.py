@@ -2,7 +2,7 @@
 """
 import unittest
 from context import atm
-from atm.grids import grids, terraingrid, ald_grid, poi_grid, ice_grid
+from atm.grids import grids, area_grid, ald_grid, poi_grid, ice_grid
 
 import os
 import numpy as np
@@ -65,7 +65,7 @@ class TestGrids(unittest.TestCase):
         
     def test__getitem__ (self):
         """ test if items """
-        self.assertIs(type(self.grids['AREA']), terraingrid.CohortGrid)
+        self.assertIs(type(self.grids['AREA']), area_grid.AreaGrid)
         self.assertIs(type(self.grids['ALD']), ald_grid.ALDGrid)
         self.assertIs(type(self.grids['POI']), poi_grid.POIGrid)
         self.assertIs(type(self.grids['ICE']), ice_grid.IceGrid)

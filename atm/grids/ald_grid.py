@@ -1,4 +1,6 @@
-"""ald_grid.py
+"""
+ald_grid
+--------
 
 for the purposes of this file ALD(or ald) refers to Active layer depth,
 and PL (or pl) to Protective layer

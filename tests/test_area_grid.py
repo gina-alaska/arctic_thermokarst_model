@@ -1,9 +1,9 @@
 """
-testing code for terraingrid.py
+testing code for area_grid.py
 -------------------------------
 """
 from context import atm
-from atm.grids import terraingrid
+from atm.grids import area_grid
 from atm import io
 
 import numpy as np
@@ -14,8 +14,8 @@ import tarfile
 class TestTerrainGridFunctions(unittest.TestCase):
     pass
 
-class TestCohortGridClass(unittest.TestCase):
-    """test the CohortGrid class
+class TestAreaGridClass(unittest.TestCase):
+    """test the AreaGrid class
     """
 
     def setUp(self):
@@ -41,7 +41,7 @@ class TestCohortGridClass(unittest.TestCase):
             'input data': files,
         }
     
-        self.tg_class =  terraingrid.CohortGrid(config)
+        self.tg_class =  area_grid.AreaGrid(config)
     
     def test_init(self):
         """test init results are correct
@@ -96,7 +96,7 @@ class TestCohortGridClass(unittest.TestCase):
         """
         self.tg_class.grid[-1][0] = 1000
         self.assertRaises(
-            terraingrid.MassBalanceError, 
+            area_grid.MassBalanceError, 
             self.tg_class.check_mass_balance 
         )
         pass
@@ -106,7 +106,7 @@ class TestCohortGridClass(unittest.TestCase):
         """
         self.tg_class.grid[-1][0] = -1000
         self.assertRaises(
-            terraingrid.MassBalanceError, 
+            area_grid.MassBalanceError, 
             self.tg_class.check_mass_balance 
         )
         pass
