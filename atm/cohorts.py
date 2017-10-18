@@ -135,6 +135,101 @@ def find_canon_name (name):
 
 
 
+DISPLAY_COHORT_NAMES = {
+    'CLC_WT_M': 'Coalescent Low Center Polygon Wetland Tundra Medium Age',
+    'CLC_WT_O': 'Coalescent Low Center Polygon Wetland Tundra Old Age',
+    'CLC_WT_Y': 'Coalescent Low Center Polygon Wetland Tundra Young Age',
+    
+    'CoastalWaters_WT_O': 'Coastal Waters Wetland Tundra Old Age',
+    
+    'DrainedSlope_WT_M': 'Drained Slope Wetland Tundra Medium Age',
+    'DrainedSlope_WT_O': 'Drained Slope Wetland Tundra Old Age',
+    'DrainedSlope_WT_Y': 'Drained Slope Wetland Tundra Young Age',
+    
+    'FCP_WT_M': 'Flat Center Poloygon Wetland Tundra Medium Age',
+    'FCP_WT_O': 'Flat Center Poloygon Wetland Tundra Old Age',
+    'FCP_WT_Y': 'Flat Center Poloygon Wetland Tundra Young Age',
+    
+    'HCP_WT_M': 'High Center Poloygon Wetland Tundra Medium Age',
+    'HCP_WT_O': 'High Center Poloygon Wetland Tundra Old Age',
+    'HCP_WT_Y': 'High Center Poloygon Wetland Tundra Young Age',
+    
+    'LargeLakes_WT_M': 'Large Lakes Wetland Tundra Medium Age',
+    'LargeLakes_WT_O': 'Large Lakes Wetland Tundra Old Age',
+    'LargeLakes_WT_Y': 'Large Lakes Wetland Tundra Young Age',
+    
+    'LCP_WT_M': 'Low Center Poloygon Wetland Tundra Medium Age',
+    'LCP_WT_O': 'Low Center Poloygon Wetland Tundra Old Age',
+    'LCP_WT_Y': 'Low Center Poloygon Wetland Tundra Young Age',
+    
+    'Meadow_WT_M': 'Medow Wetland Tundra Medium Age',
+    'Meadow_WT_O': 'Medow Wetland Tundra Old Age',
+    'Meadow_WT_Y': 'Medow Wetland Tundra Young Age',
+    
+    'MediumLakes_WT_M ': 'Medium Lakes Wetland Tundra Medium Age',
+    'MediumLakes_WT_O': 'Medium Lakes Wetland Tundra Old Age',
+    'MediumLakes_WT_Y' : 'Medium Lakes Wetland Tundra Young Age',
+    
+    'NoData_WT_O': 'No Data Wetland Tundra Old Age',
+    
+    'Ponds_WT_M': 'Ponds Wetland Tundra Medium Age',
+    'Ponds_WT_O': 'Ponds Wetland Tundra Old Age',
+    'Ponds_WT_Y': 'Ponds Wetland Tundra Young Age',
+    
+    'Rivers_WT_M': 'Rivers Wetland Tundra Medium Age',
+    'Rivers_WT_O': 'Rivers Wetland Tundra Old Age',
+    'Rivers_WT_Y': 'Rivers Wetland Tundra Young Age',
+    
+    'SandDunes_WT_M': 'Sand Dunes Wetland Tundra Medium Age',
+    'SandDunes_WT_O': 'Sand Dunes Wetland Tundra Old Age',
+    'SandDunes_WT_Y': 'Sand Dunes Wentland Tundra Young Age',
+    
+    'SaturatedBarrens_WT_M': 'Saturate Barrens Wetland Turnda Medium Age',
+    'SaturatedBarrens_WT_O': 'Saturate Barrens Wetland Turnda Old Age',
+    'SaturatedBarrens_WT_Y': 'Saturate Barrens Wetland Turnda Young Age',
+    
+    'Shrubs_WT_O': 'Shurbs Wetland Tundra Old Age',
+    
+    'SmallLakes_WT_M': 'Small Lakes Wetland Tundra Medium Age',
+    'SmallLakes_WT_O': 'Small Lakes Wetland Tundra Old Age',
+    'SmallLakes_WT_Y': 'Small Lakes Wetland Tundra Young Age',
+    
+    'Urban_WetlandTundra_Old': 'Urban Wetland Tundra Old Age',
+    
+    ## barrow NO AGE STUFF ?? ask bob.
+    'Rivers': 'Rivers',
+    'Ponds': 'Ponds',
+    'Lakes': 'Lakes',
+    'FCP': 'Flat Center Pologon',
+    'Urban': 'Urban',
+    'Meadows': 'Meadows',
+    'CLC': 'Coalescent Low Center Polygon',
+    'HCP': 'High Center Pologon',
+    
+    ## Tanana flats
+    'TF_OB': 'Old Bog Tanana Flats',
+    'TF_OF': 'Old Fen Tanana Flats',
+    'TF_Con_PP': 'Coniferous Permafrost Plateau Tanana Flats',
+    'TF_Dec_PP': 'Deciduous Permafrost Plateau Tanana Flats',
+    'TF_TL': 'Thermokarst Lake Tanana Flats',
+    'TF_YB': 'Young Bog Tanana Flats',
+    'TF_YF': 'Young FenTanana Flats',
+    
+    ## Yukon Flats
+    'Barren_Yukon': 'Barren Yukon Flats',
+    'Bog_Yukon': 'Bog Yukon Flats',
+    'DeciduousForest_Yukon': 'Deciduous Forest Yukon Flats',
+    'DwarfShrub_Yukon': 'Dwar fShrubYukon Flats',
+    'EvergreenForest_Yukon': 'Evergreen Forest Yukon Flats',
+    'Fen_Yukon': 'Fen Yukon Flats',
+    'Lake_Yukon': 'Lake Yukon Flats',
+    'Pond_Yukon': 'Pond Yukon Flats',
+    'River_Yukon': 'River Yukon Flats',
+    'ShrubScrub_Yukon': 'Shrub Scrub Yukon Flats',
+    'Unclassified_Yukon': 'Unclassified Yukon Flats',
+}
+
+
 
 
 ### BOBS old code, To Be moved
