@@ -134,7 +134,7 @@ def find_canon_name (name):
     raise KeyError, 'No canon cohort name for exists ' + name 
 
 
-
+# maps canon name to the a detailed name to display
 DISPLAY_COHORT_NAMES = {
     'CLC_WT_M': 'Coalescent Low Center Polygon Wetland Tundra Medium Age',
     'CLC_WT_O': 'Coalescent Low Center Polygon Wetland Tundra Old Age',

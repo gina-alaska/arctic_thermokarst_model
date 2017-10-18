@@ -11,11 +11,39 @@ from constants import ROW, COL
 
 
 class ALDGrid(object):
-    """ Class doc """
+    """ALD, and PL object """
     
     def __init__ (self, config):
-        """ Class initialiser """
+        """Represnts ALD, and PL for each cohort for the model
         
+        Parameters
+        ----------
+        config: dict
+        
+        Attributes
+        ----------
+        start_year: int
+            year of init data
+        porosity: dict
+            porosity values for each cohort
+        protective_layer_factor: dict
+            PL factor for each cohort
+        aoi_mask: np.array
+            Boolean array where true elemets are in model domain
+        init_ald_grid: np.array
+            initial ALD gird
+        init_pl_grid: np.array
+            initial PL gird
+        pl_key_to_index: dict
+            maps canon cohort names to index used in internal pl_grid
+        shape: tuple
+            (rows, columns)
+        ald_grid: list
+            array or ALD grids for each timestep
+        pl_grid: list
+            array or PL grids for each timestep
+            
+        """
         shape = config['shape']
         cohort_list = config['cohort list']
         init_ald = config ['init ald']

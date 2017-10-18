@@ -1,6 +1,23 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.2] - 2017-10-18
+## added
+- grids submodule
+  - ModelGrids class
+  - AreaGrid class
+  - ALDGrid class
+  - POIGrid class
+  - ICEGrid class
+- testing suite for grid classes
+- IO submodule
+  - raster IO 
+  - image IO
+  - binary IO
+- metadata describing canon cohort names
+- metadata describing display cohort names
+- skeleton for new check funcution
+
 ## [0.2.1] - 2017-10-03
 ### added 
 - documents directory

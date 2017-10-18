@@ -11,10 +11,27 @@ from constants import ROW, COL
 ICE_TYPES = ('poor', 'pore', 'wedge', 'massive')
 
 class IceGrid(object):
-    """ Class doc """
+    """ Ice grid object """
     
     def __init__ (self, config):
-        """ Class initialiser """
+        """Represents Ice quality for each grid element
+        
+        Parameters
+        ----------
+        config: dict
+        
+        Attributes
+        ----------
+        AOI_mask: np.array
+            boolean array where True elements are part of model domain
+        cohort_coeffs: dict
+            Dictionary with key for each cohort in model, and values 
+            that are a dict of ice slope coefficients
+        grid: np.array
+            model ice slope grid
+        shape: tuple
+            (row dimension, column dimension)
+        """
         
         shape = config['shape']
         #~ cohort_list = config['cohort list']
