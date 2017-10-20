@@ -13,7 +13,7 @@ Arctic Thermokarst Model
 from atm root
 
 ## run all
-`python -m unittest discover tests/``
+`python -m unittest discover tests/`
 
 ## run a test
 `python tests/test_<file>.py`
