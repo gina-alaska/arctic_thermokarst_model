@@ -5,7 +5,6 @@ Control
 for manageing control confguration in the ATM
 
 """
-
 from io import control_file
 import os
 
@@ -14,17 +13,27 @@ class ControlKeyError (Exception):
     
 class ControlPathError (Exception):
     """Raised if control path is invalid"""
+    
+class ControlSetError (Exception):
+    """Raised if control path is invalid"""
 
 class Control(object):
     """ Class doc """
     
     def __init__ (self, main_control_file):
-        """
+        """class for managing  control configuration
         
         Parameters
         ----------
         main_control_file: path
             path to main control file
+            
+        Attributes
+        ----------
+        init_control: dict
+            initial control values read from the Control files
+        new_control:
+            control values set at runtime
         """
         self.init_control = self.load({}, main_control_file)
         
@@ -32,9 +41,36 @@ class Control(object):
         self.new_control = {}
         
     def load (self, control, in_file):
-        """ Function doc """
+        """Reads control files, recursivly
+        
+        Parameters
+        ----------
+        control: dict
+            control dict to update
+        in_file:
+            file to read values from
+            
+        Raises
+        ------
+        ControlPathError
+            if paths are not found
+            
+        Returns
+        -------
+        dict or list
+        """
         with open(in_file, 'r') as fd:
             inputs = control_file.read(fd)
+        
+        is_list = True
+        for k in inputs.keys():
+            if type(k) is int:
+                continue
+            is_list = False
+            break
+            
+        if is_list: 
+            return inputs.values()
         
         for key in inputs:
             val = inputs[key]
@@ -99,12 +135,46 @@ class Control(object):
         return control
         
     def __getitem__ (self, key):
-        """ Function doc """
+        """get item function
+        
+        Parameters
+        ----------
+        key: str or other
+        
+        Raises
+        ------
+        KeyError
+            key not found in init_control or new_control
+        
+        Returns
+        -------
+        returns value
+        """
         if key in self.init_control.keys():
             return self.init_control[key]
-        raise KeyError
+        elif key in self.new_control.keys():
+            return self.new_control[key]
+        else:
+            raise KeyError
             
-    
     __getattr__ = __getitem__
-    #~ __setattr__ = __setitem__
+    
+    def __setitem__ (self, key, value):
+        """sets an item in new_control
+        
+        Parameters
+        ----------
+        key:
+            key in new control
+        value:
+            value to set
+        
+        Raises
+        ------
+        ControlSetError
+        """
+        if key in self.init_control.keys():
+            raise ControlSetError, "cannot overwrite initial control values"
+        else:
+            self.new_control[key] = value
         
