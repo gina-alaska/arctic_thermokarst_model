@@ -8,7 +8,7 @@
 Simulation_area					Barrow
 #----------------------------------------------------------------
 # Specify location of computer code on local computer
-Run_dir		/Users/rawser/Desktop/bolton/atm_data/
+Run_dir		./barrow_uniform
 #----------------------------------------------------------------
 # Data Input and Output Directories
 Input_dir				  Input
