@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.3] - 2017-10-19
+### added
+- atm/io/control.py control file io, and matching tests in tests/
+- atm/control.py with Contol class, and matching tests in tests/
+
 ## [0.2.2] - 2017-10-18
 ## added
 - grids submodule
