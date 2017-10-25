@@ -5,7 +5,7 @@ Control
 for manageing control confguration in the ATM
 
 """
-from io import control_file
+from atm_io import control_file
 import os
 
 class ControlKeyError (Exception):

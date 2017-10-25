@@ -1,7 +1,7 @@
 """test control file IO
 """
 from context import atm
-from atm.io import control_file
+from atm.atm_io import control_file
 
 import unittest
 from StringIO import StringIO

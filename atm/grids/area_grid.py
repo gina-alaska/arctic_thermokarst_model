@@ -8,7 +8,7 @@ import numpy as np
 import os
 
 from ..cohorts import find_canon_name
-from ..io import binary, image, raster
+from ..atm_io import binary, image, raster
 
 from constants import ROW, COL
 
