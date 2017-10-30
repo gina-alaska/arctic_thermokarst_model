@@ -43,7 +43,9 @@ def from_shapefile(infile, metadata):
         layer.SetAttributeFilter( filter_attr + ' = ' + str(val) )
         cmd = 'gdal_rasterize -a Area '
         cmd += '-tr 25 25 -te '
-        cmd += 563500.0 7868000.0 631500.0 7927000.0 -a_nodata -9999 '
+        cmd += ' '.join([str(i) for i in extent]) + ' '
+        cmd += '-a_nodata -9999 '
+        cmd += '
         exec(cmd)
         
     
