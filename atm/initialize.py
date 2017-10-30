@@ -540,13 +540,13 @@ def initialize(self):
     print '    Initializing the model'
     
     ## NOTE: this could be greatly simplified 
-    if self.Simulation_area.lower() == 'barrow':
+    if self.control.Simulation_area.lower() == 'barrow':
         os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
                      self.control['Control_dir']+'/')
-    elif self.Simulation_area.lower() == 'tanana':
+    elif self.control.Simulation_area.lower() == 'tanana':
         os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
                      self.control['Control_dir'])
-    elif self.Simulation_area.lower() == 'yukon':
+    elif self.control.Simulation_area.lower() == 'yukon':
         os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
                      self.control['Control_dir'])
                      

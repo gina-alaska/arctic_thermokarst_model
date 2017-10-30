@@ -46,7 +46,7 @@ import faulthandler
 
 # Import ATM Modules
 import clock
-import read_control
+#~ import read_control
 import read_met_data
 import read_degree_days
 import calc_degree_days
@@ -66,23 +66,30 @@ from cohorts import initial_barrow, initial_tanana
 import Output_cohorts_by_year
 import results
 import archive
+
+
+from control import Control
 #_______________________________________________________________________________
 class ATM(object):
 
     # TODO contoll file IO out of ATM class
-    Control_file        = sys.argv[1]
+    #~ Control_file        = sys.argv[1]
  
-    def __init__(self):
+    def __init__(self, control_file):
         # ----------------------
         # Simulation Start Time
         # ----------------------
+        
+        self.control = Control(control_file)
+        print 'Control loaded'
+        
         faulthandler.enable()
         clock.start(self)
         
         #--------------------------------------
         # Read the Control File for Simulation
         #--------------------------------------
-        self.Control_file     = sys.argv[1]
+        #~ self.Control_file     = sys.argv[1]
         
         ########################################################################
         # Execute the script
@@ -99,8 +106,7 @@ class ATM(object):
         print ' Initializing ATM'
         print '==================='
         
-        ### ICK
-        read_control.read_control(self)
+        #~ read_control.read_control(self)
         initialize.initialize(self)
         read_layers.read_layers(self)
         model_domain.model_domain(self)
@@ -206,4 +212,7 @@ class ATM(object):
         print '----------------------------------------'        
         
 #_______________________________________________________________________________
-Variable = ATM()
+
+
+
+Variable = ATM(sys.argv[1])
