@@ -125,9 +125,10 @@ class Control(object):
                 else:
                     raise ControlPathError, "Control Path Invalid: " + pth
               
-            in_path = control['Input_dir']
+            in_path = control['Control_dir']
             for key in [k for k in control if type(control[k]) is str]:
                 pth = os.path.join(in_path, control[key])
+                #~ print pth
                 if not os.path.isfile(pth):
                     continue
                 control[key] = self.load({}, pth)

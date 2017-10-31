@@ -81,6 +81,8 @@ class ATM(object):
         # ----------------------
         
         self.control = Control(control_file)
+        from pprint import pprint
+        print pprint(self.control.init_control)
         print 'Control loaded'
         
         faulthandler.enable()
@@ -107,7 +109,7 @@ class ATM(object):
         print '==================='
         
         #~ read_control.read_control(self)
-        initialize.initialize(self)
+        #~ initialize.initialize(self)
         read_layers.read_layers(self)
         model_domain.model_domain(self)
         create_attm_cohort_arrays.create_attm_cohort_arrays(self)
@@ -116,11 +118,11 @@ class ATM(object):
         #=========================================
         # Initializing Site Specific Information
         #=========================================
-        if self.Simulation_area.lower() == 'barrow':
+        if self.control['Simulation_area'].lower() == 'barrow':
             run_barrow.initialize_barrow(self)
-        elif self.Simulation_area.lower() == 'tanana':
+        elif self.control['Simulation_area'].lower() == 'tanana':
             run_tanana.initialize_tanana(self)
-        elif self.Simulation_area.lower() == 'yukon':
+        elif self.control['Simulation_area'].lower() == 'yukon':
             run_yukon.initialize_yukon(self)
          
         #=======================================
@@ -138,9 +140,9 @@ class ATM(object):
     	print '======================================'
         print ' Initializing Terrestrial Properties '
         print '======================================'
-        if self.Simulation_area.lower() == 'barrow':
+        if self.control['Simulation_area'].lower() == 'barrow':
             run_barrow.initialize_barrow_cohorts(self)
-        elif self.Simulation_area.lower() == 'tanana':
+        elif self.control['Simulation_area'].lower() == 'tanana':
             run_tanana.Terrestrial_Tanana(self)
 
         print '=================================================='
@@ -148,7 +150,7 @@ class ATM(object):
         print '=================================================='
 
         initialize.run(self)
-        if self.Simulation_area.lower() == 'barrow':
+        if self.control['Simulation_area'].lower() == 'barrow':
             ## move to else where
             barrow_checks = [ 
                 'lake_pond_expansion', 'pond_infill', 
@@ -167,7 +169,7 @@ class ATM(object):
             ] 
             
             run_general.run(self, barrow_checks, initial_barrow)
-        elif self.Simulation_area.lower() == 'tanana':
+        elif self.control['Simulation_area'].lower() == 'tanana':
             tanana_checks = []
             run_general.run(self, tanana_checks, initial_tanana)
 
@@ -202,7 +204,7 @@ class ATM(object):
             self.archive_file =tarfile.open(self.control['Run_dir']+self.Output_directory+str('/Archive/')+ \
                                             self.archive_time+str('_')+self.simulation_name+".tar.gz", mode='w:gz')
         #----------------------------------------------------------------------------------------------------------
-            if self.Simulation_area.lower() == 'barrow':
+            if self.control['Simulation_area'].lower() == 'barrow':
                 os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/')
                 
 

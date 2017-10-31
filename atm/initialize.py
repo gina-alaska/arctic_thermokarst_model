@@ -541,15 +541,16 @@ def initialize(self):
     
     ## NOTE: this could be greatly simplified 
     if self.control.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                      self.control['Control_dir']+'/')
     elif self.control.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                      self.control['Control_dir'])
     elif self.control.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                      self.control['Control_dir'])
-                     
+             
+                    
     self.initialize = {}
     with open(self.Initialize_Control, 'r') as f:
         for line in f:

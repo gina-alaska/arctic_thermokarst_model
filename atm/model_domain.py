@@ -11,7 +11,7 @@ def model_domain(self):
     print '    Initialize model domain.'
     
     print '      In the model domain - checking dimensions'
-    if self.Simulation_area.lower() == 'barrow' or self.Simulation_area.lower() == "arctic_coast":
+    if self.control['Simulation_area'].lower() == 'barrow' or self.control['Simulation_area'].lower() == "arctic_coast":
         if (np.size(self.CLC_WT_M) == np.size(self.CLC_WT_O) == np.size(self.CLC_WT_Y) == \
             np.size(self.CoastalWaters_WT_O) == \
             np.size(self.DrainedSlope_WT_M) == np.size(self.DrainedSlope_WT_O) == np.size(self.DrainedSlope_WT_Y) == \
@@ -35,12 +35,12 @@ def model_domain(self):
 #            np.size(self.Lakes) == np.size(self.FCP) == np.size(self.Urban) == \
 #            np.size(self.NPG) == np.size(self.CLC) == np.size(self.HCP)):
             print '      All data arrays have the same dimensions'
-    elif self.Simulation_area.lower() == 'tanana':
+    elif self.control['Simulation_area'].lower() == 'tanana':
         if (np.size(self.TF_OB) == np.size(self.TF_OF) == np.size(self.TF_Con_PP) == \
             np.size(self.TF_Dec_PP) == np.size(self.TF_TL) == np.size(self.TF_YB) == \
             np.size(self.TF_YF)):
             print '    All data arrays have the same dimensions'
-    elif self.Simulation_area.lower() == 'yukon':
+    elif self.control['Simulation_area'].lower() == 'yukon':
         if (np.size(self.Barren_Yukon) == np.size(self.Bog_Yukon) == \
             np.size(self.DeciduousForest_Yukon) == np.size(self.DwarfShrub_Yukon) == \
             np.size(self.EvergreenForest_Yukon) == np.size(self.Fen_Yukon) == \
@@ -53,10 +53,10 @@ def model_domain(self):
         exit()
 
     
-    print '         number of ATTM rows   : ', int((self.nrows * self.y_res) / float(self.Y_resolution))
-    print '         number of ATTM columns: ', int((self.ncols * self.x_res) / float(self.X_resolution))
-    self.ATTM_nrows = int((self.nrows * self.y_res) / float(self.Y_resolution))
-    self.ATTM_ncols = int((self.ncols * self.x_res) / float(self.X_resolution))
+    print '         number of ATTM rows   : ', int((self.nrows * self.y_res) / float(self.control['Y_model_resolution']))
+    print '         number of ATTM columns: ', int((self.ncols * self.x_res) / float(self.control['X_model_resolution']))
+    self.ATTM_nrows = int((self.nrows * self.y_res) / float(self.control['Y_model_resolution']))
+    self.ATTM_ncols = int((self.ncols * self.x_res) / float(self.control['X_model_resolution']))
 # ---------------------------
     print '      done.'
     print ' '

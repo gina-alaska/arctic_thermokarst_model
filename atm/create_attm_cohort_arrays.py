@@ -13,7 +13,7 @@ def create_attm_cohort_arrays(self):
     """
     The purpose of this module is to populate ATM with the initial cohorts.
     """
-    if self.Simulation_area.lower() == 'barrow':
+    if self.control['Simulation_area'].lower() == 'barrow':
         self.ATTM_Wet_NPG    = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Wetland Non-polygonal ground (meadow)
         self.ATTM_Wet_LCP    = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Wetland Low Center Polygon
         self.ATTM_Wet_CLC    = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Wetland Coalescent Low Center Polygon
@@ -82,7 +82,7 @@ def create_attm_cohort_arrays(self):
         self.ATTM_SmallLakes_WT_O       = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Small Lakes, Wetland Tundra, old age
         self.ATTM_Urban_WT              = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Urban area, wetland tundra
     #==================================================================================================================
-    elif self.Simulation_area.lower() == 'tanana':
+    elif self.control['Simulation_area'].lower() == 'tanana':
         self.ATTM_TF_OB      = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Tanana Flats Old Bog
         self.ATTM_TF_YB      = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Tanana Flats Young Bog
         self.ATTM_TF_OF      = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Tanana Flats Old Fen
@@ -93,7 +93,7 @@ def create_attm_cohort_arrays(self):
         self.ATTM_Total      = np.zeros([self.ATTM_nrows * self.ATTM_ncols])  # Cohort check (cohort fractional
                                                                               # areas sum to 1.0?)
     #===========================================================================================
-    elif self.Simulation_area.lower() == 'yukon':
+    elif self.control['Simulation_area'].lower() == 'yukon':
         self.ATTM_Barren_Yukon          = np.zeros([self.ATTM_nrows * self.ATTM_ncols])
         self.ATTM_Bog_Yukon             = np.zeros([self.ATTM_nrows * self.ATTM_ncols])
         self.ATTM_DeciduousForest_Yukon = np.zeros([self.ATTM_nrows * self.ATTM_ncols])
