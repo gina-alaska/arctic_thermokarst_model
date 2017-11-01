@@ -4,7 +4,7 @@ Generate Raster
 
 tools for generating atm input rasters
 """
-from osgeo import ogr
+from osgeo import ogr, gdal
 
 
 ACP_metadata = {
@@ -29,24 +29,54 @@ ACP_metadata = {
 }
 
 
-def from_shapefile(infile, metadata):
+def from_shapefile(in_shape, out_raster, metadata):
     """
+    
+    adatabed from 
+        https://pcjericks.github.io/py-gdalogr-cookbook/raster_layers.html#convert-an-ogr-file-to-a-raster
+        and 
+        http://ceholden.github.io/open-geo-tutorial/python/chapter_4_vector.html#Pure-Python-version----gdal.RasterizeLayer
     """
+    # important coefficients
     filter_attr = '"GRIDCODE"'
+    pixel_size = 25
+    NoData_value = -9999
+    rasterize_attr = 'Shape_Area'
+
+    # Open the data source and read in the extent
+    source = ogr.Open(in_shape)
+    layer = source.GetLayer(0)
+    x_min, x_max, y_min, y_max = layer.GetExtent()
+
+    # Create Raster
+    x_res = int((x_max - x_min) / pixel_size)
+    y_res = int((y_max - y_min) / pixel_size)
+    dest = gdal.GetDriverByName('GTiff').Create(out_raster, x_res, y_res, 1, gdal.GDT_Byte)
+    dest.SetGeoTransform((x_min, pixel_size, 0, y_max, 0, -pixel_size))
     
-    shapefile = ogr.Open(infile)
-    layer = shapefile.GetLayer(0)
-    extent = layer.GetExtent()
     
-    for land_cover in metadata:
-        val = metadata[ land_cover ]
+    
+    band_num = 1
+    for attr in metadata:
+        val = metadata[attr]
         layer.SetAttributeFilter( filter_attr + ' = ' + str(val) )
-        cmd = 'gdal_rasterize -a Area '
-        cmd += '-tr 25 25 -te '
-        cmd += ' '.join([str(i) for i in extent]) + ' '
-        cmd += '-a_nodata -9999 '
-        cmd += '
-        exec(cmd)
+        band = dest.GetRasterBand(band_num)
+        band.SetNoDataValue(NoData_value)
+        gdal.RasterizeLayer(
+            dest, 
+            [band_num], 
+            layer, 
+            None, 
+            None, 
+            [0], 
+            ['ATTRIBUTE=Shape_Area']
+        )
+        
+
+## simple test, need to be moved.
+#~ import sys
+#~ from_shapefile(sys.argv[1], 'rasterize_test.tif',ACP_metadata)
+    
         
     
     
