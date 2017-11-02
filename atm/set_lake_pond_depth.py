@@ -46,56 +46,56 @@ def set_lake_pond_depth(self):
         #------------------------------------
         # Determine Lake Depth Distribution
         #------------------------------------
-        if self.LakePond['Lake_Distribution'].lower() == 'random':
-            #Lake_Depth = random.uniform(self.LakePond['Lower_Lake_Depth'], \
-            #                            self.LakePond['Upper_Lake_Depth'])
-            LargeLake_WT_Y_Depth = random.uniform(self.LakePond['Lower_LargeLake_WT_Y_Depth'] , \
-                                                  self.LakePond['Upper_LargeLake_WT_Y_Depth'])
-            LargeLake_WT_M_Depth = random.uniform(self.LakePond['Lower_LargeLake_WT_M_Depth'] , \
-                                                  self.LakePond['Upper_LargeLake_WT_M_Depth'])
-            LargeLake_WT_O_Depth = random.uniform(self.LakePond['Lower_LargeLake_WT_O_Depth'] , \
-                                                  self.LakePond['Upper_LargeLake_WT_O_Depth'])
-            MediumLake_WT_Y_Depth = random.uniform(self.LakePond['Lower_MediumLake_WT_Y_Depth'] , \
-                                                   self.LakePond['Upper_MediumLake_WT_Y_Depth'])
-            MediumLake_WT_M_Depth = random.uniform(self.LakePond['Lower_MediumLake_WT_M_Depth'], \
-                                                   self.LakePond['Upper_MediumLake_WT_M_Depth'])
-            MediumLake_WT_O_Depth = random.uniform(self.LakePond['Lower_MediumLake_WT_O_Depth'], \
-                                                   self.LakePond['Upper_MediumLake_WT_O_Depth'])
-            SmallLake_WT_Y_Depth  = random.uniform(self.LakePond['Lower_SmallLake_WT_Y_Depth'], \
-                                                   self.LakePond['Upper_SmallLake_WT_Y_Depth'])
-            SmallLake_WT_M_Depth  = random.uniform(self.LakePond['Lower_SmallLake_WT_M_Depth'], \
-                                                   self.LakePond['Upper_SmallLake_WT_M_Depth'])
-            SmallLake_WT_O_Depth  = random.uniform(self.LakePond['Lower_SmallLake_WT_O_Depth'], \
-                                                   self.LakePond['Upper_SmallLake_WT_O_Depth'])
+        if self.control.Lake_Pond_Control['Lake_Distribution'].lower() == 'random':
+            #Lake_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_Lake_Depth'], \
+            #                            self.control.Lake_Pond_Control['Upper_Lake_Depth'])
+            LargeLake_WT_Y_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_LargeLake_WT_Y_Depth'] , \
+                                                  self.control.Lake_Pond_Control['Upper_LargeLake_WT_Y_Depth'])
+            LargeLake_WT_M_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_LargeLake_WT_M_Depth'] , \
+                                                  self.control.Lake_Pond_Control['Upper_LargeLake_WT_M_Depth'])
+            LargeLake_WT_O_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_LargeLake_WT_O_Depth'] , \
+                                                  self.control.Lake_Pond_Control['Upper_LargeLake_WT_O_Depth'])
+            MediumLake_WT_Y_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_MediumLake_WT_Y_Depth'] , \
+                                                   self.control.Lake_Pond_Control['Upper_MediumLake_WT_Y_Depth'])
+            MediumLake_WT_M_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_MediumLake_WT_M_Depth'], \
+                                                   self.control.Lake_Pond_Control['Upper_MediumLake_WT_M_Depth'])
+            MediumLake_WT_O_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_MediumLake_WT_O_Depth'], \
+                                                   self.control.Lake_Pond_Control['Upper_MediumLake_WT_O_Depth'])
+            SmallLake_WT_Y_Depth  = random.uniform(self.control.Lake_Pond_Control['Lower_SmallLake_WT_Y_Depth'], \
+                                                   self.control.Lake_Pond_Control['Upper_SmallLake_WT_Y_Depth'])
+            SmallLake_WT_M_Depth  = random.uniform(self.control.Lake_Pond_Control['Lower_SmallLake_WT_M_Depth'], \
+                                                   self.control.Lake_Pond_Control['Upper_SmallLake_WT_M_Depth'])
+            SmallLake_WT_O_Depth  = random.uniform(self.control.Lake_Pond_Control['Lower_SmallLake_WT_O_Depth'], \
+                                                   self.control.Lake_Pond_Control['Upper_SmallLake_WT_O_Depth'])
 
-        elif self.LakePond['Lake_Distribution'].lower() == 'uniform':
-            #Lake_Depth = self.LakePond['Uniform_Lake_Depth']
-            LargeLake_WT_Y_Depth  = self.LakePond['Uniform_Lake_Depth']
-            LargeLake_WT_M_Depth  = self.LakePond['Uniform_Lake_Depth']
-            LargeLake_WT_O_Depth  = self.LakePond['Uniform_Lake_Depth']
-            MediumLake_WT_Y_Depth = self.LakePond['Uniform_Lake_Depth']
-            MediumLake_WT_M_Depth = self.LakePond['Uniform_Lake_Depth']
-            MediumLake_WT_O_Depth = self.LakePond['Uniform_Lake_Depth']
-            SmallLake_WT_Y_Depth  = self.LakePond['Uniform_Lake_Depth']
-            SmallLake_WT_M_Depth  = self.LakePond['Uniform_Lake_Depth']
-            SmallLake_WT_O_Depth  = self.LakePond['Uniform_Lake_Depth']
+        elif self.control.Lake_Pond_Control['Lake_Distribution'].lower() == 'uniform':
+            #Lake_Depth = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            LargeLake_WT_Y_Depth  = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            LargeLake_WT_M_Depth  = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            LargeLake_WT_O_Depth  = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            MediumLake_WT_Y_Depth = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            MediumLake_WT_M_Depth = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            MediumLake_WT_O_Depth = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            SmallLake_WT_Y_Depth  = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            SmallLake_WT_M_Depth  = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
+            SmallLake_WT_O_Depth  = self.control.Lake_Pond_Control['Uniform_Lake_Depth']
         #------------------------------------
         # Determine Pond Depth Distribution
         #------------------------------------
-        if self.LakePond['Pond_Distribution'].lower() == 'random':
-            #Pond_Depth = random.uniform(self.LakePond['Lower_Pond_Depth'],\
-            #                            self.LakePond['Upper_Pond_Depth'])
-            Pond_WT_Y_Depth = random.uniform(self.LakePond['Lower_Pond_WT_Y_Depth'], \
-                                             self.LakePond['Upper_Pond_WT_Y_Depth'])
-            Pond_WT_M_Depth = random.uniform(self.LakePond['Lower_Pond_WT_M_Depth'], \
-                                             self.LakePond['Upper_Pond_WT_M_Depth'])
-            Pond_WT_O_Depth = random.uniform(self.LakePond['Lower_Pond_WT_O_Depth'], \
-                                             self.LakePond['Upper_Pond_WT_O_Depth'])
-        elif self.LakePond['Pond_Distribution'].lower() == 'uniform':
-            #Pond_Depth = self.LakePond['Uniform_Pond_Depth']
-            Pond_WT_Y_Depth = self.LakePond['Uniform_Pond_Depth']
-            Pond_WT_M_Depth = self.LakePond['Uniform_Pond_Depth']
-            Pond_WT_O_Depth = self.LakePond['Uniform_Pond_Depth']
+        if self.control.Lake_Pond_Control['Pond_Distribution'].lower() == 'random':
+            #Pond_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_Pond_Depth'],\
+            #                            self.control.Lake_Pond_Control['Upper_Pond_Depth'])
+            Pond_WT_Y_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_Pond_WT_Y_Depth'], \
+                                             self.control.Lake_Pond_Control['Upper_Pond_WT_Y_Depth'])
+            Pond_WT_M_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_Pond_WT_M_Depth'], \
+                                             self.control.Lake_Pond_Control['Upper_Pond_WT_M_Depth'])
+            Pond_WT_O_Depth = random.uniform(self.control.Lake_Pond_Control['Lower_Pond_WT_O_Depth'], \
+                                             self.control.Lake_Pond_Control['Upper_Pond_WT_O_Depth'])
+        elif self.control.Lake_Pond_Control['Pond_Distribution'].lower() == 'uniform':
+            #Pond_Depth = self.control.Lake_Pond_Control['Uniform_Pond_Depth']
+            Pond_WT_Y_Depth = self.control.Lake_Pond_Control['Uniform_Pond_Depth']
+            Pond_WT_M_Depth = self.control.Lake_Pond_Control['Uniform_Pond_Depth']
+            Pond_WT_O_Depth = self.control.Lake_Pond_Control['Uniform_Pond_Depth']
 
         #--------------------------
         # Set Lake and Pond Depths
@@ -132,9 +132,9 @@ def set_lake_pond_depth(self):
     #         section.
     # ------------------------------------------------
     ### NOTE: all of this save figure type code could probably be moved to it's own class/module
-    if self.LakePond['Lake_Depth_Figure'].lower() == 'yes':
+    if self.control.Lake_Pond_Control['Lake_Depth_Figure'].lower() == 'yes':
         # Small Lakes, Wetland Tundra, Young age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/SmallLakes_WT_Y/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/SmallLakes_WT_Y/')
         lake_depth = np.reshape(self.SmallLake_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -144,7 +144,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_SmallLake_WT_Y_Depth.bin')
         pl.close()
         # Small Lakes, Wetland Tundra, Medium age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/SmallLakes_WT_M/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/SmallLakes_WT_M/')
         lake_depth = np.reshape(self.SmallLake_WT_M_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -154,7 +154,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_SmallLake_WT_M_Depth.bin')
         pl.close()
         # Small Lakes, Wetland Tundra, Old age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/SmallLakes_WT_O/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/SmallLakes_WT_O/')
         lake_depth = np.reshape(self.SmallLake_WT_O_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -164,7 +164,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_SmallLake_WT_O_Depth.bin')
         pl.close()
         # Medium Lakes, Wetland Tundra, Young age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/MediumLakes_WT_Y/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/MediumLakes_WT_Y/')
         lake_depth = np.reshape(self.MediumLake_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -174,7 +174,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_MediumLake_WT_Y_Depth.bin')
         pl.close()
         # Medium Lakes, Wetland Tundra, Medium age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/MediumLakes_WT_M/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/MediumLakes_WT_M/')
         lake_depth = np.reshape(self.MediumLake_WT_M_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -184,7 +184,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_MediumLake_WT_M_Depth.bin')
         pl.close()
         # Medium Lakes, Wetland Tundra, Old age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/MediumLakes_WT_O/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/MediumLakes_WT_O/')
         lake_depth = np.reshape(self.MediumLake_WT_O_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -194,7 +194,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_MediumLake_WT_O_Depth.bin')
         pl.close()
         # Large Lakes, Wetland Tundra, Young age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/LargeLakes_WT_Y/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/LargeLakes_WT_Y/')
         lake_depth = np.reshape(self.LargeLake_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -204,7 +204,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_LargeLake_WT_Y_Depth.bin')
         pl.close()
         # Large Lakes, Wetland Tundra, Medium age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/LargeLakes_WT_M/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/LargeLakes_WT_M/')
         lake_depth = np.reshape(self.LargeLake_WT_M_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -214,7 +214,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_LargeLake_WT_M_Depth.bin')
         pl.close()
         # Large Lakes, Wetland Tundra, Old age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/LargeLakes_WT_O/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/LargeLakes_WT_O/')
         lake_depth = np.reshape(self.LargeLake_WT_O_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(lake_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -227,9 +227,9 @@ def set_lake_pond_depth(self):
         # Return to Run Directory
         os.chdir(self.control['Run_dir'])
     # -----------------------------------------------------------------------------
-    if self.LakePond['Lake_Depth_Figure'].lower() == 'yes':
+    if self.control.Lake_Pond_Control['Lake_Depth_Figure'].lower() == 'yes':
         # Ponds, Wetland Tundra, Young age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/Ponds_WT_Y/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/Ponds_WT_Y/')
         pond_depth = np.reshape(self.Pond_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(pond_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -239,7 +239,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_Pond_WT_Y_Depth.bin')
         pl.close()
         # Ponds, Wetland Tundra, Medium age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/Ponds_WT_M/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/Ponds_WT_M/')
         pond_depth = np.reshape(self.Pond_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(pond_depth, interpolation = 'nearest', cmap = 'spectral')
@@ -249,7 +249,7 @@ def set_lake_pond_depth(self):
         lake_depth.tofile('Initial_Pond_WT_M_Depth.bin')
         pl.close()
         # Ponds, Wetland Tundra, Old age
-        os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/Ponds_WT_O/')
+        os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/Ponds_WT_O/')
         pond_depth = np.reshape(self.Pond_WT_Y_Depth, [self.ATTM_nrows, self.ATTM_ncols])
         fig = pl.figure
         pl.imshow(pond_depth, interpolation = 'nearest', cmap = 'spectral')

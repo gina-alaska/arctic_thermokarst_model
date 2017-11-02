@@ -23,19 +23,19 @@ def read_ice_content(self):
             self.ice[i] = 'none'
             ice[i] = 0.0          # redundant, but explicit
         else:
-            if self.Terrestrial['Ice_Distribution'].lower() == 'poor':
+            if self.control.Terrestrial_Control['Ice_Distribution'].lower() == 'poor':
                 self.ice[i] = 'poor'
                 ice[i] = 1.
-            elif self.Terrestrial['Ice_Distribution'].lower() == 'pore':
+            elif self.control.Terrestrial_Control['Ice_Distribution'].lower() == 'pore':
                 self.ice[i] = 'poor'
                 ice[i] = 2.
-            elif self.Terrestrial['Ice_Distribution'].lower() == 'wedge':
+            elif self.control.Terrestrial_Control['Ice_Distribution'].lower() == 'wedge':
                 self.ice[i] = 'wedge'
                 ice[i] = 3.
-            elif self.Terrestrial['Ice_Distribution'].lower() == 'massive':
+            elif self.control.Terrestrial_Control['Ice_Distribution'].lower() == 'massive':
                 self.ice[i] = 'massive'
                 ice[i] = 4.
-            elif self.Terrestrial['Ice_Distribution'].lower() == 'random':
+            elif self.control.Terrestrial_Control['Ice_Distribution'].lower() == 'random':
                 self.ice[i] = random.choice(ice_content)  
                 if self.ice[i] == 'poor'    : ice[i] = 1.
                 if self.ice[i] == 'pore'    : ice[i] = 2.
@@ -49,13 +49,13 @@ def read_ice_content(self):
     # Output figures, files, plots
     #=================================================================
 #    if PLOT == 'TRUE' or FIGURE == 'TRUE':
-    if self.Terrestrial['Ice_Distribution_Figure'].lower() == 'yes':    
+    if self.control.Terrestrial_Control['Ice_Distribution_Figure'].lower() == 'yes':    
         ice_plot = np.reshape(ice, [self.ATTM_nrows, self.ATTM_ncols])
         # ---------------------------
         # Change to output directory
         # --------------------------
-        if self.Simulation_area.lower() == 'barrow':
-            os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow')
+        if self.control.Simulation_area.lower() == 'barrow':
+            os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow')
 
         # --------------------------
         # Figure / file creation

@@ -30,16 +30,16 @@ def read_degree_days(self):#, FIGURE):
     ##################################################
     # Move to directory where input files are located
     ##################################################
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/Degree_Days')
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control.Input_dir+'/Barrow/Degree_Days')
         # Define output directory if figures are wanted
-        dd_out_dir = self.control['Run_dir']+self.Output_directory+'/Barrow/Initialization/Degree_Days/'
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/Degree_Days')
-        dd_out_dir = self.control['Run_dir']+self.Output_directory+'/Yukon/Initialization/Degree_Days'
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/Degree_Days')
-        dd_out_dir = self.control['Run_dir']+self.Output_directory+'/Tanana/Initialization/Degree_Days'
+        dd_out_dir = self.control['Run_dir']+self.control.Output_dir+'/Barrow/Initialization/Degree_Days/'
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control.Input_dir+'/Yukon/Degree_Days')
+        dd_out_dir = self.control['Run_dir']+self.control.Output_dir+'/Yukon/Initialization/Degree_Days'
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control.Input_dir+'/Tanana/Degree_Days')
+        dd_out_dir = self.control['Run_dir']+self.control.Output_dir+'/Tanana/Initialization/Degree_Days'
 
         
     ################################
@@ -49,7 +49,7 @@ def read_degree_days(self):#, FIGURE):
     print ' '
     print 'Reading Thawing Degree Days'
     
-    num_lines = sum(1 for line in open(self.Met['TDD_file']))
+    num_lines = sum(1 for line in open(self.control.Met_Control['TDD_file']))
 
     # Set up TDD array
     self.TDD = np.zeros([num_lines, self.ATTM_nrows * self.ATTM_ncols])
@@ -59,7 +59,7 @@ def read_degree_days(self):#, FIGURE):
     year = np.arange(min(self.Year), max(self.Year), dtype = np.int16)
     
     # Read TDD Data
-    with open(self.Met['TDD_file']) as f:
+    with open(self.control.Met_Control['TDD_file']) as f:
         for line in f:
             line = line.rstrip()          # removes \n at line end
 
@@ -69,7 +69,7 @@ def read_degree_days(self):#, FIGURE):
             self.TDD[count,:] = data.flatten()
 
             # Create plots if required
-            if self.Met['Degree_Day_Output'].lower() == 'yes':
+            if self.control.Met_Control['Degree_Day_Output'].lower() == 'yes':
                 TDD_plot = np.reshape(self.TDD[count,:], [int(self.ATTM_nrows), int(self.ATTM_ncols)])
                 year_plot = year[count]
                 #--------------------------------------------------------
@@ -79,7 +79,7 @@ def read_degree_days(self):#, FIGURE):
                 pl.imshow(TDD_plot, interpolation = 'nearest', cmap = 'spectral', vmin = 0.0, vmax = 1250.0)
                 pl.title('Thawing Degree-Days - '+str(year_plot))
                 pl.colorbar(extend = 'neither', shrink = 0.92)
-                pl.savefig(dd_out_dir+self.Met['TDD_Output']+str('_')+str(year_plot)+'.jpg', format = 'jpg')
+                pl.savefig(dd_out_dir+self.control.Met_Control['TDD_Output']+str('_')+str(year_plot)+'.jpg', format = 'jpg')
                 pl.close()
 
             # Moving to the next line
@@ -102,7 +102,7 @@ def read_degree_days(self):#, FIGURE):
     year = np.arange(min(self.Year), max(self.Year), dtype = np.int16)
     
     # Read FDD Data
-    with open(self.Met['FDD_file']) as f:
+    with open(self.control.Met_Control['FDD_file']) as f:
         for line in f:
             line = line.rstrip()          # removes \n at line end
 
@@ -112,7 +112,7 @@ def read_degree_days(self):#, FIGURE):
             self.FDD[count,:] = data.flatten()
 
             # Create Plots if required 
-            if self.Met['Degree_Day_Output'].lower() == 'yes':
+            if self.control.Met_Control['Degree_Day_Output'].lower() == 'yes':
                 FDD_plot = np.reshape(self.FDD[count,:], [int(self.ATTM_nrows), int(self.ATTM_ncols)])
                 year_plot = year[count]
                 #--------------------------------------------------------
@@ -122,7 +122,7 @@ def read_degree_days(self):#, FIGURE):
                 pl.imshow(FDD_plot, interpolation = 'nearest', cmap = 'spectral', vmin = -6000.0, vmax = -2000.0)
                 pl.title('Freezing Degree-Days - '+str(year_plot))
                 pl.colorbar(extend = 'neither', shrink = 0.92)
-                pl.savefig(dd_out_dir+self.Met['FDD_Output']+str('_')+str(year_plot)+'.jpg', format = 'jpg')
+                pl.savefig(dd_out_dir+self.control.Met_Control['FDD_Output']+str('_')+str(year_plot)+'.jpg', format = 'jpg')
                 pl.close()
 
             # Moving to the next line

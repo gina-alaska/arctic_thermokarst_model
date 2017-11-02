@@ -106,132 +106,132 @@ def set_protective_layer(self):#, PLOT, FIGURE):
 
         for i in range(self.ATTM_nrows * self.ATTM_ncols):
             self.ATTM_CLC_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['CLC_WT_Y_PLF']
+              self.control.Terrestrial_Control['CLC_WT_Y_PLF']
             self.ATTM_CLC_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['CLC_WT_M_PLF']
+              self.control.Terrestrial_Control['CLC_WT_M_PLF']
             self.ATTM_CLC_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['CLC_WT_O_PLF']
+              self.control.Terrestrial_Control['CLC_WT_O_PLF']
             self.ATTM_CoastalWaters_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['CoastalWaters_WT_O_PLF']
+              self.control.Terrestrial_Control['CoastalWaters_WT_O_PLF']
             self.ATTM_DrainedSlope_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['DrainedSlope_WT_Y_PLF']           
+              self.control.Terrestrial_Control['DrainedSlope_WT_Y_PLF']           
             self.ATTM_DrainedSlope_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['DrainedSlope_WT_M_PLF']           
+              self.control.Terrestrial_Control['DrainedSlope_WT_M_PLF']           
             self.ATTM_DrainedSlope_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['DrainedSlope_WT_O_PLF']           
+              self.control.Terrestrial_Control['DrainedSlope_WT_O_PLF']           
             self.ATTM_FCP_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['FCP_WT_Y_PLF']           
+              self.control.Terrestrial_Control['FCP_WT_Y_PLF']           
             self.ATTM_FCP_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['FCP_WT_M_PLF'] 
+              self.control.Terrestrial_Control['FCP_WT_M_PLF'] 
             self.ATTM_FCP_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['FCP_WT_O_PLF'] 
+              self.control.Terrestrial_Control['FCP_WT_O_PLF'] 
             self.ATTM_HCP_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['HCP_WT_Y_PLF']           
+              self.control.Terrestrial_Control['HCP_WT_Y_PLF']           
             self.ATTM_HCP_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['HCP_WT_M_PLF'] 
+              self.control.Terrestrial_Control['HCP_WT_M_PLF'] 
             self.ATTM_HCP_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['HCP_WT_O_PLF'] 
+              self.control.Terrestrial_Control['HCP_WT_O_PLF'] 
             self.ATTM_LCP_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['LCP_WT_Y_PLF']           
+              self.control.Terrestrial_Control['LCP_WT_Y_PLF']           
             self.ATTM_LCP_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['LCP_WT_M_PLF'] 
+              self.control.Terrestrial_Control['LCP_WT_M_PLF'] 
             self.ATTM_LCP_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['LCP_WT_O_PLF'] 
+              self.control.Terrestrial_Control['LCP_WT_O_PLF'] 
             self.ATTM_Meadow_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Meadow_WT_Y_PLF']           
+              self.control.Terrestrial_Control['Meadow_WT_Y_PLF']           
             self.ATTM_Meadow_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Meadow_WT_M_PLF'] 
+              self.control.Terrestrial_Control['Meadow_WT_M_PLF'] 
             self.ATTM_Meadow_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Meadow_WT_O_PLF'] 
+              self.control.Terrestrial_Control['Meadow_WT_O_PLF'] 
             self.ATTM_NoData_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['NoData_WT_O_PLF'] 
+              self.control.Terrestrial_Control['NoData_WT_O_PLF'] 
             self.ATTM_SandDunes_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SandDunes_WT_Y_PLF']           
+              self.control.Terrestrial_Control['SandDunes_WT_Y_PLF']           
             self.ATTM_SandDunes_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SandDunes_WT_M_PLF'] 
+              self.control.Terrestrial_Control['SandDunes_WT_M_PLF'] 
             self.ATTM_SandDunes_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SandDunes_WT_O_PLF'] 
+              self.control.Terrestrial_Control['SandDunes_WT_O_PLF'] 
             self.ATTM_SaturatedBarrens_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SaturatedBarrens_WT_Y_PLF']           
+              self.control.Terrestrial_Control['SaturatedBarrens_WT_Y_PLF']           
             self.ATTM_SaturatedBarrens_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SaturatedBarrens_WT_M_PLF'] 
+              self.control.Terrestrial_Control['SaturatedBarrens_WT_M_PLF'] 
             self.ATTM_SaturatedBarrens_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SaturatedBarrens_WT_O_PLF'] 
+              self.control.Terrestrial_Control['SaturatedBarrens_WT_O_PLF'] 
             self.ATTM_Shrubs_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Shrubs_WT_O_PLF'] 
+              self.control.Terrestrial_Control['Shrubs_WT_O_PLF'] 
             self.ATTM_Urban_WT_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Urban_WT_PLF'] 
+              self.control.Terrestrial_Control['Urban_WT_PLF'] 
             self.ATTM_LargeLakes_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['LargeLakes_WT_Y_PLF']           
+              self.control.Terrestrial_Control['LargeLakes_WT_Y_PLF']           
             self.ATTM_LargeLakes_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['LargeLakes_WT_M_PLF'] 
+              self.control.Terrestrial_Control['LargeLakes_WT_M_PLF'] 
             self.ATTM_LargeLakes_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['LargeLakes_WT_O_PLF'] 
+              self.control.Terrestrial_Control['LargeLakes_WT_O_PLF'] 
             self.ATTM_MediumLakes_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['MediumLakes_WT_Y_PLF']           
+              self.control.Terrestrial_Control['MediumLakes_WT_Y_PLF']           
             self.ATTM_MediumLakes_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['MediumLakes_WT_M_PLF'] 
+              self.control.Terrestrial_Control['MediumLakes_WT_M_PLF'] 
             self.ATTM_MediumLakes_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['MediumLakes_WT_O_PLF'] 
+              self.control.Terrestrial_Control['MediumLakes_WT_O_PLF'] 
             self.ATTM_SmallLakes_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SmallLakes_WT_Y_PLF']           
+              self.control.Terrestrial_Control['SmallLakes_WT_Y_PLF']           
             self.ATTM_SmallLakes_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SmallLakes_WT_M_PLF'] 
+              self.control.Terrestrial_Control['SmallLakes_WT_M_PLF'] 
             self.ATTM_SmallLakes_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['SmallLakes_WT_O_PLF'] 
+              self.control.Terrestrial_Control['SmallLakes_WT_O_PLF'] 
             self.ATTM_Ponds_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Ponds_WT_Y_PLF']           
+              self.control.Terrestrial_Control['Ponds_WT_Y_PLF']           
             self.ATTM_Ponds_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Ponds_WT_M_PLF'] 
+              self.control.Terrestrial_Control['Ponds_WT_M_PLF'] 
             self.ATTM_Ponds_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Ponds_WT_O_PLF'] 
+              self.control.Terrestrial_Control['Ponds_WT_O_PLF'] 
             self.ATTM_Rivers_WT_Y_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Rivers_WT_Y_PLF']           
+              self.control.Terrestrial_Control['Rivers_WT_Y_PLF']           
             self.ATTM_Rivers_WT_M_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Rivers_WT_M_PLF'] 
+              self.control.Terrestrial_Control['Rivers_WT_M_PLF'] 
             self.ATTM_Rivers_WT_O_PL[i] = self.initial_ALD_depth[i] * \
-              self.Terrestrial['Rivers_WT_O_PLF'] 
+              self.control.Terrestrial_Control['Rivers_WT_O_PLF'] 
 
 #            self.Wet_NPG_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Wet_NPG_PLF']
+#              self.control.Terrestrial_Control['Wet_NPG_PLF']
 #            self.Wet_LCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Wet_LCP_PLF']
+#              self.control.Terrestrial_Control['Wet_LCP_PLF']
 #            self.Wet_CLC_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Wet_CLC_PLF']
+#              self.control.Terrestrial_Control['Wet_CLC_PLF']
 #            self.Wet_FCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Wet_FCP_PLF']
+#              self.control.Terrestrial_Control['Wet_FCP_PLF']
 #            self.Wet_HCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Wet_HCP_PLF']
+#              self.control.Terrestrial_Control['Wet_HCP_PLF']
 #            self.Gra_NPG_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Gra_NPG_PLF']
+#              self.control.Terrestrial_Control['Gra_NPG_PLF']
 #            self.Gra_LCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Gra_LCP_PLF']
+#              self.control.Terrestrial_Control['Gra_LCP_PLF']
 #            self.Gra_FCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Gra_FCP_PLF']
+#              self.control.Terrestrial_Control['Gra_FCP_PLF']
 #            self.Gra_HCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Gra_HCP_PLF']
+#              self.control.Terrestrial_Control['Gra_HCP_PLF']
 #            self.Shr_NPG_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Shr_NPG_PLF']
+#              self.control.Terrestrial_Control['Shr_NPG_PLF']
 #            self.Shr_LCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Shr_LCP_PLF']
+#              self.control.Terrestrial_Control['Shr_LCP_PLF']
 #            self.Shr_FCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Shr_FCP_PLF']
+#              self.control.Terrestrial_Control['Shr_FCP_PLF']
 #            self.Shr_HCP_PL[i] = self.initial_ALD_depth[i] * \
-#              self.Terrestrial['Shr_HCP_PLF']
+#              self.control.Terrestrial_Control['Shr_HCP_PLF']
 #            self.Lakes_PL[i]   = self.Lake_Depth[i] * \
-#              self.Terrestrial['Lakes_PLF']
+#              self.control.Terrestrial_Control['Lakes_PLF']
 #            self.Ponds_PL[i]   = self.Pond_Depth[i] * \
-#              self.Terrestrial['Ponds_PLF']
+#              self.control.Terrestrial_Control['Ponds_PLF']
 
         print '    done. \n  '
 
         # ######################################
         # Plotting and saving values if wanted
         # ######################################
-        if self.Terrestrial['Protective_Layer_Factor_Output'].lower() == 'yes':
+        if self.control.Terrestrial_Control['Protective_Layer_Factor_Output'].lower() == 'yes':
 
             # Move to Output directory
-            os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow/')
+            os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow/')
 
             #--------------------------------------------------------------------------------
             # For Barrow Test Case

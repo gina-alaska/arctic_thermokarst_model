@@ -24,18 +24,18 @@ def read_drainage_efficiency(self):#, PLOT, FIGURE, DISTRIBUTION):
 
     for i in range(0, self.ATTM_nrows * self.ATTM_ncols):
         if self.ATTM_Total_Fractional_Area[i] > 0.0 :
-            if self.Terrestrial['Drainage_Efficiency_Distribution'].lower() == 'random':
+            if self.control.Terrestrial_Control['Drainage_Efficiency_Distribution'].lower() == 'random':
                 chance = random.random()
-                if chance > self.Terrestrial['Drainage_Efficiency_Random_Value']:
+                if chance > self.control.Terrestrial_Control['Drainage_Efficiency_Random_Value']:
                     self.drainage_efficiency[i] = 'above'
                     drainage[i] = 1.
                 else:
                     self.drainage_efficiency[i] = 'below'
                     drainage[i] = 2.          # redundant, but explicit
-            elif self.Terrestrial['Drainage_Efficiency_Distribution'].lower() == 'above':
+            elif self.control.Terrestrial_Control['Drainage_Efficiency_Distribution'].lower() == 'above':
                 self.drainage_efficiency[i] = 'above'
                 drainage[i] = 1.
-            elif self.Terrestrial['Drainage_Efficiency_Distribution'].lower() == 'below':
+            elif self.control.Terrestrial_Control['Drainage_Efficiency_Distribution'].lower() == 'below':
                 self.drainage_efficiency[i] = 'below'
                 drainage[i] = 2.
         else: 
@@ -48,12 +48,12 @@ def read_drainage_efficiency(self):#, PLOT, FIGURE, DISTRIBUTION):
     # ==================================================
     # Create desired output files, figures, and plots
     # ==================================================
-    if self.Terrestrial['Drainage_Efficiency_Figure'].lower() == 'yes':
+    if self.control.Terrestrial_Control['Drainage_Efficiency_Figure'].lower() == 'yes':
         # -------------------------
         # Move to output directory
         # -------------------------
-        if self.Simulation_area.lower() == 'barrow':
-            os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow')
+        if self.control.Simulation_area.lower() == 'barrow':
+            os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow')
 
         # -----------------------
         # Create desired output

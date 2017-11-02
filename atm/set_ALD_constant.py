@@ -29,7 +29,7 @@ def set_ALD_constant(self):
     # set array
     self.ALD_Factor = np.zeros(self.ATTM_nrows * self.ATTM_ncols)
 
-    if self.Met['met_distribution'].lower() == 'point':
+    if self.control.Met_Control['met_distribution'].lower() == 'point':
         # populate array
         for i in range(0,(self.ATTM_nrows * self.ATTM_ncols)):
             self.ALD_Factor[i] = self.initial_ALD_depth[i] / self.degree_days[0,1]
@@ -44,8 +44,8 @@ def set_ALD_constant(self):
     # ---------------------------------------
     ALD_Factor = np.reshape(self.ALD_Factor, [self.ATTM_nrows, self.ATTM_ncols])
 
-    if self.Terrestrial['ALD_Factor_Output'].lower() == 'yes':
-        os.chdir(self.control['Run_dir']+self.Output_directory)
+    if self.control.Terrestrial_Control['ALD_Factor_Output'].lower() == 'yes':
+        os.chdir(self.control['Run_dir']+self.control.Output_dir)
         # Create output
         fig = pl.figure()
         pl.imshow(ALD_Factor, interpolation = 'nearest', cmap = 'bone')

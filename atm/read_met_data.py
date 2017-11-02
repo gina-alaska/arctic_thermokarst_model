@@ -28,11 +28,11 @@ def read_met_data(self):
     import datetime
     # =======================
 
-    if self.Met['met_distribution'].lower() == 'point':
+    if self.control.Met_Control['met_distribution'].lower() == 'point':
         print '    Reading Meteorologic Data (Monthly T and P)'
 
         # Work flow
-        met = xlrd.open_workbook(self.control['Run_dir']+self.Input_directory+str('/')+self.met_file)
+        met = xlrd.open_workbook(self.control['Run_dir']+self.control.Input_dir+str('/')+self.met_file)
 
         sh = met.sheet_by_index(0)
 
@@ -67,12 +67,12 @@ def read_met_data(self):
         print '   Reading Distributed Temperature Data...'
         print '   '
 
-        if self.Simulation_area.lower() == 'barrow':
-            os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/Met/')
-        elif self.Simulation_area.lower() == 'tanana':
-            os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/Met/')
-        elif self.Simulation_area.lower() == 'yukon':
-            os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/Met/')
+        if self.control.Simulation_area.lower() == 'barrow':
+            os.chdir(self.control['Run_dir']+self.control.Input_dir+'/Barrow/Met/')
+        elif self.control.Simulation_area.lower() == 'tanana':
+            os.chdir(self.control['Run_dir']+self.control.Input_dir+'/Tanana/Met/')
+        elif self.control.Simulation_area.lower() == 'yukon':
+            os.chdir(self.control['Run_dir']+self.control.Input_dir+'/Yukon/Met/')
             
         #print '    Meterologic data used:', self.met_file
         #print ' '
@@ -98,7 +98,7 @@ def read_met_data(self):
                 #print re.split('[_ .]',line)  # Works -- splitting with multiple delimiters
                 line = line.rstrip()           # removes the \n at the end
                 
-                if self.Met['met_file_distributed'] == 'BarrowAT_1901-2006':
+                if self.control.Met_Control['met_file_distributed'] == 'BarrowAT_1901-2006':
                         # Calculate JD
                     if count == 0 : 
                         self.JD[count] = 1
@@ -125,8 +125,8 @@ def read_met_data(self):
                 #####
                 # New Barrow historical - 1901 - 2009
                 #####   
-                elif self.Met['met_file_distributed'].lower() == "barrow_at_1901-2009_v1":
-                    os.chdir(self.control['Run_dir']+self.Input_directory+\
+                elif self.control.Met_Control['met_file_distributed'].lower() == "barrow_at_1901-2009_v1":
+                    os.chdir(self.control['Run_dir']+self.control.Input_dir+\
                              '/Temperature/Barrow_Peninsula_Air_Temp_1901-2009/Processed/')
                     if count == 0 : 
                         self.JD[count] = 1
@@ -154,8 +154,8 @@ def read_met_data(self):
                 #####
                 # New Yukon Flats historical - 1901 - 2009
                 #####   
-                elif self.Met['met_file_distributed'].lower() == "yukon_flats_at_1901-2009_v1":
-                    os.chdir(self.control['Run_dir']+self.Input_directory+\
+                elif self.control.Met_Control['met_file_distributed'].lower() == "yukon_flats_at_1901-2009_v1":
+                    os.chdir(self.control['Run_dir']+self.control.Input_dir+\
                              '/Temperature/Yukon_Flats_Air_Temp_1901-2009/')
                     if count == 0 : 
                         self.JD[count] = 1
@@ -182,7 +182,7 @@ def read_met_data(self):
 
 
                     
-                elif self.Met['met_file_distributed'] == 'BarrowAT_2001-2100_cccma':
+                elif self.control.Met_Control['met_file_distributed'] == 'BarrowAT_2001-2100_cccma':
                     # Calculate JD
                     #if count == 0 and re.split('[_ .]', line)[3] == '01':  # assuming January of first year
                     #    self.JD[count] = int(15)
@@ -208,7 +208,7 @@ def read_met_data(self):
                     # Moving on to the next line
                     count = count + 1
 
-                elif self.Met['met_file_distributed'] == 'BarrowAT_2001-2100_echam5':
+                elif self.control.Met_Control['met_file_distributed'] == 'BarrowAT_2001-2100_echam5':
                     if count == 0:
                         self.JD[count] = 1
                         d1 = datetime.datetime(int(re.split('[_ .]', line)[4]), \
@@ -231,7 +231,7 @@ def read_met_data(self):
                     # Moving on to the next line
                     count = count + 1
                     
-                elif self.Met['met_file_distributed'] == 'BarrowAT_1901-2100_CCCMA':
+                elif self.control.Met_Control['met_file_distributed'] == 'BarrowAT_1901-2100_CCCMA':
                     # Calculate JD
                     #if count == 0 and re.split('[_ .]', line)[3] == '01':  # assuming January of first year
                     #    self.JD[count] = int(15)
@@ -264,7 +264,7 @@ def read_met_data(self):
                     # Moving on to the next line
                     count = count + 1
                 
-                elif self.Met['met_file_distributed'] == 'BarrowAT_1901-2100_ECHAM5':
+                elif self.control.Met_Control['met_file_distributed'] == 'BarrowAT_1901-2100_ECHAM5':
                     # Calculate JD
                     #if count == 0 and re.split('[_ .]', line)[3] == '01':  # assuming January of first year
                     #    self.JD[count] = int(15)

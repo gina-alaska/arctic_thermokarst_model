@@ -17,8 +17,8 @@ def read_initial_ALD(self):
 
     for i in range(0, self.ATTM_nrows * self.ATTM_ncols):
         if self.ATTM_Total_Fractional_Area[i] > 0.0 :
-            chance = random.uniform(self.Terrestrial['ALD_Distribution_Lower_Bound'],\
-                                    self.Terrestrial['ALD_Distribution_Upper_Bound'])
+            chance = random.uniform(self.control.Terrestrial_Control['ALD_Distribution_Lower_Bound'],\
+                                    self.control.Terrestrial_Control['ALD_Distribution_Upper_Bound'])
             self.initial_ALD_depth[i] = chance
             initial_ALD[i] = chance
 
@@ -30,12 +30,12 @@ def read_initial_ALD(self):
     # ---------------------------------------------
     # Create desired output files, figures, plots
     # --------------------------------------------
-    if self.Terrestrial['ALD_Distribution_Output'].lower() == 'yes':
+    if self.control.Terrestrial_Control['ALD_Distribution_Output'].lower() == 'yes':
         # -------------------------
         # Move to Output Directory
         # -------------------------
-        if self.Simulation_area.lower() == 'barrow':
-            os.chdir(self.control['Run_dir']+self.Output_directory+'/Barrow')
+        if self.control.Simulation_area.lower() == 'barrow':
+            os.chdir(self.control['Run_dir']+self.control.Output_dir+'/Barrow')
 
         # Create desired output
         initial_ALD = np.reshape(initial_ALD, [self.ATTM_nrows, self.ATTM_ncols])

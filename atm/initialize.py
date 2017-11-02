@@ -235,116 +235,116 @@ def LakePond(self):
 
     
     """ Read files from the input directory """
-    ### NOTE: all of these if statmets/ chdir blocks could easily be refactored
-    ### NOTE: also chaining the directory is not necessary with os.path functions 
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
-                     self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic'+\
-                     self.Control_directory+'/')
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana')
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon')
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM')
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE')
+    #~ ### NOTE: all of these if statmets/ chdir blocks could easily be refactored
+    #~ ### NOTE: also chaining the directory is not necessary with os.path functions 
+    #~ if self.control.Simulation_area.lower() == 'barrow':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
+                     #~ self.Control_directory)
+    #~ elif self.control.Simulation_area.lower() == 'arctic_coast':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic'+\
+                     #~ self.Control_directory+'/')
+    #~ elif self.control.Simulation_area.lower() == 'tanana':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana')
+    #~ elif self.control.Simulation_area.lower() == 'yukon':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon')
+    #~ elif self.control.Simulation_area.lower() == 'aiem':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM')
+    #~ elif self.control.Simulation_area.lower() == 'ngee':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE')
     
-    self.LakePond = {}
+    #~ self.control.Lake_Pond_Control = {}
     
-    ### NOTE: reading of control files should be a object/module of it's own
-    with open(self.Lake_Pond_Control, 'r') as f:
-        for line in f:
-            if line.startswith('#'):
-                continue
-            else:
-                (key, val) = line.split()
-                self.LakePond[(key)] = val
+    #~ ### NOTE: reading of control files should be a object/module of it's own
+    #~ with open(self.Lake_Pond_Control, 'r') as f:
+        #~ for line in f:
+            #~ if line.startswith('#'):
+                #~ continue
+            #~ else:
+                #~ (key, val) = line.split()
+                #~ self.control.Lake_Pond_Control[(key)] = val
 
     # Convert strings to floats as necessary
-    self.LakePond['Uniform_Lake_Depth']          = float(self.LakePond['Uniform_Lake_Depth'])
+    self.control.Lake_Pond_Control['Uniform_Lake_Depth']          = float(self.control.Lake_Pond_Control['Uniform_Lake_Depth'])
     
-    self.LakePond['Lower_LargeLake_WT_Y_Depth']  = float(self.LakePond['Lower_LargeLake_WT_Y_Depth'])
-    self.LakePond['Upper_LargeLake_WT_Y_Depth']  = float(self.LakePond['Upper_LargeLake_WT_Y_Depth'])
-    self.LakePond['Lower_MediumLake_WT_Y_Depth'] = float(self.LakePond['Lower_MediumLake_WT_Y_Depth'])
-    self.LakePond['Upper_MediumLake_WT_Y_Depth'] = float(self.LakePond['Upper_MediumLake_WT_Y_Depth'])
-    self.LakePond['Lower_SmallLake_WT_Y_Depth']  = float(self.LakePond['Lower_SmallLake_WT_Y_Depth'])
-    self.LakePond['Upper_SmallLake_WT_Y_Depth']  = float(self.LakePond['Upper_SmallLake_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Lower_LargeLake_WT_Y_Depth']  = float(self.control.Lake_Pond_Control['Lower_LargeLake_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Upper_LargeLake_WT_Y_Depth']  = float(self.control.Lake_Pond_Control['Upper_LargeLake_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Lower_MediumLake_WT_Y_Depth'] = float(self.control.Lake_Pond_Control['Lower_MediumLake_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Upper_MediumLake_WT_Y_Depth'] = float(self.control.Lake_Pond_Control['Upper_MediumLake_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Lower_SmallLake_WT_Y_Depth']  = float(self.control.Lake_Pond_Control['Lower_SmallLake_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Upper_SmallLake_WT_Y_Depth']  = float(self.control.Lake_Pond_Control['Upper_SmallLake_WT_Y_Depth'])
 
-    self.LakePond['Lower_LargeLake_WT_M_Depth']  = float(self.LakePond['Lower_LargeLake_WT_M_Depth'])
-    self.LakePond['Upper_LargeLake_WT_M_Depth']  = float(self.LakePond['Upper_LargeLake_WT_M_Depth'])
-    self.LakePond['Lower_MediumLake_WT_M_Depth'] = float(self.LakePond['Lower_MediumLake_WT_M_Depth'])
-    self.LakePond['Upper_MediumLake_WT_M_Depth'] = float(self.LakePond['Upper_MediumLake_WT_M_Depth'])
-    self.LakePond['Lower_SmallLake_WT_M_Depth']  = float(self.LakePond['Lower_SmallLake_WT_M_Depth'])
-    self.LakePond['Upper_SmallLake_WT_M_Depth']  = float(self.LakePond['Upper_SmallLake_WT_M_Depth'])    
+    self.control.Lake_Pond_Control['Lower_LargeLake_WT_M_Depth']  = float(self.control.Lake_Pond_Control['Lower_LargeLake_WT_M_Depth'])
+    self.control.Lake_Pond_Control['Upper_LargeLake_WT_M_Depth']  = float(self.control.Lake_Pond_Control['Upper_LargeLake_WT_M_Depth'])
+    self.control.Lake_Pond_Control['Lower_MediumLake_WT_M_Depth'] = float(self.control.Lake_Pond_Control['Lower_MediumLake_WT_M_Depth'])
+    self.control.Lake_Pond_Control['Upper_MediumLake_WT_M_Depth'] = float(self.control.Lake_Pond_Control['Upper_MediumLake_WT_M_Depth'])
+    self.control.Lake_Pond_Control['Lower_SmallLake_WT_M_Depth']  = float(self.control.Lake_Pond_Control['Lower_SmallLake_WT_M_Depth'])
+    self.control.Lake_Pond_Control['Upper_SmallLake_WT_M_Depth']  = float(self.control.Lake_Pond_Control['Upper_SmallLake_WT_M_Depth'])    
                                                          
-    self.LakePond['Lower_LargeLake_WT_O_Depth']  = float(self.LakePond['Lower_LargeLake_WT_O_Depth'])
-    self.LakePond['Upper_LargeLake_WT_O_Depth']  = float(self.LakePond['Upper_LargeLake_WT_O_Depth'])
-    self.LakePond['Lower_MediumLake_WT_O_Depth'] = float(self.LakePond['Lower_MediumLake_WT_O_Depth'])
-    self.LakePond['Upper_MediumLake_WT_O_Depth'] = float(self.LakePond['Upper_MediumLake_WT_O_Depth'])
-    self.LakePond['Lower_SmallLake_WT_O_Depth']  = float(self.LakePond['Lower_SmallLake_WT_O_Depth'])
-    self.LakePond['Upper_SmallLake_WT_O_Depth']  = float(self.LakePond['Upper_SmallLake_WT_O_Depth'])  
+    self.control.Lake_Pond_Control['Lower_LargeLake_WT_O_Depth']  = float(self.control.Lake_Pond_Control['Lower_LargeLake_WT_O_Depth'])
+    self.control.Lake_Pond_Control['Upper_LargeLake_WT_O_Depth']  = float(self.control.Lake_Pond_Control['Upper_LargeLake_WT_O_Depth'])
+    self.control.Lake_Pond_Control['Lower_MediumLake_WT_O_Depth'] = float(self.control.Lake_Pond_Control['Lower_MediumLake_WT_O_Depth'])
+    self.control.Lake_Pond_Control['Upper_MediumLake_WT_O_Depth'] = float(self.control.Lake_Pond_Control['Upper_MediumLake_WT_O_Depth'])
+    self.control.Lake_Pond_Control['Lower_SmallLake_WT_O_Depth']  = float(self.control.Lake_Pond_Control['Lower_SmallLake_WT_O_Depth'])
+    self.control.Lake_Pond_Control['Upper_SmallLake_WT_O_Depth']  = float(self.control.Lake_Pond_Control['Upper_SmallLake_WT_O_Depth'])  
 
-    self.LakePond['Lower_Lake_Depth']            = float(self.LakePond['Lower_Lake_Depth'])
-    self.LakePond['Upper_Lake_Depth']            = float(self.LakePond['Upper_Lake_Depth'])
+    self.control.Lake_Pond_Control['Lower_Lake_Depth']            = float(self.control.Lake_Pond_Control['Lower_Lake_Depth'])
+    self.control.Lake_Pond_Control['Upper_Lake_Depth']            = float(self.control.Lake_Pond_Control['Upper_Lake_Depth'])
 
-    self.LakePond['Uniform_Pond_Depth']          = float(self.LakePond['Uniform_Pond_Depth'])
-    self.LakePond['Lower_Pond_Depth']            = float(self.LakePond['Lower_Pond_Depth'])
-    self.LakePond['Upper_Pond_Depth']            = float(self.LakePond['Upper_Pond_Depth'])
+    self.control.Lake_Pond_Control['Uniform_Pond_Depth']          = float(self.control.Lake_Pond_Control['Uniform_Pond_Depth'])
+    self.control.Lake_Pond_Control['Lower_Pond_Depth']            = float(self.control.Lake_Pond_Control['Lower_Pond_Depth'])
+    self.control.Lake_Pond_Control['Upper_Pond_Depth']            = float(self.control.Lake_Pond_Control['Upper_Pond_Depth'])
 
-    self.LakePond['Lower_Pond_WT_Y_Depth']       = float(self.LakePond['Lower_Pond_WT_Y_Depth'])
-    self.LakePond['Upper_Pond_WT_Y_Depth']       = float(self.LakePond['Upper_Pond_WT_Y_Depth'])
-    self.LakePond['Lower_Pond_WT_M_Depth']       = float(self.LakePond['Lower_Pond_WT_M_Depth'])
-    self.LakePond['Upper_Pond_WT_M_Depth']       = float(self.LakePond['Upper_Pond_WT_M_Depth'])
-    self.LakePond['Lower_Pond_WT_O_Depth']       = float(self.LakePond['Lower_Pond_WT_O_Depth'])
-    self.LakePond['Upper_Pond_WT_O_Depth']       = float(self.LakePond['Upper_Pond_WT_O_Depth'])
+    self.control.Lake_Pond_Control['Lower_Pond_WT_Y_Depth']       = float(self.control.Lake_Pond_Control['Lower_Pond_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Upper_Pond_WT_Y_Depth']       = float(self.control.Lake_Pond_Control['Upper_Pond_WT_Y_Depth'])
+    self.control.Lake_Pond_Control['Lower_Pond_WT_M_Depth']       = float(self.control.Lake_Pond_Control['Lower_Pond_WT_M_Depth'])
+    self.control.Lake_Pond_Control['Upper_Pond_WT_M_Depth']       = float(self.control.Lake_Pond_Control['Upper_Pond_WT_M_Depth'])
+    self.control.Lake_Pond_Control['Lower_Pond_WT_O_Depth']       = float(self.control.Lake_Pond_Control['Lower_Pond_WT_O_Depth'])
+    self.control.Lake_Pond_Control['Upper_Pond_WT_O_Depth']       = float(self.control.Lake_Pond_Control['Upper_Pond_WT_O_Depth'])
     
-    self.LakePond['Lake_Expansion']              = float(self.LakePond['Lake_Expansion'])
-    self.LakePond['Pond_Expansion']              = float(self.LakePond['Pond_Expansion'])
+    self.control.Lake_Pond_Control['Lake_Expansion']              = float(self.control.Lake_Pond_Control['Lake_Expansion'])
+    self.control.Lake_Pond_Control['Pond_Expansion']              = float(self.control.Lake_Pond_Control['Pond_Expansion'])
 
-    self.LakePond['LargeLake_WT_Y_Expansion']    = float(self.LakePond['LargeLake_WT_Y_Expansion'])
-    self.LakePond['MediumLake_WT_Y_Expansion']   = float(self.LakePond['MediumLake_WT_Y_Expansion'])
-    self.LakePond['SmallLake_WT_Y_Expansion']    = float(self.LakePond['SmallLake_WT_Y_Expansion'])
-    self.LakePond['LargeLake_WT_M_Expansion']    = float(self.LakePond['LargeLake_WT_M_Expansion'])
-    self.LakePond['MediumLake_WT_M_Expansion']   = float(self.LakePond['MediumLake_WT_M_Expansion'])
-    self.LakePond['SmallLake_WT_M_Expansion']    = float(self.LakePond['SmallLake_WT_M_Expansion'])
-    self.LakePond['LargeLake_WT_O_Expansion']    = float(self.LakePond['LargeLake_WT_O_Expansion'])
-    self.LakePond['MediumLake_WT_O_Expansion']   = float(self.LakePond['MediumLake_WT_O_Expansion'])
-    self.LakePond['SmallLake_WT_O_Expansion']    = float(self.LakePond['SmallLake_WT_O_Expansion'])
-    self.LakePond['Pond_WT_Y_Expansion']         = float(self.LakePond['Pond_WT_Y_Expansion'])
-    self.LakePond['Pond_WT_M_Expansion']         = float(self.LakePond['Pond_WT_M_Expansion'])
-    self.LakePond['Pond_WT_O_Expansion']         = float(self.LakePond['Pond_WT_O_Expansion'])
+    self.control.Lake_Pond_Control['LargeLake_WT_Y_Expansion']    = float(self.control.Lake_Pond_Control['LargeLake_WT_Y_Expansion'])
+    self.control.Lake_Pond_Control['MediumLake_WT_Y_Expansion']   = float(self.control.Lake_Pond_Control['MediumLake_WT_Y_Expansion'])
+    self.control.Lake_Pond_Control['SmallLake_WT_Y_Expansion']    = float(self.control.Lake_Pond_Control['SmallLake_WT_Y_Expansion'])
+    self.control.Lake_Pond_Control['LargeLake_WT_M_Expansion']    = float(self.control.Lake_Pond_Control['LargeLake_WT_M_Expansion'])
+    self.control.Lake_Pond_Control['MediumLake_WT_M_Expansion']   = float(self.control.Lake_Pond_Control['MediumLake_WT_M_Expansion'])
+    self.control.Lake_Pond_Control['SmallLake_WT_M_Expansion']    = float(self.control.Lake_Pond_Control['SmallLake_WT_M_Expansion'])
+    self.control.Lake_Pond_Control['LargeLake_WT_O_Expansion']    = float(self.control.Lake_Pond_Control['LargeLake_WT_O_Expansion'])
+    self.control.Lake_Pond_Control['MediumLake_WT_O_Expansion']   = float(self.control.Lake_Pond_Control['MediumLake_WT_O_Expansion'])
+    self.control.Lake_Pond_Control['SmallLake_WT_O_Expansion']    = float(self.control.Lake_Pond_Control['SmallLake_WT_O_Expansion'])
+    self.control.Lake_Pond_Control['Pond_WT_Y_Expansion']         = float(self.control.Lake_Pond_Control['Pond_WT_Y_Expansion'])
+    self.control.Lake_Pond_Control['Pond_WT_M_Expansion']         = float(self.control.Lake_Pond_Control['Pond_WT_M_Expansion'])
+    self.control.Lake_Pond_Control['Pond_WT_O_Expansion']         = float(self.control.Lake_Pond_Control['Pond_WT_O_Expansion'])
     
-    self.LakePond['Pond_Infill_Constant']        = float(self.LakePond['Pond_Infill_Constant'])
-    self.LakePond['Pond_WT_Y_Infill_Constant']   = float(self.LakePond['Pond_WT_Y_Infill_Constant'])
-    self.LakePond['Pond_WT_M_Infill_Constant']   = float(self.LakePond['Pond_WT_M_Infill_Constant'])
-    self.LakePond['Pond_WT_O_Infill_Constant']   = float(self.LakePond['Pond_WT_O_Infill_Constant'])
+    self.control.Lake_Pond_Control['Pond_Infill_Constant']        = float(self.control.Lake_Pond_Control['Pond_Infill_Constant'])
+    self.control.Lake_Pond_Control['Pond_WT_Y_Infill_Constant']   = float(self.control.Lake_Pond_Control['Pond_WT_Y_Infill_Constant'])
+    self.control.Lake_Pond_Control['Pond_WT_M_Infill_Constant']   = float(self.control.Lake_Pond_Control['Pond_WT_M_Infill_Constant'])
+    self.control.Lake_Pond_Control['Pond_WT_O_Infill_Constant']   = float(self.control.Lake_Pond_Control['Pond_WT_O_Infill_Constant'])
     
-    self.LakePond['ice_thickness_uniform_alpha'] = float(self.LakePond['ice_thickness_uniform_alpha'])
-    self.LakePond['Lower_ice_thickness_alpha']   = float(self.LakePond['Lower_ice_thickness_alpha'])
-    self.LakePond['Upper_ice_thickness_alpha']   = float(self.LakePond['Upper_ice_thickness_alpha'])
-    self.LakePond['pond_growth_time_required']   = float(self.LakePond['pond_growth_time_required'])
-    self.LakePond['Pond_WT_Y_growth_time_required'] = float(self.LakePond['Pond_WT_Y_growth_time_required'])
-    self.LakePond['Pond_WT_M_growth_time_required'] = float(self.LakePond['Pond_WT_M_growth_time_required'])
-    self.LakePond['Pond_WT_O_growth_time_required'] = float(self.LakePond['Pond_WT_O_growth_time_required'])
+    self.control.Lake_Pond_Control['ice_thickness_uniform_alpha'] = float(self.control.Lake_Pond_Control['ice_thickness_uniform_alpha'])
+    self.control.Lake_Pond_Control['Lower_ice_thickness_alpha']   = float(self.control.Lake_Pond_Control['Lower_ice_thickness_alpha'])
+    self.control.Lake_Pond_Control['Upper_ice_thickness_alpha']   = float(self.control.Lake_Pond_Control['Upper_ice_thickness_alpha'])
+    self.control.Lake_Pond_Control['pond_growth_time_required']   = float(self.control.Lake_Pond_Control['pond_growth_time_required'])
+    self.control.Lake_Pond_Control['Pond_WT_Y_growth_time_required'] = float(self.control.Lake_Pond_Control['Pond_WT_Y_growth_time_required'])
+    self.control.Lake_Pond_Control['Pond_WT_M_growth_time_required'] = float(self.control.Lake_Pond_Control['Pond_WT_M_growth_time_required'])
+    self.control.Lake_Pond_Control['Pond_WT_O_growth_time_required'] = float(self.control.Lake_Pond_Control['Pond_WT_O_growth_time_required'])
     
-    self.LakePond['lake_depth_control']          = float(self.LakePond['lake_depth_control'])
-    self.LakePond['LargeLake_WT_Y_depth_control']  = float(self.LakePond['LargeLake_WT_Y_depth_control'])
-    self.LakePond['LargeLake_WT_M_depth_control']  = float(self.LakePond['LargeLake_WT_M_depth_control'])
-    self.LakePond['LargeLake_WT_O_depth_control']  = float(self.LakePond['LargeLake_WT_O_depth_control'])
-    self.LakePond['MediumLake_WT_Y_depth_control'] = float(self.LakePond['MediumLake_WT_Y_depth_control'])
-    self.LakePond['MediumLake_WT_M_depth_control'] = float(self.LakePond['MediumLake_WT_M_depth_control'])
-    self.LakePond['MediumLake_WT_O_depth_control'] = float(self.LakePond['MediumLake_WT_O_depth_control'])
-    self.LakePond['SmallLake_WT_Y_depth_control']  = float(self.LakePond['SmallLake_WT_Y_depth_control'])
-    self.LakePond['SmallLake_WT_M_depth_control']  = float(self.LakePond['SmallLake_WT_M_depth_control'])
-    self.LakePond['SmallLake_WT_O_depth_control']  = float(self.LakePond['SmallLake_WT_O_depth_control'])
+    self.control.Lake_Pond_Control['lake_depth_control']          = float(self.control.Lake_Pond_Control['lake_depth_control'])
+    self.control.Lake_Pond_Control['LargeLake_WT_Y_depth_control']  = float(self.control.Lake_Pond_Control['LargeLake_WT_Y_depth_control'])
+    self.control.Lake_Pond_Control['LargeLake_WT_M_depth_control']  = float(self.control.Lake_Pond_Control['LargeLake_WT_M_depth_control'])
+    self.control.Lake_Pond_Control['LargeLake_WT_O_depth_control']  = float(self.control.Lake_Pond_Control['LargeLake_WT_O_depth_control'])
+    self.control.Lake_Pond_Control['MediumLake_WT_Y_depth_control'] = float(self.control.Lake_Pond_Control['MediumLake_WT_Y_depth_control'])
+    self.control.Lake_Pond_Control['MediumLake_WT_M_depth_control'] = float(self.control.Lake_Pond_Control['MediumLake_WT_M_depth_control'])
+    self.control.Lake_Pond_Control['MediumLake_WT_O_depth_control'] = float(self.control.Lake_Pond_Control['MediumLake_WT_O_depth_control'])
+    self.control.Lake_Pond_Control['SmallLake_WT_Y_depth_control']  = float(self.control.Lake_Pond_Control['SmallLake_WT_Y_depth_control'])
+    self.control.Lake_Pond_Control['SmallLake_WT_M_depth_control']  = float(self.control.Lake_Pond_Control['SmallLake_WT_M_depth_control'])
+    self.control.Lake_Pond_Control['SmallLake_WT_O_depth_control']  = float(self.control.Lake_Pond_Control['SmallLake_WT_O_depth_control'])
     
-    self.LakePond['pond_depth_control']          = float(self.LakePond['pond_depth_control'])
-    self.LakePond['Pond_WT_Y_depth_control']     = float(self.LakePond['Pond_WT_Y_depth_control'])
-    self.LakePond['Pond_WT_M_depth_control']     = float(self.LakePond['Pond_WT_M_depth_control'])
-    self.LakePond['Pond_WT_O_depth_control']     = float(self.LakePond['Pond_WT_O_depth_control'])
+    self.control.Lake_Pond_Control['pond_depth_control']          = float(self.control.Lake_Pond_Control['pond_depth_control'])
+    self.control.Lake_Pond_Control['Pond_WT_Y_depth_control']     = float(self.control.Lake_Pond_Control['Pond_WT_Y_depth_control'])
+    self.control.Lake_Pond_Control['Pond_WT_M_depth_control']     = float(self.control.Lake_Pond_Control['Pond_WT_M_depth_control'])
+    self.control.Lake_Pond_Control['Pond_WT_O_depth_control']     = float(self.control.Lake_Pond_Control['Pond_WT_O_depth_control'])
 
 #===============================================================================
 def Terrestrial_Barrow(self):
@@ -352,110 +352,110 @@ def Terrestrial_Barrow(self):
 
     """ Move to the control directory """
 
-    self.Terrestrial = {}
-    with open(self.Terrestrial_Control, 'r') as f:
-        for line in f:
-            if line.startswith('#'):
-                continue
-            else:
-                (key, val) = line.split()
-                self.Terrestrial[(key)] = val
+    #~ self.control.Terrestrial_Control = {}
+    #~ with open(self.control.Terrestrial_Control_Control, 'r') as f:
+        #~ for line in f:
+            #~ if line.startswith('#'):
+                #~ continue
+            #~ else:
+                #~ (key, val) = line.split()
+                #~ self.control.Terrestrial_Control[(key)] = val
 
     # Convert to strings if necessary
-    self.Terrestrial['Drainage_Efficiency_Random_Value'] = \
-      float(self.Terrestrial['Drainage_Efficiency_Random_Value'])
-    self.Terrestrial['ALD_Distribution_Lower_Bound'] = \
-      float(self.Terrestrial['ALD_Distribution_Lower_Bound'])
-    self.Terrestrial['ALD_Distribution_Upper_Bound'] = \
-      float(self.Terrestrial['ALD_Distribution_Upper_Bound'])
+    self.control.Terrestrial_Control['Drainage_Efficiency_Random_Value'] = \
+      float(self.control.Terrestrial_Control['Drainage_Efficiency_Random_Value'])
+    self.control.Terrestrial_Control['ALD_Distribution_Lower_Bound'] = \
+      float(self.control.Terrestrial_Control['ALD_Distribution_Lower_Bound'])
+    self.control.Terrestrial_Control['ALD_Distribution_Upper_Bound'] = \
+      float(self.control.Terrestrial_Control['ALD_Distribution_Upper_Bound'])
 
-    #self.Terrestrial['Wet_NPG_PLF'] = float(self.Terrestrial['Wet_NPG_PLF'])
-    #self.Terrestrial['Wet_LCP_PLF'] = float(self.Terrestrial['Wet_LCP_PLF'])
-    #self.Terrestrial['Wet_CLC_PLF'] = float(self.Terrestrial['Wet_CLC_PLF'])
-    #self.Terrestrial['Wet_FCP_PLF'] = float(self.Terrestrial['Wet_FCP_PLF'])
-    #self.Terrestrial['Wet_HCP_PLF'] = float(self.Terrestrial['Wet_HCP_PLF'])
-    #self.Terrestrial['Gra_NPG_PLF'] = float(self.Terrestrial['Gra_NPG_PLF'])
-    #self.Terrestrial['Gra_LCP_PLF'] = float(self.Terrestrial['Gra_LCP_PLF'])
-    #self.Terrestrial['Gra_FCP_PLF'] = float(self.Terrestrial['Gra_FCP_PLF'])
-    #self.Terrestrial['Gra_HCP_PLF'] = float(self.Terrestrial['Gra_HCP_PLF'])
-    #self.Terrestrial['Shr_NPG_PLF'] = float(self.Terrestrial['Shr_NPG_PLF'])
-    #self.Terrestrial['Shr_LCP_PLF'] = float(self.Terrestrial['Shr_LCP_PLF'])
-    #self.Terrestrial['Shr_FCP_PLF'] = float(self.Terrestrial['Shr_FCP_PLF'])
-    #self.Terrestrial['Shr_HCP_PLF'] = float(self.Terrestrial['Shr_HCP_PLF'])
-    #self.Terrestrial['Lakes_PLF']   = float(self.Terrestrial['Lakes_PLF'])
-    #self.Terrestrial['Ponds_PLF']   = float(self.Terrestrial['Ponds_PLF'])
-    self.Terrestrial['CLC_WT_Y_PLF'] = float(self.Terrestrial['CLC_WT_Y_PLF'])
-    self.Terrestrial['CLC_WT_M_PLF'] = float(self.Terrestrial['CLC_WT_M_PLF'])
-    self.Terrestrial['CLC_WT_O_PLF'] = float(self.Terrestrial['CLC_WT_O_PLF'])
-    self.Terrestrial['CoastalWaters_WT_O_PLF'] = float(self.Terrestrial['CoastalWaters_WT_O_PLF'])    
-    self.Terrestrial['DrainedSlope_WT_Y_PLF'] = float(self.Terrestrial['DrainedSlope_WT_Y_PLF'])
-    self.Terrestrial['DrainedSlope_WT_M_PLF'] = float(self.Terrestrial['DrainedSlope_WT_M_PLF'])
-    self.Terrestrial['DrainedSlope_WT_O_PLF'] = float(self.Terrestrial['DrainedSlope_WT_O_PLF'])    
-    self.Terrestrial['FCP_WT_Y_PLF'] = float(self.Terrestrial['FCP_WT_Y_PLF'])
-    self.Terrestrial['FCP_WT_M_PLF'] = float(self.Terrestrial['FCP_WT_M_PLF'])
-    self.Terrestrial['FCP_WT_O_PLF'] = float(self.Terrestrial['FCP_WT_O_PLF'])    
-    self.Terrestrial['HCP_WT_Y_PLF'] = float(self.Terrestrial['HCP_WT_Y_PLF'])
-    self.Terrestrial['HCP_WT_M_PLF'] = float(self.Terrestrial['HCP_WT_M_PLF'])
-    self.Terrestrial['HCP_WT_O_PLF'] = float(self.Terrestrial['HCP_WT_O_PLF'])    
-    self.Terrestrial['LCP_WT_Y_PLF'] = float(self.Terrestrial['LCP_WT_Y_PLF'])
-    self.Terrestrial['LCP_WT_M_PLF'] = float(self.Terrestrial['LCP_WT_M_PLF'])
-    self.Terrestrial['LCP_WT_O_PLF'] = float(self.Terrestrial['LCP_WT_O_PLF'])    
-    self.Terrestrial['Meadow_WT_Y_PLF'] = float(self.Terrestrial['Meadow_WT_Y_PLF'])
-    self.Terrestrial['Meadow_WT_M_PLF'] = float(self.Terrestrial['Meadow_WT_M_PLF'])
-    self.Terrestrial['Meadow_WT_O_PLF'] = float(self.Terrestrial['Meadow_WT_O_PLF'])    
-    self.Terrestrial['NoData_WT_O_PLF'] = float(self.Terrestrial['NoData_WT_O_PLF'])    
-    self.Terrestrial['SandDunes_WT_Y_PLF'] = float(self.Terrestrial['SandDunes_WT_Y_PLF'])
-    self.Terrestrial['SandDunes_WT_M_PLF'] = float(self.Terrestrial['SandDunes_WT_M_PLF'])
-    self.Terrestrial['SandDunes_WT_O_PLF'] = float(self.Terrestrial['SandDunes_WT_O_PLF'])
-    self.Terrestrial['SaturatedBarrens_WT_Y_PLF'] = float(self.Terrestrial['SaturatedBarrens_WT_Y_PLF'])
-    self.Terrestrial['SaturatedBarrens_WT_M_PLF'] = float(self.Terrestrial['SaturatedBarrens_WT_M_PLF'])
-    self.Terrestrial['SaturatedBarrens_WT_O_PLF'] = float(self.Terrestrial['SaturatedBarrens_WT_O_PLF'])
-    self.Terrestrial['Shrubs_WT_O_PLF'] = float(self.Terrestrial['Shrubs_WT_O_PLF'])
-    self.Terrestrial['Urban_WT_PLF'] = float(self.Terrestrial['Urban_WT_PLF'])
-    self.Terrestrial['LargeLakes_WT_Y_PLF'] = float(self.Terrestrial['LargeLakes_WT_Y_PLF'])
-    self.Terrestrial['LargeLakes_WT_M_PLF'] = float(self.Terrestrial['LargeLakes_WT_M_PLF'])
-    self.Terrestrial['LargeLakes_WT_O_PLF'] = float(self.Terrestrial['LargeLakes_WT_O_PLF'])   
-    self.Terrestrial['MediumLakes_WT_Y_PLF'] = float(self.Terrestrial['MediumLakes_WT_Y_PLF'])
-    self.Terrestrial['MediumLakes_WT_M_PLF'] = float(self.Terrestrial['MediumLakes_WT_M_PLF'])
-    self.Terrestrial['MediumLakes_WT_O_PLF'] = float(self.Terrestrial['MediumLakes_WT_O_PLF'])   
-    self.Terrestrial['SmallLakes_WT_Y_PLF'] = float(self.Terrestrial['SmallLakes_WT_Y_PLF'])
-    self.Terrestrial['SmallLakes_WT_M_PLF'] = float(self.Terrestrial['SmallLakes_WT_M_PLF'])
-    self.Terrestrial['SmallLakes_WT_O_PLF'] = float(self.Terrestrial['SmallLakes_WT_O_PLF'])   
-    self.Terrestrial['Ponds_WT_Y_PLF'] = float(self.Terrestrial['Ponds_WT_Y_PLF'])
-    self.Terrestrial['Ponds_WT_M_PLF'] = float(self.Terrestrial['Ponds_WT_M_PLF'])
-    self.Terrestrial['Ponds_WT_O_PLF'] = float(self.Terrestrial['Ponds_WT_O_PLF'])   
-    self.Terrestrial['Rivers_WT_Y_PLF'] = float(self.Terrestrial['Rivers_WT_Y_PLF'])
-    self.Terrestrial['Rivers_WT_M_PLF'] = float(self.Terrestrial['Rivers_WT_M_PLF'])
-    self.Terrestrial['Rivers_WT_O_PLF'] = float(self.Terrestrial['Rivers_WT_O_PLF'])   
+    #self.control.Terrestrial_Control['Wet_NPG_PLF'] = float(self.control.Terrestrial_Control['Wet_NPG_PLF'])
+    #self.control.Terrestrial_Control['Wet_LCP_PLF'] = float(self.control.Terrestrial_Control['Wet_LCP_PLF'])
+    #self.control.Terrestrial_Control['Wet_CLC_PLF'] = float(self.control.Terrestrial_Control['Wet_CLC_PLF'])
+    #self.control.Terrestrial_Control['Wet_FCP_PLF'] = float(self.control.Terrestrial_Control['Wet_FCP_PLF'])
+    #self.control.Terrestrial_Control['Wet_HCP_PLF'] = float(self.control.Terrestrial_Control['Wet_HCP_PLF'])
+    #self.control.Terrestrial_Control['Gra_NPG_PLF'] = float(self.control.Terrestrial_Control['Gra_NPG_PLF'])
+    #self.control.Terrestrial_Control['Gra_LCP_PLF'] = float(self.control.Terrestrial_Control['Gra_LCP_PLF'])
+    #self.control.Terrestrial_Control['Gra_FCP_PLF'] = float(self.control.Terrestrial_Control['Gra_FCP_PLF'])
+    #self.control.Terrestrial_Control['Gra_HCP_PLF'] = float(self.control.Terrestrial_Control['Gra_HCP_PLF'])
+    #self.control.Terrestrial_Control['Shr_NPG_PLF'] = float(self.control.Terrestrial_Control['Shr_NPG_PLF'])
+    #self.control.Terrestrial_Control['Shr_LCP_PLF'] = float(self.control.Terrestrial_Control['Shr_LCP_PLF'])
+    #self.control.Terrestrial_Control['Shr_FCP_PLF'] = float(self.control.Terrestrial_Control['Shr_FCP_PLF'])
+    #self.control.Terrestrial_Control['Shr_HCP_PLF'] = float(self.control.Terrestrial_Control['Shr_HCP_PLF'])
+    #self.control.Terrestrial_Control['Lakes_PLF']   = float(self.control.Terrestrial_Control['Lakes_PLF'])
+    #self.control.Terrestrial_Control['Ponds_PLF']   = float(self.control.Terrestrial_Control['Ponds_PLF'])
+    self.control.Terrestrial_Control['CLC_WT_Y_PLF'] = float(self.control.Terrestrial_Control['CLC_WT_Y_PLF'])
+    self.control.Terrestrial_Control['CLC_WT_M_PLF'] = float(self.control.Terrestrial_Control['CLC_WT_M_PLF'])
+    self.control.Terrestrial_Control['CLC_WT_O_PLF'] = float(self.control.Terrestrial_Control['CLC_WT_O_PLF'])
+    self.control.Terrestrial_Control['CoastalWaters_WT_O_PLF'] = float(self.control.Terrestrial_Control['CoastalWaters_WT_O_PLF'])    
+    self.control.Terrestrial_Control['DrainedSlope_WT_Y_PLF'] = float(self.control.Terrestrial_Control['DrainedSlope_WT_Y_PLF'])
+    self.control.Terrestrial_Control['DrainedSlope_WT_M_PLF'] = float(self.control.Terrestrial_Control['DrainedSlope_WT_M_PLF'])
+    self.control.Terrestrial_Control['DrainedSlope_WT_O_PLF'] = float(self.control.Terrestrial_Control['DrainedSlope_WT_O_PLF'])    
+    self.control.Terrestrial_Control['FCP_WT_Y_PLF'] = float(self.control.Terrestrial_Control['FCP_WT_Y_PLF'])
+    self.control.Terrestrial_Control['FCP_WT_M_PLF'] = float(self.control.Terrestrial_Control['FCP_WT_M_PLF'])
+    self.control.Terrestrial_Control['FCP_WT_O_PLF'] = float(self.control.Terrestrial_Control['FCP_WT_O_PLF'])    
+    self.control.Terrestrial_Control['HCP_WT_Y_PLF'] = float(self.control.Terrestrial_Control['HCP_WT_Y_PLF'])
+    self.control.Terrestrial_Control['HCP_WT_M_PLF'] = float(self.control.Terrestrial_Control['HCP_WT_M_PLF'])
+    self.control.Terrestrial_Control['HCP_WT_O_PLF'] = float(self.control.Terrestrial_Control['HCP_WT_O_PLF'])    
+    self.control.Terrestrial_Control['LCP_WT_Y_PLF'] = float(self.control.Terrestrial_Control['LCP_WT_Y_PLF'])
+    self.control.Terrestrial_Control['LCP_WT_M_PLF'] = float(self.control.Terrestrial_Control['LCP_WT_M_PLF'])
+    self.control.Terrestrial_Control['LCP_WT_O_PLF'] = float(self.control.Terrestrial_Control['LCP_WT_O_PLF'])    
+    self.control.Terrestrial_Control['Meadow_WT_Y_PLF'] = float(self.control.Terrestrial_Control['Meadow_WT_Y_PLF'])
+    self.control.Terrestrial_Control['Meadow_WT_M_PLF'] = float(self.control.Terrestrial_Control['Meadow_WT_M_PLF'])
+    self.control.Terrestrial_Control['Meadow_WT_O_PLF'] = float(self.control.Terrestrial_Control['Meadow_WT_O_PLF'])    
+    self.control.Terrestrial_Control['NoData_WT_O_PLF'] = float(self.control.Terrestrial_Control['NoData_WT_O_PLF'])    
+    self.control.Terrestrial_Control['SandDunes_WT_Y_PLF'] = float(self.control.Terrestrial_Control['SandDunes_WT_Y_PLF'])
+    self.control.Terrestrial_Control['SandDunes_WT_M_PLF'] = float(self.control.Terrestrial_Control['SandDunes_WT_M_PLF'])
+    self.control.Terrestrial_Control['SandDunes_WT_O_PLF'] = float(self.control.Terrestrial_Control['SandDunes_WT_O_PLF'])
+    self.control.Terrestrial_Control['SaturatedBarrens_WT_Y_PLF'] = float(self.control.Terrestrial_Control['SaturatedBarrens_WT_Y_PLF'])
+    self.control.Terrestrial_Control['SaturatedBarrens_WT_M_PLF'] = float(self.control.Terrestrial_Control['SaturatedBarrens_WT_M_PLF'])
+    self.control.Terrestrial_Control['SaturatedBarrens_WT_O_PLF'] = float(self.control.Terrestrial_Control['SaturatedBarrens_WT_O_PLF'])
+    self.control.Terrestrial_Control['Shrubs_WT_O_PLF'] = float(self.control.Terrestrial_Control['Shrubs_WT_O_PLF'])
+    self.control.Terrestrial_Control['Urban_WT_PLF'] = float(self.control.Terrestrial_Control['Urban_WT_PLF'])
+    self.control.Terrestrial_Control['LargeLakes_WT_Y_PLF'] = float(self.control.Terrestrial_Control['LargeLakes_WT_Y_PLF'])
+    self.control.Terrestrial_Control['LargeLakes_WT_M_PLF'] = float(self.control.Terrestrial_Control['LargeLakes_WT_M_PLF'])
+    self.control.Terrestrial_Control['LargeLakes_WT_O_PLF'] = float(self.control.Terrestrial_Control['LargeLakes_WT_O_PLF'])   
+    self.control.Terrestrial_Control['MediumLakes_WT_Y_PLF'] = float(self.control.Terrestrial_Control['MediumLakes_WT_Y_PLF'])
+    self.control.Terrestrial_Control['MediumLakes_WT_M_PLF'] = float(self.control.Terrestrial_Control['MediumLakes_WT_M_PLF'])
+    self.control.Terrestrial_Control['MediumLakes_WT_O_PLF'] = float(self.control.Terrestrial_Control['MediumLakes_WT_O_PLF'])   
+    self.control.Terrestrial_Control['SmallLakes_WT_Y_PLF'] = float(self.control.Terrestrial_Control['SmallLakes_WT_Y_PLF'])
+    self.control.Terrestrial_Control['SmallLakes_WT_M_PLF'] = float(self.control.Terrestrial_Control['SmallLakes_WT_M_PLF'])
+    self.control.Terrestrial_Control['SmallLakes_WT_O_PLF'] = float(self.control.Terrestrial_Control['SmallLakes_WT_O_PLF'])   
+    self.control.Terrestrial_Control['Ponds_WT_Y_PLF'] = float(self.control.Terrestrial_Control['Ponds_WT_Y_PLF'])
+    self.control.Terrestrial_Control['Ponds_WT_M_PLF'] = float(self.control.Terrestrial_Control['Ponds_WT_M_PLF'])
+    self.control.Terrestrial_Control['Ponds_WT_O_PLF'] = float(self.control.Terrestrial_Control['Ponds_WT_O_PLF'])   
+    self.control.Terrestrial_Control['Rivers_WT_Y_PLF'] = float(self.control.Terrestrial_Control['Rivers_WT_Y_PLF'])
+    self.control.Terrestrial_Control['Rivers_WT_M_PLF'] = float(self.control.Terrestrial_Control['Rivers_WT_M_PLF'])
+    self.control.Terrestrial_Control['Rivers_WT_O_PLF'] = float(self.control.Terrestrial_Control['Rivers_WT_O_PLF'])   
 
 #===============================================================================
 def Terrestrial_Tanana(self):
     print '..Reading General Terrestrial Parameters'
 
-    self.Terrestrial = {}
-    with open(self.Terrestrial_Control, 'r') as f:
+    self.control.Terrestrial_Control = {}
+    with open(self.control.Terrestrial_Control_Control, 'r') as f:
         for line in f:
             if line.startswith('#'):
                 continue
             else:
                 (key, val) = line.split()
-                self.Terrestrial[(key)] = val
+                self.control.Terrestrial_Control[(key)] = val
 
     # Convert to strings if necessary
-    self.Terrestrial['Drainage_Efficiency_Random_Value'] = \
-      float(self.Terrestrial['Drainage_Efficiency_Random_Value'])
-    self.Terrestrial['ALD_Distribution_Lower_Bound'] = \
-      float(self.Terrestrial['ALD_Distribution_Lower_Bound'])
-    self.Terrestrial['ALD_Distribution_Upper_Bound'] = \
-      float(self.Terrestrial['ALD_Distribution_Upper_Bound'])
+    self.control.Terrestrial_Control['Drainage_Efficiency_Random_Value'] = \
+      float(self.control.Terrestrial_Control['Drainage_Efficiency_Random_Value'])
+    self.control.Terrestrial_Control['ALD_Distribution_Lower_Bound'] = \
+      float(self.control.Terrestrial_Control['ALD_Distribution_Lower_Bound'])
+    self.control.Terrestrial_Control['ALD_Distribution_Upper_Bound'] = \
+      float(self.control.Terrestrial_Control['ALD_Distribution_Upper_Bound'])
 
-    self.Terrestrial['TF_OB_PLF'] = float(self.Terrestrial['TF_OB_PLF'])
-    self.Terrestrial['TF_YB_PLF'] = float(self.Terrestrial['TF_YB_PLF'])
-    self.Terrestrial['TF_OF_PLF'] = float(self.Terrestrial['TF_OF_PLF'])
-    self.Terrestrial['TF_YF_PLF'] = float(self.Terrestrial['TF_YF_PLF'])
-    self.Terrestrial['TF_Dec_PP_PLF'] = float(self.Terrestrial['TF_Dec_PP_PLF'])
-    self.Terrestrial['TF_Con_PP_PLF'] = float(self.Terrestrial['TF_Con_PP_PLF'])
-    self.Terrestrial['TF_TL_PLF'] = float(self.Terrestrial['TF_TL_PLF'])
+    self.control.Terrestrial_Control['TF_OB_PLF'] = float(self.control.Terrestrial_Control['TF_OB_PLF'])
+    self.control.Terrestrial_Control['TF_YB_PLF'] = float(self.control.Terrestrial_Control['TF_YB_PLF'])
+    self.control.Terrestrial_Control['TF_OF_PLF'] = float(self.control.Terrestrial_Control['TF_OF_PLF'])
+    self.control.Terrestrial_Control['TF_YF_PLF'] = float(self.control.Terrestrial_Control['TF_YF_PLF'])
+    self.control.Terrestrial_Control['TF_Dec_PP_PLF'] = float(self.control.Terrestrial_Control['TF_Dec_PP_PLF'])
+    self.control.Terrestrial_Control['TF_Con_PP_PLF'] = float(self.control.Terrestrial_Control['TF_Con_PP_PLF'])
+    self.control.Terrestrial_Control['TF_TL_PLF'] = float(self.control.Terrestrial_Control['TF_TL_PLF'])
 
 #==================================================================================
 def Met(self):
@@ -466,55 +466,55 @@ def Met(self):
     print '..Reading General Meteorologic Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
-                     self.Control_directory+'/')
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
-                     self.Control_directory+'/')
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
-                     self.Control_directory+'/')
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
-                     self.Control_directory+'/')
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
-                     self.Control_directory+'/')
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
-                     self.Control_directory+'/')
+    #~ if self.control.Simulation_area.lower() == 'barrow':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
+                     #~ self.Control_directory+'/')
+    #~ elif self.control.Simulation_area.lower() == 'arctic_coast':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
+                     #~ self.Control_directory+'/')
+    #~ elif self.control.Simulation_area.lower() == 'tanana':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
+                     #~ self.Control_directory+'/')
+    #~ elif self.control.Simulation_area.lower() == 'yukon':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
+                     #~ self.Control_directory+'/')
+    #~ elif self.control.Simulation_area.lower() == 'aiem':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
+                     #~ self.Control_directory+'/')
+    #~ elif self.control.Simulation_area.lower() == 'ngee':
+        #~ os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
+                     #~ self.Control_directory+'/')
 
-    self.Met = {}
-    with open(self.Met_Control, 'r') as f:
-        for line in f:
-            if line.startswith('#'):
-                continue
-            else:
-                (key, val) = line.split()
-                self.Met[(key)] = val
+    #~ self.control.Met_Control = {}
+    #~ with open(self.control.Met_Control_Control, 'r') as f:
+        #~ for line in f:
+            #~ if line.startswith('#'):
+                #~ continue
+            #~ else:
+                #~ (key, val) = line.split()
+                #~ self.control.Met_Control[(key)] = val
 
     # Convert string variables if necessary
 
-    self.Met['climate_block_lower_bound'] = int(self.Met['climate_block_lower_bound'])
-    self.Met['climate_block_upper_bound'] = int(self.Met['climate_block_upper_bound'])
-    self.Met['climate_event_probability'] = float(self.Met['climate_event_probability'])
-    self.Met['pond_drain_rate_<0.01']     = float(self.Met['pond_drain_rate_<0.01'])
-    self.Met['pond_drain_rate_0.01<0.1']  = float(self.Met['pond_drain_rate_0.01<0.1'])
-    self.Met['pond_drain_rate_0.1<0.4']   = float(self.Met['pond_drain_rate_0.1<0.4'])
-    self.Met['pond_drain_rate_0.1<1.0']   = float(self.Met['pond_drain_rate_0.4<1.0'])
-    self.Met['lake_drain_rate_<0.01']     = float(self.Met['lake_drain_rate_<0.01'])
-    self.Met['lake_drain_rate_0.01<0.1']  = float(self.Met['lake_drain_rate_0.01<0.1'])
-    self.Met['lake_drain_rate_0.1<0.4']   = float(self.Met['lake_drain_rate_0.1<0.4'])
-    self.Met['lake_drain_rate_0.4<1.0']   = float(self.Met['lake_drain_rate_0.4<1.0'])
+    self.control.Met_Control['climate_block_lower_bound'] = int(self.control.Met_Control['climate_block_lower_bound'])
+    self.control.Met_Control['climate_block_upper_bound'] = int(self.control.Met_Control['climate_block_upper_bound'])
+    self.control.Met_Control['climate_event_probability'] = float(self.control.Met_Control['climate_event_probability'])
+    self.control.Met_Control['pond_drain_rate_<0.01']     = float(self.control.Met_Control['pond_drain_rate_<0.01'])
+    self.control.Met_Control['pond_drain_rate_0.01<0.1']  = float(self.control.Met_Control['pond_drain_rate_0.01<0.1'])
+    self.control.Met_Control['pond_drain_rate_0.1<0.4']   = float(self.control.Met_Control['pond_drain_rate_0.1<0.4'])
+    self.control.Met_Control['pond_drain_rate_0.1<1.0']   = float(self.control.Met_Control['pond_drain_rate_0.4<1.0'])
+    self.control.Met_Control['lake_drain_rate_<0.01']     = float(self.control.Met_Control['lake_drain_rate_<0.01'])
+    self.control.Met_Control['lake_drain_rate_0.01<0.1']  = float(self.control.Met_Control['lake_drain_rate_0.01<0.1'])
+    self.control.Met_Control['lake_drain_rate_0.1<0.4']   = float(self.control.Met_Control['lake_drain_rate_0.1<0.4'])
+    self.control.Met_Control['lake_drain_rate_0.4<1.0']   = float(self.control.Met_Control['lake_drain_rate_0.4<1.0'])
 
     #-----------------------------------------------------
     # Read the Met Data
     #-----------------------------------------------------
-    if self.Met['met_distribution'].lower() == 'point':
-        self.met_file = self.Met['met_file_point']
-    elif self.Met['met_distribution'].lower() == 'spatial':
-        self.met_file = self.Met['met_file_distributed']
+    if self.control.Met_Control['met_distribution'].lower() == 'point':
+        self.met_file = self.control.Met_Control['met_file_point']
+    elif self.control.Met_Control['met_distribution'].lower() == 'spatial':
+        self.met_file = self.control.Met_Control['met_file_distributed']
 
     print '       The meteorologic file to be used is :', self.met_file
 
@@ -522,7 +522,7 @@ def Met(self):
     #_______________________________________
     # READ MET Data & Calculate Degree Days
     #_______________________________________
-    if self.Met['degree_day_method'].lower() == 'read':    # 'Read' file or 'Calc' from geotiff input
+    if self.control.Met_Control['degree_day_method'].lower() == 'read':    # 'Read' file or 'Calc' from geotiff input
         read_degree_days.read_degree_days(self)
     else:
         calc_degree_days.calc_degree_days(self)
@@ -565,23 +565,23 @@ def CLC_WT(self):
     print '    ..Reading Wetland Tundra Coalescent Low Center Polygon Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                      self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                      self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                      self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                      self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                      self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                      self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -731,23 +731,23 @@ def CoastalWaters_WT(self):
     print '    ..Reading Wetland Tundra Coastal Waters Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -801,23 +801,23 @@ def DrainedSlope_WT(self):
     print '    ..Reading Wetland Tundra Drained Slope Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -967,23 +967,23 @@ def FCP_WT(self):
     print '    ..Reading Wetland Tundra Flat Center Polygon Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1133,23 +1133,23 @@ def HCP_WT(self):
     print '    ..Reading Wetland Tundra High Center Polygon Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1299,23 +1299,23 @@ def LCP_WT(self):
     print '    ..Reading Wetland Tundra Low Center Polygon Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1465,23 +1465,23 @@ def Meadow_WT(self):
     print '    ..Reading Wetland Tundra Meadow Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1631,23 +1631,23 @@ def NoData_WT(self):
     print '    ..Reading Wetland Tundra No Data Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1701,23 +1701,23 @@ def SandDunes_WT(self):
     print '    ..Reading Wetland Tundra Sand Dune Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1867,23 +1867,23 @@ def SaturatedBarrens_WT(self):
     print '    ..Reading Wetland Tundra Saturated Barren Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2033,23 +2033,23 @@ def Shrubs_WT(self):
     print '    ..Reading Wetland Tundra Shrub Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2103,23 +2103,23 @@ def Urban_WT(self):
     print '    ..Reading Wetland Tundra Urban Parameters'
 
     """ Read files from the input directory """
-    if self.Simulation_area.lower() == 'barrow':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/'+\
+    if self.control.Simulation_area.lower() == 'barrow':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Barrow/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'arctic_coast':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Arctic/'+\
+    elif self.control.Simulation_area.lower() == 'arctic_coast':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Arctic/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'tanana':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Tanana/'+\
+    elif self.control.Simulation_area.lower() == 'tanana':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Tanana/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'yukon':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/Yukon/'+\
+    elif self.control.Simulation_area.lower() == 'yukon':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/Yukon/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'aiem':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/AIEM/'+\
+    elif self.control.Simulation_area.lower() == 'aiem':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/AIEM/'+\
                  self.Control_directory)
-    elif self.Simulation_area.lower() == 'ngee':
-        os.chdir(self.control['Run_dir']+self.Input_directory+'/NGEE/'+\
+    elif self.control.Simulation_area.lower() == 'ngee':
+        os.chdir(self.control['Run_dir']+self.control['Input_dir']+'/NGEE/'+\
                  self.Control_directory)
 
     # - - - - - - - - - - - - - - - - - - - - - - - - -

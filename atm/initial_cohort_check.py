@@ -25,7 +25,7 @@ def barrow_initial_cohort_check(self):
     # ----------------------------------------------------------------------
     # Determine the initial/original total fractional area of each element.
     # ----------------------------------------------------------------------
-    cohort_check = self.ATTM_Total / ((float(self.X_resolution)/(self.x_res)) * float(self.Y_resolution)/ \
+    cohort_check = self.ATTM_Total / ((float(self.control.X_model_resolution)/(self.x_res)) * float(self.control.Y_model_resolution)/ \
                    (self.y_res))
 
     #=====================================================================================
@@ -35,7 +35,7 @@ def barrow_initial_cohort_check(self):
     # Note: In the Barrow example, the cohorts_required = 1600. Just leaving as flexible as
     #       possible.
     #-------------------------------------------------------------------------------------
-    cohorts_required = ((float(self.X_resolution)/(self.x_res)) * float(self.Y_resolution)/ \
+    cohorts_required = ((float(self.control.X_model_resolution)/(self.x_res)) * float(self.control.Y_model_resolution)/ \
                         (self.y_res))
 
     for i in range(0, self.ATTM_nrows * self.ATTM_ncols):
@@ -340,7 +340,7 @@ def barrow_initial_cohort_check(self):
     print '      done.'
     print ' '
 
-    if self.initialize['Normalized_Cohort_Distribution_Figure'].lower() == 'yes':    
+    if self.control.Initialize_Control['Normalized_Cohort_Distribution_Figure'].lower() == 'yes':    
         cohort_check = np.reshape(self.ATTM_Total_Fractional_Area,  [int(self.ATTM_nrows), int(self.ATTM_ncols)])
 
         # Files for plotting & reference #
@@ -404,12 +404,12 @@ def barrow_initial_cohort_check(self):
         #----------------------------
         # Move to Output Directory
         #----------------------------
-        os.chdir(self.control['Run_dir']+self.Output_directory)
+        os.chdir(self.control['Run_dir']+self.control['Output_dir'])
 
         # -----------------------------------------------------------------------------
         # Output files and figures
         # -----------------------------------------------------------------------------
-        if self.initialize['WetNPG_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['WetNPG_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Wet_NPG_plot, interpolation='nearest', cmap='bone')
             pl.title('Wetland Non-polygonal Ground (meadow) Initial Fractional Area')
@@ -418,7 +418,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Wet_NPG.tofile('./Wet_NPG/Wet_NPG_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['WetLCP_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['WetLCP_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Wet_LCP_plot, interpolation='nearest', cmap='bone')
             pl.title('Wetland Low Center Polygon Initial Fractional Area')
@@ -427,7 +427,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Wet_LCP.tofile('./Wet_LCP/Wet_LCP_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['WetCLC_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['WetCLC_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Wet_CLC_plot, interpolation='nearest', cmap='bone')
             pl.title('Wetland Coalescent Low Center Polygon Initial Fractional Area')
@@ -436,7 +436,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Wet_CLC.tofile('./Wet_CLC/Wet_CLC_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['WetFCP_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['WetFCP_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Wet_FCP_plot, interpolation='nearest', cmap='bone')
             pl.title('Wetland Flat Center Polygon Initial Fractional Area')
@@ -445,7 +445,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Wet_FCP.tofile('./Wet_FCP/Wet_FCP_fractional_cohorts.bin')
             pl.close()
          # -----------------------------------------------------------------------------
-        if self.initialize['WetHCP_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['WetHCP_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Wet_HCP_plot, interpolation='nearest', cmap='bone')
             pl.title('Wetland High Center Polygon Initial Fractional Area')
@@ -454,7 +454,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Wet_HCP.tofile('./Wet_HCP/Wet_HCP_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['Rivers_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Rivers_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Rivers_plot, interpolation='nearest', cmap='bone')
             pl.title('Rivers Initial Fractional Area')
@@ -463,7 +463,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Rivers.tofile('./Other_Cohorts/Rivers_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['Ponds_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Ponds_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Ponds_plot, interpolation='nearest', cmap='bone')
             pl.title('Ponds (shallow lake) Initial Fractional Area')
@@ -472,7 +472,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Ponds.tofile('./Ponds/Ponds_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['Lakes_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Lakes_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Lakes_plot, interpolation='nearest', cmap='bone')
             pl.title('Lakes Initial Fractional Area')
@@ -481,7 +481,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Lakes.tofile('./Lakes/Lakes_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['Urban_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Urban_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Urban_plot, interpolation='nearest', cmap='bone')
             pl.title('Urban Initial Fractional Area')
@@ -490,7 +490,7 @@ def barrow_initial_cohort_check(self):
             ATTM_Urban_plot.tofile('./Other_Cohorts/Urban_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['Total_Cohorts_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Total_Cohorts_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Total_plot, interpolation='nearest', cmap='bone')
             pl.title('Total of All Initial Fractional Areas')
@@ -500,7 +500,7 @@ def barrow_initial_cohort_check(self):
             pl.close()
 
         # ----------------------------------------------------------------------
-        if self.initialize['CLC_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['CLC_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_CLC_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -509,7 +509,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_CLC_WT_Y.tofile('./CLC_WT_Y/CLC_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['CLC_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['CLC_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_CLC_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -518,7 +518,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_CLC_WT_M.tofile('./CLC_WT_M/CLC_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['CLC_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['CLC_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_CLC_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -527,7 +527,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_CLC_WT_O.tofile('./CLC_WT_O/CLC_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['CoastalWaters_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['CoastalWaters_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_CoastalWaters_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -536,7 +536,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_CoastalWaters_WT_O.tofile('./CoastalWaters_WT_O/CoastalWaters_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['DrainedSlope_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['DrainedSlope_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_DrainedSlope_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -545,7 +545,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_DrainedSlope_WT_Y.tofile('./DrainedSlope_WT_Y/DrainedSlope_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['DrainedSlope_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['DrainedSlope_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_DrainedSlope_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -554,7 +554,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_DrainedSlope_WT_M.tofile('./DrainedSlope_WT_M/DrainedSlope_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['DrainedSlope_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['DrainedSlope_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_DrainedSlope_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -563,7 +563,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_DrainedSlope_WT_O.tofile('./DrainedSlope_WT_O/DrainedSlope_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['FCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['FCP_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_FCP_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -572,7 +572,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_FCP_WT_Y.tofile('./FCP_WT_Y/FCP_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['FCP_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['FCP_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_FCP_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -581,7 +581,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_FCP_WT_M.tofile('./FCP_WT_M/FCP_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['FCP_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['FCP_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_FCP_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -590,7 +590,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_FCP_WT_O.tofile('./FCP_WT_O/FCP_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['HCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['HCP_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_HCP_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -599,7 +599,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_HCP_WT_Y.tofile('./HCP_WT_Y/HCP_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['HCP_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['HCP_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_HCP_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -608,7 +608,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_HCP_WT_M.tofile('./HCP_WT_M/HCP_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['HCP_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['HCP_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_HCP_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -617,7 +617,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_HCP_WT_O.tofile('./HCP_WT_O/HCP_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['LCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['LCP_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_LCP_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -626,7 +626,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_LCP_WT_Y.tofile('./LCP_WT_Y/LCP_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['LCP_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['LCP_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_LCP_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -635,7 +635,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_LCP_WT_M.tofile('./LCP_WT_M/LCP_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['LCP_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['LCP_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_LCP_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -644,7 +644,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_LCP_WT_O.tofile('./LCP_WT_O/LCP_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Meadow_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Meadow_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Meadow_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -653,7 +653,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Meadow_WT_Y.tofile('./Meadow_WT_Y/Meadow_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Meadow_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Meadow_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Meadow_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -662,7 +662,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Meadow_WT_M.tofile('./Meadow_WT_M/Meadow_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Meadow_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Meadow_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Meadow_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -671,7 +671,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Meadow_WT_O.tofile('./Meadow_WT_O/Meadow_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SaturatedBarrens_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SaturatedBarrens_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SaturatedBarrens_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -680,7 +680,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SaturatedBarrens_WT_Y.tofile('./SaturatedBarrens_WT_Y/SaturatedBarrens_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SaturatedBarrens_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SaturatedBarrens_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SaturatedBarrens_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -689,7 +689,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SaturatedBarrens_WT_M.tofile('./SaturatedBarrens_WT_M/SaturatedBarrens_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SaturatedBarrens_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SaturatedBarrens_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SaturatedBarrens_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -698,7 +698,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SaturatedBarrens_WT_O.tofile('./SaturatedBarrens_WT_O/SaturatedBarrens_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SandDunes_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SandDunes_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SandDunes_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -707,7 +707,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SandDunes_WT_Y.tofile('./SandDunes_WT_Y/SandDunes_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SandDunes_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SandDunes_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SandDunes_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -716,7 +716,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SandDunes_WT_M.tofile('./SandDunes_WT_M/SandDunes_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SandDunes_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SandDunes_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SandDunes_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -725,7 +725,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SandDunes_WT_O.tofile('./SandDunes_WT_O/SandDunes_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Shrubs_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Shrubs_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Shrubs_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -734,7 +734,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Shrubs_WT_O.tofile('./Shrubs_WT_O/Shrubs_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Urban_WT_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Urban_WT_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Urban_WT_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -743,7 +743,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Urban_WT.tofile('./Urban_WT/Urban_WT_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['LargeLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['LargeLakes_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_LargeLakes_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -752,7 +752,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_LargeLakes_WT_Y.tofile('./LargeLakes_WT_Y/LargeLakes_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['LargeLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['LargeLakes_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_LargeLakes_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -761,7 +761,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_LargeLakes_WT_M.tofile('./LargeLakes_WT_M/LargeLakes_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['LargeLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['LargeLakes_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_LargeLakes_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -770,7 +770,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_LargeLakes_WT_O.tofile('./LargeLakes_WT_O/LargeLakes_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['MediumLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['MediumLakes_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_MediumLakes_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -779,7 +779,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_MediumLakes_WT_Y.tofile('./MediumLakes_WT_Y/MediumLakes_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['MediumLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['MediumLakes_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_MediumLakes_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -788,7 +788,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_MediumLakes_WT_M.tofile('./MediumLakes_WT_M/MediumLakes_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['MediumLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['MediumLakes_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_MediumLakes_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -797,7 +797,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_MediumLakes_WT_O.tofile('./MediumLakes_WT_O/MediumLakes_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SmallLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SmallLakes_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SmallLakes_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -806,7 +806,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SmallLakes_WT_Y.tofile('./SmallLakes_WT_Y/SmallLakes_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SmallLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SmallLakes_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SmallLakes_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -815,7 +815,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SmallLakes_WT_M.tofile('./SmallLakes_WT_M/SmallLakes_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['SmallLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['SmallLakes_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_SmallLakes_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -824,7 +824,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_SmallLakes_WT_O.tofile('./SmallLakes_WT_O/SmallLakes_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Ponds_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Ponds_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Ponds_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -833,7 +833,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Ponds_WT_Y.tofile('./Ponds_WT_Y/Ponds_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Ponds_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Ponds_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Ponds_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -842,7 +842,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Ponds_WT_M.tofile('./Ponds_WT_M/Ponds_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Ponds_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Ponds_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Ponds_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -851,7 +851,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Ponds_WT_O.tofile('./Ponds_WT_O/Ponds_WT_O_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Rivers_WT_Y_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Rivers_WT_Y_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Rivers_WT_Y_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -860,7 +860,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Rivers_WT_Y.tofile('./Rivers_WT_Y/Rivers_WT_Y_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Rivers_WT_M_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Rivers_WT_M_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Rivers_WT_M_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -869,7 +869,7 @@ def barrow_initial_cohort_check(self):
             self.ATTM_Rivers_WT_M.tofile('./Rivers_WT_M/Rivers_WT_M_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Rivers_WT_O_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Rivers_WT_O_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Rivers_WT_O_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -908,7 +908,7 @@ def tanana_initial_cohort_check(self):
     # ----------------------------------------------------------------------
     # Determine the initial/original total fractional area of each element.
     # ----------------------------------------------------------------------
-    cohort_check = self.ATTM_Total / ((float(self.X_resolution)/(self.x_res)) * float(self.Y_resolution)/ \
+    cohort_check = self.ATTM_Total / ((float(self.control.X_model_resolution)/(self.x_res)) * float(self.control.Y_model_resolution)/ \
                    (self.y_res))
 
     #=====================================================================================
@@ -918,7 +918,7 @@ def tanana_initial_cohort_check(self):
     # Note: In the Barrow example, the cohorts_required = 1600. Just leaving as flexible as
     #       possible.
     #-------------------------------------------------------------------------------------
-    cohorts_required = ((float(self.X_resolution)/(self.x_res)) * float(self.Y_resolution)/ \
+    cohorts_required = ((float(self.control.X_model_resolution)/(self.x_res)) * float(self.control.Y_model_resolution)/ \
                         (self.y_res))
 
     for i in range(0, self.ATTM_nrows * self.ATTM_ncols):
@@ -989,7 +989,7 @@ def tanana_initial_cohort_check(self):
     print '      done.'
     print ' '
 
-    if self.initialize['Normalized_Cohort_Distribution_Figure'].lower() == 'yes':    
+    if self.control.Initialize_Control['Normalized_Cohort_Distribution_Figure'].lower() == 'yes':    
         cohort_check = np.reshape(self.ATTM_Total_Fractional_Area,  [int(self.ATTM_nrows), int(self.ATTM_ncols)])
 
         # Files for plotting & reference #
@@ -1011,7 +1011,7 @@ def tanana_initial_cohort_check(self):
         # -----------------------------------------------------------------------------
         # Output files and figures
         # -----------------------------------------------------------------------------
-        if self.initialize['TF_OB_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_OB_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_TF_OB_plot, interpolation='nearest', cmap='bone')
             pl.title('Tanana Flat Old Bog Initial Fractional Area')
@@ -1020,7 +1020,7 @@ def tanana_initial_cohort_check(self):
             self.ATTM_TF_OB.tofile('./TF_OB/TF_OB_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['TF_YB_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_YB_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_TF_YB_plot, interpolation='nearest', cmap='bone')
             pl.title('Tanana Flats Young Bog Initial Fractional Area')
@@ -1029,7 +1029,7 @@ def tanana_initial_cohort_check(self):
             self.ATTM_TF_YB.tofile('./TF_YB/TF_YB_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['TF_OF_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_OF_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_TF_OF_plot, interpolation='nearest', cmap='bone')
             pl.title('Tanana Flats Old Fen Initial Fractional Area')
@@ -1038,7 +1038,7 @@ def tanana_initial_cohort_check(self):
             self.ATTM_TF_OF.tofile('./TF_OF/TF_OF_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['TF_YF_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_YF_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_TF_YF_plot, interpolation='nearest', cmap='bone')
             pl.title('Tanana Flats Young Fen Initial Fractional Area')
@@ -1047,7 +1047,7 @@ def tanana_initial_cohort_check(self):
             self.ATTM_TF_YF.tofile('./TF_YF/TF_YF_fractional_cohorts.bin')
             pl.close()
          # -----------------------------------------------------------------------------
-        if self.initialize['TF_Con_PP_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_Con_PP_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_TF_Con_PP_plot, interpolation='nearest', cmap='bone')
             pl.title('Tanana Flats Coniferous Permafrost Plateau Initial Fractional Area')
@@ -1056,7 +1056,7 @@ def tanana_initial_cohort_check(self):
             self.ATTM_TF_Con_PP.tofile('./TF_Con_PP/TF_Con_PP_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['TF_Dec_PP_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_Dec_PP_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_TF_Dec_PP_plot, interpolation='nearest', cmap='bone')
             pl.title('Tanana Flats Deciduous Permafrost Plateau Initial Fractional Area')
@@ -1065,7 +1065,7 @@ def tanana_initial_cohort_check(self):
             self.ATTM_TF_Dec_PP.tofile('./TF_Dec_PP/TF_Dec_PP_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------        
-        if self.initialize['TF_TL_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_TL_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_TF_TL_plot, interpolation='nearest', cmap='bone')
             pl.title('Tanana Flats Thermokarst Lake Initial Fractional Area')
@@ -1074,7 +1074,7 @@ def tanana_initial_cohort_check(self):
             self.ATTM_TF_TL.tofile('./TF_TL/TL_TL_fractional_cohorts.bin')
             pl.close()
         # -----------------------------------------------------------------------------
-        if self.initialize['TF_Total_Cohorts_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['TF_Total_Cohorts_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Total_plot, interpolation='nearest', cmap='bone')
             pl.title('Total of All Initial Fractional Areas')
@@ -1112,7 +1112,7 @@ def yukon_initial_cohort_check(self):
     # ----------------------------------------------------------------------
     # Determine the initial/original total fractional area of each element.
     # ----------------------------------------------------------------------
-    cohort_check = self.ATTM_Total / ((float(self.X_resolution)/(self.x_res)) * float(self.Y_resolution)/ \
+    cohort_check = self.ATTM_Total / ((float(self.control.X_model_resolution)/(self.x_res)) * float(self.control.Y_model_resolution)/ \
                    (self.y_res))
 
     #=====================================================================================
@@ -1122,7 +1122,7 @@ def yukon_initial_cohort_check(self):
     # Note: In the Barrow example, the cohorts_required = 1600. Just leaving as flexible as
     #       possible.
     #-------------------------------------------------------------------------------------
-    cohorts_required = ((float(self.X_resolution)/(self.x_res)) * float(self.Y_resolution)/ \
+    cohorts_required = ((float(self.control.X_model_resolution)/(self.x_res)) * float(self.control.Y_model_resolution)/ \
                         (self.y_res))
 
     for i in range(0, self.ATTM_nrows * self.ATTM_ncols):
@@ -1735,7 +1735,7 @@ def yukon_initial_cohort_check(self):
     print '      done.'
     print ' '
 
-    if self.initialize['Normalized_Cohort_Distribution_Figure'].lower() == 'yes':    
+    if self.control.Initialize_Control['Normalized_Cohort_Distribution_Figure'].lower() == 'yes':    
         cohort_check = np.reshape(self.ATTM_Total_Fractional_Area,  [int(self.ATTM_nrows), int(self.ATTM_ncols)])
 
         
@@ -1780,7 +1780,7 @@ def yukon_initial_cohort_check(self):
         #---------------------------------------------------------
         # Create Figures, Plots and Binary files for each cohort
         #---------------------------------------------------------
-        if self.initialize['Barren_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Barren_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Barren_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1789,7 +1789,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Barren_Yukon.tofile('./Barren_Yukon/Barren_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1798,7 +1798,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon.tofile('./Bog_Yukon/Bog_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['DeciduousForest_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['DeciduousForest_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_DeciduousForest_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1807,7 +1807,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_DeciduousForest_Yukon.tofile('./DeciduousForest_Yukon/DeciduousForest_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------                                       
-        if self.initialize['DwarfShrub_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['DwarfShrub_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_DwarfShrub_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1816,7 +1816,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_DwarfShrub_Yukon.tofile('./DwarfShrub_Yukon/DwarfShrub_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1825,7 +1825,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon.tofile('./Fen_Yukon/Fen_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['EvergreenForest_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['EvergreenForest_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_EvergreenForest_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1834,7 +1834,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_EvergreenForest_Yukon.tofile('./EvergreenForest_Yukon/EvergreenForest_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Lake_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Lake_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Lake_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1843,7 +1843,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Lake_Yukon.tofile('./Lake_Yukon/Lake_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['Pond_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Pond_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Pond_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1852,7 +1852,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Pond_Yukon.tofile('./Pond_Yukon/Pond_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['River_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['River_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_River_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1861,7 +1861,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_River_Yukon.tofile('./River_Yukon/River_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         # ----------------------------------------------------------------------
-        if self.initialize['ShrubScrub_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['ShrubScrub_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_ShrubScrub_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1870,7 +1870,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_ShrubScrub_Yukon.tofile('./ShrubScrub_Yukon/ShrubScrub_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Unclassified_Yukon_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Unclassified_Yukon_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Unclassified_Yukon_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1879,7 +1879,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Unclassified_Yukon.tofile('./Unclassified_Yukon/Unclassified_Yukon_initial_fractional_cohorts.bin')
             pl.close()
         #---------------------------------------------------------------------------
-        if self.initialize['All_Cohorts_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['All_Cohorts_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Total_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1888,7 +1888,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Total.tofile('./Yukon_All_Cohorts/Total_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_00_09_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_00_09_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_00_09_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1897,7 +1897,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_00_09.tofile('./Bog_Yukon_00_09/Bog_Yukon_00_09_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_10_19_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_10_19_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_10_19_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1906,7 +1906,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_10_19.tofile('./Bog_Yukon_10_19/Bog_Yukon_10_19_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_20_29_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_20_29_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_20_29_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1915,7 +1915,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_20_29.tofile('./Bog_Yukon_20_29/Bog_Yukon_20_29_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_30_39_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_30_39_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_30_39_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1924,7 +1924,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_30_39.tofile('./Bog_Yukon_30_39/Bog_Yukon_30_39_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_40_49_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_40_49_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_40_49_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1933,7 +1933,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_40_49.tofile('./Bog_Yukon_40_49/Bog_Yukon_40_49_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_50_59_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_50_59_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_50_59_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1942,7 +1942,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_50_59.tofile('./Bog_Yukon_50_59/Bog_Yukon_50_59_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_60_69_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_60_69_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_60_69_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1951,7 +1951,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_60_69.tofile('./Bog_Yukon_60_69/Bog_Yukon_60_69_initial_fractional_cohorts.bin')
             pl.close()             
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_70_79_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_70_79_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_70_79_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1960,7 +1960,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_70_79.tofile('./Bog_Yukon_70_79/Bog_Yukon_70_79_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_80_89_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_80_89_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_80_89_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1969,7 +1969,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_80_89.tofile('./Bog_Yukon_80_89/Bog_Yukon_80_89_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Bog_Yukon_90_99_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Bog_Yukon_90_99_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Bog_Yukon_90_99_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1978,7 +1978,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Bog_Yukon_90_99.tofile('./Bog_Yukon_90_99/Bog_Yukon_90_99_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_00_09_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_00_09_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_00_09_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1987,7 +1987,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_00_09.tofile('./Fen_Yukon_00_09/Fen_Yukon_00_09_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_10_19_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_10_19_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_10_19_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -1996,7 +1996,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_10_19.tofile('./Fen_Yukon_10_19/Fen_Yukon_10_19_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_20_29_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_20_29_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_20_29_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2005,7 +2005,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_20_29.tofile('./Fen_Yukon_20_29/Fen_Yukon_20_29_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_30_39_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_30_39_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_30_39_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2014,7 +2014,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_30_39.tofile('./Fen_Yukon_30_39/Fen_Yukon_30_39_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_40_49_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_40_49_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_40_49_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2023,7 +2023,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_40_49.tofile('./Fen_Yukon_40_49/Fen_Yukon_40_49_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_50_59_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_50_59_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_50_59_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2032,7 +2032,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_50_59.tofile('./Fen_Yukon_50_59/Fen_Yukon_50_59_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_60_69_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_60_69_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_60_69_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2041,7 +2041,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_60_69.tofile('./Fen_Yukon_60_69/Fen_Yukon_60_69_initial_fractional_cohorts.bin')
             pl.close()             
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_70_79_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_70_79_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_70_79_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2050,7 +2050,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_70_79.tofile('./Fen_Yukon_70_79/Fen_Yukon_70_79_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_80_89_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_80_89_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_80_89_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2059,7 +2059,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_80_89.tofile('./Fen_Yukon_80_89/Fen_Yukon_80_89_initial_fractional_cohorts.bin')
             pl.close()
         #-------------------------------------------------------------------------
-        if self.initialize['Fen_Yukon_90_99_Normal'].lower() == 'yes':
+        if self.control.Initialize_Control['Fen_Yukon_90_99_Normal'].lower() == 'yes':
             fig = pl.figure()
             pl.imshow(ATTM_Fen_Yukon_90_99_plot, interpolation = 'nearest', cmap= 'spectral', vmin = 0.0, vmax = 1.0)
             pl.colorbar(extend = 'max', shrink = 0.92)
@@ -2068,7 +2068,7 @@ def yukon_initial_cohort_check(self):
             self.ATTM_Fen_Yukon_90_99.tofile('./Fen_Yukon_90_99/Fen_Yukon_90_99_initial_fractional_cohorts.bin')
             pl.close()
         #=====================================================================================================
-    if self.initialize['Initial_Dominant_Cohort_Figure'].lower() == 'yes':
+    if self.control.Initialize_Control['Initial_Dominant_Cohort_Figure'].lower() == 'yes':
 
         os.chdir(self.control['Run_dir']+self.Output_directory+'/Yukon/Yukon_All_Cohorts/')
 
