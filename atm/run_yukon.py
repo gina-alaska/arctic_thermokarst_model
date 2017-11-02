@@ -24,7 +24,7 @@ import initial_cohort_age
 import initial_cohort_check
 import initial_cohort_population
 import initialize
-import lake_pond_expansion
+import checks.lake_pond_expansion
 import Output_cohorts_by_year
 import read_drainage_efficiency
 import read_ice_content

@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.4] - 2017-11-02
+### fixed
+- fixed bug with lake_pond_expansion
+
 ## [0.2.3] - 2017-10-19
 ### added
 - atm/io/control.py control file io, and matching tests in tests/
