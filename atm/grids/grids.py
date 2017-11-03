@@ -44,6 +44,7 @@ class ModelGrids (object):
         # set for other objects
         config['shape'] = self.shape
         config['AOI mask'] = self.aoi
+        config['cohort list'] = self.area.get_cohort_list()
         self.ald = ALDGrid(config)
         self.poi = POIGrid(config)
         self.ice = IceGrid(config)

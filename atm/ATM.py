@@ -69,6 +69,7 @@ import archive
 
 
 from control import Control
+from grids.grids import ModelGrids
 #_______________________________________________________________________________
 class ATM(object):
 
@@ -88,6 +89,8 @@ class ATM(object):
         faulthandler.enable()
         clock.start(self)
         
+        
+        self.grids = ModelGrids(self.control)
         #--------------------------------------
         # Read the Control File for Simulation
         #--------------------------------------
@@ -108,23 +111,29 @@ class ATM(object):
         print ' Initializing ATM'
         print '==================='
         
+        ## haneled in control and grids
         #~ read_control.read_control(self)
         #~ initialize.initialize(self)
-        read_layers.read_layers(self)
-        model_domain.model_domain(self)
-        create_attm_cohort_arrays.create_attm_cohort_arrays(self)
+        #~ read_layers.read_layers(self)
+        #~ model_domain.model_domain(self)
+        #~ create_attm_cohort_arrays.create_attm_cohort_arrays(self)
+
+        
 
 
         #=========================================
         # Initializing Site Specific Information
         #=========================================
-        if self.control['Simulation_area'].lower() == 'barrow':
-            run_barrow.initialize_barrow(self)
-        elif self.control['Simulation_area'].lower() == 'tanana':
-            run_tanana.initialize_tanana(self)
-        elif self.control['Simulation_area'].lower() == 'yukon':
-            run_yukon.initialize_yukon(self)
+        
+        ## handeled in grids
+        #~ if self.control['Simulation_area'].lower() == 'barrow':
+            #~ run_barrow.initialize_barrow(self)
+        #~ elif self.control['Simulation_area'].lower() == 'tanana':
+            #~ run_tanana.initialize_tanana(self)
+        #~ elif self.control['Simulation_area'].lower() == 'yukon':
+            #~ run_yukon.initialize_yukon(self)
          
+        
         #=======================================
         # READ MET Data, Calculate Degree Days,
         # and Calculate Climatic Data needed
@@ -137,6 +146,8 @@ class ATM(object):
         #    INITIALIZE COHORT PROPERTIES
         #  ========================================
         #++++++++++++++++++++++++++++++++++++++++++++++
+        
+        ## ** most of this happes in the Cotrol object
     	print '======================================'
         print ' Initializing Terrestrial Properties '
         print '======================================'
@@ -144,11 +155,14 @@ class ATM(object):
             run_barrow.initialize_barrow_cohorts(self)
         elif self.control['Simulation_area'].lower() == 'tanana':
             run_tanana.Terrestrial_Tanana(self)
-
+        ## **
+        
         print '=================================================='
         print '            Starting the MAIN LOOP '
         print '=================================================='
 
+        ## this should be renamed, to set_end or somthing
+        
         initialize.run(self)
         if self.control['Simulation_area'].lower() == 'barrow':
             ## move to else where

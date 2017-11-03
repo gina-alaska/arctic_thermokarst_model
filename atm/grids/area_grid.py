@@ -7,8 +7,15 @@ Contains objects to represent internal grid cohort data in ATM
 import numpy as np
 import os
 
-from ..cohorts import find_canon_name
-from ..atm_io import binary, image, raster
+try:
+    from cohorts import find_canon_name
+except ImportError:
+    from ..cohorts import find_canon_name
+    
+try:
+    from atm_io import binary, image, raster
+except ImportError:
+    from ..atm_io import binary, image, raster
 
 from constants import ROW, COL
 
@@ -65,7 +72,7 @@ class AreaGrid(object):
         
         
         """
-        input_data = config['input data'] 
+        input_data = config['area data'] 
         target_resolution = config['target resolution']
         self.start_year = int(config['start year'])
         
@@ -575,6 +582,12 @@ class AreaGrid(object):
             
         return filename
             
+    def get_cohort_list (self):
+        """Gets list of cannon cohort names in model"""
+        return [key for key in self.key_to_index if key.find('--') == -1]
+        
+        
+        
             
         
 def test (files):

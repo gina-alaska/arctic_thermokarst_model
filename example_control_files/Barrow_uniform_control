@@ -13,7 +13,7 @@ Run_dir		./barrow_uniform
 # Data Input and Output Directories
 Input_dir				  Input
 Output_dir				  Output
-Control_dir				  Control_Files
+Control_dir				  Input
 #----------------------------------------------------------------
 # Name of "Notes Files" containing additional information
 #   -- "Blank" is an empty file.

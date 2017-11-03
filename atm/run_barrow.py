@@ -45,24 +45,40 @@ def initialize_barrow_cohorts(self):
     print '=================================== '
     print ' Initializing Lake & Pond Properties'
     print '===================================='
+    
+    # initialize handled by control, but other stuff needs a new object
     initialize.LakePond(self)
     set_lake_pond_depth.set_lake_pond_depth(self)
     set_lake_ice_depth_constant.set_lake_ice_depth_constant(self)
     set_ice_thickness_array.set_ice_thickness_array(self)
     climate_expansion_arrays.set_climate_expansion_arrays(self)
     set_pond_growth_array.set_pond_growth_array(self)
+    
     print '====================================='
     print ' Initializing Terrestrial Properties'
     print '====================================='
+    
+    # in control
     initialize.Terrestrial_Barrow(self)
     read_ice_content.read_ice_content(self)
+    
+    # needed
     read_drainage_efficiency.read_drainage_efficiency(self)
+    
+    # in ald object
     read_initial_ALD.read_initial_ALD(self)
+    
+    ## need to add to ALD object
     set_ALD_constant.set_ALD_constant(self)
+    
+    # in ald object
     set_ALD_array.set_ALD_array(self)
     set_protective_layer.set_protective_layer(self)
     set_initial_cumulative_probability.set_initial_cumulative_probability(self)
+   
     # Initializing Terrestrial Cohort Properties
+   
+    # handled by control
     initialize.CLC_WT(self)
     initialize.CoastalWaters_WT(self)
     initialize.DrainedSlope_WT(self)
@@ -75,6 +91,10 @@ def initialize_barrow_cohorts(self):
     initialize.SaturatedBarrens_WT(self)
     initialize.Shrubs_WT(self)
     initialize.Urban_WT(self)
+   
+   
+    ## feature is in area object
+   
     initial_cohort_age.initial_cohort_age(self)
 #---------------------------------------------------------------------
 def run_barrow(self, time):

@@ -42,7 +42,7 @@ CANON_COHORT_NAMES = {
     ('Meadow_WetlandTundra_Old',): 'Meadow_WT_O',
     ('Meadow_WetlandTundra_Young',): 'Meadow_WT_Y',
     
-    ('MediumLakes_WetlandTundra_Medium',): 'MediumLakes_WT_M ',
+    ('MediumLakes_WetlandTundra_Medium',): 'MediumLakes_WT_M',
     ('MediumLakes_WetlandTundra_Old',): 'MediumLakes_WT_O',
     ('MediumLakes_WetlandTundra_Young',): 'MediumLakes_WT_Y' ,
     
@@ -70,7 +70,7 @@ CANON_COHORT_NAMES = {
     ('SmallLakes_WetlandTundra_Old',): 'SmallLakes_WT_O',
     ('SmallLakes_WetlandTundra_Young',): 'SmallLakes_WT_Y',
     
-    ('Urban_WetlandTundra_Old',): 'Urban_WetlandTundra_Old',
+    ('Urban_WetlandTundra_Old','Urban_WT'): 'Urban_WetlandTundra_Old',
     
     ## barrow NO AGE STUFF ?? ask bob.
     ('Rivers',): 'Rivers',

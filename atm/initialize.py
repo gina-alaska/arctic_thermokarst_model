@@ -496,17 +496,18 @@ def Met(self):
 
     # Convert string variables if necessary
 
-    self.control.Met_Control['climate_block_lower_bound'] = int(self.control.Met_Control['climate_block_lower_bound'])
-    self.control.Met_Control['climate_block_upper_bound'] = int(self.control.Met_Control['climate_block_upper_bound'])
-    self.control.Met_Control['climate_event_probability'] = float(self.control.Met_Control['climate_event_probability'])
-    self.control.Met_Control['pond_drain_rate_<0.01']     = float(self.control.Met_Control['pond_drain_rate_<0.01'])
-    self.control.Met_Control['pond_drain_rate_0.01<0.1']  = float(self.control.Met_Control['pond_drain_rate_0.01<0.1'])
-    self.control.Met_Control['pond_drain_rate_0.1<0.4']   = float(self.control.Met_Control['pond_drain_rate_0.1<0.4'])
-    self.control.Met_Control['pond_drain_rate_0.1<1.0']   = float(self.control.Met_Control['pond_drain_rate_0.4<1.0'])
-    self.control.Met_Control['lake_drain_rate_<0.01']     = float(self.control.Met_Control['lake_drain_rate_<0.01'])
-    self.control.Met_Control['lake_drain_rate_0.01<0.1']  = float(self.control.Met_Control['lake_drain_rate_0.01<0.1'])
-    self.control.Met_Control['lake_drain_rate_0.1<0.4']   = float(self.control.Met_Control['lake_drain_rate_0.1<0.4'])
-    self.control.Met_Control['lake_drain_rate_0.4<1.0']   = float(self.control.Met_Control['lake_drain_rate_0.4<1.0'])
+    ## control.py will handle this
+    #~ self.control.Met_Control['climate_block_lower_bound'] = int(self.control.Met_Control['climate_block_lower_bound'])
+    #~ self.control.Met_Control['climate_block_upper_bound'] = int(self.control.Met_Control['climate_block_upper_bound'])
+    #~ self.control.Met_Control['climate_event_probability'] = float(self.control.Met_Control['climate_event_probability'])
+    #~ self.control.Met_Control['pond_drain_rate_<0.01']     = float(self.control.Met_Control['pond_drain_rate_<0.01'])
+    #~ self.control.Met_Control['pond_drain_rate_0.01<0.1']  = float(self.control.Met_Control['pond_drain_rate_0.01<0.1'])
+    #~ self.control.Met_Control['pond_drain_rate_0.1<0.4']   = float(self.control.Met_Control['pond_drain_rate_0.1<0.4'])
+    #~ self.control.Met_Control['pond_drain_rate_0.1<1.0']   = float(self.control.Met_Control['pond_drain_rate_0.4<1.0'])
+    #~ self.control.Met_Control['lake_drain_rate_<0.01']     = float(self.control.Met_Control['lake_drain_rate_<0.01'])
+    #~ self.control.Met_Control['lake_drain_rate_0.01<0.1']  = float(self.control.Met_Control['lake_drain_rate_0.01<0.1'])
+    #~ self.control.Met_Control['lake_drain_rate_0.1<0.4']   = float(self.control.Met_Control['lake_drain_rate_0.1<0.4'])
+    #~ self.control.Met_Control['lake_drain_rate_0.4<1.0']   = float(self.control.Met_Control['lake_drain_rate_0.4<1.0'])
 
     #-----------------------------------------------------
     # Read the Met Data
