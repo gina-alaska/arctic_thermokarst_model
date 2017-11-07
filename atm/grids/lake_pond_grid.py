@@ -56,7 +56,7 @@ class LakePondGrid (object):
             offset from start year
         counts: dict
             counts for each type of lake/pond
-        grids: dict
+        depths: dict
             lake/pond depth grids
         pickel_path: path
             path to pickle file
@@ -79,11 +79,11 @@ class LakePondGrid (object):
         init_pond = config['pond depth']
         init_lake = config['lake depth']
         
-        self.grids = self.setup_grids(
+        self.depths = self.setup_depths(
             config['pond types'], self.shape, init_pond
         )
-        self.grids.update(
-            self.setup_grids(config['lake types'], self.shape, init_lake)
+        self.depths.update(
+            self.setup_depths(config['lake types'], self.shape, init_lake)
         )
         
         self.pickle_path = os.path.join(
@@ -96,8 +96,24 @@ class LakePondGrid (object):
             self.shape, alpha_range
         )
         
+        ## current ice depth starts as zeros
+        self.ice_depth = np.zeros(self.shape).flatten()
+        
+        ## climate expansion expansion
+        self.climate_expansion_lakes = np.zeros(self.shape).flatten()
+        self.climate_expansion_ponds = np.zeros(self.shape).flatten()
+        
+        ## can cheat and use setup depths
+        self.growth = self.setup_depths(
+            config['pond types'], self.shape, (0,0)
+        )
+        self.growth.update(
+            self.setup_depths(config['lake types'], self.shape, (0,0))
+        )
+        
+        
     def __setitem__ (self, key, grid):
-        """Sets a grid, can only set grids in current time step
+        """Sets a grid, can only set depths in current time step
         
         Parameters
         ----------
@@ -106,7 +122,7 @@ class LakePondGrid (object):
         grid: np.array
             data to set. should re shepe to shape attribute
         """
-        self.set_grid(key, grid)
+        self.set_depth_grid(key, grid)
     
     def __getitem__ (self, key):
         """gets a grid
@@ -144,11 +160,11 @@ class LakePondGrid (object):
             
             
         if get_type == 'item_at_time':
-            return self.get_grid_at_ts(lake_pond_type, ts, False)
+            return self.get_depth_grid_at_ts(lake_pond_type, ts, False)
         elif get_type == 'snap_shot':
-            return self.get_all_grids_at_ts(ts, flat=False)
+            return self.get_all_depths_at_ts(ts, flat=False)
         elif get_type == 'history':
-            return self.get_grid_history(lake_pond_type, flat=False)
+            return self.get_depth_grid_history(lake_pond_type, flat=False)
             
     def setup_counts (self, types, shape):   
         """set up counts grids
@@ -171,7 +187,7 @@ class LakePondGrid (object):
         return count
         
 
-    def setup_grids (self, types, shape, init_depth):
+    def setup_depths (self, types, shape, init_depth):
         """set up depth grids
         
         Parameters
@@ -189,12 +205,12 @@ class LakePondGrid (object):
         dict:
             dictioanry of depth grids
         """
-        grids = {}
+        depths = {}
         for t in types:
-            grids[t] = np.random.uniform(
+            depths[t] = np.random.uniform(
                 init_depth[0], init_depth[1], shape
             ).flatten()
-        return grids
+        return depths
     
     def setup_ice_depth_constants (self, shape, init_alpha):
         """set up depth costant(alpha) grids
@@ -271,8 +287,8 @@ class LakePondGrid (object):
         ------
         LakePondNotFoundError
         """
-        if lake_pond_type in self.grids:
-            self.grids[lake_pond_type][np.logical_not(mask)] = 0
+        if lake_pond_type in self.depths:
+            self.depths[lake_pond_type][np.logical_not(mask)] = 0
         else:
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg
@@ -287,7 +303,7 @@ class LakePondGrid (object):
         """
         self.pickle_path = path
 
-    def set_grid (self, lake_pond_type, grid):
+    def set_depth_grid (self, lake_pond_type, grid):
         """set a depth grid
         
         Parameters
@@ -303,8 +319,8 @@ class LakePondGrid (object):
         
         """
         
-        if lake_pond_type in self.grids:
-            self.grids[lake_pond_type] = grid.reshape(self.shape).flatten()
+        if lake_pond_type in self.depths:
+            self.depths[lake_pond_type] = grid.reshape(self.shape).flatten()
         else:
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg
@@ -330,7 +346,7 @@ class LakePondGrid (object):
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg   
                  
-    def get_grid (self, lake_pond_type, flat = True):
+    def get_depth_grid (self, lake_pond_type, flat = True):
         """get most recent depth grid
         
         Parameters
@@ -351,13 +367,13 @@ class LakePondGrid (object):
         """
         shape = self.shape[0]*self.shape[1] if flat == True else self.shape
             
-        if lake_pond_type in self.grids:
-            return self.grids[lake_pond_type].reshape(shape)
+        if lake_pond_type in self.depths:
+            return self.depths[lake_pond_type].reshape(shape)
         else:
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg     
                   
-    def get_grid_at_ts (self, lake_pond_type, ts = -1, flat = True):
+    def get_depth_grid_at_ts (self, lake_pond_type, ts = -1, flat = True):
         """get a depth grid
         
         Parameters
@@ -379,7 +395,7 @@ class LakePondGrid (object):
             name grid at most recent time step
         """
         if ts == -1 or ts == self.time_step:
-            return self.get_grid(lake_pond_type, flat)
+            return self.get_depth_grid(lake_pond_type, flat)
             
         data = self.read_from_pickle(ts)   
        
@@ -388,24 +404,24 @@ class LakePondGrid (object):
        
         shape = self.shape[0]*self.shape[1] if flat == True else self.shape
         
-        if lake_pond_type in self.grids:
-            return data['grids'][lake_pond_type].reshape(shape)
+        if lake_pond_type in self.depths:
+            return data['depths'][lake_pond_type].reshape(shape)
         else:
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg    
                        
-    def get_all_grids (self):
-        """Gets all grids at most recent timestep
+    def get_all_depths (self):
+        """Gets all depths at most recent timestep
         
         Returns
         -------
         dict:
-            grids at most recent time step
+            depths at most recent time step
         """
-        return self.grids
+        return self.depths
             
-    def get_all_grids_at_ts (self, ts = -1, flat = True):
-        """Gets all grids at most recent timestep
+    def get_all_depths_at_ts (self, ts = -1, flat = True):
+        """Gets all depths at most recent timestep
         
          Parameters
         ----------
@@ -421,10 +437,10 @@ class LakePondGrid (object):
         Returns
         -------
         dict:
-            grids at time step
+            depths at time step
         """
         if ts == -1 or ts == self.time_step:
-            return self.get_all_grids()
+            return self.get_all_depths()
             
         data = self.read_from_pickle(ts)   
         if data == False:
@@ -433,10 +449,10 @@ class LakePondGrid (object):
         shape = self.shape[0]*self.shape[1] if flat == True else self.shape
         
        
-        return {t:data['grids'][t].reshape(shape) for t in data['grids']}
+        return {t:data['depths'][t].reshape(shape) for t in data['depths']}
         
         
-    def get_grid_history (self, lake_pond_type, flat = True):
+    def get_depth_grid_history (self, lake_pond_type, flat = True):
         """Get grid at all time steps
         
         Parameters
@@ -455,7 +471,7 @@ class LakePondGrid (object):
         np.array
             3d array [timestep][row][col]
         """
-        if not (lake_pond_type in self.grids.keys()):
+        if not (lake_pond_type in self.depths.keys()):
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg
                 
@@ -463,11 +479,11 @@ class LakePondGrid (object):
         shape = self.shape[0]*self.shape[1] if flat == True else self.shape
             
         data = self.read_from_pickle()
-        data = [ ts['grids'][lake_pond_type].reshape(shape) for ts in data ]
+        data = [ ts['depths'][lake_pond_type].reshape(shape) for ts in data ]
         
         #missing current ?
         if len(data) == self.time_step:
-            data.append(self.grids[lake_pond_type].reshape(shape))
+            data.append(self.depths[lake_pond_type].reshape(shape))
             
         return np.array(data)
         
@@ -544,7 +560,12 @@ class LakePondGrid (object):
         data = {
             'ts': ts,
             'counts': self.counts,
-            'grids':  self.grids,
+            'depths':  self.depths,
+            'ice depth': self.ice_depth,
+            'climate expansion lakes': self.climate_expansion_lakes,
+            'climate expansion ponds': self.climate_expansion_ponds,
+            'growth': self.growth,
+            
         }
         if ts == 0:
             mode = 'wb'
@@ -586,10 +607,16 @@ class LakePondGrid (object):
         self.ice_depth_constants = archive[0]['ice depth constants']
         
         
-        self.grids = archive[-1]['grids']
+        self.depths = archive[-1]['depths']
         self.counts = archive[-1]['counts']
         self.time_step = archive[-1]['ts']
         
+        self.ice_depth = archive[-1]['ice depth']
+        self.climate_expansion_lakes = archive[-1]['climate expansion lakes']
+        self.climate_expansion_ponds = archive[-1]['climate expansion ponds']
+        
+        self.growth = archive[-1]['growth'] 
+    
         self.pickle_path = pickle_name
 
         
@@ -629,9 +656,17 @@ class LakePondGrid (object):
         if ts == None: 
             
             if set_current:
-                self.grids = archive[-1]['grids']
+                self.depths = archive[-1]['depths']
                 self.counts = archive[-1]['counts']
                 self.time_step = archive[-1]['ts']
+                
+                self.ice_depth = archive[-1]['ice depth']
+                self.climate_expansion_lakes = \
+                    archive[-1]['climate expansion lakes']
+                self.climate_expansion_ponds = \
+                    archive[-1]['climate expansion ponds']
+                
+                self.growth = archive[-1]['growth'] 
             
             return archive
         else:

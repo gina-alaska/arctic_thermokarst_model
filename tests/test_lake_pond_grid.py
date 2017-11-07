@@ -44,17 +44,20 @@ class TestLakePondGridClass_random(unittest.TestCase):
         for item in self.lake_pond.counts:
             self.assertEqual( 0, self.lake_pond.counts[item][0])
         
-        for item in self.lake_pond.grids:
-            self.assertEqual( (10*10,), self.lake_pond.grids[item].shape)
-            self.assertEqual('float64', self.lake_pond.grids[item].dtype)
+        for item in self.lake_pond.depths:
+            self.assertEqual( (10*10,), self.lake_pond.depths[item].shape)
+            self.assertEqual('float64', self.lake_pond.depths[item].dtype)
+        
+        for item in self.lake_pond.depths:
+            self.assertEqual( (10*10,), self.lake_pond.growth[item].shape)
         
         for item in lake_pond_grid.config_ex['lake types']:
             self.assertTrue(
                 np.logical_and(
                     lake_pond_grid.config_ex['lake depth'][0] <=\
-                        self.lake_pond.grids[item],
+                        self.lake_pond.depths[item],
                     lake_pond_grid.config_ex['lake depth'][1] >=\
-                        self.lake_pond.grids[item],
+                        self.lake_pond.depths[item],
                 ).all()
             )
             
@@ -62,9 +65,9 @@ class TestLakePondGridClass_random(unittest.TestCase):
             self.assertTrue(
                 np.logical_and(
                     lake_pond_grid.config_ex['pond depth'][0] <=\
-                        self.lake_pond.grids[item],
+                        self.lake_pond.depths[item],
                     lake_pond_grid.config_ex['pond depth'][1] >=\
-                        self.lake_pond.grids[item],
+                        self.lake_pond.depths[item],
                 ).all()
             )
             
@@ -76,6 +79,15 @@ class TestLakePondGridClass_random(unittest.TestCase):
                     self.lake_pond.ice_depth_constants
             ).all()
         )
+            
+        self.assertEqual( (10*10,), self.lake_pond.ice_depth.shape)
+        self.assertEqual( 
+            (10*10,), self.lake_pond.climate_expansion_lakes.shape
+        )
+        self.assertEqual(
+            (10*10,), self.lake_pond.climate_expansion_ponds.shape
+        )
+
             
     def test_current_year (self):
         """ Function doc """
@@ -243,11 +255,11 @@ class TestLakePondGridClass_random(unittest.TestCase):
         new = lake_pond_grid.LakePondGrid(self.lake_pond.pickle_path)
         
         self.assertTrue(
-            (new.grids['Pond_WT_Y'] == self.lake_pond.grids['Pond_WT_Y'] ).all()
+            (new.depths['Pond_WT_Y'] == self.lake_pond.depths['Pond_WT_Y'] ).all()
         )
         self.assertTrue(
-            (new.grids['LargeLakes_WT_Y'] == \
-            self.lake_pond.grids['LargeLakes_WT_Y']).all()
+            (new.depths['LargeLakes_WT_Y'] == \
+            self.lake_pond.depths['LargeLakes_WT_Y']).all()
         )
         
         self.assertTrue(
