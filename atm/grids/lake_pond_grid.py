@@ -21,7 +21,10 @@ config_ex = {
     'shape' : (10,10),
     'pond depth' : (.3,.3),
     'lake depth' : (.3, 5),
+    
+    'ice depth alpha range': (2.31, 2.55),
     'start year': 1900,
+    
     
     
 }
@@ -53,6 +56,12 @@ class LakePondGrid (object):
             offset from start year
         counts: dict
             counts for each type of lake/pond
+        grids: dict
+            lake/pond depth grids
+        pickel_path: path
+            path to pickle file
+        ice_depth_constatns: np.array
+            array of alpha ice constatns for stephan equation
         """
         if type(config) is str:
             ## read from existing pickle
@@ -79,6 +88,12 @@ class LakePondGrid (object):
         
         self.pickle_path = os.path.join(
             config['pickle path'], 'lake_pond_history.pkl'
+        )
+        
+        
+        alpha_range = config['ice depth alpha range']
+        self.ice_depth_constants = self.setup_ice_depth_constants(
+            self.shape, alpha_range
         )
         
     def __setitem__ (self, key, grid):
@@ -180,6 +195,38 @@ class LakePondGrid (object):
                 init_depth[0], init_depth[1], shape
             ).flatten()
         return grids
+    
+    def setup_ice_depth_constants (self, shape, init_alpha):
+        """set up depth costant(alpha) grids
+        
+         Lake ice thickness is calculated using a modified Stefan Equation.
+    alpha-coefficients range from 1.7-2.4 for average lake with snow and 2.7
+    for windy lake with no snow.
+
+    The Stefan equation that will be used is:
+    h = alpha * sqrt(FDD)
+    
+    where: h is ice thickness (cm)
+           alpha is Stefan Equation Coefficent
+           FDD are the freezing degree days
+        
+        Parameters
+        ----------
+        shape: tuple
+            (row, col) shape of model
+        init_depth: tuple
+            (min,max) initial depth
+            
+            
+        Returns
+        -------
+        np.array:
+            flatened Ice depth constat grid
+        """
+        
+        return np.random.uniform(
+                init_alpha[0], init_alpha[1], shape
+            ).flatten()
     
     def current_year (self):
         """get current year
@@ -508,7 +555,8 @@ class LakePondGrid (object):
             if mode == 'wb':
                 metadata = {
                     'shape':self.shape,
-                    'start year': self.start_year
+                    'start year': self.start_year,
+                    'ice depth constants': self.ice_depth_constants
                 }
                 pickle.dump(metadata, pkl)
             
@@ -535,6 +583,8 @@ class LakePondGrid (object):
                     
         self.start_year = archive[0]['start year']
         self.shape = archive[0]['shape']
+        self.ice_depth_constants = archive[0]['ice depth constants']
+        
         
         self.grids = archive[-1]['grids']
         self.counts = archive[-1]['counts']

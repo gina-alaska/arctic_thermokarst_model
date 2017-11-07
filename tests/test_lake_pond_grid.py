@@ -68,6 +68,15 @@ class TestLakePondGridClass_random(unittest.TestCase):
                 ).all()
             )
             
+        self.assertTrue(
+            np.logical_and(
+                lake_pond_grid.config_ex['ice depth alpha range'][0] <=\
+                    self.lake_pond.ice_depth_constants,
+                lake_pond_grid.config_ex['ice depth alpha range'][1] >=\
+                    self.lake_pond.ice_depth_constants
+            ).all()
+        )
+            
     def test_current_year (self):
         """ Function doc """
         self.assertEqual(1900, self.lake_pond.current_year())
@@ -250,6 +259,10 @@ class TestLakePondGridClass_random(unittest.TestCase):
         self.assertEqual(new.pickle_path, self.lake_pond.pickle_path)
         self.assertEqual(new.time_step, self.lake_pond.time_step)
         self.assertEqual(new.shape, self.lake_pond.shape)
+        self.assertTrue(
+            (new.ice_depth_constants == \
+            self.lake_pond.ice_depth_constants).all()
+        )
         
 
 
