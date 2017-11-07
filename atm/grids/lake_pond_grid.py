@@ -23,6 +23,7 @@ config_ex = {
     'lake depth' : (.3, 5),
     'start year': 1900,
     
+    
 }
 
 
@@ -32,20 +33,38 @@ class LakePondNotFoundError (Exception):
 
 class LakePondGrid (object):
     """Lake Pond Depth grid
-    
     """
     
     def __init__ (self, config):
         """Lake Pond Depth grid
         
+        Parameters
+        ----------
+        config: dict or atm.control or path to pickle file
+            configuration for object
+        
+        Attributes
+        ----------
+        shape: tuple
+            shape of object
+        start_year: int
+            star year 
+        time_step: int
+            offset from start year
+        counts: dict
+            counts for each type of lake/pond
         """
+        if type(config) is str:
+            ## read from existing pickle
+            self.load_from_pickle(config)
+            return
         
         self.shape = config['shape']
         self.start_year = config['start year']
         self.time_step = 0
         
-        self.counts = self.setup_counts(config['pond types'])
-        self.counts.update(self.setup_counts(config['lake types']))
+        self.counts = self.setup_counts(config['pond types'], self.shape)
+        self.counts.update(self.setup_counts(config['lake types'], self.shape))
         
         
         init_pond = config['pond depth']
@@ -62,17 +81,38 @@ class LakePondGrid (object):
             config['pickle path'], 'lake_pond_history.pkl'
         )
         
-    def set_pickle_path (self, path):
-        """overrided default pickle path"""
-        self.pickle_path = path
-        
     def __setitem__ (self, key, grid):
-        """sets a grid, can only set grids in current ts
+        """Sets a grid, can only set grids in current time step
+        
+        Parameters
+        ----------
+        key: str
+            canon cohort name for a lake or pond type present in object
+        grid: np.array
+            data to set. should re shepe to shape attribute
         """
         self.set_grid(key, grid)
     
     def __getitem__ (self, key):
         """gets a grid
+        
+        Parameters
+        ----------
+        key: Str, int, or tuple(int,str)
+            if key is a string, it should be a canon cohort(lake/pond) name.
+            if key is an int, it should be a year >= start_year, 
+            but < current_year()
+            if key is tuple, the int should fit the int requirements, and the 
+            string the string requirements. 
+            
+        Returns
+        -------
+        np.array
+            if key is a string, 3D, dimension are [timestep][grid row][grid col],
+            timestep is year(key) - start year
+            if key is a int, 3D, dimension are [cohort #][grid row][grid col],
+            use key_to_int to find cohort #
+            if key is tuple, 2D, [grid row][grid col]
         """
         if type(key) is str: ## cohort at all ts
             get_type = 'history' 
@@ -94,14 +134,75 @@ class LakePondGrid (object):
             return self.get_all_grids_at_ts(ts, flat=False)
         elif get_type == 'history':
             return self.get_grid_history(lake_pond_type, flat=False)
+            
+    def setup_counts (self, types, shape):   
+        """set up counts grids
         
+        Parameters
+        ----------
+        types: list
+            list of cohorts 
+        shape: tuple
+            (row, col) shape of model
+            
+        Returns
+        -------
+        dict:
+            dictioanry of count grids
+        """
+        count = {}
+        for t in types:
+            count[t] = np.zeros(shape).flatten()
+        return count
+        
+
+    def setup_grids (self, types, shape, init_depth):
+        """set up depth grids
+        
+        Parameters
+        ----------
+        types: list
+            list of cohorts 
+        shape: tuple
+            (row, col) shape of model
+        init_depth: tuple
+            (min,max) initial depth
+            
+            
+        Returns
+        -------
+        dict:
+            dictioanry of depth grids
+        """
+        grids = {}
+        for t in types:
+            grids[t] = np.random.uniform(
+                init_depth[0], init_depth[1], shape
+            ).flatten()
+        return grids
+    
     def current_year (self):
         """get current year
+        
+        Returns
+        -------
+        int
+            year of last time step in model
         """
         return self.start_year + self.time_step
         
     def increment_time_step (self, archive_results = True):
-        """saves records to pickle
+        """increment time_step, and by default save records to pickle
+        
+        Parameters
+        ----------
+        archive_results: bool, default True
+            archive results to pickle if true
+            
+        Returns 
+        -------
+        int 
+            year for the new time step
         """
         if archive_results:
             self.write_to_pickle(self.time_step, self.pickle_path)
@@ -112,59 +213,128 @@ class LakePondGrid (object):
         """Apply Mask to cells, will set depth to 0 in cells with no lakes/ponds
         of lake_pond_type
         
+        Parameters
+        ----------
+        lake_pond_type: str
+            canon cohort lake pond type
+        mask: np.array
+            mask with shape of shape attribute
+            
+        Raises
+        ------
+        LakePondNotFoundError
         """
         if lake_pond_type in self.grids:
             self.grids[lake_pond_type][np.logical_not(mask)] = 0
         else:
-            raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
-     
-    def setup_counts (self, types):   
-        """Function doc"""
-        count = {}
-        for t in types:
-            count[t] = 0
-        return count
+            msg = 'Lake/Pond type not found in LakePondGrid data'
+            raise LakePondNotFoundError, msg
         
+    def set_pickle_path (self, path):
+        """overrided default pickle path
+        
+        Parameters
+        ----------
+        path: str
+            set the pickle path
+        """
+        self.pickle_path = path
 
-    def setup_grids (self, types, shape, init_depth):
-        """ Function doc """
-        grids = {}
-        for t in types:
-            grids[t] = np.random.uniform(
-                init_depth[0], init_depth[1], shape
-            ).flatten()
-        return grids
-        
     def set_grid (self, lake_pond_type, grid):
-        """ Function doc """
+        """set a depth grid
+        
+        Parameters
+        ----------
+        lake_pond_type: str
+            canon cohort lake pond type
+        grid: np.array
+            grid of depths that can be reshaped to shape
+            
+        Raises
+        ------
+        LakePondNotFoundError
+        
+        """
         
         if lake_pond_type in self.grids:
             self.grids[lake_pond_type] = grid.reshape(self.shape).flatten()
         else:
-            raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
+            msg = 'Lake/Pond type not found in LakePondGrid data'
+            raise LakePondNotFoundError, msg
     
     def set_count (self, lake_pond_type, count):
-        """ Function doc """
-        if lake_pond_type in self.counts:
-            self.counts[lake_pond_type] = count
-        else:
-            raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
+        """set a counts grid
         
+        Parameters
+        ----------
+        lake_pond_type: str
+            canon cohort lake pond type
+        grid: np.array
+            grid of count that can be reshaped to shape
+            
+        Raises
+        ------
+        LakePondNotFoundError
+        """
+        
+        if lake_pond_type in self.counts:
+            self.counts[lake_pond_type] = count.reshape(self.shape).flatten()
+        else:
+            msg = 'Lake/Pond type not found in LakePondGrid data'
+            raise LakePondNotFoundError, msg   
+                 
     def get_grid (self, lake_pond_type, flat = True):
-        """ Function doc """
+        """get most recent depth grid
+        
+        Parameters
+        ----------
+        lake_pond_type: str
+            canon cohort lake pond type
+        flat: bool, default True
+            reshaps to shape if false
+            
+        Raises
+        ------
+        LakePondNotFoundError
+        
+        Returns
+        -------
+        dict:
+            name grid at most recent time step
+        """
         shape = self.shape[0]*self.shape[1] if flat == True else self.shape
             
         if lake_pond_type in self.grids:
             return self.grids[lake_pond_type].reshape(shape)
         else:
-            raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
-        
+            msg = 'Lake/Pond type not found in LakePondGrid data'
+            raise LakePondNotFoundError, msg     
+                  
     def get_grid_at_ts (self, lake_pond_type, ts = -1, flat = True):
-        """ Function doc """
+        """get a depth grid
+        
+        Parameters
+        ----------
+        lake_pond_type: str
+            canon cohort lake pond type
+        ts: int, -1
+            time step to get
+        flat: bool, default True
+            reshaps to shape if false
+            
+        Raises
+        ------
+        LakePondNotFoundError
+        
+        Returns
+        -------
+        dict:
+            name grid at most recent time step
+        """
         if ts == -1 or ts == self.time_step:
             return self.get_grid(lake_pond_type, flat)
             
-        data = self.load_from_pickle(ts)   
+        data = self.read_from_pickle(ts)   
        
         if data == False:
             raise IndexError, 'Time step not found'
@@ -174,19 +344,42 @@ class LakePondGrid (object):
         if lake_pond_type in self.grids:
             return data['grids'][lake_pond_type].reshape(shape)
         else:
-            raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
-            
+            msg = 'Lake/Pond type not found in LakePondGrid data'
+            raise LakePondNotFoundError, msg    
+                       
     def get_all_grids (self):
-        """
+        """Gets all grids at most recent timestep
+        
+        Returns
+        -------
+        dict:
+            grids at most recent time step
         """
         return self.grids
             
     def get_all_grids_at_ts (self, ts = -1, flat = True):
-        """ Function doc """
+        """Gets all grids at most recent timestep
+        
+         Parameters
+        ----------
+        ts: int, -1
+            time step to get
+        flat: bool, default True
+            reshaps to shape if false
+        
+        Raises
+        ------
+        IndexError
+        
+        Returns
+        -------
+        dict:
+            grids at time step
+        """
         if ts == -1 or ts == self.time_step:
             return self.get_all_grids()
             
-        data = self.load_from_pickle(ts)   
+        data = self.read_from_pickle(ts)   
         if data == False:
             raise IndexError, 'Time step not found'
        
@@ -197,7 +390,24 @@ class LakePondGrid (object):
         
         
     def get_grid_history (self, lake_pond_type, flat = True):
-        """ Function doc """
+        """Get grid at all time steps
+        
+        Parameters
+        ----------
+        lake_pond_type: str
+            canon cohort lake pond type
+        flat: bool, default True
+            reshaps to shape if false
+        
+        Raises
+        ------
+        LakePondNotFoundError
+        
+        Returns
+        -------
+        np.array
+            3d array [timestep][row][col]
+        """
         if not (lake_pond_type in self.grids.keys()):
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg
@@ -205,29 +415,45 @@ class LakePondGrid (object):
        
         shape = self.shape[0]*self.shape[1] if flat == True else self.shape
             
-        data = self.load_from_pickle()
+        data = self.read_from_pickle()
         data = [ ts['grids'][lake_pond_type].reshape(shape) for ts in data ]
         
         #missing current ?
         if len(data) == self.time_step:
             data.append(self.grids[lake_pond_type].reshape(shape))
             
-        return data
+        return np.array(data)
         
         
-    def get_count (self, lake_pond_type):
-        """ Function doc """
+    def get_count (self, lake_pond_type, flat = True):
+        """Get count at current grid
+        
+        Parameters
+        ----------
+        lake_pond_type: str
+            canon cohort lake pond type
+        flat: bool, default True
+            reshaps to shape if false
+            
+        Returns
+        -------
+        np.array
+            a count grid
+        """
+        shape = self.shape[0]*self.shape[1] if flat == True else self.shape
+        
         if lake_pond_type in self.counts:
-            return self.counts[lake_pond_type]
+            return self.counts[lake_pond_type].reshape(shape)
         else:
-            raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
+            msg = 'Lake/Pond type not found in LakePondGrid data'
+            raise LakePondNotFoundError, msg
     
     ## don't really need next two for now so not fixing at this time
     #~ def get_count_at_ts (self, lake_pond_type, ts = -1):
         #~ """"""
         #~ if ts == -1:
             #~ return self.get_count(lake_pond_type)
-        #~ data = self.load_from_pickle(ts)   
+        #~ data = self.read_from_pickle(ts)   
         #~ if data == False:
             #~ raise IndexError, 'Time step not found'
         
@@ -236,7 +462,8 @@ class LakePondGrid (object):
         #~ elif lake_pond_type in self.lake_counts:
             #~ return data['lake_counts'][lake_pond_type]
         #~ else:
-            #~ raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
+            #~ raise LakePondNotFoundError,
+            # 'Lake/Pond type not found in LakePondGrid data'
         
     #~ def get_count_history (self, lake_pond_type):
         #~ """"""
@@ -245,14 +472,26 @@ class LakePondGrid (object):
         #~ elif lake_pond_type in self.lake_counts:
             #~ key = 'lake_counts'
         #~ else:
-            #~ raise LakePondNotFoundError, 'Lake/Pond type not found in LakePondGrid data'
+            #~ raise LakePondNotFoundError, 
+            #'Lake/Pond type not found in LakePondGrid data'
             
-        #~ data = self.load_from_pickle()
+        #~ data = self.read_from_pickle()
         #~ data = [ ts[key][lake_pond_type] for ts in data]
         #~ return data
         
-    def write_to_pickle (self, ts = 0, pickle_name = None ):
-        """ Function doc """  
+    def write_to_pickle (self, ts, pickle_name = None ):
+        """ Write a time stpe to a pickle, if ts is 0, a new file will be 
+        created and metadata will also be written. All time steps != 0 will be 
+        appended.
+        
+        Parameters
+        ----------
+        ts: int
+            time step to savee
+        pickle_name: path, or None(default)
+            path to pickle file, if None will use pickle_path
+            
+        """  
         if pickle_name is None:
             pickle_name = self.pickle_path
         data = {
@@ -260,18 +499,67 @@ class LakePondGrid (object):
             'counts': self.counts,
             'grids':  self.grids,
         }
-        
         if ts == 0:
-            mode = 'w'
+            mode = 'wb'
         else:
-            mode = 'a'
+            mode = 'ab'
         
         with open(pickle_name, mode) as pkl:
+            if mode == 'wb':
+                metadata = {
+                    'shape':self.shape,
+                    'start year': self.start_year
+                }
+                pickle.dump(metadata, pkl)
+            
             pickle.dump(data, pkl)
+            
+    def load_from_pickle (self, pickle_name):
+        """load a final state from a pickle file, can be used to reset 
+        object to a state
+        
+        Parametes
+        ---------
+        pickle_name: path
+            path to pickle representation of object
+        """
         
         
-    def load_from_pickle (self, ts = None, pickle_name = None, set_current = False):
-        """Function doc
+        archive = []
+        with open(pickle_name, 'r') as pkl:
+            while True:
+                try:
+                    archive.append(pickle.load(pkl))
+                except EOFError:
+                    break
+                    
+        self.start_year = archive[0]['start year']
+        self.shape = archive[0]['shape']
+        
+        self.grids = archive[-1]['grids']
+        self.counts = archive[-1]['counts']
+        self.time_step = archive[-1]['ts']
+        
+        self.pickle_path = pickle_name
+
+        
+    def read_from_pickle (self, ts = None, pickle_name = None, 
+            set_current = False):
+        """Read some data from a pickle file
+        
+        Parameters
+        ----------
+        ts: int or None
+            time step to load, if none all are loaded
+        pickle_name: path
+            path to pickle representation of object
+        set_current: bool
+            if true set current state from file
+            
+        Returns
+        -------
+        dict or list of dicts 
+            read from pickle
         """
         if pickle_name is None:
             pickle_name = self.pickle_path
@@ -286,6 +574,8 @@ class LakePondGrid (object):
                     archive.append(pickle.load(pkl))
                 except EOFError:
                     break
+        archive = archive[1:] ## strip metadata
+        
         if ts == None: 
             
             if set_current:

@@ -42,7 +42,7 @@ class TestLakePondGridClass_random(unittest.TestCase):
         self.assertEqual( 12, len(self.lake_pond.counts))
         
         for item in self.lake_pond.counts:
-            self.assertEqual( 0, self.lake_pond.counts[item])
+            self.assertEqual( 0, self.lake_pond.counts[item][0])
         
         for item in self.lake_pond.grids:
             self.assertEqual( (10*10,), self.lake_pond.grids[item].shape)
@@ -183,39 +183,73 @@ class TestLakePondGridClass_random(unittest.TestCase):
             self.assertTrue((i == items[i]).all())
             
     def test_count_feature (self):
-        self.assertEqual(0, self.lake_pond.get_count('Pond_WT_Y'))
-        self.lake_pond.set_count('Pond_WT_Y', 10)
-        self.assertEqual(10, self.lake_pond.get_count('Pond_WT_Y'))
+        self.assertEqual(0, self.lake_pond.get_count('Pond_WT_Y')[0])
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+10)
+        self.assertEqual(10, self.lake_pond.get_count('Pond_WT_Y')[0])
         
         
         self.lake_pond.increment_time_step()
         self.lake_pond.increment_time_step()
         
-        self.lake_pond.set_count('Pond_WT_Y', 20)
-        self.assertEqual(20, self.lake_pond.get_count('Pond_WT_Y'))
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+20)
+        self.assertEqual(20, self.lake_pond.get_count('Pond_WT_Y')[0])
         
         self.lake_pond.write_to_pickle(self.lake_pond.time_step)
-        data = self.lake_pond.load_from_pickle()
-        count = [ ts['counts']['Pond_WT_Y'] for ts in data]
+        data = self.lake_pond.read_from_pickle()
+        count = [ ts['counts']['Pond_WT_Y'][0] for ts in data]
         self.assertEqual(3, len(count))
         self.assertEqual([10,10,20], count)
         
-    def test_load_pickle(self):
+    def test_read_pickle(self):
         
         self.lake_pond.increment_time_step()
-        self.lake_pond.set_count('Pond_WT_Y', 10)
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+10)
         self.lake_pond.increment_time_step()
         
-        self.lake_pond.set_count('Pond_WT_Y', 20)
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+20)
         self.lake_pond.increment_time_step()
-        self.lake_pond.set_count('Pond_WT_Y', 30)
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+30)
         
         #~ self.lake_pond.write_to_pickle(self.lake_pond.time_step)
-        data = self.lake_pond.load_from_pickle(set_current= True)
-        count = [ ts['counts']['Pond_WT_Y'] for ts in data]
+        data = self.lake_pond.read_from_pickle(set_current= True)
+        count = [ ts['counts']['Pond_WT_Y'][0] for ts in data]
         self.assertEqual(3, len(count))
         self.assertEqual([0,10,20], count)
         self.assertEqual(2, self.lake_pond.time_step)
+        
+    def test_load_pickle (self):
+        """
+        """
+        self.lake_pond.increment_time_step()
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+10)
+        self.lake_pond.increment_time_step()
+        
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+20)
+        self.lake_pond.increment_time_step()
+        self.lake_pond.set_count('Pond_WT_Y', np.zeros((10,10))+30)
+        
+        self.lake_pond.write_to_pickle(self.lake_pond.time_step)
+        
+        
+        new = lake_pond_grid.LakePondGrid(self.lake_pond.pickle_path)
+        
+        self.assertTrue(
+            (new.grids['Pond_WT_Y'] == self.lake_pond.grids['Pond_WT_Y'] ).all()
+        )
+        self.assertTrue(
+            (new.grids['LargeLakes_WT_Y'] == \
+            self.lake_pond.grids['LargeLakes_WT_Y']).all()
+        )
+        
+        self.assertTrue(
+            (new.counts['Pond_WT_Y'] ==\
+                self.lake_pond.counts['Pond_WT_Y'] ).all()
+        )
+
+        self.assertEqual(new.start_year, self.lake_pond.start_year)
+        self.assertEqual(new.pickle_path, self.lake_pond.pickle_path)
+        self.assertEqual(new.time_step, self.lake_pond.time_step)
+        self.assertEqual(new.shape, self.lake_pond.shape)
         
 
 
