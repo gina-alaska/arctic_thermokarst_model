@@ -54,9 +54,9 @@ class TestLakePondGridClass_random(unittest.TestCase):
         for item in lake_pond_grid.config_ex['lake types']:
             self.assertTrue(
                 np.logical_and(
-                    lake_pond_grid.config_ex['lake depth'][0] <=\
+                    lake_pond_grid.config_ex['lake depth range'][0] <=\
                         self.lake_pond.depths[item],
-                    lake_pond_grid.config_ex['lake depth'][1] >=\
+                    lake_pond_grid.config_ex['lake depth range'][1] >=\
                         self.lake_pond.depths[item],
                 ).all()
             )
@@ -64,9 +64,9 @@ class TestLakePondGridClass_random(unittest.TestCase):
         for item in lake_pond_grid.config_ex['pond types']:
             self.assertTrue(
                 np.logical_and(
-                    lake_pond_grid.config_ex['pond depth'][0] <=\
+                    lake_pond_grid.config_ex['pond depth range'][0] <=\
                         self.lake_pond.depths[item],
-                    lake_pond_grid.config_ex['pond depth'][1] >=\
+                    lake_pond_grid.config_ex['pond depth range'][1] >=\
                         self.lake_pond.depths[item],
                 ).all()
             )

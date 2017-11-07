@@ -70,7 +70,9 @@ CANON_COHORT_NAMES = {
     ('SmallLakes_WetlandTundra_Old',): 'SmallLakes_WT_O',
     ('SmallLakes_WetlandTundra_Young',): 'SmallLakes_WT_Y',
     
-    ('Urban_WetlandTundra_Old','Urban_WT'): 'Urban_WetlandTundra_Old',
+    ('Urban_WetlandTundra_Old','Urban_WT'): 'Urban_WT_0',
+    ('Urban_WetlandTundra_Medium'): 'Urban_WT_M',
+    ('Urban_WetlandTundra_Young'): 'Urban_WT_Y',
     
     ## barrow NO AGE STUFF ?? ask bob.
     ('Rivers',): 'Rivers',
@@ -194,7 +196,9 @@ DISPLAY_COHORT_NAMES = {
     'SmallLakes_WT_O': 'Small Lakes Wetland Tundra Old Age',
     'SmallLakes_WT_Y': 'Small Lakes Wetland Tundra Young Age',
     
-    'Urban_WetlandTundra_Old': 'Urban Wetland Tundra Old Age',
+    'Urban_WT_M': 'Urban Wetland Tundra Medium Age',
+    'Urban_WT_O': 'Urban Wetland Tundra Old Age',
+    'Urban_WT_Y': 'Urban Wetland Tundra Young Age',
     
     ## barrow NO AGE STUFF ?? ask bob.
     'Rivers': 'Rivers',

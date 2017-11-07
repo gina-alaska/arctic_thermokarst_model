@@ -20,6 +20,9 @@ class ControlPathError (Exception):
 class ControlSetError (Exception):
     """Raised if control path is invalid"""
 
+class ControlInvalidRequest (Exception):
+    """Raised if control value requested is bad"""
+
 class Control(object):
     """ Class doc """
     
@@ -175,8 +178,20 @@ class Control(object):
             return self.get_pl_factors()
         elif key == 'cohort ice slopes':
             return self.get_ice_slope_coefficients()
+        elif key == 'pond types':
+            return self.get_pond_types()
+        elif key == 'lake types':
+            return self.get_lake_types()
+        elif key == 'pond depth range':
+            return self.get_pond_depth_range()
+        elif key == 'ice depth alpha range':
+            return self.get_ice_depth_alpha_range()
+        elif key == 'lake depth range':
+            return self.get_lake_depth_range()
+        elif key == 'pickle path':
+            return os.path.join(self['Output_dir'], 'pickles')
         else:
-            raise KeyError, 'Key ' + str(key) + ' is invalid'
+            raise KeyError, 'Key "' + str(key) + '" is invalid'
             
     __getattr__ = __getitem__
     
@@ -295,3 +310,107 @@ class Control(object):
             except:
                 pass
         return cohorts
+        
+    def get_pond_types (self):
+        """gets pond types
+        
+        Returns
+        -------
+        list:
+            list of all canon cohort names used with 'pond' present
+        """
+        cohorts = []
+        for key in self.init_control:
+            try:
+                name = find_canon_name(key.replace('_Control', ''))
+                if name.lower().find('pond') != -1:
+                    cohorts.append(name)
+            except:
+                pass
+        return cohorts
+        
+    def get_lake_types (self):
+        """gets lake types
+        
+        Returns
+        -------
+        list:
+            list of all canon cohort names used with 'lake' present
+        """
+        cohorts = []
+        for key in self.init_control:
+            try:
+                name = find_canon_name(key.replace('_Control', ''))
+                if name.lower().find('lake') != -1:
+                    cohorts.append(name)
+            except:
+                pass
+        return cohorts
+        
+    def get_pond_depth_range(self):
+        """gets pond depth range
+        
+        Returns
+        -------
+        tuple: (min,max)
+            range, if the range is specified as uniform, sets min == max
+        """
+        if self.Lake_Pond_Control['Pond_Distribution'].lower() == 'uniform':
+            return (
+                self.Lake_Pond_Control['Uniform_Pond_Depth'], 
+                self.Lake_Pond_Control['Uniform_Pond_Depth']
+            )
+        elif self.Lake_Pond_Control['Pond_Distribution'].lower() == 'random':
+            return (
+                self.Lake_Pond_Control['Lower_Pond_Depth'], 
+                self.Lake_Pond_Control['Upper_Pond_Depth']
+            )
+        else:
+            raise ControlInvalidRequest , "cannot get pond depth range"
+            
+    def get_lake_depth_range(self):
+        """gets lake depth range
+        
+        Returns
+        -------
+        tuple: (min,max)
+            range, if the range is specified as uniform, sets min == max
+        """
+        if self.Lake_Pond_Control['Lake_Distribution'].lower() == 'uniform':
+            return (
+                self.Lake_Pond_Control['Uniform_Lake_Depth'], 
+                self.Lake_Pond_Control['Uniform_Lake_Depth']
+            )
+        elif self.Lake_Pond_Control['Lake_Distribution'].lower() == 'random':
+            return (
+                self.Lake_Pond_Control['Lower_Lake_Depth'], 
+                self.Lake_Pond_Control['Upper_Lake_Depth']
+            )
+        else:
+            raise ControlInvalidRequest, "cannot get lake depth range"
+    
+    def get_ice_depth_alpha_range(self):
+        """gets ice depth coefficient range
+        
+        Returns
+        -------
+        tuple: (min,max)
+            range, if the range is specified as uniform, sets min == max
+        """
+        if self.Lake_Pond_Control['ice_thickness_distribution'].lower() ==\
+            'uniform':
+            return (
+                self.Lake_Pond_Control['ice_thickness_uniform_alpha'], 
+                self.Lake_Pond_Control['ice_thickness_uniform_alpha']
+            )
+        elif self.Lake_Pond_Control['ice_thickness_distribution'].lower() ==\
+            'random':
+            return (
+                self.Lake_Pond_Control['Lower_ice_thickness_alpha'], 
+                self.Lake_Pond_Control['Upper_ice_thickness_alpha']
+            )
+        else:
+            raise ControlInvalidRequest, "cannot get ice depth alpha range"
+        
+        
+        

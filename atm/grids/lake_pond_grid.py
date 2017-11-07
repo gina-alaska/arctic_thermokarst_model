@@ -19,8 +19,8 @@ config_ex = {
         'LargeLakes_WT_Y', 'LargeLakes_WT_M', 'LargeLakes_WT_O',
     ],
     'shape' : (10,10),
-    'pond depth' : (.3,.3),
-    'lake depth' : (.3, 5),
+    'pond depth range' : (.3,.3),
+    'lake depth range' : (.3, 5),
     
     'ice depth alpha range': (2.31, 2.55),
     'start year': 1900,
@@ -57,7 +57,7 @@ class LakePondGrid (object):
         counts: dict
             counts for each type of lake/pond
         depths: dict
-            lake/pond depth grids
+            lake/pond depth range grids
         pickel_path: path
             path to pickle file
         ice_depth_constatns: np.array
@@ -76,8 +76,8 @@ class LakePondGrid (object):
         self.counts.update(self.setup_counts(config['lake types'], self.shape))
         
         
-        init_pond = config['pond depth']
-        init_lake = config['lake depth']
+        init_pond = config['pond depth range']
+        init_lake = config['lake depth range']
         
         self.depths = self.setup_depths(
             config['pond types'], self.shape, init_pond
@@ -288,7 +288,7 @@ class LakePondGrid (object):
         LakePondNotFoundError
         """
         if lake_pond_type in self.depths:
-            self.depths[lake_pond_type][np.logical_not(mask)] = 0
+            self.depths[lake_pond_type][np.logical_not(mask.flatten())] = 0
         else:
             msg = 'Lake/Pond type not found in LakePondGrid data'
             raise LakePondNotFoundError, msg
