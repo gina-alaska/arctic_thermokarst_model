@@ -169,6 +169,26 @@ class TestALDGridClass(unittest.TestCase):
         self.ALD.add_time_step(True)
         self.assertTrue((self.ALD['ALD',1902] == 0).all())
         self.assertTrue((self.ALD['PL',1902] == 0).all())
+        
+    def test_setup_ald_constants (self):
+        """ Function doc """
+        self.assertEqual((10,10), self.ALD.ald_constants.shape)
+
+        self.ALD.setup_ald_constants(10)
+        
+        self.assertTrue(
+            (self.ALD.init_ald_grid/10 == self.ALD.ald_constants).all()
+        )
+        
+        
+        tdd = np.arange(100)+1
+        self.ALD.setup_ald_constants(tdd)
+        
+        self.assertTrue(
+            (self.ALD.init_ald_grid/tdd == self.ALD.ald_constants).all()
+        )
+        
+        
 
 if __name__ == '__main__':
     unittest.main()

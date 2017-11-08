@@ -42,7 +42,9 @@ class ALDGrid(object):
             array or ALD grids for each timestep
         pl_grid: list
             array or PL grids for each timestep
-            
+        ald_constants: np.array
+            starts as zeros, this should be updated once the met values 
+            are loaded with setup_ald_constants, and then changed
         """
         shape = config['shape']
         cohort_list = config['cohort list']
@@ -69,6 +71,8 @@ class ALDGrid(object):
         self.shape = shape
         self.ald_grid = [ self.init_ald_grid ]
         self.pl_grid = [ self.init_pl_grid ]
+        
+        self.ald_constants = np.zeros(self.shape)
     
         
     def __getitem__ (self, key):
@@ -222,6 +226,22 @@ class ALDGrid(object):
             
         return ald_grid, np.array(pl_grid), pl_key_to_index
         ## need to add random chance + setup for future reading of values
+        
+    def setup_ald_constants (self, degree_days):
+        """Initialize the ALD constant array
+        
+        Parameters
+        ----------
+        degree_days: float or np.array
+            a thawing Degree Day value or grid of thawing Degree Day values
+        """
+        try:
+            degree_days = degree_days.flatten()
+        except AttributeError:
+            pass
+        
+        self.ald_constants = self.init_ald_grid.flatten() / degree_days
+        
 
     def random_grid (self, shape, init_ald, aoi_mask = None):
         """create a random ALD grid
