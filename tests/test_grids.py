@@ -3,7 +3,7 @@
 import unittest
 from context import atm
 from atm.grids import grids, area_grid, ald_grid, poi_grid, ice_grid
-from atm.grids import lake_pond_grid
+from atm.grids import lake_pond_grid, drainage_grid
 from atm.cohorts import find_canon_name
 
 import os
@@ -61,6 +61,12 @@ class TestGrids(unittest.TestCase):
             'lake depth range' : (.3, 5),
             
             'ice depth alpha range': (2.31, 2.55),
+            
+            'Terrestrial_Control': {
+                'Drainage_Efficiency_Distribution': 'random',
+                'Drainage_Efficiency_Random_Value': 	0.85,
+                'Drainage_Efficiency_Figure':		'Yes' ,
+            },
         }
     
         ## ald & poi & ice
@@ -95,7 +101,7 @@ class TestGrids(unittest.TestCase):
         self.assertIs(
             type(self.grids['LAKE POND']), lake_pond_grid.LakePondGrid
         )
-        
+        self.assertIs(type(self.grids['DRAINAGE']), drainage_grid.DrainageGrid)
         with self.assertRaises(KeyError):
             self.grids['abcdef']
         

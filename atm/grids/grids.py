@@ -10,6 +10,7 @@ from ald_grid import ALDGrid
 from poi_grid import POIGrid
 from ice_grid import IceGrid
 from lake_pond_grid import LakePondGrid
+from drainage_grid import DrainageGrid
 
 class ModelGrids (object):
     """Model Grids Class"""
@@ -49,12 +50,11 @@ class ModelGrids (object):
         self.ald = ALDGrid(config)
         self.poi = POIGrid(config)
         self.ice = IceGrid(config)
-        
         self.lake_pond = LakePondGrid(config)
         for lpt  in config['pond types'] + config['lake types']:
             mask = self.area[lpt][0] > 0 # all cells in first ts > 0
             self.lake_pond.apply_mask(lpt, mask)
-        
+        self.drainage = DrainageGrid(config)
         
     
     def __getitem__ (self, key):
@@ -83,6 +83,8 @@ class ModelGrids (object):
             return self.ice
         if key.lower() in ['lake pond','lake/pond','lakepond', 'lake', 'pond']:
             return self.lake_pond
+        if key.lower() == 'drainage':
+            return self.drainage
         
         raise KeyError, 'could not find grid'
         
