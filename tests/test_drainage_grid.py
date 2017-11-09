@@ -57,6 +57,29 @@ class TestDrainageGridClass(unittest.TestCase):
         
         new = drainage_grid.DrainageGrid(self.drainage.pickle_path)
         self.assertTrue((new.get_grid() == self.drainage.get_grid()).all())
+        
+    #~ def test_to_numbers (self):
+        #~ """
+        #~ """
+        #~ nums = self.drainage.as_numbers()
+        
+        #~ print nums
+        
+        
+    def test_figures (self):
+        """ test figure out put
+        """
+        path = './'
+        
+        self.drainage.figure(os.path.join(path,'drainage.png'))
+        self.drainage.binary(os.path.join(path,'drainage.bin'))
+        
+        self.assertTrue(os.path.isfile(os.path.join(path,'drainage.png')))
+        self.assertTrue(os.path.isfile(os.path.join(path,'drainage.bin')))
+        
+        os.remove(os.path.join(path,'drainage.png'))
+        os.remove(os.path.join(path,'drainage.bin'))
+        
 
 if __name__ == '__main__':
     unittest.main()

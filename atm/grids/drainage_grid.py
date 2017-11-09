@@ -8,6 +8,11 @@ import os
 import numpy as np
 import pickle
 
+try:
+    from atm_io import binary, image
+except ImportError:
+    from ..atm_io import binary, image
+
 config_ex = {
     'Terrestrial_Control': {
         'Drainage_Efficiency_Distribution': 'random',
@@ -160,6 +165,45 @@ class DrainageGrid (object):
         with open(pickle_name, mode) as pkl:
             pickle.dump(data, pkl)
         
-    def figure (self):
-        """TODO: save figures"""
-        raise NotImplementedError, "need to write"
+    def as_numbers(self):
+        """converts grid to a numerical representaion.
+        
+        Returns
+        -------
+        np.array:
+            shpae is shape, 0 is substituted for 'none', 1 for 'above', and
+            2 for 'below'
+        """
+        grid = self.get_grid(False)
+        
+        grid[grid == 'none'] = 0
+        grid[grid == 'above'] = 1
+        grid[grid == 'below'] = 2
+        return grid.astype(int)
+        
+        
+    def figure (self, filename):
+        """save a figure
+        
+        Parameters
+        ----------
+        """
+        image.save_img(
+            self.as_numbers(), 
+            filename, 
+            'Drainage efficiency',
+            cmap = 'bone',
+            vmin = 0,
+            vmax = 2
+        )
+        
+    def binary (self, filename):
+        """save a binary representation
+        
+        Parameters
+        ----------
+        """
+        binary.save_bin(self.as_numbers(), filename)
+        
+        
+        
