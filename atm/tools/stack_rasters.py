@@ -38,7 +38,8 @@ def load_and_stack_memory_mapped (files, filename = 'temp.data'):
             shape = r.shape
             data[0] = r.flatten()
         else:
-            data[fdx] = raster.load_raster(f)[0].flatten()))
+            data[fdx] = raster.load_raster(f)[0].flatten()
+            
        
             
         #~ print data.shape

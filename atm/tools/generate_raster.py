@@ -5,7 +5,7 @@ Generate Raster
 tools for generating atm input rasters
 """
 from osgeo import ogr, gdal
-
+from collections import OrderedDict
 
 ACP_metadata = {
     'NoData': 0,
@@ -28,8 +28,47 @@ ACP_metadata = {
     'Large Lakes': 23,
 }
 
+order = [
+    'NoData',
+    'Coalescent low-center polygons',
+    'Low-center polygons',
+    'Meadow',
+    'Drained slope',
+    'Flat-center polygons',
+    'High-center polygons',
+    'Sandy Barrens',
+    'Sand Dunes',
+    'Ice',
+    'Saline coastal water',
+    'Rivers',
+    'Urban',
+    'Riparian shrub',
+    'Ponds',
+    'Small Lakes',
+    'Medium Lakes',
+    'Large Lakes',
+]
 
-def from_shapefile(in_shape, out_raster, metadata):
+def create_empty_raster ( 
+        out_raster, extent, pixel_size, num_layers = 1, dtype = gdal.GDT_Float64
+    ):
+    """ Function doc """
+    # Create Raster
+    print type(extent), extent
+    x_min, x_max, y_min, y_max = extent
+    x_res = int((x_max - x_min) / pixel_size)
+    y_res = int((y_max - y_min) / pixel_size)
+    dest = gdal.GetDriverByName('GTiff').Create(
+        out_raster,
+        x_res,
+        y_res, 
+        num_layers, 
+        dtype )
+    dest.SetGeoTransform((x_min, pixel_size, 0, y_max, 0, -pixel_size))    
+    
+    return dest   
+
+def from_shapefile(in_shape, out_raster, metadata, log = False, single = True):
     """
     
     adatabed from 
@@ -46,18 +85,30 @@ def from_shapefile(in_shape, out_raster, metadata):
     # Open the data source and read in the extent
     source = ogr.Open(in_shape)
     layer = source.GetLayer(0)
-    x_min, x_max, y_min, y_max = layer.GetExtent()
-
-    # Create Raster
-    x_res = int((x_max - x_min) / pixel_size)
-    y_res = int((y_max - y_min) / pixel_size)
-    dest = gdal.GetDriverByName('GTiff').Create(out_raster, x_res, y_res, 1, gdal.GDT_Byte)
-    dest.SetGeoTransform((x_min, pixel_size, 0, y_max, 0, -pixel_size))
+    extent = layer.GetExtent()
+    #~ print extent
     
+    
+
+    if single:
+        dest = create_empty_raster(
+            out_raster, extent, pixel_size, num_layers = len(metadata)
+        )
     
     
     band_num = 1
-    for attr in metadata:
+    for attr in order:
+        
+        
+        if log:
+            print 'Generating raster band for ' + attr
+        
+        if not single:  
+            dest = None
+            out = \
+                out_raster.split('.')[0] + "_" + attr.replace(' ','_') + '.tif'
+            dest = create_empty_raster(out, extent, pixel_size)
+        
         val = metadata[attr]
         layer.SetAttributeFilter( filter_attr + ' = ' + str(val) )
         band = dest.GetRasterBand(band_num)
@@ -72,6 +123,24 @@ def from_shapefile(in_shape, out_raster, metadata):
             ['ATTRIBUTE=Shape_Area']
         )
         
+        if single:
+            band_num += 1
+        
+    dest = None
+        
+        
+
+
+        
+
+def parse_metadata(text):
+    
+    metadata = OrderedDict()
+    for line in text.split('\n'):
+        pass
+    
+    
+    return metadata
 
 ## simple test, need to be moved.
 #~ import sys
@@ -79,7 +148,6 @@ def from_shapefile(in_shape, out_raster, metadata):
     
         
     
-    
-    
+
     
     
