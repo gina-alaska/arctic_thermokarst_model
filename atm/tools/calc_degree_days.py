@@ -23,9 +23,17 @@ def calc_degree_days(day_array, temp_array, expected_roots = None):
     """
     spline = interpolate.UnivariateSpline(day_array, temp_array)
     if not expected_roots is None and len(spline.roots()) != expected_roots:
-        print len(spline.roots())
-        print 'expected roots is not the same as spline.roots()'
-        return np.zeros(115) - np.inf,np.zeros(115) - np.inf
+        print  len(spline.roots())
+        i = .1
+        while len(spline.roots()) != expected_roots:
+            spline.set_smoothing_factor(i)
+            i+=.1
+            print len(spline.roots())
+            if i >50:
+    
+            
+                print 'expected roots is not the same as spline.roots()'
+                return np.zeros(115) - np.inf,np.zeros(115) - np.inf
 
     tdd = []
     fdd = []
@@ -66,7 +74,7 @@ def calc_and_store  (
     tdd, fdd  = calc_degree_days(day_array, temp_array, expected_roots)
     lock.acquire()
     tdd_grid[:,index] = tdd
-    fdd_grid[:,index] = fdd[0] + fdd ## add frist value equal to second value
+    fdd_grid[:,index] = [fdd[0]] + fdd ## add frist value equal to second value
     lock.release()
 
 
