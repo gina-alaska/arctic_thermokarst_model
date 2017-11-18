@@ -3,7 +3,7 @@ from scipy import interpolate
 from multiprocessing import Process, Lock, active_children, cpu_count
 from copy import deepcopy
 
-from constants import ROW, COL
+from ..grids.constants import ROW, COL
 
 def calc_degree_days(day_array, temp_array, expected_roots = None):
     """Calc degree days (thawing, and freezing)
@@ -30,7 +30,7 @@ def calc_degree_days(day_array, temp_array, expected_roots = None):
         while len(spline.roots()) != expected_roots:
             spline.set_smoothing_factor(i)
             i+= 1
-            print len(spline.roots())
+            #print len(spline.roots())
             if i >50:
                 print 'expected roots is not the same as spline.roots()'
                 return np.zeros(115) - np.inf,np.zeros(115) - np.inf
@@ -148,25 +148,27 @@ def calc_gird_degree_days (
         continue
         
     m_rows, m_cols = np.where(tdd_grid[0].reshape(shape) == -np.inf)   
-    
+    #~ print  m_rows, m_cols
     cells = []
     for cell in range(len(m_rows)):
-        f_index = m_rows[cell] * shape[0] + m_cols[cell]
+        f_index = m_rows[cell] * shape[1] + m_cols[cell]
         
         
         g_tdd = np.array(
-            tdd_grid.reshape((tdd_grid.shape[0],shape[0],shape[1]))
+            tdd_grid.reshape((tdd_grid.shape[0],shape[0],shape[1]))\
+                [:,m_rows[cell]-1:m_rows[cell]+2,m_cols[cell]-1:m_cols[cell]+2]
         )
         
         g_fdd = np.array(
-            fdd_grid.reshape((fdd_grid.shape[0],shape[0],shape[1]))
+            fdd_grid.reshape((fdd_grid.shape[0],shape[0],shape[1]))\
+                [:,m_rows[cell]-1:m_rows[cell]+2,m_cols[cell]-1:m_cols[cell]+2]
         )
         
     
         g_tdd[g_tdd == -np.inf] = np.nan
         g_fdd[g_fdd == -np.inf] = np.nan
-        tdd_mean = np.nanmean(g.reshape(tdd_grid.shape[0],9),axis = 1)
-        fdd_mean = np.nanmean(g.reshape(fdd_grid.shape[0],9),axis = 1)
+        tdd_mean = np.nanmean(g_tdd.reshape(tdd_grid.shape[0],9),axis = 1)
+        fdd_mean = np.nanmean(g_fdd.reshape(fdd_grid.shape[0],9),axis = 1)
         
         tdd_grid[:,f_index] = tdd_mean
         fdd_grid[:,f_index] = fdd_mean
