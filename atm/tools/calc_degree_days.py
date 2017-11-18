@@ -1,7 +1,9 @@
 import numpy as np
 from scipy import interpolate
 from multiprocessing import Process, Lock, active_children, cpu_count
+from copy import deepcopy
 
+from constants import ROW, COL
 
 def calc_degree_days(day_array, temp_array, expected_roots = None):
     """Calc degree days (thawing, and freezing)
@@ -24,14 +26,12 @@ def calc_degree_days(day_array, temp_array, expected_roots = None):
     spline = interpolate.UnivariateSpline(day_array, temp_array)
     if not expected_roots is None and len(spline.roots()) != expected_roots:
         print  len(spline.roots())
-        i = .1
+        i = 1
         while len(spline.roots()) != expected_roots:
             spline.set_smoothing_factor(i)
-            i+=.1
+            i+= 1
             print len(spline.roots())
             if i >50:
-    
-            
                 print 'expected roots is not the same as spline.roots()'
                 return np.zeros(115) - np.inf,np.zeros(115) - np.inf
 
@@ -81,7 +81,8 @@ def calc_and_store  (
 
 
 def calc_gird_degree_days (
-        day_array, temp_grid, tdd_grid, fdd_grid, start = 0, num_process = 1
+        day_array, temp_grid, tdd_grid, fdd_grid, shape, 
+        start = 0, num_process = 1
         ):
     """Calculate degree days (Thawing, and Freezing) for an area. 
     
@@ -107,6 +108,8 @@ def calc_gird_degree_days (
         the timeseries is all no data values np.nan is set as all valus 
         for element. If the curve has too many roots, or too few 
         (# roots != 2*# years) -inf is set as all values.
+    shape: tuple
+        shape of model domain
     start: int, defaults to 0 , or list
         Calculate values starting at flattened grid index equal to start.
         If it is a list, list values should be grid indices, and only 
@@ -143,6 +146,35 @@ def calc_gird_degree_days (
     
     while len(active_children()) > 0 :
         continue
+        
+    m_rows, m_cols = np.where(tdd_grid[0].reshape(shape) == -np.inf)   
+    
+    cells = []
+    for cell in range(len(m_rows)):
+        f_index = m_rows[cell] * shape[0] + m_cols[cell]
+        
+        
+        g_tdd = np.array(
+            tdd_grid.reshape((tdd_grid.shape[0],shape[0],shape[1]))
+        )
+        
+        g_fdd = np.array(
+            fdd_grid.reshape((fdd_grid.shape[0],shape[0],shape[1]))
+        )
+        
+    
+        g_tdd[g_tdd == -np.inf] = np.nan
+        g_fdd[g_fdd == -np.inf] = np.nan
+        tdd_mean = np.nanmean(g.reshape(tdd_grid.shape[0],9),axis = 1)
+        fdd_mean = np.nanmean(g.reshape(fdd_grid.shape[0],9),axis = 1)
+        
+        tdd_grid[:,f_index] = tdd_mean
+        fdd_grid[:,f_index] = fdd_mean
+        cells.append(f_index)
+            
+    return cells
+        
+    
         
         
 def create_day_array (dates):
