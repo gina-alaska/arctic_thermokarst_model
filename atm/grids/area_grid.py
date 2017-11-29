@@ -115,7 +115,7 @@ class AreaGrid(object):
         Returns
         -------
         np.array
-            if key is a string, 3D, dimension are [timestep][grid row][grid col],
+            if key is a string, 3D, dimension are[timestep][grid row][grid col],
             timestep is year(key) - start year
             if key is a int, 3D, dimension are [cohort #][grid row][grid col],
             use key_to_int to find cohort #
@@ -204,7 +204,7 @@ class AreaGrid(object):
             layers.append( cohort_year_0 ) 
             
             flat_grid_size = len(cohort_year_0) 
-            num_years = 1 # < to be set based on cohort age range later
+            num_years = 1 # < to be set based on cohort age range later, FOR TRACKING AGE OF COHORTS <<<<<<<<<<<<<
             for age in range(1, num_years):
                 layers.append(np.zeros(flat_grid_size))
                 key_to_index[name + '--' + str(idx) ] = idx
