@@ -1,3 +1,9 @@
+"""
+Calc Degree Days
+----------------
+
+Tools for caclualting and storing spatial degree days values from temperature
+"""
 import numpy as np
 from scipy import interpolate
 from multiprocessing import Process, Lock, active_children, cpu_count
@@ -146,7 +152,8 @@ def calc_gird_degree_days (
     
     while len(active_children()) > 0 :
         continue
-        
+    
+    ## fix missing cells
     m_rows, m_cols = np.where(tdd_grid[0].reshape(shape) == -np.inf)   
     #~ print  m_rows, m_cols
     cells = []

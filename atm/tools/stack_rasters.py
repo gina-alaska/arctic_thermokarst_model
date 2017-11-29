@@ -1,29 +1,28 @@
+"""
+Stack Rasters
+-------------
 
+tools for stacking rasters into multitemporal data
+"""
 from atm.atm_io import raster
 import numpy as np
 
-def load_and_stack (files):
-    """
-    """
-   
-    for fdx in range(len(files)):
-        
-        f = files[fdx]
-        
-        if fdx == 0:
-            data, md = raster.load_raster(f)
-            shape = data.shape
-            data = data.flatten()
-        else:
-            data = np.vstack((data,  raster.load_raster(f)[0].flatten()))
-       
-            
-        #~ print data.shape
-    return data, shape
-
-
-def load_and_stack_memory_mapped (files, filename = 'temp.data'):
-    """ 
+def load_and_stack(files, out_filename):
+    """Load rasters, flatten, and stack in memory mapped np array.
+    
+    Parameters
+    ----------
+    files: list
+        sorted list of raster files to read
+    filename:
+        name of memory maped fie
+    
+    Returns
+    -------
+    data: np.memorymap
+        memory mapped data
+    shape: tuple
+        shape of the input rasters
     """
     for fdx in range(len(files)):
         f = files[fdx]
@@ -33,14 +32,13 @@ def load_and_stack_memory_mapped (files, filename = 'temp.data'):
             r, md = raster.load_raster(f)
             
             shape = (len(files), r.shape[0] * r.shape[1])
-            data = np.memmap(filename, dtype='float32', mode='w+', shape=shape)
+            data = np.memmap(
+                out_filename, dtype='float32', mode='w+', shape=shape
+            )
             
             shape = r.shape
             data[0] = r.flatten()
         else:
             data[fdx] = raster.load_raster(f)[0].flatten()
-
-       
             
-        #~ print data.shape
     return data, shape
