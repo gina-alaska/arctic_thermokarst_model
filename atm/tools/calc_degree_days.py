@@ -9,7 +9,11 @@ from scipy import interpolate
 from multiprocessing import Process, Lock, active_children, cpu_count
 from copy import deepcopy
 
+from datetime import datetime
+
 from ..grids.constants import ROW, COL
+
+from stack_rasters import load_and_stack
 
 def calc_degree_days(day_array, temp_array, expected_roots = None):
     """Calc degree days (thawing, and freezing)
@@ -98,7 +102,7 @@ def calc_gird_degree_days (
         day number for each temperature value. 
         len(days_array) == temp_grid.shape[0].
     temp_grid: np.array
-        2d numpy array temperature values of timestep by flattened grid sizze.
+        2d numpy array temperature values of timestep by flattened grid size.
         len(days_array) == temp_grid.shape[0].
     tdd_grid: np.array
         Empty thawing degree day grid. Size should be # of years to model by 
@@ -208,8 +212,91 @@ def create_day_array (dates):
     return days
     
     
+def utility ():
+    """
     
+    Flags
+    -----
+    --temperature_file: path
+        a file containg an ordered list of paths to monthly temperature rasters
+        one per line
+    --fdd_file: path
+        name of Freezing Degree-days file to create
+    --tdd_file: path
+        name of Thawing Degree-days file to create
+    --start_date: 
+        'YYYY-MM'
+        
+    --num_process: int, optinal
+        number process to use, will default to max processors on system
+        
+    Note this utility will not work if there are missing months
 
+    """
+    import clite 
+    
+    try:
+        arguments = clite.CLIte([
+            '--monthly_temperature_list_file',
+            '--temperature_file',
+            '--fdd_file', 
+            '--tdd_file', 
+            '--start_date'
+            ],
+            ['--num_process',]
+        
+        )
+    except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError):
+        print utility.__doc__
+        return
+
+
+
+    init_date = datetime.strptime(arguments['--start_date'], '%Y-%m')
+    
+    current_year = init_date.year
+    current_month = init_date.month
+    
+    
+    with open(arguments['--monthly_temperature_list_file']) as temps:
+        text = temps.read().rstrip().replace('\r\n','\n')
+        files = text.split('\n')
+        
+    dates = []
+    for f in files:
+        current_date = datetime.strptime(
+            '{}-{:02d}'.format(current_year, current_month), '%Y-%m'
+        )
+        dates.append(current_date)
+        current_month += 1
+        if current_month > 12:
+            current_year +=1
+            current_month = 1
+    days = create_day_array( dates )
+    
+    temperatures, shape = load_and_stack(files, arguments['--temperature_file'])
+    
+    n_months = len(temperatures)
+    
+    t_shape = (n_months, shape[0] * shape[1])
+    
+    # close and reopen as read only
+    del temperatures
+    temperatures = np.memmap(
+        arguments['--temperature_file'], dtype='float32', 
+        mode='r', shape=t_shape
+    )
+    
+    
+    dd_shape = ((n_months / 12) * 2, shape[0] * shape[1])
+    fdd = np.memmap(
+        arguments['--fdd_file'], dtype='float32', mode='w+', shape= dd_shape
+    )
+    tdd = np.memmap(
+        arguments['--tdd_file'], dtype='float32', mode='w+', shape= dd_shape
+    )
+    calc_gird_degree_days(day, temperatures, tdd, fdd, shape, num_process = NP)
+    
 
 
 
