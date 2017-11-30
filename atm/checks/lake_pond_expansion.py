@@ -552,12 +552,15 @@ def lake_pond_expansion(self, element, time=None):
         # All other cohorts are also zeroed out (precaution/check).
         #--------------------------------------------------------------------------------
         ATTM_Lake_Area  = self.ATTM_LargeLakes_WT_Y[element] + self.ATTM_LargeLakes_WT_M[element] + \
-                          self.ATTM_LargeLakes_WT_M[element] + self.ATTM_MediumLakes_WT_Y[element] + \
+                          self.ATTM_LargeLakes_WT_O[element] + self.ATTM_MediumLakes_WT_Y[element] + \
                           self.ATTM_MediumLakes_WT_M[element] + self.ATTM_MediumLakes_WT_O[element] + \
                           self.ATTM_SmallLakes_WT_Y[element] + self.ATTM_SmallLakes_WT_M[element] + \
                           self.ATTM_SmallLakes_WT_O[element]
-
+        if element == 2325:
+            print ATTM_Lake_Area
         if ATTM_Lake_Area >= 1.0:
+            if element == 2325:
+                print "HI"
             large_lake_total = self.ATTM_LargeLakes_WT_Y[element] + self.ATTM_LargeLakes_WT_M[element] + \
               self.ATTM_LargeLakes_WT_O[element]
 
@@ -594,17 +597,17 @@ def lake_pond_expansion(self, element, time=None):
             self.ATTM_SandDunes_WT_Y[element] = 0.0
             self.ATTM_SandDunes_WT_M[element] = 0.0
             self.ATTM_SandDunes_WT_O[element] = 0.0
-            self.SaturatedBarrens_WT_Y[element] = 0.0
-            self.SaturatedBarrens_WT_M[element] = 0.0
-            self.SaturatedBarrens_WT_O[element] = 0.0
-            self.Shrubs_WT_O[element] = 0.0
-            self.Urban_WT[element] = 0.0
-            self.Rivers_WT_O[element] = 0.0
-            self.Rivers_WT_M[element] = 0.0
-            self.Rivers_WT_Y[element] = 0.0
-            self.Ponds_WT_Y[element] = 0.0
-            self.Ponds_WT_M[element] = 0.0
-            self.Ponds_WT_O[element] = 0.0
+            self.ATTM_SaturatedBarrens_WT_Y[element] = 0.0
+            self.ATTM_SaturatedBarrens_WT_M[element] = 0.0
+            self.ATTM_SaturatedBarrens_WT_O[element] = 0.0
+            self.ATTM_Shrubs_WT_O[element] = 0.0
+            self.ATTM_Urban_WT[element] = 0.0
+            self.ATTM_Rivers_WT_O[element] = 0.0
+            self.ATTM_Rivers_WT_M[element] = 0.0
+            self.ATTM_Rivers_WT_Y[element] = 0.0
+            self.ATTM_Ponds_WT_Y[element] = 0.0
+            self.ATTM_Ponds_WT_M[element] = 0.0
+            self.ATTM_Ponds_WT_O[element] = 0.0
             
 #            if 'Wet_NPG' in self.land_cohorts[element]:
 #                self.ATTM_Wet_NPG[element] = self.ATTM_Wet_NPG[element] - cohort_reduction
@@ -978,7 +981,7 @@ def lake_pond_expansion(self, element, time=None):
         #--------------------------------------------------------------------------------
         ATTM_Pond_Area  = self.ATTM_Ponds_WT_Y[element] + self.ATTM_Ponds_WT_M[element] + \
           self.ATTM_Ponds_WT_O[element]
-
+          
         if ATTM_Pond_Area >= 1.0:
             self.ATTM_Ponds_WT_Y[element] = self.ATTM_Ponds_WT_Y[element] / ATTM_Pond_Area
             self.ATTM_Ponds_WT_M[element] = self.ATTM_Ponds_WT_M[element] / ATTM_Pond_Area
@@ -997,33 +1000,33 @@ def lake_pond_expansion(self, element, time=None):
             self.ATTM_CLC_WT_M[element] = 0.0
             self.ATTM_CLC_WT_O[element] = 0.0
             self.ATTM_CoastalWaters_WT_O[element] = 0.0
-            self.DrainedSlope_WT_Y[element] = 0.0
-            self.DrainedSlope_WT_M[element] = 0.0
-            self.DrainedSlope_WT_O[element] = 0.0
-            self.FCP_WT_Y[element] = 0.0
-            self.FCP_WT_M[element] = 0.0
-            self.FCP_WT_O[element] = 0.0
-            self.HCP_WT_Y[element] = 0.0
-            self.HCP_WT_M[element] = 0.0
-            self.HCP_WT_O[element] = 0.0
-            self.LCP_WT_Y[element] = 0.0
-            self.LCP_WT_M[element] = 0.0
-            self.LCP_WT_O[element] = 0.0
-            self.Meadow_WT_Y[element] = 0.0
-            self.Meadow_WT_M[element] = 0.0
-            self.Meadow_WT_O[element] = 0.0
-            self.NoData_WT_O[element] = 0.0
-            self.SandDunes_WT_Y[element] = 0.0
-            self.SandDunes_WT_M[element] = 0.0
-            self.SandDunes_WT_O[element] = 0.0
-            self.SaturatedBarrens_WT_Y[element] = 0.0
-            self.SaturatedBarrens_WT_M[element] = 0.0
-            self.SaturatedBarrens_WT_O[element] = 0.0
-            self.Shrubs_WT_O[element] = 0.0
-            self.Urban_WT[element] = 0.0
-            self.Rivers_WT_Y[element] = 0.0
-            self.Rivers_WT_M[element] = 0.0
-            self.Rivers_WT_O[element] = 0.0
+            self.ATTM_DrainedSlope_WT_Y[element] = 0.0
+            self.ATTM_DrainedSlope_WT_M[element] = 0.0
+            self.ATTM_DrainedSlope_WT_O[element] = 0.0
+            self.ATTM_FCP_WT_Y[element] = 0.0
+            self.ATTM_FCP_WT_M[element] = 0.0
+            self.ATTM_FCP_WT_O[element] = 0.0
+            self.ATTM_HCP_WT_Y[element] = 0.0
+            self.ATTM_HCP_WT_M[element] = 0.0
+            self.ATTM_HCP_WT_O[element] = 0.0
+            self.ATTM_LCP_WT_Y[element] = 0.0
+            self.ATTM_LCP_WT_M[element] = 0.0
+            self.ATTM_LCP_WT_O[element] = 0.0
+            self.ATTM_Meadow_WT_Y[element] = 0.0
+            self.ATTM_Meadow_WT_M[element] = 0.0
+            self.ATTM_Meadow_WT_O[element] = 0.0
+            self.ATTM_NoData_WT_O[element] = 0.0
+            self.ATTM_SandDunes_WT_Y[element] = 0.0
+            self.ATTM_SandDunes_WT_M[element] = 0.0
+            self.ATTM_SandDunes_WT_O[element] = 0.0
+            self.ATTM_SaturatedBarrens_WT_Y[element] = 0.0
+            self.ATTM_SaturatedBarrens_WT_M[element] = 0.0
+            self.ATTM_SaturatedBarrens_WT_O[element] = 0.0
+            self.ATTM_Shrubs_WT_O[element] = 0.0
+            self.ATTM_Urban_WT[element] = 0.0
+            self.ATTM_Rivers_WT_Y[element] = 0.0
+            self.ATTM_Rivers_WT_M[element] = 0.0
+            self.ATTM_Rivers_WT_O[element] = 0.0
 #            # -------------------------------------
 #           # Reduce all appropriate land cohorts
 #           # -------------------------------------
