@@ -257,7 +257,7 @@ def utility ():
     current_year = init_date.year
     current_month = init_date.month
     
-    
+    NP = arguments['--num_process']
     with open(arguments['--monthly_temperature_list_file']) as temps:
         text = temps.read().rstrip().replace('\r\n','\n')
         files = text.split('\n')
@@ -299,7 +299,7 @@ def utility ():
     )
     
     print 'Calculating Degree-days... this will take some time'
-    calc_gird_degree_days(day, temperatures, tdd, fdd, shape, num_process = NP)
+    calc_gird_degree_days(days, temperatures, tdd, fdd, shape, num_process = NP)
     
 
 
