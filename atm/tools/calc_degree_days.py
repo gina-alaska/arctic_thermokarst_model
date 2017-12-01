@@ -290,7 +290,7 @@ def utility ():
     )
     
     
-    dd_shape = ((n_months / 12) * 2, shape[0] * shape[1])
+    dd_shape = ((n_months / 12) , shape[0] * shape[1])
     fdd = np.memmap(
         arguments['--fdd_file'], dtype='float32', mode='w+', shape= dd_shape
     )
