@@ -251,7 +251,7 @@ def utility ():
         return
 
 
-
+    print 'Seting up input...'
     init_date = datetime.strptime(arguments['--start_date'], '%Y-%m')
     
     current_year = init_date.year
@@ -274,6 +274,8 @@ def utility ():
             current_month = 1
     days = create_day_array( dates )
     
+    
+    print 'Stacking temprerature data...'
     temperatures, shape = load_and_stack(files, arguments['--temperature_file'])
     
     n_months = len(temperatures)
@@ -295,6 +297,8 @@ def utility ():
     tdd = np.memmap(
         arguments['--tdd_file'], dtype='float32', mode='w+', shape= dd_shape
     )
+    
+    print 'Calculating Degree-days... this will take some time'
     calc_gird_degree_days(day, temperatures, tdd, fdd, shape, num_process = NP)
     
 
