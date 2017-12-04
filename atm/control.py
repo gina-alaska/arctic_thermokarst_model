@@ -46,6 +46,9 @@ class Control(object):
         
         self.new_control = {}
         
+        if not os.path.exists(self['data path']):
+            os.makedirs(self['data path'])
+        
     def load (self, control, in_file):
         """Reads control files, recursivly
         
@@ -189,7 +192,9 @@ class Control(object):
         elif key == 'lake depth range':
             return self.get_lake_depth_range()
         elif key == 'pickle path':
-            return os.path.join(self['Output_dir'], 'pickles')
+            return os.path.join(self['Output_dir'], 'runtime_data')
+        elif key == 'data path':
+            return os.path.join(self['Output_dir'], 'runtime_data')
         else:
             raise KeyError, 'Key "' + str(key) + '" is invalid'
             

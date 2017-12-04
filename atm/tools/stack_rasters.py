@@ -4,7 +4,11 @@ Stack Rasters
 
 tools for stacking rasters into multitemporal data
 """
-from atm.atm_io import raster
+try:
+    from atm_io import raster
+except ImportError:
+    from ..atm_io import raster
+
 import numpy as np
 
 def load_and_stack(files, out_filename):

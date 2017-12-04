@@ -12,6 +12,8 @@ from ice_grid import IceGrid
 from lake_pond_grid import LakePondGrid
 from drainage_grid import DrainageGrid
 
+from met_grid import DegreeDayGrids
+
 class ModelGrids (object):
     """Model Grids Class"""
     
@@ -56,6 +58,7 @@ class ModelGrids (object):
             self.lake_pond.apply_mask(lpt, mask)
         self.drainage = DrainageGrid(config)
         
+        self.degreedays = DegreeDayGrids(config)
     
     def __getitem__ (self, key):
         """get item
@@ -85,6 +88,8 @@ class ModelGrids (object):
             return self.lake_pond
         if key.lower() == 'drainage':
             return self.drainage
+        if key.lower() == 'degree-day':
+            return self.degreedays
         
         raise KeyError, 'could not find grid'
         

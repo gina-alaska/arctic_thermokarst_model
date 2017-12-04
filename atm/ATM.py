@@ -139,7 +139,7 @@ class ATM(object):
         # and Calculate Climatic Data needed
         # for ecotype changes.
         #=======================================
-        initialize.Met(self)
+        #~ initialize.Met(self)
 
         #++++++++++++++++++++++++++++++++++++++++++++++
         #  ========================================

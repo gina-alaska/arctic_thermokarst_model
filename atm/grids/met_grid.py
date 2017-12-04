@@ -6,7 +6,12 @@ Grids for meterological stuff
 """
 import os
 import numpy as np
-from ..tools import stack_rasters
+
+try:
+    from tools import stack_rasters
+except ImportError:
+    from ..tools import stack_rasters
+    
 
 try:
     from atm_io import image
@@ -53,7 +58,7 @@ class MetGridBase (object):
             self.load_from_pickle(config)
             return
         
-        
+        self.data_path = config['data path']
         self.start_year = config['start year']
         self.shape = config['shape']
         self.history, self.met_type, self.source = self.setup(config)
@@ -101,7 +106,7 @@ class MetGridBase (object):
         
         return self.get_grid(key - self.start_year, True)
     
-    def read_data(self, source, data_type = 'spatial'):
+    def read_data(self, source, met_type, data_type = 'spatial'):
         """Read the met history from file
         
         Parameters
@@ -127,22 +132,30 @@ class MetGridBase (object):
         """
         if data_type.lower() == 'spatial':
             
+            with open(source, 'r') as s:
+                i = s.read().rstrip().split('\n')
+                
+            if os.path.isfile(os.path.join(os.path.split(source)[0], i[0])):
+                source = [os.path.join(os.path.split(source)[0],f) for f in i]
+            
             ## if mm data DNE create it 
             if type(source) is list:
                 mm_file = os.path.join(
-                    config['data path'], self.met_type + '_history.data'
+                    self.data_path, met_type.replace(' ','_') + '_history.data'
                 )
                 data, shape = self.read_spatial_from_files(
-                    source, self.met_type, mm_file
+                    source, mm_file
                 )
                 if shape[0] != self.shape[0] * self.shape[1] :
                     raise MetGridShapeError, 'loaded met data has wrong shape'
                 del data
                 source = mm_file
                 
-            
+        
             ## load data as read only
             data = self.read_spatial_from_memory_map(source)
+            print data.shape
+            print data
             years = data.shape[0] / (self.shape[0] * self.shape[1])
             data = data.reshape(
                 years, (self.shape[0] * self.shape[1])
@@ -168,7 +181,7 @@ class MetGridBase (object):
         np.memorymap
             met history memory mapped array 
         """
-        return tools.load_and_stack_memory_mapped(files, mm_name)
+        return stack_rasters.stack_np_arrays_from_file (files, mm_name)
         
     def read_spatial_from_memory_map (self, met_file):
         """
@@ -244,6 +257,7 @@ class MetGridBase (object):
         self.met_type = data['type']
         self.shape = data['shape'],
         self.pickle_path = pickle_name
+        self.data_path = os.path.split(pickle_name)[0]
         self.source = data['source']
         
         
@@ -327,7 +341,12 @@ class TDDGrid (MetGridBase):
         path:
             path to memory maped array file
         """
-        data, source = self.read_data( config['TDD_file'] )
+        
+        
+        data_path = os.path.join(config['Input_dir'],
+            config['Met_Control']['TDD_file']
+        )
+        data, source = self.read_data( data_path, 'Thawing Degree-Days' )
         return data, 'Thawing Degree-Days', source
         
 
@@ -357,7 +376,10 @@ class FDDGrid (MetGridBase):
         path:
             path to memory maped array file
         """
-        data, source = self.read_data( config['FDD_file'] )
+        data_path = os.path.join(config['Input_dir'],
+            config['Met_Control']['FDD_file']
+        )
+        data, source = self.read_data( data_path, 'Freezing Degree-Days' )
         return data, 'Freezing Degree-Days', source
 
 class DegreeDayGrids (object):
@@ -378,6 +400,12 @@ class DegreeDayGrids (object):
         """
         self.thawing = TDDGrid(config)
         self.freezing = FDDGrid(config)
+        self.shape = self.freezing.shape
+        
+        #~ import matplotlib.pyplot as plt
+        
+        #~ plt.imshow(self.thawing.history[0].reshape(self.shape))
+        #~ plt.show()
 
         
         
