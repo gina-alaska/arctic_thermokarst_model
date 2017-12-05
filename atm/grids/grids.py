@@ -53,12 +53,38 @@ class ModelGrids (object):
         self.poi = POIGrid(config)
         self.ice = IceGrid(config)
         self.lake_pond = LakePondGrid(config)
+        print config['pond types'] + config['lake types']
         for lpt  in config['pond types'] + config['lake types']:
+            print lpt
             mask = self.area[lpt][0] > 0 # all cells in first ts > 0
             self.lake_pond.apply_mask(lpt, mask)
         self.drainage = DrainageGrid(config)
         
         self.degreedays = DegreeDayGrids(config)
+        
+    def get_max_time_steps (self):
+        """Get the max number of model timesteps possible
+        
+        Returns
+        -------
+        int:
+            number timesteps, based on length of degree day arrays
+        """
+        return len(self.degreedays.thawing.history)
+        
+    def add_time_step(self, zeros = False):
+        """add a time step for all grids where nessary/possible
+        
+        Parameters
+        ----------
+        zeros: bool
+            if set to true data is set as all zeros
+        """
+        self.area.add_time_step(zeros)
+        self.ald.add_time_step(zeros)
+        self.poi.add_time_step(zeros)
+        self.lake_pond.increment_time_step()
+        
     
     def __getitem__ (self, key):
         """get item

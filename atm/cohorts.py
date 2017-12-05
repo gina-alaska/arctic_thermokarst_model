@@ -133,7 +133,11 @@ def find_canon_name (name):
     for alt_names in CANON_COHORT_NAMES:
         if name in alt_names:
             return CANON_COHORT_NAMES[alt_names]
-    raise KeyError, 'No canon cohort name for exists ' + name 
+            
+    CANON_COHORT_NAMES[name] = name
+    #~ raise KeyError, 'No canon cohort name for exists ' + name 
+    #~ print 'No canon cohort name for exists ' + name 
+    return name
 
 
 # maps canon name to the a detailed name to display

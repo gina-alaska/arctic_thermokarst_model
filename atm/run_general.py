@@ -44,6 +44,8 @@ import set_lake_pond_depth
 import set_pond_growth_array
 import set_protective_layer
 
+from grids import area_grid
+import sys
 
 barrow = [ 
     'lake_pond_expansion', 'pond_infill', 
@@ -63,22 +65,33 @@ def run(self, cohort_check_list, init_function):
     cohort_list ordered list of cohorsts to run
     """
     
+    start_year = self.control['start year']
+
     
-    for time in range(0, self.stop):
-        if time == 0:
+    init_tdd = self.grids.degreedays.thawing[start_year+1] ## need to fix start year vs initilization year
+    
+    ## ts zero is initial data state 
+    ## ts one is frist year to make chages
+    for time in range(1, self.stop):
+        #~ if time == 0:
             ## TODO fix this
-            init_function(self)
+            #~ init_function(self)
+            #~ pass
         print '    at time step: ', time
         
+        current_year = start_year + time
         # ++++++++++++++++++++++++++++++++++++++
         # Check for significant climatic event
         # ++++++++++++++++++++++++++++++++++++++
-        check_climate_event.check_climate_event(self)  
+        ## << start HERE
+        
+        ## NEED to re write this
+        #~ check_climate_event.check_climate_event(self)  
 
         # ----------------------------------------------------------
         # Looping over elements
         # ----------------------------------------------------------
-        for element in range(0, self.ATTM_nrows * self.ATTM_ncols):
+        #~ for element in range(0, self.ATTM_nrows * self.ATTM_ncols):
             #### NEW IDEA
             ## for cohort in cohort_list:
             ##      cohorts[cohort](self, element, time)
@@ -93,20 +106,70 @@ def run(self, cohort_check_list, init_function):
             # Define the total fractional area of cohorts for
             # each element
             # ----------------------------------------------------
-            cohort_start = cohort_check.cohort_start(self, element, time)
+            #~ cohort_start = cohort_check.cohort_start(self, element, time)
+        cohort_start = \
+            self.grids.area.get_all_cohorts_at_time_step().sum(0)
+            
 
             ### Loop through each of the cohort checks for area
-            active_layer_depth.active_layer_depth(self, time, element)
-            ice_thickness.ice_thickness(self, time, element)
+            #~ active_layer_depth.active_layer_depth(self, time, element)
             
-            for check in cohort_check_list:
-                checks.cohort_metadata[check](self, element, time)
             
-            cohort_check.cohort_check(self, element, time, cohort_start)
+        self.grids.add_time_step()
+        
+        ## update ALD
+        current_tdd = self.grids.degreedays.thawing[current_year]
+        ald = self.grids.ald.calc_ald(init_tdd, current_tdd, False)
+        self.grids.ald['ALD', current_year] = ald
+        
+        ## set current ice thickness(depth)
+        current_fdd = self.grids.degreedays.freezing[current_year]
+        self.grids.lake_pond.calc_ice_depth(current_fdd)
+            
+            #~ ice_thickness.ice_thickness(self, time, element)
+            
+            #~ for check in cohort_check_list:
+                #~ checks.cohort_metadata[check](self, element, time)
+        
+        for cohort in cohort_check_list:
+            
+            try:
+                check_type = \
+                    self.control[cohort]['Transition_check_type'].lower()
+            except:    
+                check_type = 'base'
+            print cohort, check_type
+            continue ## for testing
+            checks.check_metadata[check_type](
+                self.grids, self.control, current_year
+            )
+            
+        cohort_end = \
+            self.grids.area.get_all_cohorts_at_time_step().sum(0)
+        
+        diff = abs(cohort_start - cohort_end)
+        
+        ## check mass balance, MOVE to function?
+        if (diff > 0.1).any():
+            location = np.where(diff > 0.1)[0]
+            print 'Mass Balance Problem in '+ len(location) + ' cells '
+            sys.exit()
+            ## to do add frist cell report
+            
+        try:
+            self.grids.area.check_mass_balance()
+        except area_grid.MassBalanceError as e:
+            if e == 'mass balance problem 1':
+                print 'mass has been added'
+            else:
+                print 'mass has been removed'
+            sys.exit()
+                    
+            
 
             # NOTE: Just do this outside of loop
-            if time == self.stop -1:
-                cohorts.final_barrow(self)
+            #~ if time == self.stop -1:
+                #~ cohorts.final_barrow(self)
             # ========================================================================
             # END MAIN LOOP 
             # ========================================================================
@@ -116,12 +179,12 @@ def run(self, cohort_check_list, init_function):
         #  - - - - - - - - -
         # Fractional Areas
         #  - - - - - - - - -
-        Output_cohorts_by_year.Output_cohorts_by_year(self, time)
+        #~ Output_cohorts_by_year.Output_cohorts_by_year(self, time)
         #  - - - - - - - - - - - - -
         # Dominant Fractional Area
         #  - - - - - - - - - - - - - 
-        Output_cohorts_by_year.dominant_cohort(self)                 # Terrestrial_Control
-        Output_cohorts_by_year.dominant_fractional_plot(self, time)  # Terrestrial_Control
+        #~ Output_cohorts_by_year.dominant_cohort(self)                 # Terrestrial_Control
+        #~ Output_cohorts_by_year.dominant_fractional_plot(self, time)  # Terrestrial_Control
 
     # =================================
     # OUTPUT ANIMATIONS (if requested)
@@ -129,6 +192,6 @@ def run(self, cohort_check_list, init_function):
     # - - - - - - - - - - - - - - -
     # Fractional Area of Cohorts
     # - - - - - - - - - - - - - - - -
-    Output_cohorts_by_year.write_Fractions_avi(self)
-    Output_cohorts_by_year.write_Dominant_Cohort_avi(self) # Terrestrial_Control
+    #~ Output_cohorts_by_year.write_Fractions_avi(self)
+    #~ Output_cohorts_by_year.write_Dominant_Cohort_avi(self) # Terrestrial_Control
 #---------------------------------------------------------------------

@@ -216,13 +216,13 @@ class LakePondGrid (object):
         """set up depth costant(alpha) grids
         
          Lake ice thickness is calculated using a modified Stefan Equation.
-    alpha-coefficients range from 1.7-2.4 for average lake with snow and 2.7
-    for windy lake with no snow.
+        alpha-coefficients range from 1.7-2.4 for average lake with snow and 2.7
+        for windy lake with no snow.
 
-    The Stefan equation that will be used is:
-    h = alpha * sqrt(FDD)
+        The Stefan equation that will be used is:
+        h = alpha * sqrt(FDD)
     
-    where: h is ice thickness (cm)
+        where: h is ice thickness (cm)
            alpha is Stefan Equation Coefficent
            FDD are the freezing degree days
         
@@ -541,6 +541,28 @@ class LakePondGrid (object):
         #~ data = self.read_from_pickle()
         #~ data = [ ts[key][lake_pond_type] for ts in data]
         #~ return data
+        
+    def calc_ice_depth (self, fdd):
+        """calculate current ICE depth, using a modified Stefan Equation as
+        described in setup_ice_depth_constants
+        
+        h     : ice thickness (m)
+        alpha : Stefan coefficient (set in set_lake_ice_constant.py)
+        FDD   : Freezing Degree days
+        100   : Conversion from cm to m
+        
+        h = (alpha * sqrt(FDD))/100.0  
+        
+        Parameters
+        ----------
+        fdd: np.array
+            freezing degree days
+            
+        
+        """    
+        self.ice_depth = (
+            self.ice_depth_constants * np.sqrt(-1. * fdd)
+        )/100.
         
     def write_to_pickle (self, ts, pickle_name = None ):
         """ Write a time stpe to a pickle, if ts is 0, a new file will be 

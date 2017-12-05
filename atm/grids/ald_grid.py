@@ -9,6 +9,7 @@ import numpy as np
 
 from constants import ROW, COL
 
+import copy
 
 class ALDGrid(object):
     """ALD, and PL object """
@@ -403,12 +404,35 @@ class ALDGrid(object):
             if set to true data is set as all zeros
         
         """
-        self.ald_grid.append(self.ald_grid[-1])
-        self.pl_grid.append(self.pl_grid[-1])
+        self.ald_grid.append(copy.deepcopy(self.ald_grid[-1]))
+        self.pl_grid.append(copy.deepcopy(self.pl_grid[-1]))
         if zeros:
             self.ald_grid[-1] = self.ald_grid[-1]*0
             self.pl_grid[-1] = self.pl_grid[-1]*0
+            
+    
+    def calc_ald(self, init_tdd, current_tdd, flat = True):
+        """caclulates the ald from thawing degreedays for all cells
         
+        Parameters
+        ----------
+        init_tdd: np.array
+            initial Thawing Degree-days
+        current_tdd: np.array
+            Thawing  Degree-days for the current time step
+        flat: bool, defaults True
+            if true array is kept flat, else reshaped to shape
+        
+        Returns
+        -------
+        np.array
+            the ald grid
+        """ 
+        shape = self.shape
+        if flat:
+            shape = self.shape[0] * self.shape[1]
+        return (self.init_ald_grid.flatten() * \
+            np.sqrt(current_tdd / init_tdd).flatten()).reshape(shape)
         
         
     def save_ald (self, time_step):

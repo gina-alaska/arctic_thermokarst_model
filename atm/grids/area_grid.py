@@ -19,7 +19,7 @@ except ImportError:
 
 from constants import ROW, COL
 
-
+import copy
 
 class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
@@ -92,9 +92,17 @@ class AreaGrid(object):
         o_shape = (original.nY, original.nX) 
         o_res = (original.deltaY, original.deltaX) 
         self.shape = (
-            abs(int(o_shape[ROW] *o_res[ROW] /target_resolution[ROW])),
-            abs(int(o_shape[COL] *o_res[COL] /target_resolution[COL])),
+            abs(int(o_shape[ROW] * o_res[ROW] /target_resolution[ROW])),
+            abs(int(o_shape[COL] * o_res[COL] /target_resolution[COL])),
         )
+        
+        ## some times new shape may be off by one
+        try:
+            self.get_cohort_at_time_step(
+                self.key_to_index.keys()[0], flat = False)
+        except ValueError:
+            self.shape = (self.shape[0]+1,self.shape[1]+1)
+            
         self.resolution = target_resolution
         
     def __getitem__ (self, key):
@@ -168,6 +176,7 @@ class AreaGrid(object):
         
         for f in self.input_data:
             ## add path here
+            print f
             path = f
             data, metadata = raster.load_raster (path)
             
@@ -274,6 +283,7 @@ class AreaGrid(object):
             abs(int(target_resolution[ROW]/current_resolution[ROW])),
             abs(int(target_resolution[COL]/current_resolution[COL]))
         )
+        print resize_num
         resized_layer = []
         
         shape = layer.shape
@@ -531,7 +541,7 @@ class AreaGrid(object):
             self.set_cohort_at_time_step(cohort, ts, data)
             
         
-    def append_grid_year (self, zeros=False):
+    def add_time_step (self, zeros=False):
         """adds a new grid timestep and exact copy of the previous timestep
         
         Parameters
@@ -539,7 +549,7 @@ class AreaGrid(object):
         zeros : bool
             set new years data to 0 if true
         """
-        self.grid.append(self.grid[-1])
+        self.grid.append(copy.deepcopy(self.grid[-1]))
         if zeros:
             self.grid[-1] = self.grid[-1]*0
             

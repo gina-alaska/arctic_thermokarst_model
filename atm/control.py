@@ -326,6 +326,8 @@ class Control(object):
         """
         cohorts = []
         for key in self.init_control:
+            if key.lower() == 'lake_pond_control':
+                continue
             try:
                 name = find_canon_name(key.replace('_Control', ''))
                 if name.lower().find('pond') != -1:
@@ -344,6 +346,8 @@ class Control(object):
         """
         cohorts = []
         for key in self.init_control:
+            if key.lower() == 'lake_pond_control':
+                continue
             try:
                 name = find_canon_name(key.replace('_Control', ''))
                 if name.lower().find('lake') != -1:

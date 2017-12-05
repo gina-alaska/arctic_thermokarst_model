@@ -530,8 +530,8 @@ def Met(self):
 
 #====================================================================================
 def run(self):
-    if self.test_code.lower() == 'yes':
-        self.stop = self.test_code_duration
+    if self.control.Test_code.lower() == 'yes':
+        self.stop = self.control.Test_code_duration
     else:
         self.stop = int(self.ATTM_time_steps)
     

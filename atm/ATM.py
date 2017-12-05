@@ -96,6 +96,12 @@ class ATM(object):
         #--------------------------------------
         #~ self.Control_file     = sys.argv[1]
         
+        ## srt up # time steps
+        if self.control.Test_code.lower() == 'yes':
+            self.stop = self.control.Test_code_duration
+        else:
+            self.stop = int(self.grids.get_max_time_steps())
+        
         ########################################################################
         # Execute the script
         ########################################################################
@@ -151,10 +157,10 @@ class ATM(object):
     	print '======================================'
         print ' Initializing Terrestrial Properties '
         print '======================================'
-        if self.control['Simulation_area'].lower() == 'barrow':
-            run_barrow.initialize_barrow_cohorts(self)
-        elif self.control['Simulation_area'].lower() == 'tanana':
-            run_tanana.Terrestrial_Tanana(self)
+        #~ if self.control['Simulation_area'].lower() == 'barrow':
+            #~ run_barrow.initialize_barrow_cohorts(self)
+        #~ elif self.control['Simulation_area'].lower() == 'tanana':
+            #~ run_tanana.Terrestrial_Tanana(self)
         ## **
         
         print '=================================================='
@@ -163,7 +169,9 @@ class ATM(object):
 
         ## this should be renamed, to set_end or somthing
         
-        initialize.run(self)
+        #~ initialize.run(self)
+        
+        
         if self.control['Simulation_area'].lower() == 'barrow':
             ## move to else where
             barrow_checks = [ 

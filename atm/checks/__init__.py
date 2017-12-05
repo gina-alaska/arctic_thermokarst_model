@@ -16,7 +16,13 @@ import  check_Wet_NPG
 
 import lake_pond_expansion
 
-cohort_metadata = { 
+import check_base
+
+    
+check_metadata = {
+        
+        'base': check_base.check_base,
+        'poi': check_base.check_base,
 
         'lake_pond_expansion': lake_pond_expansion.lake_pond_expansion,
         'pond_infill': lake_pond_expansion.pond_infill,
