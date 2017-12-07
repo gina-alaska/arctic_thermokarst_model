@@ -60,6 +60,8 @@ barrow = [
     'check_SmallLakes_WT_Y', 'check_SmallLakes_WT_M', 'check_SmallLakes_WT_O',
 ] 
 
+from cohorts import find_canon_name
+
 def run(self, cohort_check_list, init_function):
     """
     cohort_list ordered list of cohorsts to run
@@ -131,18 +133,28 @@ def run(self, cohort_check_list, init_function):
             #~ for check in cohort_check_list:
                 #~ checks.cohort_metadata[check](self, element, time)
         
+        ## lake pond expansion: move out of loop to end
+        
         for cohort in cohort_check_list:
             
+            cohort_control = cohort + '_Control'
             try:
+                
+                
                 check_type = \
-                    self.control[cohort]['Transition_check_type'].lower()
+                    self.control[cohort_control]['Transition_check_type'].lower()
             except:    
                 check_type = 'base'
             print cohort, check_type
-            continue ## for testing
+            #~ continue ## for testing
+            
+            self.control[cohort_control]['cohort'] = find_canon_name(cohort)
             checks.check_metadata[check_type](
-                self.grids, self.control, current_year
+                self.grids, self.control[cohort_control], current_year
             )
+        
+        lake_pond_expansion.lake_pond_expansion() #<< Need to redo
+        #~ lake_pond_expansion.pond_infill
             
         cohort_end = \
             self.grids.area.get_all_cohorts_at_time_step().sum(0)

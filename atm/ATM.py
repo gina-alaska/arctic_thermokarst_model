@@ -175,19 +175,19 @@ class ATM(object):
         if self.control['Simulation_area'].lower() == 'barrow':
             ## move to else where
             barrow_checks = [ 
-                'lake_pond_expansion', 'pond_infill', 
+                #~ 'lake_pond_expansion', 'pond_infill', 
                 'Meadow_WT_Y', 'Meadow_WT_M', 'Meadow_WT_O',
                 'LCP_WT_Y', 'LCP_WT_M', 'LCP_WT_O',
                 'CLC_WT_Y', 'CLC_WT_M', 'CLC_WT_O',
                 'FCP_WT_Y', 'FCP_WT_M', 'FCP_WT_O',
                 'HCP_WT_Y', 'HCP_WT_M', 'HCP_WT_O',
-                'check_Ponds_WT_Y', 'check_Ponds_WT_M', 'check_Ponds_WT_O',
-                'check_LargeLakes_WT_Y', 'check_LargeLakes_WT_M', 
-                    'check_LargeLakes_WT_O',
-                'check_MediumLakes_WT_Y', 'check_MediumLakes_WT_M', 
-                    'check_MediumLakes_WT_O',
-                'check_SmallLakes_WT_Y', 'check_SmallLakes_WT_M', 
-                    'check_SmallLakes_WT_O',
+                'Ponds_WT_Y', 'Ponds_WT_M', 'Ponds_WT_O',
+                'LargeLakes_WT_Y', 'LargeLakes_WT_M', 
+                    'LargeLakes_WT_O',
+                'MediumLakes_WT_Y', 'MediumLakes_WT_M', 
+                    'MediumLakes_WT_O',
+                'SmallLakes_WT_Y', 'SmallLakes_WT_M', 
+                    'SmallLakes_WT_O',
             ] 
             
             run_general.run(self, barrow_checks, initial_barrow)
