@@ -27,31 +27,7 @@ check_metadata = {
         'lake_pond_expansion': lake_pond_expansion.lake_pond_expansion,
         'pond_infill': lake_pond_expansion.pond_infill,
 
-        'Meadow_WT_Y': check_Meadow_WT.check_Meadow_WT_Y,
-        'Meadow_WT_M': check_Meadow_WT.check_Meadow_WT_M,
-        'Meadow_WT_O': check_Meadow_WT.check_Meadow_WT_O,
-        'Meadow_WT_NA': check_Meadow_WT.check_Meadow_WT_NA,
-        
-        'LCP_WT_Y': check_LCP_WT.check_LCP_WT_Y,
-        'LCP_WT_M': check_LCP_WT.check_LCP_WT_M,
-        'LCP_WT_O': check_LCP_WT.check_LCP_WT_O,
-        'LCP_WT_NA': check_LCP_WT.check_LCP_WT_NA,
-        
-        'CLC_WT_Y': check_CLC_WT.check_CLC_WT_Y,
-        'CLC_WT_M': check_CLC_WT.check_CLC_WT_M,
-        'CLC_WT_O': check_CLC_WT.check_CLC_WT_O,
-        'CLC_WT_NA': check_CLC_WT.check_CLC_WT_NA,
-        
-        'FCP_WT_Y': check_FCP_WT.check_FCP_WT_Y,
-        'FCP_WT_M': check_FCP_WT.check_FCP_WT_M,
-        'FCP_WT_O': check_FCP_WT.check_FCP_WT_O,
-        'FCP_WT_NA': check_FCP_WT.check_FCP_WT_NA,
-        
-        'HCP_WT_Y': check_HCP_WT.check_HCP_WT_Y,
-        'HCP_WT_M': check_HCP_WT.check_HCP_WT_M,
-        'HCP_WT_O': check_HCP_WT.check_HCP_WT_O,
-        'HCP_WT_NA': check_HCP_WT.check_HCP_WT_NA,
-
+      
         
         
         
