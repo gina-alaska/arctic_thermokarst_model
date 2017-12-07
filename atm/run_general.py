@@ -136,11 +136,9 @@ def run(self, cohort_check_list, init_function):
         ## lake pond expansion: move out of loop to end
         
         for cohort in cohort_check_list:
-            
+           
             cohort_control = cohort + '_Control'
             try:
-                
-                
                 check_type = \
                     self.control[cohort_control]['Transition_check_type'].lower()
             except:    
@@ -148,12 +146,13 @@ def run(self, cohort_check_list, init_function):
             print cohort, check_type
             #~ continue ## for testing
             
-            self.control[cohort_control]['cohort'] = find_canon_name(cohort)
+            #~ self.control[cohort_control]['cohort'] = find_canon_name(cohort)
+            name = find_canon_name(cohort)
             checks.check_metadata[check_type](
-                self.grids, self.control[cohort_control], current_year
+                name,  current_year, self.grids, self.control
             )
         
-        lake_pond_expansion.lake_pond_expansion() #<< Need to redo
+        #~ lake_pond_expansion.lake_pond_expansion() #<< Need to redo
         #~ lake_pond_expansion.pond_infill
             
         cohort_end = \
@@ -161,15 +160,30 @@ def run(self, cohort_check_list, init_function):
         
         diff = abs(cohort_start - cohort_end)
         
-        ## check mass balance, MOVE to function?
+        #~ ## check mass balance, MOVE to function?
         if (diff > 0.1).any():
-            location = np.where(diff > 0.1)[0]
-            print 'Mass Balance Problem in '+ len(location) + ' cells '
-            sys.exit()
-            ## to do add frist cell report
+            import pickle
             
+            with open('err.pkl','wb') as e:
+                pickle.dump(self.grids, e )
+            
+            location = np.where(diff > 0.1)[0]
+            print ('Mass Balance chage greater thatn 10 % in '
+                    ''+ str(len(location)) + ' cells ')
+            
+            
+            print location
+            print 'start: ', cohort_start[location[0]]
+            print 'end: ', cohort_end[location[0]]
+            
+            sys.exit()
+            
+
+            
+            ## to do add frist cell report
         try:
             self.grids.area.check_mass_balance()
+            self.grids.area.check_mass_balance(current_year - start_year)
         except area_grid.MassBalanceError as e:
             if e == 'mass balance problem 1':
                 print 'mass has been added'

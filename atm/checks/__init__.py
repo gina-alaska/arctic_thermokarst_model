@@ -1,10 +1,7 @@
-import  check_CLC_WT 
-import  check_FCP_WT 
-import  check_HCP_WT 
+
 import  check_Lakes_WT 
 import  check_Lakes 
-import  check_LCP_WT 
-import  check_Meadow_WT 
+
 import  check_Ponds_WT 
 import  check_Ponds 
 import  check_water_climate 
@@ -14,15 +11,20 @@ import  check_Wet_HCP
 import  check_Wet_LCP 
 import  check_Wet_NPG 
 
+
+
 import lake_pond_expansion
 
 import check_base
-
+import check_ponds_base
     
 check_metadata = {
         
         'base': check_base.check_base,
         'poi': check_base.check_base,
+        
+        'base_pond': check_ponds_base.check,
+        'base_lake': check_ponds_base.check,
 
         'lake_pond_expansion': lake_pond_expansion.lake_pond_expansion,
         'pond_infill': lake_pond_expansion.pond_infill,

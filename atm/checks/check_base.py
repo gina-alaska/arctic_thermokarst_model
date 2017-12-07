@@ -3,13 +3,14 @@
 import numpy as np
 import functions
 
-def check_base(grids, cohort_config, year):
+def check_base(name, year, grids, control):
     """assuming year '0' is the inital data, this should start with year 1
     """
     import matplotlib.pyplot as plt
     
+    cohort_config = control[name + '_Control'] 
     
-    name = cohort_config['cohort']
+    #~ name = cohort_config['cohort']
     ## mask out non-test area
     model_area_mask = grids.area.area_of_intrest()
     
@@ -24,7 +25,7 @@ def check_base(grids, cohort_config, year):
     
     ## get_cell with 'current cohort present'
     
-    cohort_present_mask = grids.area[ year, cohort_config['cohort'] ] > 0
+    cohort_present_mask = grids.area[ year, name ] > 0
     
     #~ plt.imshow(cohort_present_mask.reshape(grids.shape))
     #~ plt.show()
@@ -68,7 +69,8 @@ def check_base(grids, cohort_config, year):
         'hN': cohort_config['HillN_above']
     }
     
-    POI_above = fn(x , parameters)
+    POI_above = np.zeros(grids.shape)
+    POI_above[current_cell_mask] = fn(x , parameters)[current_cell_mask]
     
     #~ plt.imshow(POI_above.reshape(grids.shape))
     #~ plt.colorbar()
@@ -88,14 +90,16 @@ def check_base(grids, cohort_config, year):
         'hN': cohort_config['HillN_below']
     }
     
-    POI_below = fn(x , parameters)
+    
+    POI_below  = np.zeros(grids.shape)
+    POI_below[current_cell_mask] = fn(x , parameters)[current_cell_mask]
     #~ plt.imshow(POI_below.reshape(grids.shape))
     #~ plt.colorbar()
     #~ plt.show()
     
     POI = POI_below 
     above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'
-    POI [above_idx] = POI_above[above_idx]
+    POI[above_idx] = POI_above[above_idx]
    
     #~ plt.imshow(POI.reshape(grids.shape))
     #~ plt.colorbar()
@@ -120,11 +124,11 @@ def check_base(grids, cohort_config, year):
     grids.ald[name, year ] = grids.ald[name, year-1 ] + \
         (grids.ald['ALD', year] - grids.ald[name, year-1 ] ) * porosity
         
-    grids.ald[name, year-1][np.logical_not(model_area_mask)] = np.nan
+    #~ grids.ald[name, year-1][np.logical_not(model_area_mask)] = np.nan
     #~ plt.imshow(grids.ald[name, year-1])
     #~ plt.colorbar()
     #~ plt.show()
-    grids.ald[name, year][np.logical_not(model_area_mask)] = np.nan
+    #~ grids.ald[name, year][np.logical_not(model_area_mask)] = np.nan
     #~ plt.imshow(grids.ald[name, year])
     #~ plt.colorbar()
     #~ plt.show()
@@ -145,38 +149,42 @@ def check_base(grids, cohort_config, year):
     #~ plt.colorbar()
     #~ plt.show()
     
-    change = rate_of_transition * grids.area[ year, cohort_config['cohort'] ]
-    
+    change = rate_of_transition * grids.area[ year, name ]
     #~ plt.imshow(change)
     #~ plt.colorbar()
     #~ plt.show()
     
     ## if change is bigger than area available
     ## TODO: handle age buckets
-    current = grids.area[ year - 1, cohort_config['cohort'] ]
-    change[ change > current ] = current [ change > current ]
+    current = grids.area[ year, name]
+    change[np.logical_and(cohort_present_mask, change > current )] = \
+        current [np.logical_and(cohort_present_mask, change > current )]
     
     #~ plt.imshow(change)
     #~ plt.colorbar()
     #~ plt.show()
     
+    #~ print change
     transitions_to = cohort_config['transitions_to']
-    grids.area[ year, transitions_to + '--0'] = \
-        grids.area[ year - 1, transitions_to] + change
-    
-    grids.area[ year, name + '--0' ] = current - change
+    grids.area[ year, transitions_to + '--0'][cohort_present_mask ] = \
+        (grids.area[ year, transitions_to] + change)[cohort_present_mask ]
 
-    plt.imshow( grids.area[ year-1, name])
-    plt.colorbar()
-    plt.show()
+    grids.area[ year, name + '--0' ][cohort_present_mask ] = \
+        (current - change)[cohort_present_mask ]
+
+    
+
+    #~ plt.imshow( grids.area[ year-1, name])
+    #~ plt.colorbar()
+    #~ plt.show()
     
     #~ plt.imshow( grids.area[ year-1, transitions_to])
     #~ plt.colorbar()
     #~ plt.show()
    
-    plt.imshow( grids.area[ year, name])
-    plt.colorbar()
-    plt.show()
+    #~ plt.imshow( grids.area[ year, name])
+    #~ plt.colorbar()
+    #~ plt.show()
     
     #~ plt.imshow( grids.area[ year, transitions_to])
     #~ plt.colorbar()
