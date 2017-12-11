@@ -103,13 +103,14 @@ class LakePondGrid (object):
         self.climate_expansion_lakes = np.zeros(self.shape).flatten()
         self.climate_expansion_ponds = np.zeros(self.shape).flatten()
         
+        
         ## can cheat and use setup depths
-        self.growth = self.setup_depths(
+        self.time_since_growth = self.setup_depths(
             config['pond types'], self.shape, (0,0)
         )
-        self.growth.update(
-            self.setup_depths(config['lake types'], self.shape, (0,0))
-        )
+        #~ self.growth.update(
+            #~ self.setup_depths(config['lake types'], self.shape, (0,0))
+        #~ )
         
         
     def __setitem__ (self, key, grid):
@@ -560,9 +561,9 @@ class LakePondGrid (object):
             
         
         """    
-        self.ice_depth = (
-            self.ice_depth_constants * np.sqrt(-1. * fdd)
-        )/100.
+        self.ice_depth = ((
+            self.ice_depth_constants * np.sqrt(-1. * fdd).flatten()
+        )/100.).reshape(self.shape)
         
     def write_to_pickle (self, ts, pickle_name = None ):
         """ Write a time stpe to a pickle, if ts is 0, a new file will be 
@@ -586,7 +587,7 @@ class LakePondGrid (object):
             'ice depth': self.ice_depth,
             'climate expansion lakes': self.climate_expansion_lakes,
             'climate expansion ponds': self.climate_expansion_ponds,
-            'growth': self.growth,
+            'growth': self.time_since_growth,
             
         }
         if ts == 0:
@@ -637,7 +638,7 @@ class LakePondGrid (object):
         self.climate_expansion_lakes = archive[-1]['climate expansion lakes']
         self.climate_expansion_ponds = archive[-1]['climate expansion ponds']
         
-        self.growth = archive[-1]['growth'] 
+        self.time_since_growth = archive[-1]['growth'] 
     
         self.pickle_path = pickle_name
 
@@ -688,7 +689,7 @@ class LakePondGrid (object):
                 self.climate_expansion_ponds = \
                     archive[-1]['climate expansion ponds']
                 
-                self.growth = archive[-1]['growth'] 
+                self.time_since_growth = archive[-1]['growth'] 
             
             return archive
         else:

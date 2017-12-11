@@ -104,7 +104,7 @@ class MetGridBase (object):
         if key < self.start_year:
             raise IndexError, 'index should be after '+ str(self.start_year)
         
-        return self.get_grid(key - self.start_year, True)
+        return self.get_grid(key - self.start_year, False)
     
     def read_data(self, source, met_type, data_type = 'spatial'):
         """Read the met history from file
@@ -135,8 +135,13 @@ class MetGridBase (object):
             with open(source, 'r') as s:
                 i = s.read().rstrip().split('\n')
                 
-            if os.path.isfile(os.path.join(os.path.split(source)[0], i[0])):
-                source = [os.path.join(os.path.split(source)[0],f) for f in i]
+            try:
+                if os.path.isfile(os.path.join(os.path.split(source)[0], i[0])):
+                    source = [
+                        os.path.join(os.path.split(source)[0],f) for f in i
+                    ]
+            except TypeError:
+                pass
             
             ## if mm data DNE create it 
             if type(source) is list:
