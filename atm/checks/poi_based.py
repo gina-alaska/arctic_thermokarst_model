@@ -29,12 +29,13 @@ def transition (name, year, grids, control):
         'A1_above'(float),'A2_above'(float),'x0_above'(float),'x0_above'(float),
         'a_above'(float),'b_above'(float),'K_above'(float),'C_above'(float),
         'A_above'(float),'B_above'(float),'HillB_above'(float),
-        'HillN_above'(float),'A1_below'(float),'A2_below'(float),'x0_below'(float),'x0_below'(float),
+        'HillN_above'(float),'A1_below'(float),'A2_below'(float),
+        'x0_below'(float),'x0_below'(float),
         'a_below'(float),'b_below'(float),'K_below'(float),'C_below'(float),
         'A_below'(float),'B_below'(float),'HillB_below'(float),
         'HillN_below'(float), 'max_terrain_transition'(float), 
         'transitions_to'(str).
-        See The
+        See https://github.com/gina-alaska/arctic_thermokarst_model/wiki/POI-transition-function
 
     """
     cohort_config = control[name + '_Control'] 
