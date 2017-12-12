@@ -27,7 +27,7 @@ def transition (name, year, grids, control):
         Lake_Pond_Control (Dict), 'start year' (int).
         name + '_Control' should contain keys(type): 
         Transition_check_type (str), transitions_to (str)
-        See [add link]
+        See https://github.com/gina-alaska/arctic_thermokarst_model/wiki/Ponds-to-Lake-Transition
         Lake_Pond_Control should match the lake pond control specs:
         See [add link]
 
@@ -38,7 +38,9 @@ def transition (name, year, grids, control):
     current_cell_mask = np.logical_and(model_area_mask, cohort_present_mask)
 
     ## had current TDD, TDD max
-    TDD_max =grids.degreedays.thawing.history[:year+1 - control['start year']+1] 
+    TDD_max = grids.degreedays.thawing.history[
+        :year+1 - control['start year']+1
+    ] 
     TDD_max = TDD_max.max(0).reshape(grids.shape)
     
     ## updated pond counts
@@ -55,8 +57,6 @@ def transition (name, year, grids, control):
     
     ## NEW MAX DEGREE DAY(pond depth chages)
     update_pond_depth = np.logical_and(new_max, current_cell_mask)
-    
-    
     
     grids.lake_pond.depths[name][update_pond_depth.flatten()] = (
         grids.lake_pond.depths[name].reshape(grids.shape)[update_pond_depth] +\

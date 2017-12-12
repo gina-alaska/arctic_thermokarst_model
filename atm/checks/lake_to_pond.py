@@ -27,7 +27,7 @@ def transition (name, year, grids, control):
         Lake_Pond_Control (Dict), 'start year' (int).
         name + '_Control' should contain keys(type): 
         Transition_check_type (str), transitions_to (str)
-        See [add link]
+        See https://github.com/gina-alaska/arctic_thermokarst_model/wiki/Lake-to-Pond-Transition
         Lake_Pond_Control should match the lake pond control specs:
         See [add link]
 
@@ -40,9 +40,8 @@ def transition (name, year, grids, control):
 
     grids.lake_pond.depths[name][current_cell_mask.flatten()] = (
         grids.lake_pond.depths[name].reshape(grids.shape)[current_cell_mask] +\
-        (np.sqrt(grids.lake_pond.counts[name])[
-            current_cell_mask.flatten()
-        ] / control['Lake_Pond_Control'][name + '_depth_control'])
+        (np.sqrt(year - control['start year']+1)\
+        / control['Lake_Pond_Control'][name + '_depth_control'])
     ).flatten()
     
     freezes = \
