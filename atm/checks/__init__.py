@@ -17,6 +17,7 @@ import lake_pond_expansion
 
 import check_base
 import check_ponds_base
+import check_lakes_base
     
 check_metadata = {
         
@@ -24,7 +25,7 @@ check_metadata = {
         'poi': check_base.check_base,
         
         'base_pond': check_ponds_base.check,
-        'base_lake': check_ponds_base.check,
+        'base_lake': check_lakes_base.check,
 
         'lake_pond_expansion': lake_pond_expansion.lake_pond_expansion,
         'pond_infill': lake_pond_expansion.pond_infill,

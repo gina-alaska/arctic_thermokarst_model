@@ -211,7 +211,21 @@ def run(self, cohort_check_list, init_function):
         #  - - - - - - - - - - - - - 
         #~ Output_cohorts_by_year.dominant_cohort(self)                 # Terrestrial_Control
         #~ Output_cohorts_by_year.dominant_fractional_plot(self, time)  # Terrestrial_Control
-
+    for cohort in self.grids.area.key_to_index:
+        if cohort.find('--') != -1:
+            continue
+            
+        s = self.grids.area[start_year,cohort].sum()
+        e = self.grids.area[current_year,cohort].sum()
+        
+        if s > e:
+            d = 'equal'
+        elif s < e:
+            d = 'growth'
+        else:
+            d = 'reduction'
+        print cohort, 'start:', s, 'end:', e, d
+        
     # =================================
     # OUTPUT ANIMATIONS (if requested)
     # =================================

@@ -7,8 +7,7 @@ import numpy as np
 def check(name, year, grids, control):
     """check/transition for ponds
     """
-    if name.lower().find('lake') != -1:
-        return
+
     model_area_mask = grids.area.area_of_intrest()
     cohort_present_mask = grids.area[ year, name ] > 0
     
@@ -21,7 +20,6 @@ def check(name, year, grids, control):
     # the pond count.
     # --------------------------------------
     TDD_max =grids.degreedays.thawing.history[:year+1 - control['start year']+1] 
-    print 'ts', len(TDD_max)
     TDD_max = TDD_max.max(0).reshape(grids.shape)
     
     ## updated pond counts
@@ -83,6 +81,14 @@ def check(name, year, grids, control):
     grids.lake_pond.time_since_growth[name][np.logical_not(to_lakes).flatten()]\
         = 0
     
+    #~ import matplotlib.pyplot as plt
+    
+    #~ plt.imshow(grids.area[year, name])
+    #~ plt.colorbar()
+    #~ plt.show()
+    #~ plt.imshow(grids.area[year, lake_shift])
+    #~ plt.colorbar()
+    #~ plt.show()
     
     
    
