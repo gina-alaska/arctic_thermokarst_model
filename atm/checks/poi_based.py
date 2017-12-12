@@ -1,37 +1,57 @@
+"""
+POI Based transition
+--------------------
 
-
+Transition functions for POI based changes in area
+"""
 import numpy as np
 import functions
 
-def check_base(name, year, grids, control):
-    """assuming year '0' is the inital data, this should start with year 1
+def transition (name, year, grids, control):
+    """This checks for any area in the cohort 'name' that should be transitioned
+    to the next cohort, and then transitions the area. 
+
+    Note: .. 
+        Assuming year '0' is the inital data, this should start with year 1
+        
+    Parameters
+    ----------
+    name: string
+        Name of the current cohort.
+    year: int
+        The current year >= control['start_year'].
+    grids: atm.grids.grids.ModelGrids
+        The Grids representing the model area
+    control: Dict or Dict like
+        An object containg the control keys(type): name + '_Control' (Dict).
+        Where name + '_Control' is the the cohort spesfic contntrol dict that 
+        contains the following keys (type): 'POI_Function'(String), 
+        'A1_above'(float),'A2_above'(float),'x0_above'(float),'x0_above'(float),
+        'a_above'(float),'b_above'(float),'K_above'(float),'C_above'(float),
+        'A_above'(float),'B_above'(float),'HillB_above'(float),
+        'HillN_above'(float),'A1_below'(float),'A2_below'(float),'x0_below'(float),'x0_below'(float),
+        'a_below'(float),'b_below'(float),'K_below'(float),'C_below'(float),
+        'A_below'(float),'B_below'(float),'HillB_below'(float),
+        'HillN_below'(float), 'max_terrain_transition'(float), 
+        'transitions_to'(str).
+        See The
+
     """
-    import matplotlib.pyplot as plt
-    
     cohort_config = control[name + '_Control'] 
     
-    #~ name = cohort_config['cohort']
     ## mask out non-test area
     model_area_mask = grids.area.area_of_intrest()
     
-    #~ plt.imshow(model_area_mask.reshape(grids.shape))
-    #~ plt.show()
-    
     ## get_ice contents
-    ice_slope = grids.ice.get_ice_slope_grid( name )#cohort_config ['ice content'])
-    
-    #~ plt.imshow(ice_slope.reshape(grids.shape))
-    #~ plt.show()
+    ice_slope = grids.ice.get_ice_slope_grid( name )
     
     ## get_cell with 'current cohort present'
-    
     cohort_present_mask = grids.area[ year, name ] > 0
     
-    #~ plt.imshow(cohort_present_mask.reshape(grids.shape))
-    #~ plt.show()
     ### where is ald >= PL
     pl_breach_mask = grids.ald['ALD', year] >= grids.ald[name, year]
     
+    ### cells where change may occur
     current_cell_mask = np.logical_and(
         np.logical_and(
             model_area_mask, cohort_present_mask
@@ -39,21 +59,14 @@ def check_base(name, year, grids, control):
         pl_breach_mask 
     )
     
-    #~ plt.imshow(current_cell_mask.reshape(grids.shape))
-    #~ plt.show()
     ## find 'x'
     x = np.zeros(grids.shape)
     x[current_cell_mask] = (
         grids.ald['ALD',year] / grids.ald[name ,year]
     )[current_cell_mask] - 1
-    #~ print ' x ' 
-    #~ plt.imshow(x.reshape(grids.shape))
-    #~ plt.show()
-    ## get function type
+
+    ## caclualte POI
     fn = functions.table[cohort_config['POI_Function'].lower()]
-    
-    
-    
     parameters = {
         'A1': cohort_config['A1_above'], 
         'A2': cohort_config['A2_above'], 
@@ -72,14 +85,11 @@ def check_base(name, year, grids, control):
     POI_above = np.zeros(grids.shape)
     POI_above[current_cell_mask] = fn(x , parameters)[current_cell_mask]
     
-    #~ plt.imshow(POI_above.reshape(grids.shape))
-    #~ plt.colorbar()
-    #~ plt.show()
     parameters = {
         'A1': cohort_config['A1_below'], 
         'A2': cohort_config['A2_below'], 
         'x0': cohort_config['x0_below'], 
-        'dx': cohort_config['dx_below'], 
+        'dx': cohort_config['x0_above'], 
         'a': cohort_config['a_below'],
         'b': cohort_config['b_below'], 
         'K': cohort_config['K_below'], 
@@ -93,66 +103,32 @@ def check_base(name, year, grids, control):
     
     POI_below  = np.zeros(grids.shape)
     POI_below[current_cell_mask] = fn(x , parameters)[current_cell_mask]
-    #~ plt.imshow(POI_below.reshape(grids.shape))
-    #~ plt.colorbar()
-    #~ plt.show()
     
     POI = POI_below 
     above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'
     POI[above_idx] = POI_above[above_idx]
-   
-    #~ plt.imshow(POI.reshape(grids.shape))
-    #~ plt.colorbar()
-    #~ plt.show()
-    
 
-    ## update POI
+    ## update cumulative POI
     grids.poi[year, name] = grids.poi[year-1, name] + POI
-      
-      
-    #~ plt.imshow(grids.poi[year-1, cohort_config['cohort']])
-    #~ plt.colorbar()
-    #~ plt.show()
-    #~ plt.imshow(grids.poi[year, cohort_config['cohort']])
-    #~ plt.colorbar()
-    #~ plt.show()
+    ### POI where ALD < PL, reset cumulative POI to 0
+    grids.poi[year, name][np.logical_not( current_cell_mask )] = 0.0
 
-    ## set PL[year]
-    
+    ## change PL[year] if ALD > PL
     porosity = grids.ald.porosity[name]
-    print name 
-    grids.ald[name, year ] = grids.ald[name, year-1 ] + \
+    grids.ald[name, year ][ current_cell_mask ] = (
+        grids.ald[name, year-1 ] + \
         (grids.ald['ALD', year] - grids.ald[name, year-1 ] ) * porosity
-        
-    #~ grids.ald[name, year-1][np.logical_not(model_area_mask)] = np.nan
-    #~ plt.imshow(grids.ald[name, year-1])
-    #~ plt.colorbar()
-    #~ plt.show()
-    #~ grids.ald[name, year][np.logical_not(model_area_mask)] = np.nan
-    #~ plt.imshow(grids.ald[name, year])
-    #~ plt.colorbar()
-    #~ plt.show()
+    )[ current_cell_mask ] 
 
-    #~ plt.imshow(grids.ald[name, year] - grids.ald[name, year - 1])
-    #~ plt.colorbar()
-    #~ plt.show()
-    
+    ## use POI to find rate of transtion
     max_rot = cohort_config['max_terrain_transition']
     rate_of_transition = \
         grids.poi[year, name] * ice_slope.reshape(grids.shape) * max_rot
-        
-    
-    
     rate_of_transition[ rate_of_transition > max_rot ] = max_rot
-    
-    #~ plt.imshow(rate_of_transition)
-    #~ plt.colorbar()
-    #~ plt.show()
-    
+
+    ## calculate chage
     change = rate_of_transition * grids.area[ year, name ]
-    #~ plt.imshow(change)
-    #~ plt.colorbar()
-    #~ plt.show()
+
     
     ## if change is bigger than area available
     ## TODO: handle age buckets
@@ -160,11 +136,7 @@ def check_base(name, year, grids, control):
     change[np.logical_and(cohort_present_mask, change > current )] = \
         current [np.logical_and(cohort_present_mask, change > current )]
     
-    #~ plt.imshow(change)
-    #~ plt.colorbar()
-    #~ plt.show()
-    
-    #~ print change
+    ## apply change
     transitions_to = cohort_config['transitions_to']
     grids.area[ year, transitions_to + '--0'][cohort_present_mask ] = \
         (grids.area[ year, transitions_to] + change)[cohort_present_mask ]
@@ -174,18 +146,3 @@ def check_base(name, year, grids, control):
 
     
 
-    #~ plt.imshow( grids.area[ year-1, name])
-    #~ plt.colorbar()
-    #~ plt.show()
-    
-    #~ plt.imshow( grids.area[ year-1, transitions_to])
-    #~ plt.colorbar()
-    #~ plt.show()
-   
-    #~ plt.imshow( grids.area[ year, name])
-    #~ plt.colorbar()
-    #~ plt.show()
-    
-    #~ plt.imshow( grids.area[ year, transitions_to])
-    #~ plt.colorbar()
-    #~ plt.show()

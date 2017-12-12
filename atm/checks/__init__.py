@@ -15,14 +15,14 @@ import  check_Wet_NPG
 
 import lake_pond_expansion
 
-import check_base
+import poi_based
 import check_ponds_base
 import check_lakes_base
     
 check_metadata = {
         
-        'base': check_base.check_base,
-        'poi': check_base.check_base,
+        #~ 'base': check_base.check_base,
+        'poi': poi_based.transition,
         
         'base_pond': check_ponds_base.check,
         'base_lake': check_lakes_base.check,
