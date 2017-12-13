@@ -48,8 +48,8 @@ class TestLakePondGridClass_random(unittest.TestCase):
             self.assertEqual( (10*10,), self.lake_pond.depths[item].shape)
             self.assertEqual('float64', self.lake_pond.depths[item].dtype)
         
-        for item in self.lake_pond.depths:
-            self.assertEqual( (10*10,), self.lake_pond.growth[item].shape)
+        for item in self.lake_pond.time_since_growth:
+            self.assertEqual( (10*10,), self.lake_pond.time_since_growth[item].shape)
         
         for item in lake_pond_grid.config_ex['lake types']:
             self.assertTrue(

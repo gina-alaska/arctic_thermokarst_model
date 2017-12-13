@@ -72,6 +72,9 @@ class LakePondGrid (object):
         self.start_year = config['start year']
         self.time_step = 0
         
+        self.pond_types = config['pond types']
+        self.lake_types = config['lake types']
+        
         self.counts = self.setup_counts(config['pond types'], self.shape)
         self.counts.update(self.setup_counts(config['lake types'], self.shape))
         
@@ -600,7 +603,9 @@ class LakePondGrid (object):
                 metadata = {
                     'shape':self.shape,
                     'start year': self.start_year,
-                    'ice depth constants': self.ice_depth_constants
+                    'ice depth constants': self.ice_depth_constants,
+                    'pond types': self.pond_types,
+                    'lake types': self.lake_types,
                 }
                 pickle.dump(metadata, pkl)
             
@@ -628,6 +633,8 @@ class LakePondGrid (object):
         self.start_year = archive[0]['start year']
         self.shape = archive[0]['shape']
         self.ice_depth_constants = archive[0]['ice depth constants']
+        self.pond_types = archive[0]['pond types']
+        self.lake_types = archive[0]['lake types']
         
         
         self.depths = archive[-1]['depths']
@@ -639,6 +646,8 @@ class LakePondGrid (object):
         self.climate_expansion_ponds = archive[-1]['climate expansion ponds']
         
         self.time_since_growth = archive[-1]['growth'] 
+        
+        
     
         self.pickle_path = pickle_name
 

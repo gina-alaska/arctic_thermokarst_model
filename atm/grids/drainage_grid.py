@@ -122,7 +122,7 @@ class DrainageGrid (object):
         return self.grid.reshape(shape)
         
 
-    def load_from_pickle(self, pickle_name):
+    def load_from_pickle(self, pickle_name, timestep=-1):
         """load state from pickle file. sets shape, and grid to values
         in file, and pickle_path to pickle_name
     

@@ -195,6 +195,8 @@ class Control(object):
             return os.path.join(self['Output_dir'], 'runtime_data')
         elif key == 'data path':
             return os.path.join(self['Output_dir'], 'runtime_data')
+        elif key == 'climate block range':
+            return self.get_climate_block_size_range()
         else:
             raise KeyError, 'Key "' + str(key) + '" is invalid'
             
@@ -420,6 +422,20 @@ class Control(object):
             )
         else:
             raise ControlInvalidRequest, "cannot get ice depth alpha range"
+            
+    def get_climate_block_size_range (self):
+        """
+        """
+        if self['Met_Control']['climate_blocks'].lower() == 'random':
+            return (
+                int(self['Met_Control']['climate_block_lower_bound']),
+                int(self['Met_Control']['climate_block_upper_bound'])
+            )
+        else:
+            return (
+                int(self['Met_Control']['climate_blocks']),
+                int(self['Met_Control']['climate_blocks'])
+            )
         
         
         

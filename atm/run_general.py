@@ -9,8 +9,8 @@ code clean.
 import numpy as np
 
 #---------------------------------------------------------------------
-import active_layer_depth
-import check_climate_event
+#~ import active_layer_depth
+#~ import check_climate_event
 #~ #from checks import check_Lakes
 #~ #from checks import check_Ponds
 #~ from checks import check_Lakes_WT
@@ -21,28 +21,30 @@ import check_climate_event
 #~ from checks import check_FCP_WT
 #~ from checks import check_HCP_WT
 import checks
-import climate_expansion_arrays
+#~ import climate_expansion_arrays
 import cohorts
-import cohort_check
-import cohort_present
-import ice_thickness
-import initial_cohort_age
-import initial_cohort_check
-import initial_cohort_population
-import initialize
+#~ import cohort_check
+#~ import cohort_present
+#~ import ice_thickness
+#~ import initial_cohort_age
+#~ import initial_cohort_check
+#~ import initial_cohort_population
+#~ import initialize
 #~ import lake_pond_expansion
-import Output_cohorts_by_year
-import read_drainage_efficiency
-import read_ice_content
-import read_initial_ALD
-import set_ALD_array
-import set_ALD_constant
-import set_ice_thickness_array
-import set_initial_cumulative_probability
-import set_lake_ice_depth_constant
-import set_lake_pond_depth
-import set_pond_growth_array
-import set_protective_layer
+#~ import Output_cohorts_by_year
+#~ import read_drainage_efficiency
+#~ import read_ice_content
+#~ import read_initial_ALD
+#~ import set_ALD_array
+#~ import set_ALD_constant
+#~ import set_ice_thickness_array
+#~ import set_initial_cumulative_probability
+#~ import set_lake_ice_depth_constant
+#~ import set_lake_pond_depth
+#~ import set_pond_growth_array
+#~ import set_protective_layer
+
+import climate_events
 
 from grids import area_grid
 import sys
@@ -88,6 +90,7 @@ def run(self, cohort_check_list, init_function):
         ## << start HERE
         
         ## NEED to re write this
+        
         #~ check_climate_event.check_climate_event(self)  
 
         # ----------------------------------------------------------
@@ -118,6 +121,14 @@ def run(self, cohort_check_list, init_function):
             
             
         self.grids.add_time_step()
+        
+        self.grids.climate_event.create_climate_events()
+        climate_events.drain_lakes(
+            self.control['Met_Control']['lakes_drain_to'],
+            current_year,
+            self.grids,
+            self.control
+        )
         
         ## update ALD
         current_tdd = self.grids.degreedays.thawing[current_year]
@@ -218,7 +229,7 @@ def run(self, cohort_check_list, init_function):
         s = self.grids.area[start_year,cohort].sum()
         e = self.grids.area[current_year,cohort].sum()
         
-        if s > e:
+        if s == e:
             d = 'equal'
         elif s < e:
             d = 'growth'

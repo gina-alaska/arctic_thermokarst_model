@@ -11,6 +11,7 @@ from poi_grid import POIGrid
 from ice_grid import IceGrid
 from lake_pond_grid import LakePondGrid
 from drainage_grid import DrainageGrid
+from climate_event_grid import ClimateEventGrid
 
 from met_grid import DegreeDayGrids
 
@@ -53,7 +54,8 @@ class ModelGrids (object):
         self.poi = POIGrid(config)
         self.ice = IceGrid(config)
         self.lake_pond = LakePondGrid(config)
-        print config['pond types'] + config['lake types']
+        self.climate_event = ClimateEventGrid(config)
+        #~ print config['pond types'] + config['lake types']
         for lpt  in config['pond types'] + config['lake types']:
             print lpt
             mask = self.area[lpt][0] > 0 # all cells in first ts > 0
@@ -84,6 +86,7 @@ class ModelGrids (object):
         self.ald.add_time_step(zeros)
         self.poi.add_time_step(zeros)
         self.lake_pond.increment_time_step()
+        self.climate_event.increment_time_step()
         
     
     def __getitem__ (self, key):
@@ -116,6 +119,8 @@ class ModelGrids (object):
             return self.drainage
         if key.lower() == 'degree-day':
             return self.degreedays
+        if key.lower() == 'climate event':
+            return self.climate_event
         
         raise KeyError, 'could not find grid'
         
