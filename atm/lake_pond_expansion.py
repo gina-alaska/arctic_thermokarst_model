@@ -1,5 +1,6 @@
 
 import numpy as np
+from copy import deepcopy
 
 def expansion ( lp_cohorts, year, grids, control):
     """
@@ -78,73 +79,95 @@ def expansion ( lp_cohorts, year, grids, control):
     
     land_cohorts = list(land_cohorts)
     
+    ## make list of all buckets in land cohorts
     
+    land_bucktes = []
+    for cohort in land_cohorts:
+        buckets = [b for b in grids.area.key_to_index if b.find('--') != -1]
+        buckets = [b for b in buckets if b.find(cohort) != -1]
+        
+        land_bucktes += buckets
     
-    
-    while (expansion[not_entire_area] > 0 ).any():
-        print 'outer'
+    expansion_left = deepcopy(expansion)
+    while (expansion_left > 0).any():
         has_area_count = np.zeros(shape)
-        min_area = np.zeros(shape)  
-        min_area[not_entire_area] = grids.area[year,land_cohorts[0]][not_entire_area]
+        left_over = np.zeros(shape)
         for cohort in land_cohorts:
             has_area = grids.area[year,cohort] > 0
             has_area = np.logical_and(has_area, not_entire_area)
             has_area_count[has_area] += 1
+        
+        expansion_fraction = expansion_left / has_area_count
+        
+        
+        
+       
+        
+        
+        #~ for cohort in land_cohorts:
+        for cohort in land_bucktes:
+            has_area = grids.area[year,cohort] > 0
+            has_area = np.logical_and(has_area, not_entire_area)
             
-            min_area[has_area] = \
-                np.minimum(grids.area[year,cohort], min_area)[has_area]
-        expansion_fraction = np.zeros(shape)
-        expansion_fraction[not_entire_area] = \
-            (expansion / has_area_count)[not_entire_area]
+            #~ ## single age bucket only ----
+            #~ grids.area[year,cohort+'--0'][has_area] = grids.area[year,cohort+'--0'][has_area] - expansion_fraction[has_area] 
+            grids.area[year,cohort][has_area] = grids.area[year,cohort][has_area] - expansion_fraction[has_area] 
+           
+            less_than_zero = grids.area[year,cohort] < 0
+            less_than_zero = np.logical_and(less_than_zero,has_area)
+            left_over[less_than_zero] += np.abs(grids.area[year,cohort][less_than_zero])
+            #~ grids.area[year,cohort+'--0'][less_than_zero] = 0
+            grids.area[year,cohort][less_than_zero] = 0
+            #~ ## -----
+            
+        expansion_left = left_over
         
-        
-        expansion_fraction[not_entire_area] = \
-            np.minimum(min_area, expansion_fraction)[not_entire_area]
-          
-        for cohort in land_cohorts:
-            has_cohort = grids.area[year,cohort] > 0.0
-            has_cohort = np.logical_and(has_cohort, not_entire_area)
-            grids.area[year,cohort+'--0'][has_cohort] -= expansion_fraction[has_cohort] 
-            #~ ## constant
+            ## age buckets version
             #~ bucket_list = [
                 #~ b for b in grids.area.key_to_index if b.find(cohort) != -1
             #~ ]
 
             #~ bucket_list = [b for b in bucket_list if b.find('--') != -1]
-           
-            #~ bucket_reduction = np.zeros(shape)
-            #~ bucket_reduction[has_cohort] = expansion_fraction[has_cohort] 
-            #~ while (bucket_reduction[has_cohort] > 0).any():
-                #~ print 'inner'
-                #~ bucket_count = np.zeros(shape)
-                #~ min_bucket = np.zeros(shape)  
-                #~ min_bucket[has_cohort] = grids.area[year,bucket_list[0]][has_cohort]
-                #~ for bucket in bucket_list:
-                    #~ has_bucket = grids.area[year,bucket] > 0
-                    #~ has_bucket = np.logical_and(has_bucket, not_entire_area)
-                    #~ bucket_count[has_bucket] += 1
-                    
-                    #~ min_bucket[has_bucket] = \
-                        #~ np.minimum(grids.area[year,bucket], min_bucket)[has_bucket]
-                
-                #~ #fractional bucket reduction
-                #~ fb_reduction = np.zeros(shape)
-                #~ fb_reduction = bucket_reduction / bucket_count
-                #~ fb_reduction = np.minimum(fb_reduction, min_bucket)
+            
+        
+            #~ area_less_than_expansion = grids.area[year,cohort] < expansion_fraction
+            #~ area_less_than_expansion = np.logical_and(has_area, area_less_than_expansion)
+            
+            #~ area_greater_than_expansion = grids.area[year,cohort] > expansion_fraction
+            #~ area_greater_than_expansion = np.logical_and(has_area, area_greater_than_expansion)
+            
+            
+            
+        
+            #~ bucket_left = deepcopy(expansion_fraction)
+            #~ while (bucket_left > 0).any():
+                #~ has_bucket_count = np.zeros(shape)
+                #~ bucket_left_over = np.zeros(shape)
                 
                 #~ for bucket in bucket_list:
-                    #~ has_bucket = grids.area[year,bucket] > 0
-                    #~ has_bucket = np.logical_and(has_bucket, not_entire_area)
-                    #~ grids.area[year,bucket][has_bucket] -= fb_reduction[has_bucket]
-                    
+                    #~ has_bucket = grids.area[year,cohort] > 0
+                    #~ has_bucket = np.logical_and(has_bucket, has_area)
+                    #~ has_bucket_count[has_bucket] += 1
+                #~ bucket_fraction = expansion_fraction / has_bucket_count 
                 
-                #~ bucket_reduction = bucket_reduction - bucket_count * fb_reduction 
-        
-        
-        expansion = expansion - expansion_fraction * has_area_count
-        print expansion[not_entire_area].max()
-        
+                #~ for bucket in bucket_list:
+                    #~ has_bucket = grids.area[year,cohort] > 0
+                    #~ has_bucket = np.logical_and(has_bucket, has_area)
+                    
+                    #~ grids.area[year,bucket][has_bucket] = grids.area[year,bucket][has_bucket] - bucket_fraction[has_bucket] 
+                    
+                    #~ less_than_zero = grids.area[year,cohort] < 0
+                    #~ less_than_zero = np.logical_and(less_than_zero,has_bucket)
+                    
+                    #~ bucket_left_over[less_than_zero] += np.abs(grids.area[year,bucket][less_than_zero])
+                    #~ grids.area[year,bucket][less_than_zero] = 0
+                
+                
+                
+                #~ bucket_left = bucket_left_over
+            #~ left_over = bucket_left
+            
+        #~ expansion_left = left_over
     
-        
     
-        
+   
