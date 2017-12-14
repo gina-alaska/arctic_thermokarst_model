@@ -45,6 +45,7 @@ import cohorts
 #~ import set_protective_layer
 
 import climate_events
+import lake_pond_expansion
 
 from grids import area_grid
 import sys
@@ -118,11 +119,11 @@ def run(self, cohort_check_list, init_function):
 
             ### Loop through each of the cohort checks for area
             #~ active_layer_depth.active_layer_depth(self, time, element)
-            
+        self.grids.climate_event.create_climate_events()
             
         self.grids.add_time_step()
         
-        self.grids.climate_event.create_climate_events()
+       
         climate_events.drain_lakes(
             self.control['Met_Control']['lakes_drain_to'],
             current_year,
@@ -138,11 +139,6 @@ def run(self, cohort_check_list, init_function):
         ## set current ice thickness(depth)
         current_fdd = self.grids.degreedays.freezing[current_year]
         self.grids.lake_pond.calc_ice_depth(current_fdd)
-            
-            #~ ice_thickness.ice_thickness(self, time, element)
-            
-            #~ for check in cohort_check_list:
-                #~ checks.cohort_metadata[check](self, element, time)
         
         ## lake pond expansion: move out of loop to end
         
@@ -163,7 +159,8 @@ def run(self, cohort_check_list, init_function):
                 name,  current_year, self.grids, self.control
             )
         
-        #~ lake_pond_expansion.lake_pond_expansion() #<< Need to redo
+        lp = self.grids.lake_pond.lake_types + self.grids.lake_pond.pond_types 
+        lake_pond_expansion.expansion(lp, current_year, self.grids, self.control)
         #~ lake_pond_expansion.pond_infill
             
         cohort_end = \

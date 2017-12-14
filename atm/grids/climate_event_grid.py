@@ -46,7 +46,7 @@ class ClimateEventGrid (object):
             self.load_from_pickle(config)
             return
     
-        self.start_year = config['start year']
+        self.start_year = config['start year'] + 1
         self.shape = config['shape']
         ## grid initilzed assuming no climate events
         self.grid = np.zeros(self.shape).astype(bool)
@@ -126,7 +126,8 @@ class ClimateEventGrid (object):
         if time_step == -1:
             grid = self.grid
         else:
-            data = self.read_from_pickle(self.pickle_name, time_step)
+            data = self.read_from_pickle(self.pickle_path, time_step)
+            print time_step
             if len(data) == 0:
                 raise GetGridError, 'invalid time step requested'
             grid = data['grid']
