@@ -51,24 +51,25 @@ Upper_Pond_WT_O_Depth       1.7
 Lake_Expansion					0.0001
 Pond_Expansion					0.0001
 # - - - - - -- - - - - - - - - - - - - - - -
-LargeLake_WT_Y_Expansion      0.0001
-LargeLake_WT_M_Expansion      0.0001
-LargeLake_WT_O_Expansion      0.0001
-MediumLake_WT_Y_Expansion     0.0001
-MediumLake_WT_M_Expansion     0.0001
-MediumLake_WT_O_Expansion     0.0001
-SmallLake_WT_Y_Expansion      0.0001
-SmallLake_WT_M_Expansion      0.0001
-SmallLake_WT_O_Expansion      0.0001
-Pond_WT_Y_Expansion           0.0001
-Pond_WT_M_Expansion           0.0001
-Pond_WT_O_Expansion           0.0001
+LargeLakes_WT_Y_Expansion      0.0001
+LargeLakes_WT_M_Expansion      0.0001
+LargeLakes_WT_O_Expansion      0.0001
+MediumLakes_WT_Y_Expansion     0.0001
+MediumLakes_WT_M_Expansion     0.0001
+MediumLakes_WT_O_Expansion     0.0001
+SmallLakes_WT_Y_Expansion      0.0001
+SmallLakes_WT_M_Expansion      0.0001
+SmallLakes_WT_O_Expansion      0.0001
+Ponds_WT_Y_Expansion           0.0001
+Ponds_WT_M_Expansion           0.0001
+Ponds_WT_O_Expansion           0.0001
 #============================================================
 # Set Pond Infilling Constant
-Pond_Infill_Constant				0.005
-Pond_WT_Y_Infill_Constant   0.005
-Pond_WT_M_Infill_Constant   0.005
-Pond_WT_O_Infill_Constant   0.005
+Ponds_Infill_Constant				0.005
+Ponds_fill_to                Meadow_WT_Y
+Ponds_WT_Y_Infill_Constant   0.005
+Ponds_WT_M_Infill_Constant   0.005
+Ponds_WT_O_Infill_Constant   0.005
 #============================================================
 # Set the Lake & Pond Ice Thickness alpha Distribution
 #    (uniform, random)

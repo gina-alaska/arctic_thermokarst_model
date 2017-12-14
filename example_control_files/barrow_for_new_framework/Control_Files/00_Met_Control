@@ -34,6 +34,7 @@ climate_blocks			random
 climate_block_lower_bound	5
 climate_block_upper_bound	25
 climate_event_probability	0.005
+lakes_drain_to              Meadow_WT_Y
 #============================================================
 # Pond & Lake Drain Rate following climatic event
 # -----------------------------------------------------------
