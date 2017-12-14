@@ -150,7 +150,7 @@ def run(self, cohort_check_list, init_function):
                     self.control[cohort_control]['Transition_check_type'].lower()
             except:    
                 check_type = 'base'
-            print cohort, check_type
+            #~ print cohort, check_type
             #~ continue ## for testing
             
             #~ self.control[cohort_control]['cohort'] = find_canon_name(cohort)
@@ -161,7 +161,7 @@ def run(self, cohort_check_list, init_function):
         
         lp = self.grids.lake_pond.lake_types + self.grids.lake_pond.pond_types 
         lake_pond_expansion.expansion(lp, current_year, self.grids, self.control)
-        #~ lake_pond_expansion.pond_infill
+        lake_pond_expansion.infill(self.grids.lake_pond.pond_types, current_year, self.grids, self.control)
             
         cohort_end = \
             self.grids.area.get_all_cohorts_at_time_step().sum(0)
@@ -219,7 +219,7 @@ def run(self, cohort_check_list, init_function):
         #  - - - - - - - - - - - - - 
         #~ Output_cohorts_by_year.dominant_cohort(self)                 # Terrestrial_Control
         #~ Output_cohorts_by_year.dominant_fractional_plot(self, time)  # Terrestrial_Control
-    for cohort in self.grids.area.key_to_index:
+    for cohort in sorted(self.grids.area.key_to_index):
         if cohort.find('--') != -1:
             continue
             

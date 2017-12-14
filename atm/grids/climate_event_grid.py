@@ -127,7 +127,7 @@ class ClimateEventGrid (object):
             grid = self.grid
         else:
             data = self.read_from_pickle(self.pickle_path, time_step)
-            print time_step
+            #~ print time_step
             if len(data) == 0:
                 raise GetGridError, 'invalid time step requested'
             grid = data['grid']

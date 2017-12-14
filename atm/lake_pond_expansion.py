@@ -2,6 +2,47 @@
 import numpy as np
 from copy import deepcopy
 
+def infill ( ponds, year, grids, control):
+    """The purpose of this module is to infill ponds at a prescribed rate with 
+    vegetation, which will presumably be non-polygonal ground.
+    
+    This module is developed due to paper that states with warming temperatures,
+    ponds are shrinking due in part to infilling of vegetation.  Paper is in 
+    press and was set out by Anna L. in March 2015.
+    """
+    ## no infill in first time step
+    if year == control['start year']:
+        return 
+    
+    transitions_to = control['Lake_Pond_Control']['Ponds_fill_to']
+    
+    shape = grids.shape
+    pond_area = np.zeros(shape)
+    
+    for p in ponds:
+        pond_area += grids.area[year, p ]
+    
+    change_pond_area = np.logical_and(pond_area > 0,  pond_area < 1)   
+    
+    ttd_greater = grids.degreedays.thawing[year] > grids.degreedays.thawing[year-1]
+    
+    change_pond_area = np.logical_and(ttd_greater, change_pond_area)
+    
+    for p in ponds:
+        infill_const = control['Lake_Pond_Control'][p+'_Infill_Constant']
+    
+        p_buckets = [b for b in grids.area.key_to_index if b.find(p) != -1]
+        p_buckets = [b for b in p_buckets if b.find('--') != -1]
+        
+        for b in p_buckets:
+            change = grids.area[year, b][change_pond_area]  * infill_const
+            grids.area[year, b][change_pond_area] -= change
+            grids.area[year, transitions_to][change_pond_area] -= change
+        
+            
+        
+
+
 def expansion ( lp_cohorts, year, grids, control):
     """
     """
@@ -44,7 +85,7 @@ def expansion ( lp_cohorts, year, grids, control):
         c for c in all_cohorts if c.lower().find('urban') != -1
     ])
    
-    print 'land_cohorts',land_cohorts
+    #~ print 'land_cohorts',land_cohorts
     land_available = np.zeros(shape)
     for cohort in land_cohorts:
         land_available += grids.area[year,cohort]
