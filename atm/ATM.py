@@ -210,24 +210,24 @@ class ATM(object):
         #===========================
         if self.control['Results_onscreen'].lower() == 'yes':
             results.on_screen(self, start_time, end_time)
-        if self.control.archive_simulation.lower() == 'yes':
-            results.on_file(self)
+        if self.control.Archive_simulation.lower() == 'yes':
+            results.on_file(self, start_time, end_time)
 
         
         # ================
         # Archive Results
         # ================
-        if self.archive_simulation.lower() == 'yes':
-            archive.read_archive(self)
-            archive.archive(self)
-        #----------------------------------------------------------------------------------------------------------
-        # Create the tarfile
-        #----------------------------------------------------------------------------------------------------------
-            self.archive_file =tarfile.open(self.control['Run_dir']+self.Output_directory+str('/Archive/')+ \
-                                            self.archive_time+str('_')+self.simulation_name+".tar.gz", mode='w:gz')
-        #----------------------------------------------------------------------------------------------------------
-            if self.control['Simulation_area'].lower() == 'barrow':
-                os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/')
+        #~ if self.control.Archive_simulation.lower() == 'yes':
+            #~ archive.read_archive(self)
+            #~ archive.archive(self)
+        #~ #----------------------------------------------------------------------------------------------------------
+        #~ # Create the tarfile
+        #~ #----------------------------------------------------------------------------------------------------------
+            #~ self.archive_file =tarfile.open(self.control['Run_dir']+self.Output_directory+str('/Archive/')+ \
+                                            #~ self.archive_time+str('_')+self.simulation_name+".tar.gz", mode='w:gz')
+        #~ #----------------------------------------------------------------------------------------------------------
+            #~ if self.control['Simulation_area'].lower() == 'barrow':
+                #~ os.chdir(self.control['Run_dir']+self.Input_directory+'/Barrow/')
                 
 
             
