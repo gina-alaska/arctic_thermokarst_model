@@ -142,6 +142,10 @@ def run(self, cohort_check_list, init_function):
         
         ## lake pond expansion: move out of loop to end
         
+        #~ lp = self.grids.lake_pond.lake_types + self.grids.lake_pond.pond_types 
+        #~ lake_pond_expansion.expansion(lp, current_year, self.grids, self.control)
+        #~ lake_pond_expansion.infill(self.grids.lake_pond.pond_types, current_year, self.grids, self.control)
+        
         for cohort in cohort_check_list:
            
             cohort_control = cohort + '_Control'
@@ -161,6 +165,7 @@ def run(self, cohort_check_list, init_function):
         
         lp = self.grids.lake_pond.lake_types + self.grids.lake_pond.pond_types 
         lake_pond_expansion.expansion(lp, current_year, self.grids, self.control)
+        #~ lake_pond_expansion.large_lake_check(lp, current_year, self.grids, self.control)
         lake_pond_expansion.infill(self.grids.lake_pond.pond_types, current_year, self.grids, self.control)
             
         cohort_end = \
@@ -193,8 +198,25 @@ def run(self, cohort_check_list, init_function):
             self.grids.area.check_mass_balance()
             self.grids.area.check_mass_balance(current_year - start_year)
         except area_grid.MassBalanceError as e:
-            if e == 'mass balance problem 1':
+            #~ print e
+            if str(e) == 'mass balance problem 1':
                 print 'mass has been added'
+                print 'start: ', cohort_start.sum()
+                print 'end: ', cohort_end.sum()
+                for cohort in sorted(self.grids.area.key_to_index):
+                    if cohort.find('--') != -1:
+                        continue
+                        
+                    s = self.grids.area[start_year,cohort].sum()
+                    e = self.grids.area[current_year,cohort].sum()
+                    
+                    if s == e:
+                        d = 'equal'
+                    elif s < e:
+                        d = 'growth'
+                    else:
+                        d = 'reduction'
+                    print cohort, 'start:', s, 'end:', e, d
             else:
                 print 'mass has been removed'
             sys.exit()
@@ -219,6 +241,10 @@ def run(self, cohort_check_list, init_function):
         #  - - - - - - - - - - - - - 
         #~ Output_cohorts_by_year.dominant_cohort(self)                 # Terrestrial_Control
         #~ Output_cohorts_by_year.dominant_fractional_plot(self, time)  # Terrestrial_Control
+    
+    
+    print 'start: ', cohort_start.sum()
+    print 'end: ', cohort_end.sum()
     for cohort in sorted(self.grids.area.key_to_index):
         if cohort.find('--') != -1:
             continue
