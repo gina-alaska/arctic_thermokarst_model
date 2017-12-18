@@ -116,7 +116,7 @@ class ATM(object):
         print '==================='
         print ' Initializing ATM'
         print '==================='
-        
+        start_time = datetime.datetime.now()
         ## haneled in control and grids
         #~ read_control.read_control(self)
         #~ initialize.initialize(self)
@@ -204,13 +204,13 @@ class ATM(object):
         # Simulation End Time
         # -------------------
         clock.finish(self)
-        
+        end_time = datetime.datetime.now()
         #===========================
         # Output Simulation Results
         #===========================
-        if self.results_onscreen.lower() == 'yes':
-            results.on_screen(self)
-        if self.archive_simulation.lower() == 'yes':
+        if self.control['Results_onscreen'].lower() == 'yes':
+            results.on_screen(self, start_time, end_time)
+        if self.control.archive_simulation.lower() == 'yes':
             results.on_file(self)
 
         

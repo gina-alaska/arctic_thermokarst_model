@@ -70,7 +70,7 @@ CANON_COHORT_NAMES = {
     ('SmallLakes_WetlandTundra_Old',): 'SmallLakes_WT_O',
     ('SmallLakes_WetlandTundra_Young',): 'SmallLakes_WT_Y',
     
-    ('Urban_WetlandTundra_Old','Urban_WT'): 'Urban_WT_0',
+    ('Urban_WetlandTundra_Old','Urban_WT'): 'Urban_WT_O',
     ('Urban_WetlandTundra_Medium'): 'Urban_WT_M',
     ('Urban_WetlandTundra_Young'): 'Urban_WT_Y',
     
@@ -172,7 +172,8 @@ DISPLAY_COHORT_NAMES = {
     'Meadow_WT_O': 'Medow Wetland Tundra Old Age',
     'Meadow_WT_Y': 'Medow Wetland Tundra Young Age',
     
-    'MediumLakes_WT_M ': 'Medium Lakes Wetland Tundra Medium Age',
+    
+    'MediumLakes_WT_M': 'Medium Lakes Wetland Tundra Medium Age',
     'MediumLakes_WT_O': 'Medium Lakes Wetland Tundra Old Age',
     'MediumLakes_WT_Y' : 'Medium Lakes Wetland Tundra Young Age',
     
