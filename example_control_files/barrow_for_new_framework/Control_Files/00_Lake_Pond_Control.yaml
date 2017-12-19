@@ -127,21 +127,21 @@ Pond_WT_M_Depth_Figure:  Yes
 Pond_WT_O_Depth_Figure:  Yes
 #============================================================
 # Output Results of Pond/Lake Distribution
-# Figures with "yes" flag result in both *.bin and
-# *.jpg files. If Movie is flagged with 'yes', the
-# figures flag must also be flagged 'yes'.
+# Figures with "Yes" flag result in both *.bin and
+# *.jpg files. If Movie is flagged with 'Yes', the
+# figures flag must also be flagged 'Yes'.
 #------------------------------------------------------------
 Pond_Figures:  Yes
 Pond_WT_Y_Figures:  Yes
-Pond_WT_M_Figures:  yes
+Pond_WT_M_Figures:  Yes
 Pond_WT_O_Figures:  Yes
-Pond_Movie:  no
+Pond_Movie:  No
 Pond_WT_Y_Movie:  No
-Pond_WT_M_Movie:  no
-Pond_WT_O_Movie:  no
+Pond_WT_M_Movie:  No
+Pond_WT_O_Movie:  No
 #------------------------------------------------------------
 Lake_Figures:  Yes
-LargeLake_WT_Y_Figures: yes
+LargeLake_WT_Y_Figures: Yes
 LargeLake_WT_M_Figures: Yes
 LargeLake_WT_O_Figures: Yes
 MediumLake_WT_Y_Figures: Yes
@@ -150,14 +150,14 @@ MediumLake_WT_O_Figures: Yes
 SmallLake_WT_Y_Figures: Yes
 SmallLake_WT_M_Figures: Yes
 SmallLake_WT_O_Figures: Yes
-Lake_Movie:  no
-LargeLake_WT_Y_Movie:  no
-LargeLake_WT_M_Movie:  no
-LargeLake_WT_O_Movie:  no
-MediumLake_WT_Y_Movie:  no
-MediumLake_WT_M_Movie:  no
-MediumLake_WT_O_Movie:  no
-SmallLake_WT_Y_Movie:  no
-SmallLake_WT_M_Movie:  no
-SmallLake_WT_O_Movie:  no
+Lake_Movie:  No
+LargeLake_WT_Y_Movie:  No
+LargeLake_WT_M_Movie:  No
+LargeLake_WT_O_Movie:  No
+MediumLake_WT_Y_Movie:  No
+MediumLake_WT_M_Movie:  No
+MediumLake_WT_O_Movie:  No
+SmallLake_WT_Y_Movie:  No
+SmallLake_WT_M_Movie:  No
+SmallLake_WT_O_Movie:  No
 #============================================================

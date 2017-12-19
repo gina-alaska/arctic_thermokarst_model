@@ -28,7 +28,7 @@ def on_screen(self, start_time, end_time):
     string +=  'Start Date / Time : '+str( start_time)+ nl
     string +=  'End Date / Time : '+str(end_time)+ nl
     string +=  'Total Simulation Time (minutes): '+ str( (self.finish - self.start)/60.0) + nl
-    if self.control.Archive_simulation.lower() == 'yes':
+    if self.control.Archive_simulation:
         string +=  'Archive Status: Active'+ nl
         string +=  'Archive Name : '+str(self.control.Simulation_name)+ nl
     else:
@@ -40,330 +40,331 @@ def on_screen(self, start_time, end_time):
     string +=  ' Initial Cohort Information'+ nl
     string +=  '-' * short_divider+ nl
     string +=  'Outputs of Initial Cohort Distribution:'+ nl
-    if self.control['Initialize_Control']['Initial_Cohort_Distribution_Figure'].lower() != 'yes':
+    print self.control['Initialize_Control']
+    if self.control['Initialize_Control']['Initial_Cohort_Distribution_Figure'] == False:
         string +=  '  No outputs generated.'+ nl
     else:
-        if self.control['Initialize_Control']['Meadow_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_Y_Figure']:
             string +=  '  Initial Meadow, Wetland Tundra, Young age Figure [Output/Barrow/Meadow_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Meadow_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_M_Figure']:
             string +=  '  Initial Meadow, Wetland Tundra, Medium age Figure [Output/Barrow/Meadow_WT_M]'+ nl
-        if self.control['Initialize_Control']['Meadow_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_O_Figure']:
             string +=  '  Initial Meadow, Wetland Tundra, Old age Figure [Output/Barrow/Meadow_WT_O]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_Y_Figure']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/LCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_M_Figure']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/LCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_O_Figure']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/LCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_Y_Figure']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/CLC_WT_Y]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_M_Figure']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/CLC_WT_M]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_O_Figure']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/CLC_WT_O]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_Y_Figure']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/FCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_M_Figure']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/FCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_O_Figure']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/FCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_Y_Figure']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/HCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_M_Figure']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/HCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_O_Figure']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/HCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_Y_Figure']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Young age Figure [Output/Barrow/LargeLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_M_Figure']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Medium age Figure [Output/Barrow/LargeLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_O_Figure']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Old age Figure [Output/Barrow/LargeLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_Y_Figure']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Young age Figure [Output/Barrow/MediumLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_M_Figure']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Medium age Figure [Output/Barrow/MediumLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_O_Figure']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Old age Figure [Output/Barrow/MediumLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_Y_Figure']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Young age Figure [Output/Barrow/SmallLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_M_Figure']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Medium age Figure [Output/Barrow/SmallLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_O_Figure']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Old age Figure [Output/Barrow/SmallLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_Y_Figure']:
             string +=  '  Initial Ponds, Wetland Tundra, Young age Figure [Output/Barrow/Ponds_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_M_Figure']:
             string +=  '  Initial Ponds, Wetland Tundra, Medium age Figure [Output/Barrow/Ponds_WT_M]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_O_Figure']:
             string +=  '  Initial Ponds, Wetland Tundra, Old age Figure [Output/Barrow/Ponds_WT_O]'+ nl
-        if self.control['Initialize_Control']['CoastalWaters_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CoastalWaters_WT_O_Figure']:
             string +=  '  Initial Coastal Waters, Wetland Tundra, Old age Figure [Output/Barrow/CoastalWaters_WT_O]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Figure']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Young age Figure [Output/Barrow/DrainedSlope_WT_Y]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_M_Figure']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Medium age Figure [Output/Barrow/DrainedSlope_WT_M]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_O_Figure']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Old age Figure [Output/Barrow/DrainedSlope_WT_O]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_Y_Figure']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Young age Figure [Output/Barrow/SandDunes/WT_Y]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_M_Figure']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Medium age Figure [Output/Barrow/SandDunes_WT_M]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_O_Figure']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Old age Figure [Output/Barrow/SandDunes_WT_O]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Figure'].lower()  == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Figure']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Young age Figure [Output/Barrow/SaturatedBarrens_WT_Y]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Figure']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Medium age Figure [Output/Barrow/SaturatedBarrens_WT_M]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Figure']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Old age Figure [Output/Barrow/SaturatedBarrens_WT_O]'+ nl
-        if self.control['Initialize_Control']['Shrubs_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Shrubs_WT_O_Figure']:
             string +=  '  Initial Shrubs, Wetland Tundra, Old age Figure [Output/Barrow/Shrubs_WT_O]'+ nl
-        if self.control['Initialize_Control']['Urban_WT_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Urban_WT_Figure']:
             string +=  '  Initial Urban area, Wetland Tundra, Figure [Output/Barrow/Urban_WT]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_Y_Figure']:
             string +=  '  Initial Rivers, Wetland Tundra, Young age Figure [Output/Barrow/Rivers_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_M_Figure']:
             string +=  '  Initial Rivers, Wetland Tundra, Medium age Figure [Output/Barrow/Rivers_WT_M]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_O_Figure']:
             string +=  '  Initial Rivers, Wetland Tundra, old age Figure [Output/Barrow/Rivers_WT_O]'+ nl
         
-#        if self.control['Initialize_Control']['WetNPG_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetNPG_Figure']:
 #            string +=  '  Initial Wetland Non-polygonal Ground Figure [Output/Wet_NPG]'
-#        if self.control['Initialize_Control']['WetLCP_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetLCP_Figure']:
 #            string +=  '  Initial Wetland Low Center Polygon Figure [Output/Wet_LCP]'
-#        if self.control['Initialize_Control']['WetCLC_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetCLC_Figure']:
 #            string +=  '  Initial Wetland Coalescent Low Center Polygon Figure [Output/Wet_CLC]'
-#        if self.control['Initialize_Control']['WetFCP_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetFCP_Figure']:
 #            string +=  '  Initial Wetland Flat Center Polygon Figure [Output/Wet_FCP]'
-#        if self.control['Initialize_Control']['WetHCP_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetHCP_Figure']:
 #            string +=  '  Initial Wetland High Center Polygon Figure [Output/Wet_HCP]'
-#        if self.control['Initialize_Control']['Lakes_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Lakes_Figure']:
 #            string +=  '  Initial Lakes Figure [Output/Lakes]'
-#        if self.control['Initialize_Control']['Ponds_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Ponds_Figure']:
 #            string +=  '  Initial Ponds Figure [Output/Ponds]'
-#        if self.control['Initialize_Control']['Rivers_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Rivers_Figure']:
 #            string +=  '  Initial Rivers Figure [Output/Other_Cohorts]'
-#        if self.control['Initialize_Control']['Urban_Figure'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Urban_Figure']:
 #            string +=  '  Initial Urban Figure [Output/Other_Cohorts]'
-        if self.control['Initialize_Control']['All_Cohorts_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['All_Cohorts_Figure']:
             string +=  '  Total Cohorts Figure [Output/Barrow/All_Cohorts]'+ nl
     string +=  ' '+ nl
 
     string +=  'Outputs of Normalized Cohort Distribution:'+ nl
-    if self.control['Initialize_Control']['Normalized_Cohort_Distribution_Figure'].lower() != 'yes':
+    if self.control['Initialize_Control']['Normalized_Cohort_Distribution_Figure'] == False:
         string +=  '  No outputs generated.'+ nl
     else:
-        if self.control['Initialize_Control']['Meadow_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_Y_Normal']:
             string +=  '  Initial Meadow, Wetland Tundra, Young age Normalized [Output/Barrow/Meadow_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Meadow_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_M_Normal']:
             string +=  '  Initial Meadow, Wetland Tundra, Medium age Normalized [Output/Barrow/Meadow_WT_M]'+ nl
-        if self.control['Initialize_Control']['Meadow_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_O_Normal']:
             string +=  '  Initial Meadow, Wetland Tundra, Old age Normalized [Output/Barrow/Meadow_WT_O]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_Y_Normal']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/LCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_M_Normal']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/LCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_O_Normal']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/LCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_Y_Normal']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/CLC_WT_Y]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_M_Normal']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/CLC_WT_M]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_O_Normal']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/CLC_WT_O]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_Y_Normal']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/FCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_M_Normal']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/FCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_O_Normal']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/FCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_Y_Normal']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/HCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_M_Normal']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/HCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_O_Normal']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/HCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_Y_Normal']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Young age Normalized [Output/Barrow/LargeLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_M_Normal']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Medium age Normalized [Output/Barrow/LargeLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_O_Normal']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Old age Normalized [Output/Barrow/LargeLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_Y_Normal']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Young age Normalized [Output/Barrow/MediumLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_M_Normal']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Medium age Normalized [Output/Barrow/MediumLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_O_Normal']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Old age Normalized [Output/Barrow/MediumLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_Y_Normal']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Young age Normalized [Output/Barrow/SmallLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_M_Normal']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Medium age Normalized [Output/Barrow/SmallLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_O_Normal']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Old age Normalized [Output/Barrow/SmallLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_Y_Normal']:
             string +=  '  Initial Ponds, Wetland Tundra, Young age Normalized [Output/Barrow/Ponds_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_M_Normal']:
             string +=  '  Initial Ponds, Wetland Tundra, Medium age Normalized [Output/Barrow/Ponds_WT_M]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_O_Normal']:
             string +=  '  Initial Ponds, Wetland Tundra, Old age Normalized [Output/Barrow/Ponds_WT_O]'+ nl
-        if self.control['Initialize_Control']['CoastalWaters_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CoastalWaters_WT_O_Normal']:
             string +=  '  Initial Coastal Waters, Wetland Tundra, Old age Normalized [Output/Barrow/CoastalWaters_WT_O]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Normal']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Young age Normalized [Output/Barrow/DrainedSlope_WT_Y]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_M_Normal']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Medium age Normalized [Output/Barrow/DrainedSlope_WT_M]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_O_Normal']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Old age Normalized [Output/Barrow/DrainedSlope_WT_O]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_Y_Normal']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Young age Normalized [Output/Barrow/SandDunes/WT_Y]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_M_Normal']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Medium age Normalized [Output/Barrow/SandDunes_WT_M]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_O_Normal']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Old age Normalized [Output/Barrow/SandDunes_WT_O]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Normal'].lower()  == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Normal']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Young age Normalized [Output/Barrow/SaturatedBarrens_WT_Y]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Normal']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Medium age Normalized [Output/Barrow/SaturatedBarrens_WT_M]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Normal']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Old age Normalized [Output/Barrow/SaturatedBarrens_WT_O]'+ nl
-        if self.control['Initialize_Control']['Shrubs_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Shrubs_WT_O_Normal']:
             string +=  '  Initial Shrubs, Wetland Tundra, Old age Normalized [Output/Barrow/Shrubs_WT_O]'+ nl
-        if self.control['Initialize_Control']['Urban_WT_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Urban_WT_Normal']:
             string +=  '  Initial Urban area, Wetland Tundra, Normal [Output/Barrow/Urban_WT]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_Y_Normal']:
             string +=  '  Initial Rivers, Wetland Tundra, Young age Normalized [Output/Barrow/Rivers_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_M_Normal']:
             string +=  '  Initial Rivers, Wetland Tundra, Medium age Normalized [Output/Barrow/Rivers_WT_M]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_O_Normal']:
             string +=  '  Initial Rivers, Wetland Tundra, old age Normalized [Output/Barrow/Rivers_WT_O]'+ nl
         
         
-#        if self.control['Initialize_Control']['WetNPG_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetNPG_Normal']:
 #            string +=  '  Normalized Wetland Non-polygonal Ground Figure [Output/Wet_NPG]'
-#        if self.control['Initialize_Control']['WetLCP_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetLCP_Normal']:
 #            string +=  '  Normalized Wetland Low Center Polygon Figure [Output/Wet_LCP]'
-#        if self.control['Initialize_Control']['WetCLC_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetCLC_Normal']:
 #            string +=  '  Normalized Wetland Coalescent Low Center Polygon Figure [Output/Wet_CLC]'
-#        if self.control['Initialize_Control']['WetFCP_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetFCP_Normal']:
 #            string +=  '  Normalized Wetland Flat Center Polygon Figure [Output/Wet_FCP]'
-#        if self.control['Initialize_Control']['WetHCP_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetHCP_Normal']:
 #            string +=  '  Normalized Wetland High Center Polygon Figure [Output/Wet_HCP]'
-#        if self.control['Initialize_Control']['Lakes_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Lakes_Normal']:
 #            string +=  '  Normalized Lakes Figure [Output/Lakes]'
-#        if self.control['Initialize_Control']['Ponds_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Ponds_Normal']:
 #            string +=  '  Normalized Ponds Figure [Output/Ponds]'
-#        if self.control['Initialize_Control']['Rivers_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Rivers_Normal']:
 #            string +=  '  Normalized Rivers Figure [Output/Other_Cohorts]'
-#        if self.control['Initialize_Control']['Urban_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Urban_Normal']:
 #            string +=  '  Normalized Urban Figure [Output/Other_Cohorts]'
-        if self.control['Initialize_Control']['Total_Cohorts_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Total_Cohorts_Normal']:
             string +=  '  Normalize Total Cohorts [Output/All_Cohorts]'+ nl
     string +=  ' '+ nl
 
     string +=  'Outputs of Cohort Ages:'+ nl
-    if self.control['Initialize_Control']['Initial_Cohort_Age_Figure'].lower() != 'yes':
+    if self.control['Initialize_Control']['Initial_Cohort_Age_Figure'] == False:
         string +=  '  No outputs generated.'+ nl
     else:
-        if self.control['Initialize_Control']['Meadow_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_Y_Age']:
             string +=  '  Initial Meadow, Wetland Tundra, Young age distribution [Output/Barrow/Meadow_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Meadow_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_M_Age']:
             string +=  '  Initial Meadow, Wetland Tundra, Medium age distribution [Output/Barrow/Meadow_WT_M]'+ nl
-        if self.control['Initialize_Control']['Meadow_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_O_Age']:
             string +=  '  Initial Meadow, Wetland Tundra, Old age distribution [Output/Barrow/Meadow_WT_O]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_Y_Age']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/LCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_M_Age']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/LCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['LCP_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_O_Age']:
             string +=  '  Initial Low Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/LCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_Y_Age']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/CLC_WT_Y]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_M_Age']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/CLC_WT_M]'+ nl
-        if self.control['Initialize_Control']['CLC_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_O_Age']:
             string +=  '  Initial Coalescent Low Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/CLC_WT_O]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_Y_Age']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/FCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_M_Age']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/FCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['FCP_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_O_Age']:
             string +=  '  Initial Flat Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/FCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_Y_Age']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/HCP_WT_Y]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_M_Age']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/HCP_WT_M]'+ nl
-        if self.control['Initialize_Control']['HCP_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_O_Age']:
             string +=  '  Initial High Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/HCP_WT_O]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_Y_Age']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Young age distribution [Output/Barrow/LargeLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_M_Age']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Medium age distribution [Output/Barrow/LargeLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['LargeLakes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_O_Age']:
             string +=  '  Initial Large (size) Lakes, Wetland Tundra, Old age distribution [Output/Barrow/LargeLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_Y_Age']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Young age distribution [Output/Barrow/MediumLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_M_Age']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Medium age distribution [Output/Barrow/MediumLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['MediumLakes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_O_Age']:
             string +=  '  Initial Medium (size) Lakes, Wetland Tundra, Old age distribution [Output/Barrow/MediumLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_Y_Age']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Young age distribution [Output/Barrow/SmallLakes_WT_Y]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_M_Age']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Medium age distribution [Output/Barrow/SmallLakes_WT_M]'+ nl
-        if self.control['Initialize_Control']['SmallLakes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_O_Age']:
             string +=  '  Initial Small (size) Lakes, Wetland Tundra, Old age distribution [Output/Barrow/SmallLakes_WT_O]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_Y_Age']:
             string +=  '  Initial Ponds, Wetland Tundra, Young age distribution [Output/Barrow/Ponds_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_M_Age']:
             string +=  '  Initial Ponds, Wetland Tundra, Medium age distribution [Output/Barrow/Ponds_WT_M]'+ nl
-        if self.control['Initialize_Control']['Ponds_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_O_Age']:
             string +=  '  Initial Ponds, Wetland Tundra, Old age distribution [Output/Barrow/Ponds_WT_O]'+ nl
-        if self.control['Initialize_Control']['CoastalWaters_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CoastalWaters_WT_O_Age']:
             string +=  '  Initial Coastal Waters, Wetland Tundra, Old age distribution [Output/Barrow/CoastalWaters_WT_O]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Age']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Young age distribution [Output/Barrow/DrainedSlope_WT_Y]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_M_Age']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Medium age distribution [Output/Barrow/DrainedSlope_WT_M]'+ nl
-        if self.control['Initialize_Control']['DrainedSlope_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_O_Age']:
             string +=  '  Initial Drained Slope, Wetland Tundra, Old age distribution [Output/Barrow/DrainedSlope_WT_O]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_Y_Age']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Young age distribution [Output/Barrow/SandDunes/WT_Y]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_M_Age']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Medium age distribution [Output/Barrow/SandDunes_WT_M]'+ nl
-        if self.control['Initialize_Control']['SandDunes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_O_Age']:
             string +=  '  Initial Sand Dunes, Wetland Tundra, Old age distribution [Output/Barrow/SandDunes_WT_O]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Age'].lower()  == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Age']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Young age distribution [Output/Barrow/SaturatedBarrens_WT_Y]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Age']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Medium age distribution [Output/Barrow/SaturatedBarrens_WT_M]'+ nl
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Age']:
             string +=  '  Initial Saturated Barrens, Wetland Tundra, Old age distribution [Output/Barrow/SaturatedBarrens_WT_O]'+ nl
-        if self.control['Initialize_Control']['Shrubs_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Shrubs_WT_O_Age']:
             string +=  '  Initial Shrubs, Wetland Tundra, Old age distribution [Output/Barrow/Shrubs_WT_O]'+ nl
-        if self.control['Initialize_Control']['Urban_WT_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Urban_WT_Age']:
             string +=  '  Initial Urban area, Wetland Tundra, Normal [Output/Barrow/Urban_WT]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_Y_Age']:
             string +=  '  Initial Rivers, Wetland Tundra, Young age distribution [Output/Barrow/Rivers_WT_Y]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_M_Age']:
             string +=  '  Initial Rivers, Wetland Tundra, Medium age distribution [Output/Barrow/Rivers_WT_M]'+ nl
-        if self.control['Initialize_Control']['Rivers_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_O_Age']:
             string +=  '  Initial Rivers, Wetland Tundra, old age distribution [Output/Barrow/Rivers_WT_O]'+ nl
 
-#        if self.control['Initialize_Control']['WetNPG_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetNPG_Age']:
 #            string +=  '  Wetland Non-polygonal Ground Age [Output/Wet_NPG]'
-#        if self.control['Initialize_Control']['WetLCP_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetLCP_Age']:
 #            string +=  '  Wetland Low Center Polygon Age [Output/Wet_LCP]'
-#        if self.control['Initialize_Control']['WetCLC_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetCLC_Age']:
 #            string +=  '  Wetland Coalescent Low Center Polygon Age [Output/Wet_CLC]'
-#        if self.control['Initialize_Control']['WetFCP_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetFCP_Age']:
 #            string +=  '  Wetland Flat Center Polygon Age [Output/Wet_FCP]'
-#        if self.control['Initialize_Control']['WetHCP_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetHCP_Age']:
 #            string +=  '  Wetland High Center Polygon Age [Output/Wet_HCP]'
-#        if self.control['Initialize_Control']['Lakes_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Lakes_Age']:
 #            string +=  '  Lakes Age [Output/Lakes]'
-#        if self.control['Initialize_Control']['Ponds_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Ponds_Age']:
 #            string +=  '  Normalized Ponds Age [Output/Ponds]'
     string +=  ' '+ nl
     ##########################################################################
@@ -382,7 +383,7 @@ def on_screen(self, start_time, end_time):
     string +=  ' '+ nl
 
     string +=  'Outputs:'+ nl
-    if self.control.Met_Control['Degree_Day_Output'].lower() == 'yes':
+    if self.control.Met_Control['Degree_Day_Output']:
         string +=  '  Degree-Days are output.'+ nl
         
     # Note: Might want to add climatic event probability and block size here
@@ -516,7 +517,7 @@ def on_file(self, start_time, end_time):
     file.write('Start Date / Time : ' + start_time +str('\n'))
     file.write('End Date / Time : '+ end_time +str('\n'))
     file.write('Total Simulation Time (minutes): '+ str((end_time - start_time)/60.0) + str('\n'))
-    if self.archive_simulation.lower() == 'yes':
+    if self.archive_simulation:
         file.write('Archive Status: Active \n')
         file.write('Archive Name : '+ self.simulation_name + str('\n'))
     else:
@@ -529,330 +530,330 @@ def on_file(self, start_time, end_time):
     file.write( ' Initial Cohort Information \n')
     file.write( '-----------------------------------\n')
     file.write( 'Outputs of Initial Cohort Distribution:\n')
-    if self.control['Initialize_Control']['Initial_Cohort_Distribution_Figure'].lower() != 'yes':
+    if self.control['Initialize_Control']['Initial_Cohort_Distribution_Figure'] == False:
         file.write( '  No outputs generated. \n')
     else:
-        if self.control['Initialize_Control']['Meadow_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_Y_Figure']:
             file.write( '  Initial Meadow, Wetland Tundra, Young age Figure [Output/Barrow/Meadow_WT_Y] \n')
-        if self.control['Initialize_Control']['Meadow_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_M_Figure']:
             file.write( '  Initial Meadow, Wetland Tundra, Medium age Figure [Output/Barrow/Meadow_WT_M] \n')
-        if self.control['Initialize_Control']['Meadow_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_O_Figure']:
             file.write( '  Initial Meadow, Wetland Tundra, Old age Figure [Output/Barrow/Meadow_WT_O] \n')
-        if self.control['Initialize_Control']['LCP_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_Y_Figure']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/LCP_WT_Y] \n')
-        if self.control['Initialize_Control']['LCP_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_M_Figure']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/LCP_WT_M] \n')
-        if self.control['Initialize_Control']['LCP_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_O_Figure']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/LCP_WT_O] \n')
-        if self.control['Initialize_Control']['CLC_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_Y_Figure']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/CLC_WT_Y] \n')
-        if self.control['Initialize_Control']['CLC_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_M_Figure']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/CLC_WT_M] \n')
-        if self.control['Initialize_Control']['CLC_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_O_Figure']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/CLC_WT_O] \n')
-        if self.control['Initialize_Control']['FCP_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_Y_Figure']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/FCP_WT_Y] \n')
-        if self.control['Initialize_Control']['FCP_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_M_Figure']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/FCP_WT_M] \n')
-        if self.control['Initialize_Control']['FCP_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_O_Figure']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/FCP_WT_O] \n')
-        if self.control['Initialize_Control']['HCP_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_Y_Figure']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Young age Figure [Output/Barrow/HCP_WT_Y] \n')
-        if self.control['Initialize_Control']['HCP_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_M_Figure']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Medium age Figure [Output/Barrow/HCP_WT_M] \n')
-        if self.control['Initialize_Control']['HCP_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_O_Figure']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Old age Figure [Output/Barrow/HCP_WT_O] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_Y_Figure']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Young age Figure [Output/Barrow/LargeLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_M_Figure']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Medium age Figure [Output/Barrow/LargeLakes_WT_M] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_O_Figure']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Old age Figure [Output/Barrow/LargeLakes_WT_O] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_Y_Figure']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Young age Figure [Output/Barrow/MediumLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_M_Figure']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Medium age Figure [Output/Barrow/MediumLakes_WT_M] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_O_Figure']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Old age Figure [Output/Barrow/MediumLakes_WT_O] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_Y_Figure']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Young age Figure [Output/Barrow/SmallLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_M_Figure']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Medium age Figure [Output/Barrow/SmallLakes_WT_M] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_O_Figure']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Old age Figure [Output/Barrow/SmallLakes_WT_O] \n')
-        if self.control['Initialize_Control']['Ponds_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_Y_Figure']:
             file.write( '  Initial Ponds, Wetland Tundra, Young age Figure [Output/Barrow/Ponds_WT_Y] \n')
-        if self.control['Initialize_Control']['Ponds_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_M_Figure']:
             file.write( '  Initial Ponds, Wetland Tundra, Medium age Figure [Output/Barrow/Ponds_WT_M] \n')
-        if self.control['Initialize_Control']['Ponds_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_O_Figure']:
             file.write( '  Initial Ponds, Wetland Tundra, Old age Figure [Output/Barrow/Ponds_WT_O] \n')
-        if self.control['Initialize_Control']['CoastalWaters_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['CoastalWaters_WT_O_Figure']:
             file.write( '  Initial Coastal Waters, Wetland Tundra, Old age Figure [Output/Barrow/CoastalWaters_WT_O] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Figure']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Young age Figure [Output/Barrow/DrainedSlope_WT_Y] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_M_Figure']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Medium age Figure [Output/Barrow/DrainedSlope_WT_M] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_O_Figure']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Old age Figure [Output/Barrow/DrainedSlope_WT_O] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_Y_Figure']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Young age Figure [Output/Barrow/SandDunes/WT_Y] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_M_Figure']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age Figure [Output/Barrow/SandDunes_WT_M] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_O_Figure']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Old age Figure [Output/Barrow/SandDunes_WT_O] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Figure'].lower()  == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Figure']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Young age Figure [Output/Barrow/SaturatedBarrens_WT_Y] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Figure']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Medium age Figure [Output/Barrow/SaturatedBarrens_WT_M] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Figure']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Old age Figure [Output/Barrow/SaturatedBarrens_WT_O] \n')
-        if self.control['Initialize_Control']['Shrubs_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Shrubs_WT_O_Figure']:
             file.write( '  Initial Shrubs, Wetland Tundra, Old age Figure [Output/Barrow/Shrubs_WT_O] \n')
-        if self.control['Initialize_Control']['Urban_WT_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Urban_WT_Figure']:
             file.write( '  Initial Urban area, Wetland Tundra, Figure [Output/Barrow/Urban_WT] \n')
-        if self.control['Initialize_Control']['Rivers_WT_Y_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_Y_Figure']:
             file.write( '  Initial Rivers, Wetland Tundra, Young age Figure [Output/Barrow/Rivers_WT_Y] \n')
-        if self.control['Initialize_Control']['Rivers_WT_M_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_M_Figure']:
             file.write( '  Initial Rivers, Wetland Tundra, Medium age Figure [Output/Barrow/Rivers_WT_M] \n')
-        if self.control['Initialize_Control']['Rivers_WT_O_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_O_Figure']:
             file.write( '  Initial Rivers, Wetland Tundra, old age Figure [Output/Barrow/Rivers_WT_O] \n')
-        if self.control['Initialize_Control']['All_Cohorts_Figure'].lower() == 'yes':
+        if self.control['Initialize_Control']['All_Cohorts_Figure']:
             file.write( '  Total Cohorts Figure [Output/All_Cohorts] \n \n')
         
- #       if self.control['Initialize_Control']['WetNPG_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['WetNPG_Figure']:
  #           file.write( '  Initial Wetland Non-polygonal Ground Figure [Output/Wet_NPG] \n')
- #       if self.control['Initialize_Control']['WetLCP_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['WetLCP_Figure']:
  #           file.write( '  Initial Wetland Low Center Polygon Figure [Output/Wet_LCP] \n')
- #       if self.control['Initialize_Control']['WetCLC_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['WetCLC_Figure']:
  #           file.write( '  Initial Wetland Coalescent Low Center Polygon Figure [Output/Wet_CLC] \n')
- #       if self.control['Initialize_Control']['WetFCP_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['WetFCP_Figure']:
  #           file.write( '  Initial Wetland Flat Center Polygon Figure [Output/Wet_FCP] \n')
- #       if self.control['Initialize_Control']['WetHCP_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['WetHCP_Figure']:
  #           file.write( '  Initial Wetland High Center Polygon Figure [Output/Wet_HCP] \n')
- #       if self.control['Initialize_Control']['Lakes_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['Lakes_Figure']:
  #           file.write( '  Initial Lakes Figure [Output/Lakes] \n')
- #       if self.control['Initialize_Control']['Ponds_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['Ponds_Figure']:
  #           file.write( '  Initial Ponds Figure [Output/Ponds] \n')
- #       if self.control['Initialize_Control']['Rivers_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['Rivers_Figure']:
  #           file.write( '  Initial Rivers Figure [Output/Other_Cohorts] \n')
- #       if self.control['Initialize_Control']['Urban_Figure'].lower() == 'yes':
+ #       if self.control['Initialize_Control']['Urban_Figure']:
  #           file.write( '  Initial Urban Figure [Output/Other_Cohorts] \n')
 
     
     file.write( 'Outputs of Initial Cohort Fractional Distribution:\n')
         
-    if self.control['Initialize_Control']['Normalized_Cohort_Distribution_Figure'].lower() != 'yes':
+    if self.control['Initialize_Control']['Normalized_Cohort_Distribution_Figure'] == False:
         file.write( '  No outputs generated. \n')
     else:
-        if self.control['Initialize_Control']['Meadow_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_Y_Normal']:
             file.write( '  Initial Meadow, Wetland Tundra, Young age Normalized [Output/Barrow/Meadow_WT_Y] \n')
-        if self.control['Initialize_Control']['Meadow_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_M_Normal']:
             file.write( '  Initial Meadow, Wetland Tundra, Medium age Normalized [Output/Barrow/Meadow_WT_M] \n')
-        if self.control['Initialize_Control']['Meadow_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_O_Normal']:
             file.write( '  Initial Meadow, Wetland Tundra, Old age Normalized [Output/Barrow/Meadow_WT_O] \n')
-        if self.control['Initialize_Control']['LCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_Y_Normal']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/LCP_WT_Y] \n')
-        if self.control['Initialize_Control']['LCP_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_M_Normal']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/LCP_WT_M] \n')
-        if self.control['Initialize_Control']['LCP_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_O_Normal']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/LCP_WT_O] \n')
-        if self.control['Initialize_Control']['CLC_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_Y_Normal']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/CLC_WT_Y] \n')
-        if self.control['Initialize_Control']['CLC_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_M_Normal']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/CLC_WT_M] \n')
-        if self.control['Initialize_Control']['CLC_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_O_Normal']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/CLC_WT_O] \n')
-        if self.control['Initialize_Control']['FCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_Y_Normal']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/FCP_WT_Y] \n')
-        if self.control['Initialize_Control']['FCP_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_M_Normal']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/FCP_WT_M] \n')
-        if self.control['Initialize_Control']['FCP_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_O_Normal']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/FCP_WT_O] \n')
-        if self.control['Initialize_Control']['HCP_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_Y_Normal']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Young age Normalized [Output/Barrow/HCP_WT_Y] \n')
-        if self.control['Initialize_Control']['HCP_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_M_Normal']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Medium age Normalized [Output/Barrow/HCP_WT_M] \n')
-        if self.control['Initialize_Control']['HCP_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_O_Normal']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Old age Normalized [Output/Barrow/HCP_WT_O] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_Y_Normal']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Young age Normalized [Output/Barrow/LargeLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_M_Normal']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Medium age Normalized [Output/Barrow/LargeLakes_WT_M] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_O_Normal']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Old age Normalized [Output/Barrow/LargeLakes_WT_O] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_Y_Normal']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Young age Normalized [Output/Barrow/MediumLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_M_Normal']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Medium age Normalized [Output/Barrow/MediumLakes_WT_M] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_O_Normal']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Old age Normalized [Output/Barrow/MediumLakes_WT_O] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_Y_Normal']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Young age Normalized [Output/Barrow/SmallLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_M_Normal']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Medium age Normalized [Output/Barrow/SmallLakes_WT_M] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_O_Normal']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Old age Normalized [Output/Barrow/SmallLakes_WT_O] \n')
-        if self.control['Initialize_Control']['Ponds_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_Y_Normal']:
             file.write( '  Initial Ponds, Wetland Tundra, Young age Normalized [Output/Barrow/Ponds_WT_Y] \n')
-        if self.control['Initialize_Control']['Ponds_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_M_Normal']:
             file.write( '  Initial Ponds, Wetland Tundra, Medium age Normalized [Output/Barrow/Ponds_WT_M] \n')
-        if self.control['Initialize_Control']['Ponds_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_O_Normal']:
             file.write( '  Initial Ponds, Wetland Tundra, Old age Normalized [Output/Barrow/Ponds_WT_O] \n')
-        if self.control['Initialize_Control']['CoastalWaters_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['CoastalWaters_WT_O_Normal']:
             file.write( '  Initial Coastal Waters, Wetland Tundra, Old age Normalized [Output/Barrow/CoastalWaters_WT_O] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Normal']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Young age Normalized [Output/Barrow/DrainedSlope_WT_Y] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_M_Normal']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Medium age Normalized [Output/Barrow/DrainedSlope_WT_M] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_O_Normal']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Old age Normalized [Output/Barrow/DrainedSlope_WT_O] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_Y_Normal']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Young age Normalized [Output/Barrow/SandDunes/WT_Y] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_M_Normal']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age Normalized [Output/Barrow/SandDunes_WT_M] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_O_Normal']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Old age Normalized [Output/Barrow/SandDunes_WT_O] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Normal'].lower()  == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Normal']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Young age Normalized [Output/Barrow/SaturatedBarrens_WT_Y] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Normal']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Medium age Normalized [Output/Barrow/SaturatedBarrens_WT_M] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Normal']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Old age Normalized [Output/Barrow/SaturatedBarrens_WT_O] \n')
-        if self.control['Initialize_Control']['Shrubs_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Shrubs_WT_O_Normal']:
             file.write( '  Initial Shrubs, Wetland Tundra, Old age Normalized [Output/Barrow/Shrubs_WT_O] \n')
-        if self.control['Initialize_Control']['Urban_WT_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Urban_WT_Normal']:
             file.write( '  Initial Urban area, Wetland Tundra, Normal [Output/Barrow/Urban_WT] \n')
-        if self.control['Initialize_Control']['Rivers_WT_Y_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_Y_Normal']:
             file.write( '  Initial Rivers, Wetland Tundra, Young age Normalized [Output/Barrow/Rivers_WT_Y] \n')
-        if self.control['Initialize_Control']['Rivers_WT_M_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_M_Normal']:
             file.write( '  Initial Rivers, Wetland Tundra, Medium age Normalized [Output/Barrow/Rivers_WT_M] \n')
-        if self.control['Initialize_Control']['Rivers_WT_O_Normal'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_O_Normal']:
             file.write( '  Initial Rivers, Wetland Tundra, old age Normalized [Output/Barrow/Rivers_WT_O] \n')        
 
-#        if self.control['Initialize_Control']['WetNPG_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetNPG_Normal']:
 #            file.write( '  Normalized Wetland Non-polygonal Ground Figure [Output/Wet_NPG] \n')
-#        if self.control['Initialize_Control']['WetLCP_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetLCP_Normal']:
 #            file.write( '  Normalized Wetland Low Center Polygon Figure [Output/Wet_LCP] \n')
-#        if self.control['Initialize_Control']['WetCLC_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetCLC_Normal']:
 #            file.write( '  Normalized Wetland Coalescent Low Center Polygon Figure [Output/Wet_CLC] \n')
-#        if self.control['Initialize_Control']['WetFCP_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetFCP_Normal']:
 #            file.write( '  Normalized Wetland Flat Center Polygon Figure [Output/Wet_FCP] \n')
-#        if self.control['Initialize_Control']['WetHCP_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetHCP_Normal']:
 #            file.write( '  Normalized Wetland High Center Polygon Figure [Output/Wet_HCP] \n')
-#        if self.control['Initialize_Control']['Lakes_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Lakes_Normal']:
 #            file.write( '  Normalized Lakes Figure [Output/Lakes] \n')
-#        if self.control['Initialize_Control']['Ponds_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Ponds_Normal']:
 #            file.write( '  Normalized Ponds Figure [Output/Ponds] \n')
-#        if self.control['Initialize_Control']['Rivers_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Rivers_Normal']:
 #            file.write( '  Normalized Rivers Figure [Output/Other_Cohorts] \n')
-#        if self.control['Initialize_Control']['Urban_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Urban_Normal']:
 #            file.write( '  Normalized Urban Figure [Output/Other_Cohorts] \n')
-#        if self.control['Initialize_Control']['Total_Cohorts_Normal'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Total_Cohorts_Normal']:
 #            file.write( '  Normalized Total Cohorts [Output/All_Cohorts] \n \n')
 
     file.write( 'Outputs of Initial Cohort Age:\n')
         
-    if self.control['Initialize_Control']['Initial_Cohort_Age_Figure'].lower() != 'yes':
+    if self.control['Initialize_Control']['Initial_Cohort_Age_Figure'] == False:
         file.write( '  No outputs generated. \n')
     else:
-        if self.control['Initialize_Control']['Meadow_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_Y_Age']:
             file.write( '  Initial Meadow, Wetland Tundra, Young age distribution [Output/Barrow/Meadow_WT_Y] \n')
-        if self.control['Initialize_Control']['Meadow_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_M_Age']:
             file.write( '  Initial Meadow, Wetland Tundra, Medium age distribution [Output/Barrow/Meadow_WT_M] \n')
-        if self.control['Initialize_Control']['Meadow_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Meadow_WT_O_Age']:
             file.write( '  Initial Meadow, Wetland Tundra, Old age distribution [Output/Barrow/Meadow_WT_O] \n')
-        if self.control['Initialize_Control']['LCP_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_Y_Age']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/LCP_WT_Y] \n')
-        if self.control['Initialize_Control']['LCP_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_M_Age']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/LCP_WT_M] \n')
-        if self.control['Initialize_Control']['LCP_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LCP_WT_O_Age']:
             file.write( '  Initial Low Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/LCP_WT_O] \n')
-        if self.control['Initialize_Control']['CLC_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_Y_Age']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/CLC_WT_Y] \n')
-        if self.control['Initialize_Control']['CLC_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_M_Age']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/CLC_WT_M] \n')
-        if self.control['Initialize_Control']['CLC_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CLC_WT_O_Age']:
             file.write( '  Initial Coalescent Low Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/CLC_WT_O] \n')
-        if self.control['Initialize_Control']['FCP_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_Y_Age']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/FCP_WT_Y] \n')
-        if self.control['Initialize_Control']['FCP_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_M_Age']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/FCP_WT_M] \n')
-        if self.control['Initialize_Control']['FCP_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['FCP_WT_O_Age']:
             file.write( '  Initial Flat Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/FCP_WT_O] \n')
-        if self.control['Initialize_Control']['HCP_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_Y_Age']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Young age distribution [Output/Barrow/HCP_WT_Y] \n')
-        if self.control['Initialize_Control']['HCP_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_M_Age']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Medium age distribution [Output/Barrow/HCP_WT_M] \n')
-        if self.control['Initialize_Control']['HCP_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['HCP_WT_O_Age']:
             file.write( '  Initial High Center Polygon, Wetland Tundra, Old age distribution [Output/Barrow/HCP_WT_O] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_Y_Age']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Young age distribution [Output/Barrow/LargeLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_M_Age']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Medium age distribution [Output/Barrow/LargeLakes_WT_M] \n')
-        if self.control['Initialize_Control']['LargeLakes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['LargeLakes_WT_O_Age']:
             file.write( '  Initial Large (size) Lakes, Wetland Tundra, Old age distribution [Output/Barrow/LargeLakes_WT_O] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_Y_Age']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Young age distribution [Output/Barrow/MediumLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_M_Age']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Medium age distribution [Output/Barrow/MediumLakes_WT_M] \n')
-        if self.control['Initialize_Control']['MediumLakes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['MediumLakes_WT_O_Age']:
             file.write( '  Initial Medium (size) Lakes, Wetland Tundra, Old age distribution [Output/Barrow/MediumLakes_WT_O] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_Y_Age']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Young age distribution [Output/Barrow/SmallLakes_WT_Y] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_M_Age']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Medium age distribution [Output/Barrow/SmallLakes_WT_M] \n')
-        if self.control['Initialize_Control']['SmallLakes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SmallLakes_WT_O_Age']:
             file.write( '  Initial Small (size) Lakes, Wetland Tundra, Old age distribution [Output/Barrow/SmallLakes_WT_O] \n')
-        if self.control['Initialize_Control']['Ponds_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_Y_Age']:
             file.write( '  Initial Ponds, Wetland Tundra, Young age distribution [Output/Barrow/Ponds_WT_Y] \n')
-        if self.control['Initialize_Control']['Ponds_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_M_Age']:
             file.write( '  Initial Ponds, Wetland Tundra, Medium age distribution [Output/Barrow/Ponds_WT_M] \n')
-        if self.control['Initialize_Control']['Ponds_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Ponds_WT_O_Age']:
             file.write( '  Initial Ponds, Wetland Tundra, Old age distribution [Output/Barrow/Ponds_WT_O] \n')
-        if self.control['Initialize_Control']['CoastalWaters_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['CoastalWaters_WT_O_Age']:
             file.write( '  Initial Coastal Waters, Wetland Tundra, Old age distribution [Output/Barrow/CoastalWaters_WT_O] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_Y_Age']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Young age distribution [Output/Barrow/DrainedSlope_WT_Y] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_M_Age']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Medium age distribution [Output/Barrow/DrainedSlope_WT_M] \n')
-        if self.control['Initialize_Control']['DrainedSlope_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['DrainedSlope_WT_O_Age']:
             file.write( '  Initial Drained Slope, Wetland Tundra, Old age distribution [Output/Barrow/DrainedSlope_WT_O] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_Y_Age']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Young age distribution [Output/Barrow/SandDunes/WT_Y] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_M_Age']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Medium age distribution [Output/Barrow/SandDunes_WT_M] \n')
-        if self.control['Initialize_Control']['SandDunes_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SandDunes_WT_O_Age']:
             file.write( '  Initial Sand Dunes, Wetland Tundra, Old age distribution [Output/Barrow/SandDunes_WT_O] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Age'].lower()  == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_Y_Age']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Young age distribution [Output/Barrow/SaturatedBarrens_WT_Y] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_M_Age']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Medium age distribution [Output/Barrow/SaturatedBarrens_WT_M] \n')
-        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['SaturatedBarrens_WT_O_Age']:
             file.write( '  Initial Saturated Barrens, Wetland Tundra, Old age distribution [Output/Barrow/SaturatedBarrens_WT_O] \n')
-        if self.control['Initialize_Control']['Shrubs_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Shrubs_WT_O_Age']:
             file.write( '  Initial Shrubs, Wetland Tundra, Old age distribution [Output/Barrow/Shrubs_WT_O] \n')
-        if self.control['Initialize_Control']['Urban_WT_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Urban_WT_Age']:
             file.write( '  Initial Urban area, Wetland Tundra, Normal [Output/Barrow/Urban_WT] \n')
-        if self.control['Initialize_Control']['Rivers_WT_Y_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_Y_Age']:
             file.write( '  Initial Rivers, Wetland Tundra, Young age distribution [Output/Barrow/Rivers_WT_Y] \n')
-        if self.control['Initialize_Control']['Rivers_WT_M_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_M_Age']:
             file.write( '  Initial Rivers, Wetland Tundra, Medium age distribution [Output/Barrow/Rivers_WT_M] \n')
-        if self.control['Initialize_Control']['Rivers_WT_O_Age'].lower() == 'yes':
+        if self.control['Initialize_Control']['Rivers_WT_O_Age']:
             file.write( '  Initial Rivers, Wetland Tundra, old age distribution [Output/Barrow/Rivers_WT_O] \n')        
         
-#        if self.control['Initialize_Control']['WetNPG_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetNPG_Age']:
 #            file.write( '  Wetland Non-polygonal Ground Age [Output/Wet_NPG] \n')
-#        if self.control['Initialize_Control']['WetLCP_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetLCP_Age']:
 #            file.write( '  Wetland Low Center Polygon Age [Output/Wet_LCP] \n')
-#        if self.control['Initialize_Control']['WetCLC_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetCLC_Age']:
 #            file.write( '  Wetland Coalescent Low Center Polygon Age [Output/Wet_CLC] \n')
-#        if self.control['Initialize_Control']['WetFCP_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetFCP_Age']:
 #            file.write( '  Wetland Flat Center Polygon Age [Output/Wet_FCP] \n')
-#        if self.control['Initialize_Control']['WetHCP_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['WetHCP_Age']:
 #            file.write( '  Wetland High Center Polygon Age [Output/Wet_HCP] \n')
-#        if self.control['Initialize_Control']['Lakes_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Lakes_Age']:
 #            file.write( '  Lakes Age [Output/Lakes] \n')
-#        if self.control['Initialize_Control']['Ponds_Age'].lower() == 'yes':
+#        if self.control['Initialize_Control']['Ponds_Age']:
 #            file.write( '  Ponds Age [Output/Ponds] \n \n')
     
     ##########################################################################    
@@ -872,7 +873,7 @@ def on_file(self, start_time, end_time):
     file.write( ' \n')
     
     file.write( 'Output: \n')
-    if self.control.Met_Control['Degree_Day_Output'].lower() == 'yes':
+    if self.control.Met_Control['Degree_Day_Output']:
         file.write('  Degree-days are output. \n')
         
     # Note: Might want to add climatic event probability and block size here
@@ -936,13 +937,13 @@ def on_file(self, start_time, end_time):
 
         
     file.write( '\nOutput: \n')
-    if self.control.Terrestrial_Control['Ice_Distribution_Figure'].lower() == 'yes':
+    if self.control.Terrestrial_Control['Ice_Distribution_Figure']:
         file.write('  Initial Ice Distribution Figure \n')
-    if self.control.Terrestrial_Control['Drainage_Efficiency_Figure'].lower() == 'yes':
+    if self.control.Terrestrial_Control['Drainage_Efficiency_Figure']:
         file.write('  Drainage Efficiency Figure \n')
-    if self.control.Terrestrial_Control['ALD_Distribution_Output'].lower() == 'yes':
+    if self.control.Terrestrial_Control['ALD_Distribution_Output']:
         file.write('  Initial Active Layer Depth Figure \n')
-    if self.control.Terrestrial_Control['ALD_Factor_Output'].lower() == 'yes':
+    if self.control.Terrestrial_Control['ALD_Factor_Output']:
         file.write('  Active Layer Factor Figure \n')
     file.write( '- - - - - - - - - - - - - - - - - - - - - - - - - -\n \n')
     
@@ -1014,9 +1015,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.Meadow_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.Meadow_WT_Y['Figures'].lower() == 'yes':
+    if self.Meadow_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.Meadow_WT_Y['Movie'].lower() == 'yes':
+    if self.Meadow_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.Meadow_WT_Y['Figures'].lower() == 'no' and self.Meadow_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1076,9 +1077,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.Meadow_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.Meadow_WT_M['Figures'].lower() == 'yes':
+    if self.Meadow_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.Meadow_WT_M['Movie'].lower() == 'yes':
+    if self.Meadow_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.Meadow_WT_M['Figures'].lower() == 'no' and self.Meadow_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1136,9 +1137,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.Meadow_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.Meadow_WT_O['Figures'].lower() == 'yes':
+    if self.Meadow_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.Meadow_WT_O['Movie'].lower() == 'yes':
+    if self.Meadow_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.Meadow_WT_O['Figures'].lower() == 'no' and self.Meadow_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1209,9 +1210,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.LCP_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.LCP_WT_Y['Figures'].lower() == 'yes':
+    if self.LCP_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.LCP_WT_Y['Movie'].lower() == 'yes':
+    if self.LCP_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.LCP_WT_Y['Figures'].lower() == 'no' and self.LCP_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1271,9 +1272,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.LCP_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.LCP_WT_M['Figures'].lower() == 'yes':
+    if self.LCP_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.LCP_WT_M['Movie'].lower() == 'yes':
+    if self.LCP_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.LCP_WT_M['Figures'].lower() == 'no' and self.LCP_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1333,9 +1334,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.LCP_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.LCP_WT_O['Figures'].lower() == 'yes':
+    if self.LCP_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.LCP_WT_O['Movie'].lower() == 'yes':
+    if self.LCP_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.LCP_WT_O['Figures'].lower() == 'no' and self.LCP_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1406,9 +1407,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.CLC_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.CLC_WT_Y['Figures'].lower() == 'yes':
+    if self.CLC_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.CLC_WT_Y['Movie'].lower() == 'yes':
+    if self.CLC_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.CLC_WT_Y['Figures'].lower() == 'no' and self.CLC_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1466,9 +1467,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.CLC_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.CLC_WT_M['Figures'].lower() == 'yes':
+    if self.CLC_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.CLC_WT_M['Movie'].lower() == 'yes':
+    if self.CLC_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.CLC_WT_M['Figures'].lower() == 'no' and self.CLC_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1527,9 +1528,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.CLC_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.CLC_WT_O['Figures'].lower() == 'yes':
+    if self.CLC_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.CLC_WT_O['Movie'].lower() == 'yes':
+    if self.CLC_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.CLC_WT_O['Figures'].lower() == 'no' and self.CLC_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1602,9 +1603,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.FCP_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.FCP_WT_Y['Figures'].lower() == 'yes':
+    if self.FCP_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.FCP_WT_Y['Movie'].lower() == 'yes':
+    if self.FCP_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.FCP_WT_Y['Figures'].lower() == 'no' and self.FCP_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1665,9 +1666,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.FCP_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.FCP_WT_M['Figures'].lower() == 'yes':
+    if self.FCP_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.FCP_WT_M['Movie'].lower() == 'yes':
+    if self.FCP_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.FCP_WT_M['Figures'].lower() == 'no' and self.FCP_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1725,9 +1726,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.FCP_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.FCP_WT_O['Figures'].lower() == 'yes':
+    if self.FCP_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.FCP_WT_O['Movie'].lower() == 'yes':
+    if self.FCP_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.FCP_WT_O['Figures'].lower() == 'no' and self.FCP_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1798,9 +1799,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.HCP_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.HCP_WT_Y['Figures'].lower() == 'yes':
+    if self.HCP_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.HCP_WT_Y['Movie'].lower() == 'yes':
+    if self.HCP_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.HCP_WT_Y['Figures'].lower() == 'no' and self.HCP_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1860,9 +1861,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.HCP_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.HCP_WT_M['Figures'].lower() == 'yes':
+    if self.HCP_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.HCP_WT_M['Movie'].lower() == 'yes':
+    if self.HCP_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.HCP_WT_M['Figures'].lower() == 'no' and self.HCP_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -1922,9 +1923,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.HCP_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.HCP_WT_O['Figures'].lower() == 'yes':
+    if self.HCP_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.HCP_WT_O['Movie'].lower() == 'yes':
+    if self.HCP_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.HCP_WT_O['Figures'].lower() == 'no' and self.HCP_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2106,12 +2107,12 @@ def on_file(self, start_time, end_time):
     file.write(' Number of consecutive years of pond growth (depth) before lake transition is allowed: '\
                    +str(self.LakePond['Pond_WT_Y_growth_time_required']))
     file.write('Output Results: \n')
-    if self.LakePond['Pond_WT_Y_Depth_Figure'].lower() == 'yes':
+    if self.LakePond['Pond_WT_Y_Depth_Figure']:
         file.write('  Initial pond depth (wetland tundra, young age) output as figure. \n')
     
-    if self.LakePond['Pond_WT_Y_Figures'].lower() == 'yes':
+    if self.LakePond['Pond_WT_Y_Figures']:
         file.write('  Yearly Figures output. \n')
-    if self.LakePond['Pond_WT_Y_Movie'].lower() == 'yes':
+    if self.LakePond['Pond_WT_Y_Movie']:
         file.write('  Animation output. \n')
     file.write( ' \n')
 
@@ -2141,12 +2142,12 @@ def on_file(self, start_time, end_time):
     file.write(' Number of consecutive years of pond growth (depth) before lake transition is allowed: '\
                    +str(self.LakePond['Pond_WT_M_growth_time_required']))
     file.write('Output Results: \n')
-    if self.LakePond['Pond_WT_M_Depth_Figure'].lower() == 'yes':
+    if self.LakePond['Pond_WT_M_Depth_Figure']:
         file.write('  Initial pond depth (wetland tundra, medium age) output as figure. \n')
     
-    if self.LakePond['Pond_WT_M_Figures'].lower() == 'yes':
+    if self.LakePond['Pond_WT_M_Figures']:
         file.write('  Yearly Figures output. \n')
-    if self.LakePond['Pond_WT_M_Movie'].lower() == 'yes':
+    if self.LakePond['Pond_WT_M_Movie']:
         file.write('  Animation output. \n')    
     file.write( ' \n')
     file.write( '----------------------------------- \n')
@@ -2175,12 +2176,12 @@ def on_file(self, start_time, end_time):
     file.write(' Number of consecutive years of pond growth (depth) before lake transition is allowed: '\
                    +str(self.LakePond['Pond_WT_O_growth_time_required']))
     file.write('Output Results: \n')
-    if self.LakePond['Pond_WT_O_Depth_Figure'].lower() == 'yes':
+    if self.LakePond['Pond_WT_O_Depth_Figure']:
         file.write('  Initial pond depth (wetland tundra, old age) output as figure. \n')
     
-    if self.LakePond['Pond_WT_O_Figures'].lower() == 'yes':
+    if self.LakePond['Pond_WT_O_Figures']:
         file.write('  Yearly Figures output. \n')
-    if self.LakePond['Pond_WT_O_Movie'].lower() == 'yes':
+    if self.LakePond['Pond_WT_O_Movie']:
         file.write('  Animation output. \n')   
     file.write( ' \n')
     file.write( '=============================================================\n')
@@ -2251,9 +2252,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.DrainedSlope_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.DrainedSlope_WT_Y['Figures'].lower() == 'yes':
+    if self.DrainedSlope_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.DrainedSlope_WT_Y['Movie'].lower() == 'yes':
+    if self.DrainedSlope_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.DrainedSlope_WT_Y['Figures'].lower() == 'no' and self.DrainedSlope_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2312,9 +2313,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.DrainedSlope_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.DrainedSlope_WT_M['Figures'].lower() == 'yes':
+    if self.DrainedSlope_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.DrainedSlope_WT_M['Movie'].lower() == 'yes':
+    if self.DrainedSlope_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.DrainedSlope_WT_M['Figures'].lower() == 'no' and self.DrainedSlope_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2375,9 +2376,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.DrainedSlope_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.DrainedSlope_WT_O['Figures'].lower() == 'yes':
+    if self.DrainedSlope_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.DrainedSlope_WT_O['Movie'].lower() == 'yes':
+    if self.DrainedSlope_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.DrainedSlope_WT_O['Figures'].lower() == 'no' and self.DrainedSlope_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2450,9 +2451,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.SandDunes_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.SandDunes_WT_Y['Figures'].lower() == 'yes':
+    if self.SandDunes_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.SandDunes_WT_Y['Movie'].lower() == 'yes':
+    if self.SandDunes_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.SandDunes_WT_Y['Figures'].lower() == 'no' and self.SandDunes_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2511,9 +2512,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.SandDunes_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.SandDunes_WT_M['Figures'].lower() == 'yes':
+    if self.SandDunes_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.SandDunes_WT_M['Movie'].lower() == 'yes':
+    if self.SandDunes_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.SandDunes_WT_M['Figures'].lower() == 'no' and self.SandDunes_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2574,9 +2575,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.SandDunes_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.SandDunes_WT_O['Figures'].lower() == 'yes':
+    if self.SandDunes_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.SandDunes_WT_O['Movie'].lower() == 'yes':
+    if self.SandDunes_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.SandDunes_WT_O['Figures'].lower() == 'no' and self.SandDunes_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2650,9 +2651,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.SaturatedBarrens_WT_Y['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.SaturatedBarrens_WT_Y['Figures'].lower() == 'yes':
+    if self.SaturatedBarrens_WT_Y['Figures']:
         file.write('  Yearly Figures \n')
-    if self.SaturatedBarrens_WT_Y['Movie'].lower() == 'yes':
+    if self.SaturatedBarrens_WT_Y['Movie']:
         file.write('  Animation \n' )
     if self.SaturatedBarrens_WT_Y['Figures'].lower() == 'no' and self.SaturatedBarrens_WT_Y['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2712,9 +2713,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.SaturatedBarrens_WT_M['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.SaturatedBarrens_WT_M['Figures'].lower() == 'yes':
+    if self.SaturatedBarrens_WT_M['Figures']:
         file.write('  Yearly Figures \n')
-    if self.SaturatedBarrens_WT_M['Movie'].lower() == 'yes':
+    if self.SaturatedBarrens_WT_M['Movie']:
         file.write('  Animation \n' )
     if self.SaturatedBarrens_WT_M['Figures'].lower() == 'no' and self.SaturatedBarrens_WT_M['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2775,9 +2776,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.SaturatedBarrens_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.SaturatedBarrens_WT_O['Figures'].lower() == 'yes':
+    if self.SaturatedBarrens_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.SaturatedBarrens_WT_O['Movie'].lower() == 'yes':
+    if self.SaturatedBarrens_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.SaturatedBarrens_WT_O['Figures'].lower() == 'no' and self.SaturatedBarrens_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2876,9 +2877,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.Shrubs_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.Shrubs_WT_O['Figures'].lower() == 'yes':
+    if self.Shrubs_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.Shrubs_WT_O['Movie'].lower() == 'yes':
+    if self.Shrubs_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.Shrubs_WT_O['Figures'].lower() == 'no' and self.Shrubs_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -2940,9 +2941,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.CoastalWaters_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.CoastalWaters_WT_O['Figures'].lower() == 'yes':
+    if self.CoastalWaters_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.CoastalWaters_WT_O['Movie'].lower() == 'yes':
+    if self.CoastalWaters_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.CoastalWaters_WT_O['Figures'].lower() == 'no' and self.CoastalWaters_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -3003,9 +3004,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.Urban_WT['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.Urban_WT['Figures'].lower() == 'yes':
+    if self.Urban_WT['Figures']:
         file.write('  Yearly Figures \n')
-    if self.Urban_WT['Movie'].lower() == 'yes':
+    if self.Urban_WT['Movie']:
         file.write('  Animation \n' )
     if self.Urban_WT['Figures'].lower() == 'no' and self.Urban_WT['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')
@@ -3067,9 +3068,9 @@ def on_file(self, start_time, end_time):
     file.write('  Massive Ground Ice: '+str(self.NoData_WT_O['ice_slope_massive'])+str('\n \n'))
 
     file.write(' Output Results: ' +str('\n'))
-    if self.NoData_WT_O['Figures'].lower() == 'yes':
+    if self.NoData_WT_O['Figures']:
         file.write('  Yearly Figures \n')
-    if self.NoData_WT_O['Movie'].lower() == 'yes':
+    if self.NoData_WT_O['Movie']:
         file.write('  Animation \n' )
     if self.NoData_WT_O['Figures'].lower() == 'no' and self.NoData_WT_O['Movie'].lower() == 'no':
         file.write('  No output written to disk. \n')

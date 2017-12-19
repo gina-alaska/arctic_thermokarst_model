@@ -75,7 +75,7 @@ def transition (name, year, grids, control):
     
     to_lakes = np.logical_and(deeper_than_ice,time_to_grow.reshape(grids.shape))
     
-    lake_shift = control[name + '_Control']['transitions_to']
+    lake_shift = control['Cohorts'][name + '_Control']['transitions_to']
     
     ## convert to lakes
     grids.area[year, lake_shift][to_lakes] = \

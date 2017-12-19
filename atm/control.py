@@ -75,27 +75,37 @@ class Control(object):
         with open(in_file, 'r') as cf:
             control = yaml.load(cf)
             
-        control_dir = control['Setup']['Control_dir']
+        control_dir = control['Control_dir']
         
         with open(os.path.join(
-            control_dir, control['Setup']['Archive_data']
+            control_dir, control['Archive_data']
         )) as cf:
-            control['Setup']['Archive_data'] = yaml.load(cf)
+            control['Archive_data'] = yaml.load(cf)
         
         with open(os.path.join(
-            control_dir, control['Initilzation']['Initial_Cohort_List']
+            control_dir, control['Initialize_Control']
         )) as cf:
-            control['Initilzation']['Initial_Cohort_List'] = yaml.load(cf)
+            control['Initialize_Control'] = yaml.load(cf)
         
         with open(os.path.join(
-            control_dir, control['Initilzation']['Met_Control']
+            control_dir, control['Initial_Cohort_List']
         )) as cf:
-            control['Initilzation']['Met_Control'] = yaml.load(cf)
+            control['Initial_Cohort_List'] = yaml.load(cf)
         
         with open(os.path.join(
-            control_dir, control['Initilzation']['Terrestrial_Control']
+            control_dir, control['Met_Control']
         )) as cf:
-            control['Initilzation']['Terrestrial_Control'] = yaml.load(cf)
+            control['Met_Control'] = yaml.load(cf)
+        
+        with open(os.path.join(
+            control_dir, control['Terrestrial_Control']
+        )) as cf:
+            control['Terrestrial_Control'] = yaml.load(cf)
+       
+        with open(os.path.join(
+            control_dir, control['Lake_Pond_Control']
+        )) as cf:
+            control['Lake_Pond_Control'] = yaml.load(cf)
         
         for key in control['Cohorts']:
             try:
@@ -225,6 +235,7 @@ class Control(object):
         List:
             paths to input rasters
         """
+        print self.Initial_Cohort_List
         return [
             os.path.join(self.Input_dir, f) for f in self.Initial_Cohort_List
         ]
@@ -239,10 +250,10 @@ class Control(object):
             dict of porosities
         """
         p = {}
-        for key in self.init_control:
+        for key in self.init_control['Cohorts']:
             try:
                 p[find_canon_name(key.replace('_Control', ''))] = \
-                    self.init_control[key]['porosity']
+                    self.init_control['Cohorts'][key]['porosity']
             except:
                 pass
         return p
@@ -272,12 +283,12 @@ class Control(object):
         Dict
         """
         cohorts = {}
-        for key in self.init_control:
+        for key in self.init_control['Cohorts']:
             coeff = {}
             try:
                 
                 for ice in ICE_TYPES:
-                    coeff[ice] = self.init_control[key]['ice_slope_' + ice]
+                    coeff[ice] = self.init_control['Cohorts'][key]['ice_slope_' + ice]
                 cohorts[find_canon_name(key.replace('_Control', ''))] = coeff
             except:
                 pass
@@ -292,7 +303,7 @@ class Control(object):
             list of all canon cohort names used with 'pond' present
         """
         cohorts = []
-        for key in self.init_control:
+        for key in self.init_control['Cohorts']:
             if key.lower() == 'lake_pond_control':
                 continue
             try:
@@ -312,7 +323,7 @@ class Control(object):
             list of all canon cohort names used with 'lake' present
         """
         cohorts = []
-        for key in self.init_control:
+        for key in self.init_control['Cohorts']:
             if key.lower() == 'lake_pond_control':
                 continue
             try:
@@ -331,6 +342,7 @@ class Control(object):
         tuple: (min,max)
             range, if the range is specified as uniform, sets min == max
         """
+        print self.Lake_Pond_Control
         if self.Lake_Pond_Control['Pond_Distribution'].lower() == 'uniform':
             return (
                 self.Lake_Pond_Control['Uniform_Pond_Depth'], 

@@ -97,7 +97,8 @@ class ATM(object):
         #~ self.Control_file     = sys.argv[1]
         
         ## srt up # time steps
-        if self.control.Test_code.lower() == 'yes':
+        if self.control.Test_code or \
+                str(self.control.Test_code).lower() == 'yes':
             self.stop = self.control.Test_code_duration
         else:
             self.stop = int(self.grids.get_max_time_steps())
@@ -106,6 +107,25 @@ class ATM(object):
         # Execute the script
         ########################################################################
         self.run_atm()
+        
+    def save_figures(self):
+        """
+        """
+        for figure in self.control.Initialize_Control:
+            
+            print figure
+        
+        for control in self.control.init_control:
+            if control.lower().find('control') == -1:
+                continue
+            if control == 'Initialize_Control':
+                continue
+            for key in self.control[control]:
+                if key.lower().find('figure') == -1:
+                    continue
+                print key, self.control[control][key]
+        
+        
 #_______________________________________________________________________________
     def run_atm(self):
         
@@ -208,10 +228,14 @@ class ATM(object):
         #===========================
         # Output Simulation Results
         #===========================
-        if self.control['Results_onscreen'].lower() == 'yes':
+        if self.control['Results_onscreen'] or \
+                self.control['Results_onscreen'].lower() == 'yes':
             results.on_screen(self, start_time, end_time)
-        if self.control.Archive_simulation.lower() == 'yes':
+        if self.control.Archive_simulation or \
+                self.control.Archive_simulation.lower() == 'yes':
             results.on_file(self, start_time, end_time)
+            
+        self.save_figures()
 
         
         # ================

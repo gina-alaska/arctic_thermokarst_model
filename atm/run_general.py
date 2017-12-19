@@ -151,7 +151,7 @@ def run(self, cohort_check_list, init_function):
             cohort_control = cohort + '_Control'
             try:
                 check_type = \
-                    self.control[cohort_control]['Transition_check_type'].lower()
+                    self.control['Cohorts'][cohort_control]['Transition_check_type'].lower()
             except:    
                 check_type = 'base'
             #~ print cohort, check_type

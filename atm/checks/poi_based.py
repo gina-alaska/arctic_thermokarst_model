@@ -38,7 +38,7 @@ def transition (name, year, grids, control):
         See https://github.com/gina-alaska/arctic_thermokarst_model/wiki/POI-transition-function
 
     """
-    cohort_config = control[name + '_Control'] 
+    cohort_config = control['Cohorts'][name + '_Control'] 
     
     ## mask out non-test area
     model_area_mask = grids.area.area_of_intrest()

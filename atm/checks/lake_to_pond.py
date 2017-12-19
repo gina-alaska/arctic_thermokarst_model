@@ -50,7 +50,7 @@ def transition (name, year, grids, control):
         
     freezes = np.logical_and(freezes, current_cell_mask)
        
-    shifts_to = control[name + '_Control']['transitions_to']
+    shifts_to = control['Cohorts'][name + '_Control']['transitions_to']
         
     grids.area[year, shifts_to][ freezes ] = \
         grids.area[year, shifts_to][freezes] + \
