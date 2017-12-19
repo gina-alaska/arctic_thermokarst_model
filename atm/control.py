@@ -11,6 +11,8 @@ import os
 from cohorts import find_canon_name
 from grids.ice_grid import ICE_TYPES
 
+import yaml
+
 class ControlKeyError (Exception):
     """Raised if key being set is in control dict"""
     
@@ -43,6 +45,8 @@ class Control(object):
         """
         self.init_control = self.load({}, main_control_file)
         
+        from pprint import pprint
+        pprint(self.init_control)
         
         self.new_control = {}
         
@@ -68,81 +72,42 @@ class Control(object):
         -------
         dict or list
         """
-        with open(in_file, 'r') as fd:
-            inputs = control_file.read(fd)
+        with open(in_file, 'r') as cf:
+            control = yaml.load(cf)
+            
+        control_dir = control['Setup']['Control_dir']
         
-        is_list = True
-        for k in inputs.keys():
-            if type(k) is int:
-                continue
-            is_list = False
-            break
-            
-        if is_list: 
-            return inputs.values()
+        with open(os.path.join(
+            control_dir, control['Setup']['Archive_data']
+        )) as cf:
+            control['Setup']['Archive_data'] = yaml.load(cf)
         
-        for key in inputs:
-            val = inputs[key]
-            
-            ## can val convert to # 
-            try: 
-                val = int(val)
-            except ValueError:
-                try: 
-                    val = float(val)
-                except ValueError:
-                    pass
-            
-            if key in control.keys():
-                raise ControlKeyError, key + ' is in the control file already'
-            
-            control[key] = val
-            
-        # main control 
-        if 'Simulation_area' in control.keys():
-            
-            if not os.path.exists(control['Run_dir']):
-                if control['Run_dir'][:2] == './':
-                    control['Run_dir'] = control['Run_dir'][2:]
-                root = os.path.abspath(os.path.split(in_file)[0])
-                pth = os.path.join(root, control['Run_dir']) 
-                if os.path.exists(pth):
-                    control['Run_dir'] = pth
-                else:
-                    raise ControlPathError, "Input Path Invalid: " + pth
-            
-            run_dir = control['Run_dir']
-            
-            if not os.path.exists(control['Input_dir']):
-                pth = os.path.join(run_dir, control['Input_dir']) 
-                if os.path.exists(pth):
-                    control['Input_dir'] = pth
-                else:
-                    raise ControlPathError, "Input Path Invalid: " + pth
-            
-            if not os.path.exists(control['Output_dir']):
-                pth = os.path.join(run_dir, control['Output_dir']) 
-                if os.path.exists(pth):
-                    control['Output_dir'] = pth
-                else:
-                    raise ControlPathError, "Output Path Invalid: " + pth
-                
-            if not os.path.exists(control['Control_dir']):
-                pth = os.path.join(run_dir, control['Control_dir']) 
-                if os.path.exists(pth):
-                    control['Control_dir'] = pth
-                else:
-                    raise ControlPathError, "Control Path Invalid: " + pth
-              
-            in_path = control['Control_dir']
-            for key in [k for k in control if type(control[k]) is str]:
-                pth = os.path.join(in_path, control[key])
-                #~ print pth
-                if not os.path.isfile(pth):
-                    continue
-                control[key] = self.load({}, pth)
+        with open(os.path.join(
+            control_dir, control['Initilzation']['Initial_Cohort_List']
+        )) as cf:
+            control['Initilzation']['Initial_Cohort_List'] = yaml.load(cf)
+        
+        with open(os.path.join(
+            control_dir, control['Initilzation']['Met_Control']
+        )) as cf:
+            control['Initilzation']['Met_Control'] = yaml.load(cf)
+        
+        with open(os.path.join(
+            control_dir, control['Initilzation']['Terrestrial_Control']
+        )) as cf:
+            control['Initilzation']['Terrestrial_Control'] = yaml.load(cf)
+        
+        for key in control['Cohorts']:
+            try:
+                with open(
+                    os.path.join(control_dir, control['Cohorts'][key])
+                ) as cf:
+                    control['Cohorts'][key] = yaml.load(cf)
+            except IOError:
+                pass
         
         return control
+        
         
     def __getitem__ (self, key):
         """get item function

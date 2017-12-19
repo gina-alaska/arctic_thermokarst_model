@@ -1,6 +1,0 @@
-#----------------------------------------------------------
-# Control file template for lake/ponds, most config comes f
-# from lake_pond_control 
-#----------------------------------------------------------
-Transition_check_type   base_lake
-transitions_to          Ponds_WT_M
