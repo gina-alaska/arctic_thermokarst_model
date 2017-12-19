@@ -16,10 +16,7 @@ from climate_event_grid import ClimateEventGrid
 from met_grid import DegreeDayGrids
 
 class ModelGrids (object):
-    """Model Grids Class"""
-    
-    def __init__ (self, config):
-        """Class containg all grid objects for the ATM model
+    """Class containg all grid objects for the ATM model
         
         Parameters
         ----------
@@ -36,11 +33,23 @@ class ModelGrids (object):
             POI grid object
         ice: IceGrid
             ice grid object
+        lake_pond: LakePondGrid
+            Lake Pond Object
+        drainage: DrainageGrid
+            drainage grid
         shape: tuple:
             shape of grid at model resoloution
         aoi: np.array
             a grid of booleans where true elements are in AOI, false are not
+    """
+    
+    def __init__ (self, config):
+        """Class containg all grid objects for the ATM model
         
+        Parameters
+        ----------
+        config: dict
+            configuration for grid objects
         """
         self.area = AreaGrid(config)
         

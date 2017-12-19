@@ -26,7 +26,7 @@ class TestIOControlFile_dict_style (unittest.TestCase):
         """
         self.assertIs(type(self.control.init_control), dict)
         self.assertIs(type(self.control['Initial_Cohort_List'] ), list)
-        
+        print self.control['Met_Control']
             
     def test_get(self):
         """test get items"""
