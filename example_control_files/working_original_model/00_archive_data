@@ -1,0 +1,18 @@
+Simulation_Summary  Yes
+Initialization  Yes
+Met  Yes
+All_Cohorts  Yes
+Lakes  Yes
+Other_Cohorts  Yes
+Ponds  Yes
+Wetlands_NPG  Yes
+Wetlands_LCP  Yes
+Wetlands_CLC  Yes
+Wetlands_FCP  Yes
+Wetlands_HCP  Yes
+Figures  Yes
+# --------------------------------------
+# Clean the directories
+# --------------------------------------
+clean_initialization  yes
+clean_all_cohorts  no

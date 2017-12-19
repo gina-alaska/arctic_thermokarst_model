@@ -1,0 +1,92 @@
+#============================================================
+# Distribution of Ground Ice (poor, pore, wedge, massive, random)
+#------------------------------------------------------------
+Ice_Distribution WEDGE
+#------------------------------------------------------------
+Ice_Distribution_Figure Yes
+#============================================================
+# Drainage Efficiency (above, below, random)
+#------------------------------------------------------------
+Drainage_Efficiency_Distribution Random
+Drainage_Efficiency_Random_Value 0.85
+#------------------------------------------------------------
+Drainage_Efficiency_Figure Yes
+#============================================================
+# Initial Active Layer Depth (random)
+ALD_Distribution random
+ALD_Distribution_Lower_Bound 0.3
+ALD_Distribution_Upper_Bound 0.75
+#------------------------------------------------------------
+ALD_Distribution_Output Yes
+ALD_Factor_Output No
+#============================================================
+# Set Protective Layer Factors
+# Note: The initial protective layer is calculated
+# as the (Initial Active Layer * Protective Layer Factor)
+#------------------------------------------------------------
+CLC_WT_Y_PLF 1.0
+CLC_WT_M_PLF 1.0
+CLC_WT_O_PLF 1.0
+CoastalWaters_WT_O_PLF 10.0
+DrainedSlope_WT_Y_PLF 1.5
+DrainedSlope_WT_M_PLF 1.5
+DrainedSlope_WT_O_PLF 1.5
+FCP_WT_Y_PLF 1.15
+FCP_WT_M_PLF 1.15
+FCP_WT_O_PLF 1.15
+HCP_WT_Y_PLF 1.5
+HCP_WT_M_PLF 1.5
+HCP_WT_O_PLF 1.5
+LCP_WT_Y_PLF 1.0
+LCP_WT_M_PLF 1.0
+LCP_WT_O_PLF 1.0
+Meadow_WT_Y_PLF 0.8
+Meadow_WT_M_PLF 0.8
+Meadow_WT_O_PLF 0.8
+NoData_WT_O_PLF 50.0
+SandDunes_WT_Y_PLF 50.0
+SandDunes_WT_M_PLF 50.0
+SandDunes_WT_O_PLF 50.0
+SaturatedBarrens_WT_Y_PLF 1.0
+SaturatedBarrens_WT_M_PLF 1.0
+SaturatedBarrens_WT_O_PLF 1.0
+Shrubs_WT_O_PLF 2.0
+Urban_WT_PLF 5.0
+LargeLakes_WT_Y_PLF 2.5
+LargeLakes_WT_M_PLF 2.5
+LargeLakes_WT_O_PLF 2.5
+MediumLakes_WT_Y_PLF 2.5
+MediumLakes_WT_M_PLF 2.5
+MediumLakes_WT_O_PLF 2.5
+SmallLakes_WT_Y_PLF 2.5
+SmallLakes_WT_M_PLF 2.5
+SmallLakes_WT_O_PLF 2.5
+Ponds_WT_Y_PLF 2.5
+Ponds_WT_M_PLF 2.5
+Ponds_WT_O_PLF 2.5
+Rivers_WT_Y_PLF 20.0
+Rivers_WT_M_PLF 20.0
+Rivers_WT_O_PLF 20.0
+#Wet_NPG_PLF 0.8
+#Wet_LCP_PLF 1.0
+#Wet_CLC_PLF 1.0
+#Wet_FCP_PLF 1.15
+#Wet_HCP_PLF 1.25
+#Gra_NPG_PLF 0.8
+#Gra_LCP_PLF 1.0
+#Gra_FCP_PLF 1.25
+#Gra_HCP_PLF 1.50
+#Shr_NPG_PLF 1.5
+#Shr_LCP_PLF 1.7
+#Shr_FCP_PLF 1.9
+#Shr_HCP_PLF 2.1
+#Lakes_PLF 2.5
+#Ponds_PLF 1.1
+#------------------------------------------------------------
+Protective_Layer_Factor_Output No
+#------------------------------------------------------------
+#============================================================
+# Output Control for Dominant Cohort Figure / Movie
+Figure  No
+Movie  No
+#============================================================

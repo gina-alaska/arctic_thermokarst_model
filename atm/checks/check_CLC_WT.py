@@ -32,6 +32,7 @@ def check_CLC_WT_Y(self, element, time):
         # Active Layer > Protective Layer
         if self.ALD[element] >= self.ATTM_CLC_WT_Y_PL[element]:
             # Determine the Probability of Initiation (POI) for time-step
+            print self.CLC_WT_Y#['POI_Function']
             if self.CLC_WT_Y['POI_Function'].lower() == 'sigmoid':
                 if self.drainage_efficiency[element] == 'above':
                     A1 = self.CLC_WT_Y['A1_above']

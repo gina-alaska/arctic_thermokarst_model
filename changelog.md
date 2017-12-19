@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.2.5] - 2017-12-19
+### fixed
+- lake pond expasion function
+
 ## [0.2.4] - 2017-11-02
 ### fixed
 - fixed bug with lake_pond_expansion
