@@ -661,7 +661,6 @@ class AreaGrid(object):
             colormap = 'spectral', binary_pixels = True
         )
         
-        
     def save_init_normal_figure (self, cohort, path): 
         """save the init normalized Distribution figure (fractional area)
         
@@ -680,8 +679,6 @@ class AreaGrid(object):
             colormap = 'bone'
         )
         
-        
-            
     def get_cohort_list (self):
         """Gets list of cannon cohort names in model
         

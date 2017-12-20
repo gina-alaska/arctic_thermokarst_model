@@ -111,9 +111,6 @@ class ATM(object):
     def save_figures(self):
         """
         """
-        import matplotlib.pyplot as plt
-        print "initlize ==========="
-        
         outdir = self.control.Output_dir
         for figure in self.control.Initialize_Control:
             cohort = '_'.join(figure.split('_')[:-1])
@@ -126,8 +123,6 @@ class ATM(object):
                 os.makedirs(cohort_path)
             except:
                 pass
-            
-             
             
             if self.control.Initialize_Control['Initial_Cohort_Age_Figure'] and\
                      self.control.Initialize_Control[figure] and \
@@ -154,7 +149,6 @@ class ATM(object):
         #~ plt.show()
             
             
-        print "others =============="
         for key in self.control.Terrestrial_Control:
             if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
                 continue
@@ -164,11 +158,24 @@ class ATM(object):
             if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
                 continue
             print key
+        
+        lp_types = \
+                self.control.get_pond_types() + self.control.get_lake_types()    
+        for figure in self.control.Lake_Pond_Control:
+
+            lpt = '_'.join(figure.split('_')[:-2])
+            #~ print lpt, lp_types
+            if lpt not in lp_types:
+                continue 
             
-        for key in self.control.Lake_Pond_Control:
-            if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
-                continue
-            print key
+            path = os.path.join(outdir, lpt)
+            try: 
+                os.makedirs(cohort_path)
+            except:
+                pass
+            self.grids.lake_pond.depth_figure(
+                lpt, os.path.join(path,'Initial_'+lpt+'_Depth.png') , 0
+            )
         
         print "Cohort =============="
         for control in self.control.init_control['Cohorts']:

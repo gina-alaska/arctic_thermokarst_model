@@ -9,6 +9,18 @@ import os
 
 from constants import ROW, COL
 
+try:
+    from cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
+except ImportError:
+    from ..cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
+    
+    
+    
+try:
+    from atm_io import binary, image, raster
+except ImportError:
+    from ..atm_io import binary, image, raster
+
 
 config_ex = {
     'pickle path': './pickles',
@@ -709,4 +721,21 @@ class LakePondGrid (object):
                 if ts == item['ts']:
                     return item
             return {}
+            
+    def depth_figure(self, cohort, filename, time_step = -1):
+        """Save lake depth figures
+        
+        Parameters
+        ----------
+        cohort: str
+            lake pond type
+        filename: path
+            file to save
+        time_step: int 
+            time step to save
+        """
+        title = 'Inital Depth \n' + DISPLAY_COHORT_NAMES[cohort] 
+        cohort_data = self.get_depth_grid_at_ts(cohort, time_step, False)
+        image.save_img(cohort_data, filename, title,  cbar_extend = 'max') 
+        
         
