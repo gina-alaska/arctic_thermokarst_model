@@ -111,13 +111,16 @@ class ATM(object):
     def save_figures(self):
         """
         """
+        
+        print "Finishing up -- saving figures"
+        
         outdir = self.control.Output_dir
+        
+        print "  -- Initial Figures"
         for figure in self.control.Initialize_Control:
             cohort = '_'.join(figure.split('_')[:-1])
             if cohort not in self.grids.area.get_cohort_list():
-                continue   
-            print figure
-           
+                continue              
             cohort_path = os.path.join(outdir, cohort)
             try: 
                 os.makedirs(cohort_path)
@@ -149,18 +152,80 @@ class ATM(object):
         #~ plt.show()
             
             
-        for key in self.control.Terrestrial_Control:
-            if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
-                continue
-            print key
+        #~ for key in self.control.Terrestrial_Control:
+        init_path = os.path.join( outdir, 'Initialization')
+        try: 
+            os.makedirs(init_path)
+        except:
+            pass
+            
+        print "  -- Terrestrial Figures"
+        print "    -- Ice_Distribution_Figure"
+        if self.control.Terrestrial_Control['Ice_Distribution_Figure']:
+            self.grids.ice.figure(
+                os.path.join(init_path,'Ground_Ice_Content.png')
+            )
+            self.grids.ice.binary(
+                os.path.join(init_path,'Ground_Ice_Content.bin')
+            )
+        print "    -- Drainage_Efficiency_Figure"
+        if self.control.Terrestrial_Control['Drainage_Efficiency_Figure']:
+            self.grids.drainage.figure(
+                os.path.join(init_path,'Drainage_efficiency.png')
+            )
+            self.grids.drainage.binary(
+                os.path.join(init_path,'Drainage_efficiency.bin')
+            )
         
-        for key in self.control.Met_Control:
-            if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
-                continue
-            print key
+        print "    -- ALD_Distribution_Output"
+        if self.control.Terrestrial_Control['ALD_Distribution_Output']:
+            self.grids.ald.init_ald_figure(
+                os.path.join(init_path,'Initial_ALD.png')
+            )
+            self.grids.ald.init_ald_binary(
+                os.path.join(init_path,'Initial_ALD.bin')
+            )
+        print "    -- ALD_Factor_Output"
+        if self.control.Terrestrial_Control['ALD_Factor_Output']:
+            self.grids.ald.ald_constants_figure(
+                os.path.join(init_path,'Active_Layer_Factor.png')
+            )
+            self.grids.ald.ald_constants_binary(
+                os.path.join(init_path,'Active_Layer_Factor.bin')
+            )
+        
+        
+        
+        print "  -- Met Figures"  
+        print "    -- Degree Days"
+        dd_path = os.path.join( outdir, 'Initialization', 'Degree_Days')
+        try: 
+            os.makedirs(dd_path)
+        except:
+            pass
+        if self.control.Met_Control['Degree_Day_Output']:
+            tdd = self.control.Met_Control['TDD_Output']
+            try: 
+                os.makedirs(os.path.join(dd_path, tdd))
+            except:
+                pass
+            fdd = self.control.Met_Control['FDD_Output']
+            try: 
+                os.makedirs(os.path.join(dd_path, fdd))
+            except:
+                pass
+            
+            self.grids.degreedays.thawing.figures(
+                    os.path.join(dd_path, tdd), (0, 1250)
+                )
+            self.grids.degreedays.freezing.figures(
+                    os.path.join(dd_path, fdd), (-6000, -2000)
+                )
+            
         
         lp_types = \
                 self.control.get_pond_types() + self.control.get_lake_types()    
+        print "  -- Lake Pond Figures"
         for figure in self.control.Lake_Pond_Control:
 
             lpt = '_'.join(figure.split('_')[:-2])
@@ -168,13 +233,14 @@ class ATM(object):
             if lpt not in lp_types:
                 continue 
             
+            print "    -- " + lpt + ' Depth'
             path = os.path.join(outdir, lpt)
             try: 
                 os.makedirs(cohort_path)
             except:
                 pass
             self.grids.lake_pond.depth_figure(
-                lpt, os.path.join(path,'Initial_'+lpt+'_Depth.png') , 0
+                lpt, os.path.join(path,'Initial_'+lpt+'_Depth.png') , 1
             )
         
         print "Cohort =============="

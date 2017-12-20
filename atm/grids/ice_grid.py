@@ -4,9 +4,13 @@ ice_grid
 
 """
 import numpy as np
-
+import copy
 from constants import ROW, COL
 
+try:
+    from atm_io import binary, image
+except ImportError:
+    from ..atm_io import binary, image
 
 ICE_TYPES = ('poor', 'pore', 'wedge', 'massive')
 
@@ -106,7 +110,6 @@ class IceGrid(object):
         init_ice: tuple, 2d array, of filename
             if it is as tuple it should have 2 elements (min, max)
         """
-        ## TODO READ pl_modifiers from config
         
         if type(init_ice) is tuple:
             ice_grid = self.random_grid(shape, init_ice, aoi_mask)
@@ -148,19 +151,66 @@ class IceGrid(object):
         
     def get_ice_slope_grid(self, cohort, flat = True):
         """Get the ice content coefficient values for a cohort
+        
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        flat: bool
+            reshaps grid to shape if False
         """
         coeffs = self.cohort_coeffs[cohort]
         coeffs['none'] = 0
-        grid = self.grid
+        grid = copy.deepcopy(self.grid)
         for c in coeffs:
             grid[ grid == c ] = coeffs[c]
         
         shape = grid.shape if flat else self.shape
     
         return grid.astype(float).reshape(shape)
+    
+    def as_numbers(self):
+        """converts grid to a numerical representaion.
         
+        Returns
+        -------
+        np.array:
+            shpae is shape, 0 is substituted for 'none', 1 for 'above', and
+            2 for 'below'
+        """
+        grid = self.grid.reshape(self.shape)
+        grid[grid == 'none'] = 0
+        grid[grid == 'poor'] = 1
+        grid[grid == 'pore'] = 2
+        grid[grid == 'wedge'] = 3
+        grid[grid == 'massive'] = 4
+        return grid.astype(int)   
+    
         
-    def save_ice (self, time_step):
-        """ save ice at time step """
-        pass
+    def figure (self, filename):
+        """saves figure for ice slope distrobution
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        image.save_img(
+            self.as_numbers(), 
+            filename, 
+            'Ground Ice Content',
+            cmap = 'bone',
+            vmin = 0,
+            vmax = 4
+        )
+    
+    def binary (self, filename):
+        """save a binary representation
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        binary.save_bin(self.as_numbers(), filename)
         

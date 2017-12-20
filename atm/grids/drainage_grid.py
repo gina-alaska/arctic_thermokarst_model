@@ -187,6 +187,8 @@ class DrainageGrid (object):
         
         Parameters
         ----------
+        filename: path
+            file to save
         """
         image.save_img(
             self.as_numbers(), 
@@ -202,6 +204,8 @@ class DrainageGrid (object):
         
         Parameters
         ----------
+        filename: path
+            file to save
         """
         binary.save_bin(self.as_numbers(), filename)
         

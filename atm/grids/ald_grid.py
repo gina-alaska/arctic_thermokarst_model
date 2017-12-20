@@ -9,6 +9,11 @@ import numpy as np
 
 from constants import ROW, COL
 
+try:
+    from atm_io import binary, image, raster
+except ImportError:
+    from ..atm_io import binary, image, raster
+
 import copy
 
 class ALDGrid(object):
@@ -243,6 +248,7 @@ class ALDGrid(object):
         
         self.ald_constants = self.init_ald_grid.flatten() / degree_days
         
+        
 
     def random_grid (self, shape, init_ald, aoi_mask = None):
         """create a random ALD grid
@@ -435,7 +441,51 @@ class ALDGrid(object):
             np.sqrt(current_tdd / init_tdd).flatten()).reshape(shape)
         
         
-    def save_ald (self, time_step):
-        """ save ald at time step """
-        pass
+    def init_ald_figure (self, filename):
+        """ save initilal ald figure
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        title = 'Initial Active Layer Depth'
+        data = self.init_ald_grid.reshape(self.shape) 
+        image.save_img(data, filename, title,
+            cbar_extend = 'max', cmap='bone'
+        ) 
+        
+    def init_ald_binary (self, filename):
+        """ save initial ald as binary np array 
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        binary.save_bin(self.init_ald_grid.reshape(self.shape), filename)
+    
+    def ald_constants_figure (self, filename):
+        """ save initilal  ald constants figure
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        title = 'Initial Active Layer Depth'
+        data = self.ald_constants.reshape(self.shape) 
+        image.save_img(data, filename, title,
+            cbar_extend = 'max', cmap='bone'
+        ) 
+        
+    def ald_constants_binary (self, filename):
+        """ save initial ald constants as binary np array 
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        binary.save_bin(self.ald_constants.reshape(self.shape), filename)
         

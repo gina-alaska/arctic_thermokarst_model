@@ -73,6 +73,10 @@ class ModelGrids (object):
         
         self.degreedays = DegreeDayGrids(config)
         
+        self.ald.setup_ald_constants(
+            self.degreedays.thawing[config['start year']]
+        )
+        
     def get_max_time_steps (self):
         """Get the max number of model timesteps possible
         

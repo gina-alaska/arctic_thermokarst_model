@@ -692,7 +692,10 @@ class LakePondGrid (object):
         with open(pickle_name, 'r') as pkl:
             while True:
                 try:
-                    archive.append(pickle.load(pkl))
+                    d = pickle.load(pkl)
+                    if len(archive) > 1 and d['ts'] == ts and not set_current:
+                        return d
+                    archive.append(d)
                 except EOFError:
                     break
         archive = archive[1:] ## strip metadata
