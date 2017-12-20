@@ -6,7 +6,8 @@ Input Output for image representation of grids
 """
 import matplotlib.pyplot as plt
 
-def save_img (data, path, title, cmap = 'viridis', vmin = 0.0, vmax = 1.0):
+def save_img (data, path, title, cmap = 'viridis', vmin = 0.0, vmax = 1.0,
+        cbar_extend = 'neither'):
     """save the grid as image, with title and color bar
     
     Parameters
@@ -25,8 +26,8 @@ def save_img (data, path, title, cmap = 'viridis', vmin = 0.0, vmax = 1.0):
         vmin = vmin, 
         vmax = vmax
     )
-    plt.title(title)
-    plt.colorbar(extend = 'neither', shrink = 0.92)
+    plt.title(title, wrap = True)
+    plt.colorbar(extend = cbar_extend, shrink = 0.92)
     #~ imgplot.save(path)
     #~ plt.imsave(path, imgplot)
     plt.savefig(path)

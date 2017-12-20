@@ -8,9 +8,11 @@ import numpy as np
 import os
 
 try:
-    from cohorts import find_canon_name
+    from cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
 except ImportError:
-    from ..cohorts import find_canon_name
+    from ..cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
+    
+    
     
 try:
     from atm_io import binary, image, raster
@@ -567,8 +569,10 @@ class AreaGrid(object):
         """
         return (self.total_franctonal_area(time_step) > 0.0).reshape(self.shape)
         
-    def save_cohort_at_time_step (self, cohort, path,
-            time_step = -1, bin_only = True, binary_pixels = False):
+    def save_cohort_at_time_step (self, cohort, path, filename, title = '', 
+            time_step = -1, bin_only = True, binary_pixels = False, 
+            cbar_extend = 'neither', colormap = 'viridis'
+        ):
         """various save functions should be created to save, reports, images, 
         or videos
         
@@ -577,20 +581,61 @@ class AreaGrid(object):
         cohort_data = self.get_cohort_at_time_step(
             cohort, time_step, flat = False
         )
-        
+        #~ print binary_pixels
         if binary_pixels:
             ## see if cohort is present or not
+            cohort_data = copy.deepcopy(cohort_data)
             cohort_data[cohort_data>0] = 1
+            #~ print cohort_data
         #~ self.ts_to_year(time_step)
         year = 'TEMP_YEAR'
-        filename = cohort+ "_Fractional_Area_" + str(year)
+        #~ filename = f
         bin_path = os.path.join(path, filename + '.bin')
         binary.save_bin(cohort_data, bin_path)
         if not bin_only:
             img_path = os.path.join(path, filename + '.png')
-            image.save_img(cohort_data, img_path, filename) # pretty names
+            image.save_img(
+                cohort_data, img_path, title, cmap = colormap,
+                cbar_extend = cbar_extend
+                ) 
             
         return filename
+        
+    def save_init_age_figure (self, cohort, path): 
+        """
+        """
+        file_name = cohort + '_age'
+        title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Age'
+        self.save_cohort_at_time_step(
+            cohort, path, file_name, title,
+            time_step = 0, bin_only=False, cbar_extend = 'max',
+            colormap = 'bone', binary_pixels = True
+        )
+        
+    def save_init_dist_figure (self, cohort, path): 
+        """
+        """
+        file_name = 'Initial_' +cohort
+        title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Cohort Distribution'
+        self.save_cohort_at_time_step(
+            cohort, path, file_name, title,
+            time_step = 0, bin_only=False, cbar_extend = 'max',
+            colormap = 'spectral', binary_pixels = True
+        )
+        
+        
+    def save_init_normal_figure (self, cohort, path): 
+        """
+        """
+        file_name = cohort + '_fractional_cohorts'
+        title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Fractional Area'
+        self.save_cohort_at_time_step(
+            cohort, path, file_name, title,
+            time_step = 0, bin_only=False, cbar_extend = 'max',
+            colormap = 'bone'
+        )
+        
+        
             
     def get_cohort_list (self):
         """Gets list of cannon cohort names in model"""

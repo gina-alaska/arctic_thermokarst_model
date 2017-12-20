@@ -111,19 +111,75 @@ class ATM(object):
     def save_figures(self):
         """
         """
-        for figure in self.control.Initialize_Control:
-            
-            print figure
+        import matplotlib.pyplot as plt
+        print "initlize ==========="
         
-        for control in self.control.init_control:
+        outdir = self.control.Output_dir
+        for figure in self.control.Initialize_Control:
+            cohort = '_'.join(figure.split('_')[:-1])
+            if cohort not in self.grids.area.get_cohort_list():
+                continue   
+            print figure
+           
+            cohort_path = os.path.join(outdir, cohort)
+            try: 
+                os.makedirs(cohort_path)
+            except:
+                pass
+            
+             
+            
+            if self.control.Initialize_Control['Initial_Cohort_Age_Figure'] and\
+                     self.control.Initialize_Control[figure] and \
+                     figure.lower().find('age') > 0:
+                self.grids.area.save_init_age_figure(cohort, cohort_path)
+            if self.control.Initialize_Control[
+                        'Normalized_Cohort_Distribution_Figure'
+                     ] and\
+                     self.control.Initialize_Control[figure] and \
+                     figure.lower().find('normal') > 0:
+                self.grids.area.save_init_normal_figure(cohort, cohort_path)
+            if self.control.Initialize_Control[
+                        'Initial_Cohort_Distribution_Figure'
+                     ] and\
+                     self.control.Initialize_Control[figure] and \
+                     figure.lower().find('figure') > 0:
+                self.grids.area.save_init_dist_figure(cohort, cohort_path)
+                    
+            
+        
+        #~ img = self.grids.area[1900, 'CLC_WT_Y']
+        #~ plt.imshow(img,cmap='bone')
+        #~ plt.colorbar( extend = 'max', shrink = 0.92)
+        #~ plt.show()
+            
+            
+        print "others =============="
+        for key in self.control.Terrestrial_Control:
+            if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
+                continue
+            print key
+        
+        for key in self.control.Met_Control:
+            if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
+                continue
+            print key
+            
+        for key in self.control.Lake_Pond_Control:
+            if not (key.lower().find('figure') != -1 or key.lower().find('movie') != -1 or key.lower().find('output') != -1):
+                continue
+            print key
+        
+        print "Cohort =============="
+        for control in self.control.init_control['Cohorts']:
             if control.lower().find('control') == -1:
                 continue
             if control == 'Initialize_Control':
                 continue
-            for key in self.control[control]:
+            for key in self.control['Cohorts'][control]:
                 if key.lower().find('figure') == -1:
                     continue
-                print key, self.control[control][key]
+                print control, key, self.control['Cohorts'][control][key]
         
         
 #_______________________________________________________________________________
