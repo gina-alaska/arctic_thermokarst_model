@@ -573,10 +573,34 @@ class AreaGrid(object):
             time_step = -1, bin_only = True, binary_pixels = False, 
             cbar_extend = 'neither', colormap = 'viridis'
         ):
-        """various save functions should be created to save, reports, images, 
-        or videos
+        """save a in image representing a cohort at a time step
         
-        returns base file name
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to save figures at
+        filename: str
+            name of file without extension
+        title: str, optional
+            title for png figure
+        timestep: int, optional
+            timestep to save defaults to -1
+        bin_only: bool, defaults True
+            only saves numpy binary image represntation if true 
+        binary_pixels: Bool, defaults False
+            if true converts all pixels > 0 to 1.
+        cbar_extend: str
+            max, min, or neither
+        colormap: str
+            matplotlib color map
+        
+        
+        returns 
+        -------
+        str:
+            base file name
         """
         cohort_data = self.get_cohort_at_time_step(
             cohort, time_step, flat = False
@@ -602,7 +626,14 @@ class AreaGrid(object):
         return filename
         
     def save_init_age_figure (self, cohort, path): 
-        """
+        """save the init age figure
+        
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to output file at
         """
         file_name = cohort + '_age'
         title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Age'
@@ -613,7 +644,14 @@ class AreaGrid(object):
         )
         
     def save_init_dist_figure (self, cohort, path): 
-        """
+        """save the init distribution figure
+        
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to output file at
         """
         file_name = 'Initial_' +cohort
         title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Cohort Distribution'
@@ -625,7 +663,14 @@ class AreaGrid(object):
         
         
     def save_init_normal_figure (self, cohort, path): 
-        """
+        """save the init normalized Distribution figure (fractional area)
+        
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to output file at
         """
         file_name = cohort + '_fractional_cohorts'
         title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Fractional Area'
@@ -638,7 +683,13 @@ class AreaGrid(object):
         
             
     def get_cohort_list (self):
-        """Gets list of cannon cohort names in model"""
+        """Gets list of cannon cohort names in model
+        
+        Returns
+        -------
+        list:
+            cannon cohorts in model instance
+        """
         return [key for key in self.key_to_index if key.find('--') == -1]
         
         
