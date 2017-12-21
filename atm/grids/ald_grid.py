@@ -479,6 +479,8 @@ class ALDGrid(object):
             cbar_extend = 'max', cmap='bone'
         ) 
         
+    
+        
     def ald_constants_binary (self, filename):
         """ save initial ald constants as binary np array 
         

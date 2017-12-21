@@ -47,23 +47,23 @@ import faulthandler
 # Import ATM Modules
 import clock
 #~ import read_control
-import read_met_data
-import read_degree_days
-import calc_degree_days
-import read_layers
-import model_domain
-import create_attm_cohort_arrays
+#~ import read_met_data
+#~ import read_degree_days
+#~ import calc_degree_days
+#~ import read_layers
+#~ import model_domain
+#~ import create_attm_cohort_arrays
 ## still needed for initilzation stuff
-import run_barrow
-import run_tanana
-import run_yukon
-import initialize
+#~ import run_barrow
+#~ import run_tanana
+#~ import run_yukon
+#~ import initialize
 
 ## new way of running model
 import run_general 
-from cohorts import initial_barrow, initial_tanana
+#~ from cohorts import initial_barrow, initial_tanana
 
-import Output_cohorts_by_year
+#~ import Output_cohorts_by_year
 import results
 import archive
 
@@ -112,7 +112,7 @@ class ATM(object):
         """
         """
         
-        print "Finishing up -- saving figures"
+        print "Finishing up \n-- saving figures"
         
         outdir = self.control.Output_dir
         
@@ -236,23 +236,29 @@ class ATM(object):
             print "    -- " + lpt + ' Depth'
             path = os.path.join(outdir, lpt)
             try: 
-                os.makedirs(cohort_path)
+                os.makedirs(path)
             except:
                 pass
             self.grids.lake_pond.depth_figure(
                 lpt, os.path.join(path,'Initial_'+lpt+'_Depth.png') , 1
             )
         
-        print "Cohort =============="
-        for control in self.control.init_control['Cohorts']:
-            if control.lower().find('control') == -1:
+        print "  -- Cohort Figures/Video"
+        for control in sorted(self.control.init_control['Cohorts']):
+            if type(self.control.init_control['Cohorts'][control]) is str:
                 continue
-            if control == 'Initialize_Control':
+            if not self.control.init_control['Cohorts'][control]['Figures']:
                 continue
-            for key in self.control['Cohorts'][control]:
-                if key.lower().find('figure') == -1:
-                    continue
-                print control, key, self.control['Cohorts'][control][key]
+            
+            cohort = '_'.join(control.split('_')[:-1])
+            path = os.path.join(outdir, cohort, 'year_cohorts')
+            try: 
+                os.makedirs(path)
+            except:
+                pass
+            vid = self.control.init_control['Cohorts'][control]['Movie']
+            print "    -- " + cohort + " Figures/Video"
+            self.grids.area.save_cohort_timeseries(cohort, path, vid)
         
         
 #_______________________________________________________________________________
@@ -339,7 +345,7 @@ class ATM(object):
                     'SmallLakes_WT_O',
             ] 
             
-            run_general.run(self, barrow_checks, initial_barrow)
+            run_general.run(self, barrow_checks, '')
         elif self.control['Simulation_area'].lower() == 'tanana':
             tanana_checks = []
             run_general.run(self, tanana_checks, initial_tanana)

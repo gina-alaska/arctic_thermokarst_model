@@ -23,6 +23,8 @@ from constants import ROW, COL
 
 import copy
 
+import  moviepy.editor as mpy
+
 class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
 
@@ -678,6 +680,41 @@ class AreaGrid(object):
             time_step = 0, bin_only=False, cbar_extend = 'max',
             colormap = 'bone'
         )
+        
+    def save_cohort_timeseries( self, cohort, path, video = False ):
+        """
+        """
+        idx = 0
+        files = []
+        while True:
+            try:
+                fname = cohort + '_Fractional_Area_'+ str(self.start_year + idx)
+                try:
+                    name = DISPLAY_COHORT_NAMES[cohort]
+                except KeyError:
+                    print cohort + ' not Found'
+                    return
+                    #~ name = cohort
+                    
+                title = name + str(self.start_year + idx)
+                self.save_cohort_at_time_step( 
+                    cohort, path, fname, title, time_step = idx, bin_only=False
+                )
+                files.append(fname+'.png')
+                idx += 1
+            except IndexError:
+                break
+        files = [os.path.join(path, f) for f in files]
+        #~ print files
+        if video:
+            
+            
+            clip = mpy.ImageSequenceClip(files, fps=5)
+            clip.write_videofile(
+                os.path.join(path,cohort+"_fraction.mp4")
+            )
+        
+            
         
     def get_cohort_list (self):
         """Gets list of cannon cohort names in model
