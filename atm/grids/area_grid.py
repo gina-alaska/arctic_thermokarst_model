@@ -711,7 +711,8 @@ class AreaGrid(object):
             
             clip = mpy.ImageSequenceClip(files, fps=5)
             clip.write_videofile(
-                os.path.join(path,cohort+"_fraction.mp4")
+                os.path.join(path,cohort+"_fraction.mp4"), 
+                progress_bar=False, verbose = False
             )
         
             
