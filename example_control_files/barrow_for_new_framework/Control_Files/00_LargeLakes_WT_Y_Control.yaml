@@ -4,3 +4,7 @@
 #----------------------------------------------------------
 Transition_check_type: base_lake
 transitions_to: Ponds_WT_Y
+
+## Figures
+Figures: Yes
+Movie: No

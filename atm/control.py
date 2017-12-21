@@ -45,8 +45,8 @@ class Control(object):
         """
         self.init_control = self.load({}, main_control_file)
         
-        from pprint import pprint
-        pprint(self.init_control)
+        #~ from pprint import pprint
+        #~ pprint(self.init_control)
         
         self.new_control = {}
         
@@ -75,7 +75,31 @@ class Control(object):
         with open(in_file, 'r') as cf:
             control = yaml.load(cf)
             
+        #~ control_dir = control['Control_dir']
+        run_dir = control['Run_dir']
+        if not os.path.exists(control['Control_dir']):
+            path = os.path.join(run_dir, control['Control_dir'])
+            if os.path.exists(path):
+                control['Control_dir'] = path
+        
         control_dir = control['Control_dir']
+        
+        
+        if not os.path.exists(control['Input_dir']):
+            path = os.path.join(run_dir, control['Input_dir'])
+            if os.path.exists(path):
+                control['Input_dir'] = path
+        if not os.path.exists(control['Output_dir']):
+            path = os.path.join(run_dir, control['Output_dir'])
+            if os.path.exists(path):
+                control['Output_dir'] = path
+       
+        #~ print control['Control_dir']
+        #~ print control['Input_dir']
+        #~ print control['Output_dir']
+        #~ import sys
+        #~ sys.exit(0)
+        
         
         with open(os.path.join(
             control_dir, control['Archive_data']

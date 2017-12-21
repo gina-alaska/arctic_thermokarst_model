@@ -49,7 +49,7 @@ lake_drain_rate_0.1<0.4: 0.0017
 lake_drain_rate_0.4<1.0: 0.0025
 #============================================================
 # Output Degree Day Files
-Degree_Day_Output: No
+Degree_Day_Output: Yes
 #------------------------------------------------------------
 # Name of Degree Day Output Files if calculated
 TDD_Output: TDD_Historical_1901-2009

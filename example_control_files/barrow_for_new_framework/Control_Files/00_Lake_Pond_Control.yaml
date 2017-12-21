@@ -111,53 +111,18 @@ Ponds_WT_M_depth_control: 10
 Ponds_WT_O_depth_control: 10
 #============================================================
 # Output Control for Lake & Pond Depth
-Lake_Depth_Figure: Yes
-LargeLake_WT_Y_Depth_Figure: Yes
-LargeLake_WT_M_Depth_Figure: Yes
-LargeLake_WT_0_Depth_Figure: Yes
-MediumLake_WT_Y_Depth_Figure: Yes
-MediumLake_WT_M_Depth_Figure: Yes
-MediumLake_WT_O_Depth_Figure: Yes
-SmallLake_WT_Y_Depth_Figure: Yes
-SmallLake_WT_M_Depth_Figure: Yes
-SmallLake_WT_O_Depth_Figure: Yes
-Pond_Depth_Figure: Yes
-Pond_WT_Y_Depth_Figure:  Yes
-Pond_WT_M_Depth_Figure:  Yes
-Pond_WT_O_Depth_Figure:  Yes
-#============================================================
-# Output Results of Pond/Lake Distribution
-# Figures with "Yes" flag result in both *.bin and
-# *.jpg files. If Movie is flagged with 'Yes', the
-# figures flag must also be flagged 'Yes'.
-#------------------------------------------------------------
-Pond_Figures:  Yes
-Pond_WT_Y_Figures:  Yes
-Pond_WT_M_Figures:  Yes
-Pond_WT_O_Figures:  Yes
-Pond_Movie:  No
-Pond_WT_Y_Movie:  No
-Pond_WT_M_Movie:  No
-Pond_WT_O_Movie:  No
-#------------------------------------------------------------
-Lake_Figures:  Yes
-LargeLake_WT_Y_Figures: Yes
-LargeLake_WT_M_Figures: Yes
-LargeLake_WT_O_Figures: Yes
-MediumLake_WT_Y_Figures: Yes
-MediumLake_WT_M_Figures: Yes
-MediumLake_WT_O_Figures: Yes
-SmallLake_WT_Y_Figures: Yes
-SmallLake_WT_M_Figures: Yes
-SmallLake_WT_O_Figures: Yes
-Lake_Movie:  No
-LargeLake_WT_Y_Movie:  No
-LargeLake_WT_M_Movie:  No
-LargeLake_WT_O_Movie:  No
-MediumLake_WT_Y_Movie:  No
-MediumLake_WT_M_Movie:  No
-MediumLake_WT_O_Movie:  No
-SmallLake_WT_Y_Movie:  No
-SmallLake_WT_M_Movie:  No
-SmallLake_WT_O_Movie:  No
-#============================================================
+Lakes_Depth_Figure: Yes
+LargeLakes_WT_Y_Depth_Figure: Yes
+LargeLakes_WT_M_Depth_Figure: Yes
+LargeLakes_WT_0_Depth_Figure: Yes
+MediumLakes_WT_Y_Depth_Figure: Yes
+MediumLakes_WT_M_Depth_Figure: Yes
+MediumLakes_WT_O_Depth_Figure: Yes
+SmallLakes_WT_Y_Depth_Figure: Yes
+SmallLakes_WT_M_Depth_Figure: Yes
+SmallLakes_WT_O_Depth_Figure: Yes
+Ponds_Depth_Figure: Yes
+Ponds_WT_Y_Depth_Figure:  Yes
+Ponds_WT_M_Depth_Figure:  Yes
+Ponds_WT_O_Depth_Figure:  Yes
+

@@ -4,3 +4,7 @@
 #----------------------------------------------------------
 Transition_check_type: base_pond
 transitions_to: SmallLakes_WT_M
+
+## Figures
+Figures: Yes
+Movie: No
