@@ -87,6 +87,6 @@ Protective_Layer_Factor_Output: No
 #------------------------------------------------------------
 #============================================================
 # Output Control for Dominant Cohort Figure / Movie
-Figure: No
-Movie: No
+Figure: Yes
+Movie: Yes
 #============================================================

@@ -143,7 +143,7 @@ Cohorts:
     SaturatedBarrens_WT_O_Control: 00_SaturatedBarrens_WT_O_Control.yaml
     SaturatedBarrens_WT_Y_Control: 00_SaturatedBarrens_WT_Y_Control.yaml
     Shrubs_WT_O_Control: 00_Shrubs_WT_O_Control.yaml
-    Urban_WT_O_Control: 00_Urban_WT_Control.yaml
+    Urban_WT_O_Control: 00_Urban_WT_O_Control.yaml
     #----------------------------------------------------------------
     # File Name Containing Lake/Pond/River Parameters & Variables
     LargeLakes_WT_M_Control: 00_LargeLakes_WT_M_Control.yaml

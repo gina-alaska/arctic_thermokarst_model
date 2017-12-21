@@ -111,7 +111,6 @@ class ATM(object):
     def save_figures(self):
         """
         """
-        
         print "Finishing up \n-- saving figures"
         
         outdir = self.control.Output_dir
@@ -194,6 +193,17 @@ class ATM(object):
                 os.path.join(init_path,'Active_Layer_Factor.bin')
             )
         
+        dom_path = os.path.join( outdir, 'All_cohorts', 'Year_Cohorts')
+        try: 
+            os.makedirs(dom_path)
+        except:
+            pass
+        
+        print "    -- Dominant Cohort Figure"
+        if self.control.Terrestrial_Control['Figure']:
+            vid = self.control.Terrestrial_Control['Movie']
+            self.grids.area.dominate_cohort_timeseries( dom_path, vid)
+        
         
         
         print "  -- Met Figures"  
@@ -259,6 +269,9 @@ class ATM(object):
             vid = self.control.init_control['Cohorts'][control]['Movie']
             print "    -- " + cohort + " Figures/Video"
             self.grids.area.save_cohort_timeseries(cohort, path, vid)
+            
+        
+        
         
         
 #_______________________________________________________________________________
