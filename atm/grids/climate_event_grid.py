@@ -46,7 +46,7 @@ class ClimateEventGrid (object):
             self.load_from_pickle(config)
             return
     
-        self.start_year = config['start year'] + 1
+        self.start_year = config['start year']
         self.shape = config['shape']
         ## grid initilzed assuming no climate events
         self.grid = np.zeros(self.shape).astype(bool)
@@ -135,23 +135,13 @@ class ClimateEventGrid (object):
         return grid.reshape(shape)
         
     def create_climate_events (self):
-        """
+        """Creates climate events 
         """
         block_size = np.random.randint(
             self.climate_block_range[0],
             self.climate_block_range[1]
         )
         
-        #~ water_cohorts = \
-            #~ grids.lake_pond_grid.lake_types + grids.lake_pond_grid.ponds_types
-        
-        #~ lakes = np.zeros(self.shape)
-        #~ for cohort in grids.lake_pond_grid.lake_types:
-            #~ lakes += grids.area[self.start_year + self.ts, cohort]
-                
-        #~ ponds = np.zeros(self.shape)
-        #~ for cohort in grids.lake_pond_grid.pond_types:
-            #~ ponds += grids.area[self.start_year + self.ts, cohort]
         
         for row in range(0, self.shape[ROW], block_size):
             for col in range(0, self.shape[COL], block_size):
@@ -160,11 +150,17 @@ class ClimateEventGrid (object):
                 if not climate_event <= self.probability:
                     continue
                 ## climate envent occuts in block
+                print "climate event occured"
                 self.grid[row:row+block_size, col:col+block_size] = True
         return block_size
         
     def write_to_pickle(self, pickle_name = None):
         """Save Met object to pickle file
+        
+        Parameters
+        ----------
+        pickle_name:
+            name of pickle file
         """
         data = {
             'start year': self.start_year,

@@ -78,7 +78,7 @@ class AreaGrid(object):
         """
         input_data = config['area data'] 
         target_resolution = config['target resolution']
-        self.start_year = int(config['start year'])
+        self.start_year = int(config['initilzation year'])
         
         self.input_data = input_data
         ## read input
@@ -180,7 +180,7 @@ class AreaGrid(object):
         
         for f in self.input_data:
             ## add path here
-            print f
+            #~ print f
             path = f
             data, metadata = raster.load_raster (path)
             
@@ -287,7 +287,7 @@ class AreaGrid(object):
             abs(int(target_resolution[ROW]/current_resolution[ROW])),
             abs(int(target_resolution[COL]/current_resolution[COL]))
         )
-        print resize_num
+        #~ print resize_num
         resized_layer = []
         
         shape = layer.shape

@@ -209,8 +209,8 @@ def expansion ( lp_cohorts, year, grids, control):
         
     normalize = total >= 1.0
     
-    if normalize.any():
-        print 'normalize'
+    #~ if normalize.any():
+        #~ print 'normalize'
     
     for cohort in lp_cohorts:
         grids.area[year,cohort+ '--0'][ normalize ]  =  \

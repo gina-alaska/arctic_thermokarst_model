@@ -66,7 +66,7 @@ class ModelGrids (object):
         self.climate_event = ClimateEventGrid(config)
         #~ print config['pond types'] + config['lake types']
         for lpt  in config['pond types'] + config['lake types']:
-            print lpt
+            #~ print lpt
             mask = self.area[lpt][0] > 0 # all cells in first ts > 0
             self.lake_pond.apply_mask(lpt, mask)
         self.drainage = DrainageGrid(config)

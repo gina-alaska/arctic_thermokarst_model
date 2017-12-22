@@ -259,7 +259,7 @@ class Control(object):
         List:
             paths to input rasters
         """
-        print self.Initial_Cohort_List
+        #~ print self.Initial_Cohort_List
         return [
             os.path.join(self.Input_dir, f) for f in self.Initial_Cohort_List
         ]
@@ -366,7 +366,7 @@ class Control(object):
         tuple: (min,max)
             range, if the range is specified as uniform, sets min == max
         """
-        print self.Lake_Pond_Control
+        #~ print self.Lake_Pond_Control
         if self.Lake_Pond_Control['Pond_Distribution'].lower() == 'uniform':
             return (
                 self.Lake_Pond_Control['Uniform_Pond_Depth'], 

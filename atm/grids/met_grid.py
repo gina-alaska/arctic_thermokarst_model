@@ -159,8 +159,8 @@ class MetGridBase (object):
         
             ## load data as read only
             data = self.read_spatial_from_memory_map(source)
-            print data.shape
-            print data
+            #~ print data.shape
+            #~ print data
             years = data.shape[0] / (self.shape[0] * self.shape[1])
             data = data.reshape(
                 years, (self.shape[0] * self.shape[1])
@@ -300,7 +300,7 @@ class MetGridBase (object):
         for year in range(self.start_year, self.start_year + len(self.history)):
             filename = os.path.join(
                 dirname, 
-                self.met_type.replace(' ', '_') + '_' + str(year) + '.jpg'
+                self.met_type.replace(' ', '_') + '_' + str(year) + '.png'
             )
             self.figure(filename, year, limits)
             

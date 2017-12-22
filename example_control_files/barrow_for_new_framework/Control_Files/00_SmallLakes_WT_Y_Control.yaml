@@ -2,7 +2,7 @@
 # Control file template for lake/ponds, most config comes f
 # from lake_pond_control 
 #----------------------------------------------------------
-Transition_check_type: base_lake
+Transition_check_type: lake_to_pond
 transitions_to: Ponds_WT_Y
 
 ## Figures

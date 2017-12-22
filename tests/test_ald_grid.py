@@ -20,7 +20,7 @@ class TestALDGridClass(unittest.TestCase):
             'shape': (10,10),
             'cohort list': ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
             'init ald': (.3,.3),
-            'start year': 1900,
+            'initilzation year': 1900
         }
         
         config['porosities'] = {k: 1 for k in config['cohort list']}
