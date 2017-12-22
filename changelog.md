@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2017-12-21
+### changed
+- entire codebase and framework have been rewritten to use new grids and checks
+
+
 ## [0.2.4] - 2017-11-02
 ### fixed
 - fixed bug with lake_pond_expansion
