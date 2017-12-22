@@ -37,8 +37,8 @@ class TestAreaGridClass(unittest.TestCase):
         #~ print files
         config = {
             'target resolution': (1000,1000),
-            'start year': 1900,
-            'input data': files,
+            'initilzation year': 1900,
+            'area data': files,
         }
     
         self.tg_class =  area_grid.AreaGrid(config)
@@ -50,9 +50,9 @@ class TestAreaGridClass(unittest.TestCase):
         self.assertEqual( ( 50, 67 ), self.tg_class.shape )
         self.assertEqual( 1900, self.tg_class.start_year )
         self.assertIs( np.ndarray, type(self.tg_class.init_grid) )
-        self.assertEqual( (43, 50 * 67 ), self.tg_class.init_grid.shape )
+        self.assertEqual( (45, 50 * 67 ), self.tg_class.init_grid.shape )
         self.assertEqual( 1, len(self.tg_class.grid) )
-        self.assertEqual( (1, 43, 50 * 67 ), 
+        self.assertEqual( (1, 45, 50 * 67 ), 
             np.array(self.tg_class.grid).shape)
        
     def test_read_layers (self):
@@ -170,7 +170,7 @@ class TestAreaGridClass(unittest.TestCase):
             type (self.tg_class.get_cohort_at_time_step('LCP_WT_O', 0))
         )
         
-        self.assertEqual( (43, 50*67),
+        self.assertEqual( (45, 50*67),
             self.tg_class.get_all_cohorts_at_time_step(0).shape
         )
         self.assertIs( np.ndarray, 
@@ -187,7 +187,7 @@ class TestAreaGridClass(unittest.TestCase):
     def test_setitem (self):
         """ Function doc """
         cohort_ex = np.zeros([50,67])
-        all_cohort_ex = np.zeros([43,50,67])
+        all_cohort_ex = np.zeros([45,50,67])
         
         with self.assertRaises(StandardError):
             self.tg_class.set_cohort_at_time_step(

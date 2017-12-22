@@ -10,6 +10,7 @@ import os
 
 from constants import ROW, COL
 
+import copy
 
 class POIGrid (object):
     """ Class doc """
@@ -47,7 +48,7 @@ class POIGrid (object):
         
         
         """
-        self.start_year = int(config['start year'])
+        self.start_year = int(config['initilzation year'])
 
         shape = config['shape']
         cohorts = config['cohort list']
@@ -343,7 +344,7 @@ class POIGrid (object):
         zeros : bool
             set new years data to 0 if true
         """
-        self.grid.append(self.grid[-1])
+        self.grid.append(copy.deepcopy(self.grid[-1]))
         if zeros:
             self.grid[-1] = self.grid[-1]*0
     

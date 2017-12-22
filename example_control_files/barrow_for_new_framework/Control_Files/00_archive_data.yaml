@@ -1,0 +1,13 @@
+Simulation_Summary: Yes
+Initialization: Yes
+Met: Yes
+All_Cohorts: Yes
+Lakes: Yes
+Other_Cohorts: Yes
+Ponds: Yes
+Figures: Yes
+# --------------------------------------
+# Clean the directories # not implmented
+# --------------------------------------
+#~ clean_initialization: yes
+#~ clean_all_cohorts: no

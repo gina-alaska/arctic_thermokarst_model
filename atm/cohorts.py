@@ -42,7 +42,7 @@ CANON_COHORT_NAMES = {
     ('Meadow_WetlandTundra_Old',): 'Meadow_WT_O',
     ('Meadow_WetlandTundra_Young',): 'Meadow_WT_Y',
     
-    ('MediumLakes_WetlandTundra_Medium',): 'MediumLakes_WT_M ',
+    ('MediumLakes_WetlandTundra_Medium',): 'MediumLakes_WT_M',
     ('MediumLakes_WetlandTundra_Old',): 'MediumLakes_WT_O',
     ('MediumLakes_WetlandTundra_Young',): 'MediumLakes_WT_Y' ,
     
@@ -70,7 +70,9 @@ CANON_COHORT_NAMES = {
     ('SmallLakes_WetlandTundra_Old',): 'SmallLakes_WT_O',
     ('SmallLakes_WetlandTundra_Young',): 'SmallLakes_WT_Y',
     
-    ('Urban_WetlandTundra_Old',): 'Urban_WetlandTundra_Old',
+    ('Urban_WetlandTundra_Old','Urban_WT'): 'Urban_WT_O',
+    ('Urban_WetlandTundra_Medium'): 'Urban_WT_M',
+    ('Urban_WetlandTundra_Young'): 'Urban_WT_Y',
     
     ## barrow NO AGE STUFF ?? ask bob.
     ('Rivers',): 'Rivers',
@@ -131,7 +133,11 @@ def find_canon_name (name):
     for alt_names in CANON_COHORT_NAMES:
         if name in alt_names:
             return CANON_COHORT_NAMES[alt_names]
-    raise KeyError, 'No canon cohort name for exists ' + name 
+            
+    CANON_COHORT_NAMES[name] = name
+    #~ raise KeyError, 'No canon cohort name for exists ' + name 
+    #~ print 'No canon cohort name for exists ' + name 
+    return name
 
 
 # maps canon name to the a detailed name to display
@@ -166,7 +172,8 @@ DISPLAY_COHORT_NAMES = {
     'Meadow_WT_O': 'Medow Wetland Tundra Old Age',
     'Meadow_WT_Y': 'Medow Wetland Tundra Young Age',
     
-    'MediumLakes_WT_M ': 'Medium Lakes Wetland Tundra Medium Age',
+    
+    'MediumLakes_WT_M': 'Medium Lakes Wetland Tundra Medium Age',
     'MediumLakes_WT_O': 'Medium Lakes Wetland Tundra Old Age',
     'MediumLakes_WT_Y' : 'Medium Lakes Wetland Tundra Young Age',
     
@@ -194,7 +201,9 @@ DISPLAY_COHORT_NAMES = {
     'SmallLakes_WT_O': 'Small Lakes Wetland Tundra Old Age',
     'SmallLakes_WT_Y': 'Small Lakes Wetland Tundra Young Age',
     
-    'Urban_WetlandTundra_Old': 'Urban Wetland Tundra Old Age',
+    'Urban_WT_M': 'Urban Wetland Tundra Medium Age',
+    'Urban_WT_O': 'Urban Wetland Tundra Old Age',
+    'Urban_WT_Y': 'Urban Wetland Tundra Young Age',
     
     ## barrow NO AGE STUFF ?? ask bob.
     'Rivers': 'Rivers',
@@ -229,130 +238,3 @@ DISPLAY_COHORT_NAMES = {
     'Unclassified_Yukon': 'Unclassified Yukon Flats',
 }
 
-
-
-
-### BOBS old code, To Be moved
-import numpy as np
-
-def initial_barrow(self):
-#    self.Init_Wet_NPG = np.sum(self.ATTM_Wet_NPG)
-#    self.Init_Wet_LCP = np.sum(self.ATTM_Wet_LCP)
-#    self.Init_Wet_CLC = np.sum(self.ATTM_Wet_CLC)
-#    self.Init_Wet_FCP = np.sum(self.ATTM_Wet_FCP)
-#    self.Init_Wet_HCP = np.sum(self.ATTM_Wet_HCP)
-#    self.Init_Ponds   = np.sum(self.ATTM_Ponds)
-#    self.Init_Lakes   = np.sum(self.ATTM_Lakes)
-    self.Init_CLC_WT_Y = np.sum(self.ATTM_CLC_WT_Y)
-    self.Init_CLC_WT_M = np.sum(self.ATTM_CLC_WT_M)
-    self.Init_CLC_WT_O = np.sum(self.ATTM_CLC_WT_O)
-    self.Init_CoastalWaters_WT_O = np.sum(self.ATTM_CoastalWaters_WT_O)
-    self.Init_DrainedSlope_WT_Y = np.sum(self.ATTM_DrainedSlope_WT_Y)
-    self.Init_DrainedSlope_WT_M = np.sum(self.ATTM_DrainedSlope_WT_M)
-    self.Init_DrainedSlope_WT_O = np.sum(self.ATTM_DrainedSlope_WT_O)
-    self.Init_FCP_WT_Y = np.sum(self.ATTM_FCP_WT_Y)
-    self.Init_FCP_WT_M = np.sum(self.ATTM_FCP_WT_M)
-    self.Init_FCP_WT_O = np.sum(self.ATTM_FCP_WT_O)
-    self.Init_HCP_WT_Y = np.sum(self.ATTM_HCP_WT_Y)
-    self.Init_HCP_WT_M = np.sum(self.ATTM_HCP_WT_M)
-    self.Init_HCP_WT_O = np.sum(self.ATTM_HCP_WT_O)
-    self.Init_LCP_WT_Y = np.sum(self.ATTM_LCP_WT_Y)
-    self.Init_LCP_WT_M = np.sum(self.ATTM_LCP_WT_M)
-    self.Init_LCP_WT_O = np.sum(self.ATTM_LCP_WT_O)
-    self.Init_Meadow_WT_Y = np.sum(self.ATTM_Meadow_WT_Y)
-    self.Init_Meadow_WT_M = np.sum(self.ATTM_Meadow_WT_M)
-    self.Init_Meadow_WT_O = np.sum(self.ATTM_Meadow_WT_O)
-    self.Init_NoData_WT_O = np.sum(self.ATTM_NoData_WT_O)
-    self.Init_SandDunes_WT_Y = np.sum(self.ATTM_SandDunes_WT_Y)
-    self.Init_SandDunes_WT_M = np.sum(self.ATTM_SandDunes_WT_M)
-    self.Init_SandDunes_WT_O = np.sum(self.ATTM_SandDunes_WT_O)
-    self.Init_SaturatedBarrens_WT_Y = np.sum(self.ATTM_SaturatedBarrens_WT_Y)
-    self.Init_SaturatedBarrens_WT_M = np.sum(self.ATTM_SaturatedBarrens_WT_M)
-    self.Init_SaturatedBarrens_WT_O = np.sum(self.ATTM_SaturatedBarrens_WT_O)
-    self.Init_Shrubs_WT_O = np.sum(self.ATTM_Shrubs_WT_O)
-    self.Init_Urban_WT = np.sum(self.ATTM_Urban_WT)
-    self.Init_LargeLakes_WT_Y = np.sum(self.ATTM_LargeLakes_WT_Y)
-    self.Init_LargeLakes_WT_M = np.sum(self.ATTM_LargeLakes_WT_M)
-    self.Init_LargeLakes_WT_O = np.sum(self.ATTM_LargeLakes_WT_O)
-    self.Init_MediumLakes_WT_Y = np.sum(self.ATTM_MediumLakes_WT_Y)
-    self.Init_MediumLakes_WT_M = np.sum(self.ATTM_MediumLakes_WT_M)
-    self.Init_MediumLakes_WT_O = np.sum(self.ATTM_MediumLakes_WT_O)
-    self.Init_SmallLakes_WT_Y = np.sum(self.ATTM_SmallLakes_WT_Y)
-    self.Init_SmallLakes_WT_M = np.sum(self.ATTM_SmallLakes_WT_M)
-    self.Init_SmallLakes_WT_O = np.sum(self.ATTM_SmallLakes_WT_O)
-    self.Init_Ponds_WT_Y = np.sum(self.ATTM_Ponds_WT_Y)
-    self.Init_Ponds_WT_M = np.sum(self.ATTM_Ponds_WT_M)
-    self.Init_Ponds_WT_O = np.sum(self.ATTM_Ponds_WT_O)
-    self.Init_Rivers_WT_Y = np.sum(self.ATTM_Rivers_WT_Y)
-    self.Init_Rivers_WT_M = np.sum(self.ATTM_Rivers_WT_M)
-    self.Init_Rivers_WT_O = np.sum(self.ATTM_Rivers_WT_O)
-def initial_tanana(self):
-    self.Init_TF_OB     = np.sum(self.ATTM_TF_OB)
-    self.Init_TF_YB     = np.sum(self.ATTM_TF_YB)
-    self.Init_TF_OF     = np.sum(self.ATTM_TF_OF)
-    self.Init_TF_YF     = np.sum(self.ATTM_TF_YF)
-    self.Init_TF_Dec_PP = np.sum(self.ATTM_TF_Dec_PP)
-    self.Init_TF_Con_PP = np.sum(self.ATTM_TF_Con_PP)
-    self.Init_TF_TL     = np.sum(self.ATTM_TF_TL)
-
-def final_barrow(self):
-    self.Final_CLC_WT_Y = np.sum(self.ATTM_CLC_WT_Y)
-    self.Final_CLC_WT_M = np.sum(self.ATTM_CLC_WT_M)
-    self.Final_CLC_WT_O = np.sum(self.ATTM_CLC_WT_O)
-    self.Final_CoastalWaters_WT_O = np.sum(self.ATTM_CoastalWaters_WT_O)
-    self.Final_DrainedSlope_WT_Y = np.sum(self.ATTM_DrainedSlope_WT_Y)
-    self.Final_DrainedSlope_WT_M = np.sum(self.ATTM_DrainedSlope_WT_M)
-    self.Final_DrainedSlope_WT_O = np.sum(self.ATTM_DrainedSlope_WT_O)
-    self.Final_FCP_WT_Y = np.sum(self.ATTM_FCP_WT_Y)
-    self.Final_FCP_WT_M = np.sum(self.ATTM_FCP_WT_M)
-    self.Final_FCP_WT_O = np.sum(self.ATTM_FCP_WT_O)
-    self.Final_HCP_WT_Y = np.sum(self.ATTM_HCP_WT_Y)
-    self.Final_HCP_WT_M = np.sum(self.ATTM_HCP_WT_M)
-    self.Final_HCP_WT_O = np.sum(self.ATTM_HCP_WT_O)
-    self.Final_LCP_WT_Y = np.sum(self.ATTM_LCP_WT_Y)
-    self.Final_LCP_WT_M = np.sum(self.ATTM_LCP_WT_M)
-    self.Final_LCP_WT_O = np.sum(self.ATTM_LCP_WT_O)
-    self.Final_Meadow_WT_Y = np.sum(self.ATTM_Meadow_WT_Y)
-    self.Final_Meadow_WT_M = np.sum(self.ATTM_Meadow_WT_M)
-    self.Final_Meadow_WT_O = np.sum(self.ATTM_Meadow_WT_O)
-    self.Final_NoData_WT_O = np.sum(self.ATTM_NoData_WT_O)
-    self.Final_SandDunes_WT_Y = np.sum(self.ATTM_SandDunes_WT_Y)
-    self.Final_SandDunes_WT_M = np.sum(self.ATTM_SandDunes_WT_M)
-    self.Final_SandDunes_WT_O = np.sum(self.ATTM_SandDunes_WT_O)
-    self.Final_SaturatedBarrens_WT_Y = np.sum(self.ATTM_SaturatedBarrens_WT_Y)
-    self.Final_SaturatedBarrens_WT_M = np.sum(self.ATTM_SaturatedBarrens_WT_M)
-    self.Final_SaturatedBarrens_WT_O = np.sum(self.ATTM_SaturatedBarrens_WT_O)
-    self.Final_Shrubs_WT_O = np.sum(self.ATTM_Shrubs_WT_O)
-    self.Final_Urban_WT = np.sum(self.ATTM_Urban_WT)
-    self.Final_LargeLakes_WT_Y = np.sum(self.ATTM_LargeLakes_WT_Y)
-    self.Final_LargeLakes_WT_M = np.sum(self.ATTM_LargeLakes_WT_M)
-    self.Final_LargeLakes_WT_O = np.sum(self.ATTM_LargeLakes_WT_O)
-    self.Final_MediumLakes_WT_Y = np.sum(self.ATTM_MediumLakes_WT_Y)
-    self.Final_MediumLakes_WT_M = np.sum(self.ATTM_MediumLakes_WT_M)
-    self.Final_MediumLakes_WT_O = np.sum(self.ATTM_MediumLakes_WT_O)
-    self.Final_SmallLakes_WT_Y = np.sum(self.ATTM_SmallLakes_WT_Y)
-    self.Final_SmallLakes_WT_M = np.sum(self.ATTM_SmallLakes_WT_M)
-    self.Final_SmallLakes_WT_O = np.sum(self.ATTM_SmallLakes_WT_O)
-    self.Final_Ponds_WT_Y = np.sum(self.ATTM_Ponds_WT_Y)
-    self.Final_Ponds_WT_M = np.sum(self.ATTM_Ponds_WT_M)
-    self.Final_Ponds_WT_O = np.sum(self.ATTM_Ponds_WT_O)
-    self.Final_Rivers_WT_Y = np.sum(self.ATTM_Rivers_WT_Y)
-    self.Final_Rivers_WT_M = np.sum(self.ATTM_Rivers_WT_M)
-    self.Final_Rivers_WT_O = np.sum(self.ATTM_Rivers_WT_O)    
-#    self.Final_Wet_NPG = np.sum(self.ATTM_Wet_NPG)
-#    self.Final_Wet_LCP = np.sum(self.ATTM_Wet_LCP)
-#    self.Final_Wet_CLC = np.sum(self.ATTM_Wet_CLC)
-#    self.Final_Wet_FCP = np.sum(self.ATTM_Wet_FCP)
-#    self.Final_Wet_HCP = np.sum(self.ATTM_Wet_HCP)
-#    self.Final_Ponds   = np.sum(self.ATTM_Ponds)
-#    self.Final_Lakes   = np.sum(self.ATTM_Lakes)
-
-
-def final_tanana(self):
-    self.Final_TF_OB     = np.sum(self.ATTM_TF_OB)
-    self.Final_TF_YB     = np.sum(self.ATTM_TF_YB)
-    self.Final_TF_OF     = np.sum(self.ATTM_TF_OF)
-    self.Final_TF_YF     = np.sum(self.ATTM_TF_YF)
-    self.Final_TF_Dec_PP = np.sum(self.ATTM_TF_Dec_PP)
-    self.Final_TF_Con_PP = np.sum(self.ATTM_TF_Con_PP)
-    self.Final_TF_TL     = np.sum(self.ATTM_TF_TL)

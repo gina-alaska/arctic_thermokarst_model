@@ -9,6 +9,12 @@ import numpy as np
 
 from constants import ROW, COL
 
+try:
+    from atm_io import binary, image, raster
+except ImportError:
+    from ..atm_io import binary, image, raster
+
+import copy
 
 class ALDGrid(object):
     """ALD, and PL object """
@@ -42,12 +48,14 @@ class ALDGrid(object):
             array or ALD grids for each timestep
         pl_grid: list
             array or PL grids for each timestep
-            
+        ald_constants: np.array
+            starts as zeros, this should be updated once the met values 
+            are loaded with setup_ald_constants, and then changed
         """
         shape = config['shape']
         cohort_list = config['cohort list']
         init_ald = config ['init ald']
-        self.start_year = config ['start year']
+        self.start_year = config ['initilzation year']
         
         ## setup soil properties
         self.porosity = config['porosities']
@@ -69,6 +77,8 @@ class ALDGrid(object):
         self.shape = shape
         self.ald_grid = [ self.init_ald_grid ]
         self.pl_grid = [ self.init_pl_grid ]
+        
+        self.ald_constants = np.zeros(self.shape)
     
         
     def __getitem__ (self, key):
@@ -222,6 +232,23 @@ class ALDGrid(object):
             
         return ald_grid, np.array(pl_grid), pl_key_to_index
         ## need to add random chance + setup for future reading of values
+        
+    def setup_ald_constants (self, degree_days):
+        """Initialize the ALD constant array
+        
+        Parameters
+        ----------
+        degree_days: float or np.array
+            a thawing Degree Day value or grid of thawing Degree Day values
+        """
+        try:
+            degree_days = degree_days.flatten()
+        except AttributeError:
+            pass
+        
+        self.ald_constants = self.init_ald_grid.flatten() / degree_days
+        
+        
 
     def random_grid (self, shape, init_ald, aoi_mask = None):
         """create a random ALD grid
@@ -383,15 +410,84 @@ class ALDGrid(object):
             if set to true data is set as all zeros
         
         """
-        self.ald_grid.append(self.ald_grid[-1])
-        self.pl_grid.append(self.pl_grid[-1])
+        self.ald_grid.append(copy.deepcopy(self.ald_grid[-1]))
+        self.pl_grid.append(copy.deepcopy(self.pl_grid[-1]))
         if zeros:
             self.ald_grid[-1] = self.ald_grid[-1]*0
             self.pl_grid[-1] = self.pl_grid[-1]*0
+            
+    
+    def calc_ald(self, init_tdd, current_tdd, flat = True):
+        """caclulates the ald from thawing degreedays for all cells
+        
+        Parameters
+        ----------
+        init_tdd: np.array
+            initial Thawing Degree-days
+        current_tdd: np.array
+            Thawing  Degree-days for the current time step
+        flat: bool, defaults True
+            if true array is kept flat, else reshaped to shape
+        
+        Returns
+        -------
+        np.array
+            the ald grid
+        """ 
+        shape = self.shape
+        if flat:
+            shape = self.shape[0] * self.shape[1]
+        return (self.init_ald_grid.flatten() * \
+            np.sqrt(current_tdd / init_tdd).flatten()).reshape(shape)
         
         
+    def init_ald_figure (self, filename):
+        """ save initilal ald figure
         
-    def save_ald (self, time_step):
-        """ save ald at time step """
-        pass
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        title = 'Initial Active Layer Depth'
+        data = self.init_ald_grid.reshape(self.shape) 
+        image.save_img(data, filename, title,
+            cbar_extend = 'max', cmap='bone'
+        ) 
+        
+    def init_ald_binary (self, filename):
+        """ save initial ald as binary np array 
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        binary.save_bin(self.init_ald_grid.reshape(self.shape), filename)
+    
+    def ald_constants_figure (self, filename):
+        """ save initilal  ald constants figure
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        title = 'Initial Active Layer Depth'
+        data = self.ald_constants.reshape(self.shape) 
+        image.save_img(data, filename, title,
+            cbar_extend = 'max', cmap='bone'
+        ) 
+        
+    
+        
+    def ald_constants_binary (self, filename):
+        """ save initial ald constants as binary np array 
+        
+        Parameters
+        ----------
+        filename: path
+            file to save
+        """
+        binary.save_bin(self.ald_constants.reshape(self.shape), filename)
         

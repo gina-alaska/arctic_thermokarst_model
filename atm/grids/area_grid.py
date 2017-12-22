@@ -7,12 +7,23 @@ Contains objects to represent internal grid cohort data in ATM
 import numpy as np
 import os
 
-from ..cohorts import find_canon_name
-from ..atm_io import binary, image, raster
+try:
+    from cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
+except ImportError:
+    from ..cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
+    
+    
+    
+try:
+    from atm_io import binary, image, raster
+except ImportError:
+    from ..atm_io import binary, image, raster
 
 from constants import ROW, COL
 
+import copy
 
+import  moviepy.editor as mpy
 
 class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
@@ -65,9 +76,9 @@ class AreaGrid(object):
         
         
         """
-        input_data = config['input data'] 
+        input_data = config['area data'] 
         target_resolution = config['target resolution']
-        self.start_year = int(config['start year'])
+        self.start_year = int(config['initilzation year'])
         
         self.input_data = input_data
         ## read input
@@ -85,9 +96,17 @@ class AreaGrid(object):
         o_shape = (original.nY, original.nX) 
         o_res = (original.deltaY, original.deltaX) 
         self.shape = (
-            abs(int(o_shape[ROW] *o_res[ROW] /target_resolution[ROW])),
-            abs(int(o_shape[COL] *o_res[COL] /target_resolution[COL])),
+            abs(int(o_shape[ROW] * o_res[ROW] /target_resolution[ROW])),
+            abs(int(o_shape[COL] * o_res[COL] /target_resolution[COL])),
         )
+        
+        ## some times new shape may be off by one
+        try:
+            self.get_cohort_at_time_step(
+                self.key_to_index.keys()[0], flat = False)
+        except ValueError:
+            self.shape = (self.shape[0]+1,self.shape[1]+1)
+            
         self.resolution = target_resolution
         
     def __getitem__ (self, key):
@@ -108,7 +127,7 @@ class AreaGrid(object):
         Returns
         -------
         np.array
-            if key is a string, 3D, dimension are [timestep][grid row][grid col],
+            if key is a string, 3D, dimension are[timestep][grid row][grid col],
             timestep is year(key) - start year
             if key is a int, 3D, dimension are [cohort #][grid row][grid col],
             use key_to_int to find cohort #
@@ -161,6 +180,7 @@ class AreaGrid(object):
         
         for f in self.input_data:
             ## add path here
+            #~ print f
             path = f
             data, metadata = raster.load_raster (path)
             
@@ -197,7 +217,7 @@ class AreaGrid(object):
             layers.append( cohort_year_0 ) 
             
             flat_grid_size = len(cohort_year_0) 
-            num_years = 1 # < to be set based on cohort age range later
+            num_years = 1 # < to be set based on cohort age range later, FOR TRACKING AGE OF COHORTS <<<<<<<<<<<<<
             for age in range(1, num_years):
                 layers.append(np.zeros(flat_grid_size))
                 key_to_index[name + '--' + str(idx) ] = idx
@@ -267,6 +287,7 @@ class AreaGrid(object):
             abs(int(target_resolution[ROW]/current_resolution[ROW])),
             abs(int(target_resolution[COL]/current_resolution[COL]))
         )
+        #~ print resize_num
         resized_layer = []
         
         shape = layer.shape
@@ -524,7 +545,7 @@ class AreaGrid(object):
             self.set_cohort_at_time_step(cohort, ts, data)
             
         
-    def append_grid_year (self, zeros=False):
+    def add_time_step (self, zeros=False):
         """adds a new grid timestep and exact copy of the previous timestep
         
         Parameters
@@ -532,7 +553,7 @@ class AreaGrid(object):
         zeros : bool
             set new years data to 0 if true
         """
-        self.grid.append(self.grid[-1])
+        self.grid.append(copy.deepcopy(self.grid[-1]))
         if zeros:
             self.grid[-1] = self.grid[-1]*0
             
@@ -550,32 +571,274 @@ class AreaGrid(object):
         """
         return (self.total_franctonal_area(time_step) > 0.0).reshape(self.shape)
         
-    def save_cohort_at_time_step (self, cohort, path,
-            time_step = -1, bin_only = True, binary_pixels = False):
-        """various save functions should be created to save, reports, images, 
-        or videos
+    def save_cohort_at_time_step (self, cohort, path, filename, title = '', 
+            time_step = -1, bin_only = True, binary_pixels = False, 
+            cbar_extend = 'neither', colormap = 'viridis'
+        ):
+        """save a in image representing a cohort at a time step
         
-        returns base file name
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to save figures at
+        filename: str
+            name of file without extension
+        title: str, optional
+            title for png figure
+        timestep: int, optional
+            timestep to save defaults to -1
+        bin_only: bool, defaults True
+            only saves numpy binary image represntation if true 
+        binary_pixels: Bool, defaults False
+            if true converts all pixels > 0 to 1.
+        cbar_extend: str
+            max, min, or neither
+        colormap: str
+            matplotlib color map
+        
+        
+        returns 
+        -------
+        str:
+            base file name
         """
         cohort_data = self.get_cohort_at_time_step(
             cohort, time_step, flat = False
         )
-        
+        #~ print binary_pixels
         if binary_pixels:
             ## see if cohort is present or not
+            cohort_data = copy.deepcopy(cohort_data)
             cohort_data[cohort_data>0] = 1
+            #~ print cohort_data
         #~ self.ts_to_year(time_step)
         year = 'TEMP_YEAR'
-        filename = cohort+ "_Fractional_Area_" + str(year)
+        #~ filename = f
         bin_path = os.path.join(path, filename + '.bin')
         binary.save_bin(cohort_data, bin_path)
         if not bin_only:
             img_path = os.path.join(path, filename + '.png')
-            image.save_img(cohort_data, img_path, filename) # pretty names
+            image.save_img(
+                cohort_data, img_path, title, cmap = colormap,
+                cbar_extend = cbar_extend
+                ) 
             
         return filename
+        
+    def save_init_age_figure (self, cohort, path): 
+        """save the init age figure
+        
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to output file at
+        """
+        file_name = cohort + '_age'
+        title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Age'
+        self.save_cohort_at_time_step(
+            cohort, path, file_name, title,
+            time_step = 0, bin_only=False, cbar_extend = 'max',
+            colormap = 'bone', binary_pixels = True
+        )
+        
+    def save_init_dist_figure (self, cohort, path): 
+        """save the init distribution figure
+        
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to output file at
+        """
+        file_name = 'Initial_' +cohort
+        title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Cohort Distribution'
+        self.save_cohort_at_time_step(
+            cohort, path, file_name, title,
+            time_step = 0, bin_only=False, cbar_extend = 'max',
+            colormap = 'spectral', binary_pixels = True
+        )
+        
+    def save_init_normal_figure (self, cohort, path): 
+        """save the init normalized Distribution figure (fractional area)
+        
+        Parameters
+        ----------
+        cohort: str
+            cannon cohort name
+        path: path
+            path to output file at
+        """
+        file_name = cohort + '_fractional_cohorts'
+        title = DISPLAY_COHORT_NAMES[cohort] + ' - Initial Fractional Area'
+        self.save_cohort_at_time_step(
+            cohort, path, file_name, title,
+            time_step = 0, bin_only=False, cbar_extend = 'max',
+            colormap = 'bone'
+        )
+        
+    def save_cohort_timeseries( self, cohort, path, video = False ):
+        """save a cohort time series
+        
+        Parameters
+        ----------
+        cohort: str
+            a cannon cohort
+        path: path
+            path to save images at
+        video: bool
+            saves a video if true
+        """
+        idx = 0
+        files = []
+        while True:
+            try:
+                fname = cohort + '_Fractional_Area_'+ str(self.start_year + idx)
+                try:
+                    name = DISPLAY_COHORT_NAMES[cohort]
+                except KeyError:
+                    print cohort + ' not Found'
+                    return
+                    #~ name = cohort
+                    
+                title = name + str(self.start_year + idx)
+                self.save_cohort_at_time_step( 
+                    cohort, path, fname, title, time_step = idx, bin_only=False
+                )
+                files.append(fname+'.png')
+                idx += 1
+            except IndexError:
+                break
+        files = [os.path.join(path, f) for f in files]
+        #~ print files
+        if video:
             
             
+            clip = mpy.ImageSequenceClip(files, fps=5)
+            clip.write_videofile(
+                os.path.join(path,cohort+"_fraction.mp4"), 
+                progress_bar=False, verbose = False
+            )
+        
+            
+        
+    def get_cohort_list (self):
+        """Gets list of cannon cohort names in model
+        
+        Returns
+        -------
+        list:
+            cannon cohorts in model instance
+        """
+        return [key for key in self.key_to_index if key.find('--') == -1]
+        
+        
+    def find_dominate_cohort_at_time_step (self, time_step = -1):
+        """Create the dominate cohort map at a time step
+        
+        Parameters
+        ----------
+        time_step: int
+            time step to create
+            
+        Returns
+        -------
+        np.array:
+            grid
+        dict:
+            metadata
+        """
+        
+        dom = np.zeros(self.shape).flatten()
+        
+        metadata = {}
+        count = 0
+        
+        for grid in sorted(self.get_cohort_list()):
+            metadata[count] = grid
+            temp = self.get_cohort_at_time_step(grid,time_step)
+            idx = temp > dom
+            dom[idx] = count
+            count += 1
+            
+        dom = dom.reshape(self.shape)
+            
+        dom[np.logical_not(self.area_of_intrest())] = np.nan
+        return dom , metadata
+        
+    def dominate_cohort_figure (self, path, filename, title = '', 
+            time_step = -1, colormap = 'tab20', bin_only=False
+        ):
+        """save dominate cohort image at a time step
+        
+         Parameters
+        ----------
+        path: path
+            path to save figures at
+        filename: str
+            name of file without extension
+        title: str, optional
+            title for png figure
+        timestep: int, optional
+            timestep to save defaults to -1
+        bin_only: bool, defaults True
+            only saves numpy binary image represntation if true 
+        colormap: str
+            matplotlib color map
+            
+        """
+        grid, md = self.find_dominate_cohort_at_time_step(time_step)
+        
+        bin_path = os.path.join(path, filename + '.bin')
+        binary.save_bin(grid, bin_path)
+        if not bin_only:
+            img_path = os.path.join(path, filename + '.png')
+            image.save_categorical_img(
+                grid, img_path, title, sorted(self.get_cohort_list()),
+                cmap = colormap
+                ) 
+                
+    def dominate_cohort_timeseries( self, path, video = False,
+            colormap = 'tab20' 
+        ):
+        """save dominate cohort time series
+        
+        Parameters
+        ----------
+        path: path
+            path to save images at
+        video: bool
+            saves a video if true
+        colormap: str
+            color map to use
+        """
+        idx = 0
+        files = []
+        while True:
+            try:
+                fname = 'Dominant_Cohort_'+ str(self.start_year + idx)
+                title = 'Dominant Cohort - ' + str(self.start_year + idx)
+                self.dominate_cohort_figure ( 
+                    path, fname, title, time_step = idx, bin_only=False
+                )
+                files.append(fname+'.png')
+                idx += 1
+            except IndexError:
+                break
+        files = [os.path.join(path, f) for f in files]
+        #~ print files
+        if video:
+            
+            
+            clip = mpy.ImageSequenceClip(files, fps=5)
+            clip.write_videofile(
+                os.path.join(path, "Dominant_Cohort.mp4"), 
+                progress_bar=False, verbose = False
+            )   
         
 def test (files):
     """

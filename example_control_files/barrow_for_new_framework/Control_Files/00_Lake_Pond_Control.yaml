@@ -1,0 +1,128 @@
+#============================================================
+# Distribution of Lake depth (uniform, random)
+Lake_Distribution: Random
+#------------------------------------------------------------
+# Value for uniform distribution
+Uniform_Lake_Depth: 3.5
+#------------------------------------------------------------
+# Boundaries for random distribution
+Lower_Lake_Depth: 2.2
+Upper_Lake_Depth: 5.0
+# - - - - - - - - - - - - - - - - - -
+Lower_LargeLake_WT_Y_Depth: 2.2
+Upper_LargeLake_WT_Y_Depth: 5.0
+Lower_LargeLake_WT_M_Depth: 2.2
+Upper_LargeLake_WT_M_Depth: 5.0
+Lower_LargeLake_WT_O_Depth: 2.2
+Upper_LargeLake_WT_O_Depth: 5.0
+# - - - - - - - - - - - - - - - - - -
+Lower_MediumLake_WT_Y_Depth: 2.2
+Upper_MediumLake_WT_Y_Depth: 5.0
+Lower_MediumLake_WT_M_Depth: 2.2
+Upper_MediumLake_WT_M_Depth: 5.0
+Lower_MediumLake_WT_O_Depth: 2.2
+Upper_MediumLake_WT_O_Depth: 5.0
+# - - - - - - - - - - - - - - - - - -
+Lower_SmallLake_WT_Y_Depth: 2.2
+Upper_SmallLake_WT_Y_Depth: 5.0
+Lower_SmallLake_WT_M_Depth: 2.2
+Upper_SmallLake_WT_M_Depth: 5.0
+Lower_SmallLake_WT_O_Depth: 2.0
+Upper_SmallLake_WT_O_Depth: 5.0
+#============================================================
+# Distribution of Pond depth (uniform, random)
+Pond_Distribution: Random
+#------------------------------------------------------------
+# Value for uniform distribution
+Uniform_Pond_Depth: 1.5
+#------------------------------------------------------------
+# Boundaries for random distribution
+Lower_Pond_Depth: 1.25
+Upper_Pond_Depth: 1.7
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Lower_Pond_WT_Y_Depth: 1.25
+Upper_Pond_WT_Y_Depth: 1.7
+Lower_Pond_WT_M_Depth: 1.25
+Upper_Pond_WT_M_Depth: 1.7
+Lower_Pond_WT_O_Depth: 1.25
+Upper_Pond_WT_O_Depth: 1.7
+#============================================================
+# Set the Lake & Pond Expansion Constant
+Lake_Expansion: 0.0001
+Pond_Expansion: 0.0001
+# - - - - - -- - - - - - - - - - - - - - - -
+LargeLakes_WT_Y_Expansion: 0.0001
+LargeLakes_WT_M_Expansion: 0.0001
+LargeLakes_WT_O_Expansion: 0.0001
+MediumLakes_WT_Y_Expansion: 0.0001
+MediumLakes_WT_M_Expansion: 0.0001
+MediumLakes_WT_O_Expansion: 0.0001
+SmallLakes_WT_Y_Expansion: 0.0001
+SmallLakes_WT_M_Expansion: 0.0001
+SmallLakes_WT_O_Expansion: 0.0001
+Ponds_WT_Y_Expansion: 0.0001
+Ponds_WT_M_Expansion: 0.0001
+Ponds_WT_O_Expansion: 0.0001
+#============================================================
+# Set Pond Infilling Constant
+Ponds_Infill_Constant: 0.005
+Ponds_fill_to: Meadow_WT_Y
+Ponds_WT_Y_Infill_Constant: 0.005
+Ponds_WT_M_Infill_Constant: 0.005
+Ponds_WT_O_Infill_Constant: 0.005
+#============================================================
+# Set the Lake & Pond Ice Thickness alpha Distribution
+# (uniform, random)
+ice_thickness_distribution: Random
+#------------------------------------------------------------
+# Value for uniform distribution
+ice_thickness_uniform_alpha: 2.4
+#------------------------------------------------------------
+# Boundaries for random distribution
+Lower_ice_thickness_alpha: 2.31
+Upper_ice_thickness_alpha: 2.55
+#============================================================
+# Number of consecutive years a pond must grow (in depth)
+# before it is allowed to transition to a lake
+#------------------------------------------------------------
+ponds_growth_time_required: 1
+Ponds_WT_Y_growth_time_required: 1
+Ponds_WT_M_growth_time_required: 1
+Ponds_WT_O_growth_time_required: 1
+#============================================================
+# Change in Pond and Lake Depth Functions
+#============================================================
+# Approximate Square Root of Time Function
+# Depth_Change = sqrt(time)/[pond/lake]_depth_control
+#------------------------------------------------------------
+lake_depth_control:  100
+LargeLakes_WT_Y_depth_control: 100
+LargeLakes_WT_M_depth_control: 100
+LargeLakes_WT_O_depth_control: 100
+MediumLakes_WT_Y_depth_control: 100
+MediumLakes_WT_M_depth_control: 100
+MediumLakes_WT_O_depth_control: 100
+SmallLakes_WT_Y_depth_control: 100
+SmallLakes_WT_M_depth_control: 100
+SmallLakes_WT_O_depth_control: 100
+ponds_depth_control: 10
+Ponds_WT_Y_depth_control: 10
+Ponds_WT_M_depth_control: 10
+Ponds_WT_O_depth_control: 10
+#============================================================
+# Output Control for Lake & Pond Depth
+Lakes_Depth_Figure: Yes
+LargeLakes_WT_Y_Depth_Figure: Yes
+LargeLakes_WT_M_Depth_Figure: Yes
+LargeLakes_WT_0_Depth_Figure: Yes
+MediumLakes_WT_Y_Depth_Figure: Yes
+MediumLakes_WT_M_Depth_Figure: Yes
+MediumLakes_WT_O_Depth_Figure: Yes
+SmallLakes_WT_Y_Depth_Figure: Yes
+SmallLakes_WT_M_Depth_Figure: Yes
+SmallLakes_WT_O_Depth_Figure: Yes
+Ponds_Depth_Figure: Yes
+Ponds_WT_Y_Depth_Figure:  Yes
+Ponds_WT_M_Depth_Figure:  Yes
+Ponds_WT_O_Depth_Figure:  Yes
+
