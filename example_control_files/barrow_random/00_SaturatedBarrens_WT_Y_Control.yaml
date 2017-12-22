@@ -1,0 +1,16 @@
+#----------------------------------------------------------
+# Form of Probability of Initiation (Sigmoid, Sigmoid2, linear,
+#   Hill)
+#----------------------------------------------------------
+Transition_check_type: None
+
+#===========================================================
+# Output results
+# ----------------------------------------------------------
+# Note: In order for an animation to be output, Figures 
+# must be set to 'Yes' (results in *.bin and *.jpg
+# files)
+#-----------------------------------------------------------
+Figures: No
+Movie: No
+#-----------------------------------------------------------
