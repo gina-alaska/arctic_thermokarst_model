@@ -1,0 +1,70 @@
+#============================================================
+# Distribution of Ground Ice (poor, pore, wedge, massive, random)
+#------------------------------------------------------------
+Ice_Distribution: WEDGE
+#------------------------------------------------------------
+Ice_Distribution_Figure: Yes
+#============================================================
+# Drainage Efficiency (above, below, random)
+#------------------------------------------------------------
+Drainage_Efficiency_Distribution: Random
+Drainage_Efficiency_Random_Value: 0.85
+#------------------------------------------------------------
+Drainage_Efficiency_Figure: Yes
+#============================================================
+# Initial Active Layer Depth (random)
+ALD_Distribution: random
+ALD_Distribution_Lower_Bound: 0.3
+ALD_Distribution_Upper_Bound: 0.75
+#------------------------------------------------------------
+ALD_Distribution_Output: Yes
+ALD_Factor_Output: No
+#============================================================
+# Set Protective Layer Factors
+# Note: The initial protective layer is calculated
+# as the (Initial Active Layer * Protective Layer Factor)
+#------------------------------------------------------------
+CLC_WT_PLF:  10.0
+DrainedSlope_WT_PLF: 1.5
+FCP_WT_PLF:  1.15
+HCP_WT_PLF: 1.5
+Ice_WT_PLF: 1.0
+LargeLakes_WT_PLF: 2.5 
+LCP_WT_PLF:  1.0
+Meadow_WT_PLF: .8
+MediumLakes_WT_PLF: 2.5
+NoData_WT_PLF: 50.0
+Ponds_WT_PLF: 2.5
+RiparianShrub_WT_PLF: 1.0 
+Rivers_WT_PLF: 20.0
+SalineCoastalWater_WT_PLF: 10. 
+SandDunes_WT_PLF: 50.0
+SandyBarrens_WT_PLF: 1.0
+SmallLakes_WT_PLF: 2.5
+Urban_WT_PLF: 5.0
+#~ CLC_WT_PLF: 1.0
+#~ CoastalWaters_WT_PLF: 10.0
+#~ DrainedSlope_WT_PLF: 1.5
+#~ FCP_WT_PLF: 1.15
+#~ HCP_WT_PLF: 1.5
+#~ LCP_WT_PLF: 1.0
+#~ Meadow_WT_PLF: 0.8
+#~ NoData_WT_PLF: 50.0
+#~ SandDunes_WT_PLF: 50.0
+#~ SaturatedBarrens_WT_PLF: 1.0
+#~ Shrubs_WT_PLF: 2.0
+#~ Urban_WT_PLF: 5.0
+#~ LargeLakes_WT_PLF: 2.5
+#~ MediumLakes_WT_PLF: 2.5
+#~ SmallLakes_WT_PLF: 2.5
+#~ Ponds_WT_PLF: 2.5
+#~ Rivers_WT_PLF: 20.0
+
+#------------------------------------------------------------
+Protective_Layer_Factor_Output: No
+#------------------------------------------------------------
+#============================================================
+# Output Control for Dominant Cohort Figure / Movie
+Figure: Yes
+Movie: Yes
+#============================================================

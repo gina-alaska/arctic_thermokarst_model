@@ -1,0 +1,136 @@
+#================================================================
+#              START MODEL CONTROL FILE
+#================================================================
+
+
+#================================================================
+# INFORMATION NEEDED TO SET UP THE SIMULATION DIRECTORIES
+#================================================================
+# Simulation Area (which code to run): .
+#       [barrow, arctic_coast, tanana, yukon, AIEM, ngee]
+Simulation_area: ACP
+#----------------------------------------------------------------
+# Specify location of computer code on local computer
+Run_dir: <add path>
+#----------------------------------------------------------------
+# Data Input and Output Directories
+Input_dir: <add path>
+Output_dir: ./Output/
+Control_dir: ./Control_files_acp/
+#----------------------------------------------------------------
+# Name of "Notes Files" containing additional information
+#   -- "Blank" is an empty file.
+#~ Notes_file: 2015_August_24_ForCathy
+#----------------------------------------------------------------
+
+#================================================================
+# INFORMATION NEEDED FOR RESULTS OUTPUT AND ARCHIVING
+#================================================================
+# Show Results Summary on Computer Screen
+Results_onscreen: Yes
+#----------------------------------------------------------------
+# Is the simulation archived (Yes, No)? If 'Yes     archive name.
+Archive_simulation: Yes
+Simulation_name: Historical_1901-2015
+#----------------------------------------------------------------
+# File Name Containing Archiving Information
+#---------------------------------------------------------------
+Archive_data: 00_archive_data.yaml
+    
+#----------------------------------------------------------------
+# TEST CODE CONTROL (short simulations for testing purposes)
+Test_code: No
+Test_code_duration: 2
+
+
+#================================================================
+# INFORMATION NEEDED TO RUN SIMULATION
+#================================================================
+
+# where does the model start at?
+initilzation_year: 1900
+start_year: 1901
+
+#----------------------------------------------------------------
+# Model resolution [meters]
+X_model_resolution: 1000.
+Y_model_resolution: 1000.
+
+# Information needed to initialize the model
+Initialize_Control: 00_Initialize_Control.yaml ## rename initilzation figures?
+
+# File Name Containing Meteorologic Data Parameters & Variables
+Met_Control: 00_Met_Control.yaml
+#----------------------------------------------------------------
+# File Names Containing Terrestrial Cohort Parameters & Variables
+#    Note that Terrestial Control location should be located
+#    in the ../Input/Simulation (Barrow,Tanana, etc) directory
+#------------------------------------------------------------------------
+Terrestrial_Control: 00_Terrestrial_Control.yaml
+
+#~ Landcover: 
+    # Flag to read & write geotiff files for landcover information
+    #~ Read_Geotiff: Yes # Not implmented
+    #~ Write_Geotiff: No # Not implmented
+Initial_Cohort_List: 00_Barrow_Initial_Cohort_List.yaml
+
+Lake_Pond_Control: 00_Lake_Pond_Control.yaml
+    
+Transition_order:
+    - Meadow_WT
+    - LCP_WT
+    - CLC_WT
+    - FCP_WT
+    - HCP_WT
+    - Ponds_WT
+    - LargeLakes_WT
+    - MediumLakes_WT
+    - SmallLakes_WT
+ 
+#========================================================================
+#cohort and transition contol
+#========================================================================
+Cohorts:
+    CLC_WT_Control: 01_CLC_WT_Control.yaml
+    DrainedSlope_WT_Control: 01_DrainedSlope_WT_Control.yaml
+    FCP_WT_Control: 01_FCP_WT_Control.yaml
+    HCP_WT_Control: 01_HCP_WT_Control.yaml
+    Ice_WT_Control: 01_Ice_WT_Control.yaml
+    LargeLakes_WT_Control: 01_LargeLakes_WT_Control.yaml
+    LCP_WT_Control: 01_LCP_WT_Control.yaml
+    Meadow_WT_Control: 01_Meadow_WT_Control.yaml
+    MediumLakes_WT_Control: 01_MediumLakes_WT_Control.yaml
+    NoData_WT_Control: 01_NoData_WT_Control copy.yaml
+    Ponds_WT_Control: 01_Ponds_WT_Control.yaml
+    RiparianShrub_WT_Control: 01_RiparianShrub_WT.yaml
+    Rivers_WT_Control: 01_Rivers_WT_Control.yaml
+    SalineCoastalWater_WT_Control: 01_SalineCostalWaters_WT_Control copy.yaml
+    SandDunes_WT_Control: 01_SandDunes_WT_Control.yaml
+    SandyBarrens_WT_Control: 01_SandyBarrens_WT_Control.yaml
+    SmallLakes_WT_Control: 01_SmallLakes_WT_Control.yaml
+    Urban_WT_Control: 01_Urban_WT_Control.yaml
+    
+    ## list template of use else where
+    #~ CLC_WT_Control: 
+    #~ DrainedSlope_WT_Control:
+    #~ FCP_WT_Control: 
+    #~ HCP_WT_Control: 
+    #~ Ice_WT_Control: 
+    #~ LargeLakes_WT_Control: 
+    #~ LCP_WT_Control: 
+    #~ Meadow_WT_Control:
+    #~ MediumLakes_WT_Control:
+    #~ NoData_WT_Control: 
+    #~ Ponds_WT_Control: 
+    #~ RiparianShrub_WT_Control: 
+    #~ Rivers_WT_Control: 
+    #~ SalineCoastalWater_WT_Control: 
+    #~ SandDunes_WT_Control:
+    #~ SandyBarrens_WT_Control: 
+    #~ SmallLakes_WT_Control: 
+    #~ Urban_WT_Control: 
+
+
+#================================================================
+# END CONTROL FILE
+#================================================================

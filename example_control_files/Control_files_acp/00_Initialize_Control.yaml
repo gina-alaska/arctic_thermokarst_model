@@ -1,0 +1,71 @@
+############################################
+# Initial Cohort Information
+############################################
+Initial_Cohort_Distribution_Figure:  Yes
+# ------------------------------------------
+# If figures are wanted, which cohorts?
+All_Cohorts_Figure:  No
+CLC_WT_Figure: Yes 
+DrainedSlope_WT_Figure: Yes
+FCP_WT_Figure: Yes 
+HCP_WT_Figure: Yes 
+Ice_WT_Figure: Yes 
+LargeLakes_WT_Figure: Yes 
+LCP_WT_Figure: Yes 
+Meadow_WT_Figure: Yes
+MediumLakes_WT_Figure: Yes
+NoData_WT_Figure: Yes 
+Ponds_WT_Figure: Yes 
+RiparianShrub_WT_Figure: Yes 
+Rivers_WT_Figure: Yes 
+SalineCoastalWater_WT_Figure: Yes 
+SandDunes_WT_Figure: Yes
+SandyBarrens_WT_Figure: Yes 
+SmallLakes_WT_Figure: Yes 
+Urban_WT_Figure: Yes 
+############################################
+Normalized_Cohort_Distribution_Figure:  Yes
+#-------------------------------------------
+# If figures are wanted, which cohorts?
+Total_Cohorts_Normal:  No
+CLC_WT_Age: Yes 
+DrainedSlope_WT_Normal: Yes
+FCP_WT_Normal: Yes 
+HCP_WT_Normal: Yes 
+Ice_WT_Normal: Yes 
+LargeLakes_WT_Normal: Yes 
+LCP_WT_Normal: Yes 
+Meadow_WT_Normal: Yes
+MediumLakes_WT_Normal: Yes
+NoData_WT_Normal: Yes 
+Ponds_WT_Normal: Yes 
+RiparianShrub_WT_Normal: Yes 
+Rivers_WT_Normal: Yes 
+SalineCoastalWater_WT_Normal: Yes 
+SandDunes_WT_Normal: Yes
+SandyBarrens_WT_Normal: Yes 
+SmallLakes_WT_Normal: Yes 
+Urban_WT_Normal: Yes 
+##########################################
+Initial_Cohort_Age_Figure:  Yes
+#-----------------------------------------
+# If figures are wanted, which cohorts
+CLC_WT_Age: Yes 
+DrainedSlope_WT_Age: Yes
+FCP_WT_Age: Yes 
+HCP_WT_Age: Yes 
+Ice_WT_Age: Yes 
+LargeLakes_WT_Age: Yes 
+LCP_WT_Age: Yes 
+Meadow_WT_Age: Yes
+MediumLakes_WT_Age: Yes
+NoData_WT_Age: Yes 
+Ponds_WT_Age: Yes 
+RiparianShrub_WT_Age: Yes 
+Rivers_WT_Age: Yes 
+SalineCoastalWater_WT_Age: Yes 
+SandDunes_WT_Age: Yes
+SandyBarrens_WT_Age: Yes 
+SmallLakes_WT_Age: Yes 
+Urban_WT_Age: Yes 
+##########################################

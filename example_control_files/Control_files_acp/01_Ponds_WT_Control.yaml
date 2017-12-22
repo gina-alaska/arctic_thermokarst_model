@@ -1,0 +1,10 @@
+#----------------------------------------------------------
+# Control file template for lake/ponds, most config comes f
+# from lake_pond_control 
+#----------------------------------------------------------
+Transition_check_type: pond_to_lake
+transitions_to: SmallLakes_WT
+
+## Figures
+Figures: Yes
+Movie: Yes
