@@ -12,6 +12,27 @@ metadata for cohorts
 # --------
 #   find_canon_name
 CANON_COHORT_NAMES = {
+    ## acp
+    ('Coalescent_low-center_polygons'): 'CLC_WT',
+    ('Drained_slope'): 'DrainedSlope_WT',
+    ('Flat-center_polygons'): 'FCP_WT',
+    ('High-center_polygons'): 'HCP_WT',
+    ('Ice'): 'Ice_WT',
+    ('Large_Lakes'): 'LargeLakes_WT',
+    ('Low-center_polygons'): 'LCP_WT',
+    ('Meadow'): 'Meadow_WT',
+    ('Medium_Lakes'): 'MediumLakes_WT',
+    ('NoData'): 'NoData_WT',
+    ('Ponds'): 'Ponds_WT',
+    ('Riparian_shrub'): 'RiparianShrub_WT',
+    ('Rivers'): 'Rivers_WT',
+    ('Saline_coastal_water'): 'SalineCoastalWater_WT',
+    ('Sand_Dunes'): 'SandDunes_WT',
+    ('Sandy_Barrens'): 'SandyBarrens_WT',
+    ('Small_Lakes'): 'SmallLakes_WT',
+    ('Urban'): 'Urban_WT',
+
+
     ('CoalescentLowCenterPolygon_WetlandTundra_Medium',): 'CLC_WT_M',
     ('CoalescentLowCenterPolygon_WetlandTundra_Old',): 'CLC_WT_O',
     ('CoalescentLowCenterPolygon_WetlandTundra_Young',): 'CLC_WT_Y',
@@ -70,19 +91,19 @@ CANON_COHORT_NAMES = {
     ('SmallLakes_WetlandTundra_Old',): 'SmallLakes_WT_O',
     ('SmallLakes_WetlandTundra_Young',): 'SmallLakes_WT_Y',
     
-    ('Urban_WetlandTundra_Old','Urban_WT'): 'Urban_WT_O',
-    ('Urban_WetlandTundra_Medium'): 'Urban_WT_M',
-    ('Urban_WetlandTundra_Young'): 'Urban_WT_Y',
+    ('Urban_WetlandTundra_Old',): 'Urban_WT_O',
+    ('Urban_WetlandTundra_Medium',): 'Urban_WT_M',
+    ('Urban_WetlandTundra_Young',): 'Urban_WT_Y',
     
     ## barrow NO AGE STUFF ?? ask bob.
-    ('Rivers',): 'Rivers',
-    ('Ponds',): 'Ponds',
-    ('Lakes',): 'Lakes',
-    ('FlatCenter',): 'FCP',
-    ('Urban',): 'Urban',
-    ('Meadows',): 'Meadows',
-    ('CoalescentLowCenter',): 'CLC',
-    ('HighCenter',) : 'HCP',
+    #~ ('Rivers',): 'Rivers',
+    #~ ('Ponds',): 'Ponds',
+    #~ ('Lakes',): 'Lakes',
+    #~ ('FlatCenter',): 'FCP',
+    #~ ('Urban',): 'Urban',
+    #~ ('Meadows',): 'Meadows',
+    #~ ('CoalescentLowCenter',): 'CLC',
+    #~ ('HighCenter',) : 'HCP',
     
     ## Tanana flats
     ('OldBog',): 'TF_OB',
@@ -126,22 +147,45 @@ def find_canon_name (name):
         Canon name of cohort
     """
     ## is name a canon name
+    #~ print 'start find',name
     if name in CANON_COHORT_NAMES.values():
         return name
     
     ## loop to find canon name
     for alt_names in CANON_COHORT_NAMES:
+        
         if name in alt_names:
+            #~ print alt_names
             return CANON_COHORT_NAMES[alt_names]
             
     CANON_COHORT_NAMES[name] = name
     #~ raise KeyError, 'No canon cohort name for exists ' + name 
     #~ print 'No canon cohort name for exists ' + name 
+    #~ print name
     return name
 
 
 # maps canon name to the a detailed name to display
 DISPLAY_COHORT_NAMES = {
+    'CLC_WT': 'Coalescent Low Center Polygon Wetland Tundra',
+    'DrainedSlope_WT': 'Drained Slope Wetland Tundra',
+    'FCP_WT': 'Flat Center Poloygon Wetland Tundra',
+    'HCP_WT': 'High Center Poloygon Wetland Tundra',
+    'Ice_WT': 'Ice Wetland Tundra',
+    'LargeLakes_WT': 'Large Lakes Wetland Tundra',
+    'LCP_WT': 'Low Center Poloygon Wetland Tundra',
+    'Meadow_WT': 'Medow Wetland Tundra',
+    'MediumLakes_WT': 'Medium Lakes Wetland Tundra',
+    'NoData_WT': 'No Data Wetland Tundra',
+    'Ponds_WT': 'Ponds Wetland Tundra',
+    'RiparianShrub_WT': 'Riparian Shrub Wetland Tundra' ,
+    'Rivers_WT': 'Rivers Wetland Tundra',
+    'SalineCoastalWater_WT': 'Saline Coastal Waters Wetland Tundra',
+    'SandDunes_WT': 'Sand Dunes Wetland Tundra',
+    'SandyBarrens_WT': 'Sand Barrens Wetland Tundra',
+    'SmallLakes_WT': 'Small Lakes Wetland Tundra',
+    'Urban_WT': 'Urban Wetland Tundra',
+
     'CLC_WT_M': 'Coalescent Low Center Polygon Wetland Tundra Medium Age',
     'CLC_WT_O': 'Coalescent Low Center Polygon Wetland Tundra Old Age',
     'CLC_WT_Y': 'Coalescent Low Center Polygon Wetland Tundra Young Age',
@@ -206,14 +250,14 @@ DISPLAY_COHORT_NAMES = {
     'Urban_WT_Y': 'Urban Wetland Tundra Young Age',
     
     ## barrow NO AGE STUFF ?? ask bob.
-    'Rivers': 'Rivers',
-    'Ponds': 'Ponds',
-    'Lakes': 'Lakes',
-    'FCP': 'Flat Center Pologon',
-    'Urban': 'Urban',
-    'Meadows': 'Meadows',
-    'CLC': 'Coalescent Low Center Polygon',
-    'HCP': 'High Center Pologon',
+    #~ 'Rivers': 'Rivers',
+    #~ 'Ponds': 'Ponds',
+    #~ 'Lakes': 'Lakes',
+    #~ 'FCP': 'Flat Center Pologon',
+    #~ 'Urban': 'Urban',
+    #~ 'Meadows': 'Meadows',
+    #~ 'CLC': 'Coalescent Low Center Polygon',
+    #~ 'HCP': 'High Center Pologon',
     
     ## Tanana flats
     'TF_OB': 'Old Bog Tanana Flats',

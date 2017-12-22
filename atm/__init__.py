@@ -9,9 +9,9 @@ __credits__    = [
     "Jen Delamere",
 ]
 __license__    = "GPL"
-__version__    = "0.3.0"
+__version__    = "0.3.1"
 __codeurl__    = \
-    'https://github.com/gina-alaska/arctic_thermokarst_model/tree/0.3.0'
+    'https://github.com/gina-alaska/arctic_thermokarst_model/tree/0.3.1'
 __maintainer__ = "Bob Bolton"
 __email__      = "bbolton@iarc.uaf.edu"
 __status__     = "Development"

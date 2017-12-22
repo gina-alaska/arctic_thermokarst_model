@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2017-12-21
+### fixes
+- fixes various bugs caused by typos 
+- fixes missing commas
+- fixes results to allow various cohort types
+
 ## [0.3.0] - 2017-12-21
 ### changed
 - entire codebase and framework have been rewritten to use new grids and checks

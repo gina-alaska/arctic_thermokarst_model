@@ -74,7 +74,7 @@ class ATM(object):
         #~ clock.start(self)
         
         print '==================='
-        print ' Grids created'
+        print ' Creating Grids'
         print '==================='
         
         self.grids = ModelGrids(self.control)
@@ -492,7 +492,8 @@ class ATM(object):
                 try:
                     check_type = \
                         self.control['Cohorts'][cohort_control]['Transition_check_type'].lower()
-                except:    
+                except KeyError as e:
+                    #~ print e    
                     check_type = 'base'
                 #~ print cohort, check_type
                 #~ continue ## for testing

@@ -6,6 +6,7 @@ Contains objects to represent internal grid cohort data in ATM
 """
 import numpy as np
 import os
+import sys
 
 try:
     from cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
@@ -182,7 +183,11 @@ class AreaGrid(object):
             ## add path here
             #~ print f
             path = f
-            data, metadata = raster.load_raster (path)
+            try:
+                data, metadata = raster.load_raster (path)
+            except AttributeError:
+                print 'FATAL ERROR: Could Not Load Raster File', path
+                sys.exit(0)
             
             ## set init shape and resolution
             ## TODO maybe do this differently 
