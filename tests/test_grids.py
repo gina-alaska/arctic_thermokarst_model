@@ -51,6 +51,7 @@ class TestGrids(unittest.TestCase):
             
             
             'pickle path': './pickles',
+            'data path': './pickles',
             'pond types': ['Ponds_WT_Y', 'Ponds_WT_M', 'Ponds_WT_O'],
             'lake types': [
                 'SmallLakes_WT_Y', 'SmallLakes_WT_M', 'SmallLakes_WT_O',
@@ -68,6 +69,9 @@ class TestGrids(unittest.TestCase):
                 'Drainage_Efficiency_Random_Value': 	0.85,
                 'Drainage_Efficiency_Figure':		'Yes' ,
             },
+            
+            'climate block range': (5,25),
+            'Met_Control':{'climate_event_probability':0},
         }
     
         ## ald & poi & ice

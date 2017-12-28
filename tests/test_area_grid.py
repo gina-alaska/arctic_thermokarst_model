@@ -218,11 +218,11 @@ class TestAreaGridClass(unittest.TestCase):
             self.tg_class.__setitem__(1805, '')
         #~ self.assertRaises(KeyError, self.tg_class.__setitem__(1805, ''))
         
-    def test_append_grid_year (self):
+    def test_add_time_step (self):
         """test_append_grid_year
         """ 
-        self.tg_class.append_grid_year()
-        self.tg_class.append_grid_year(True)
+        self.tg_class.add_time_step()
+        self.tg_class.add_time_step(True)
         self.assertTrue((self.tg_class.grid[0] == self.tg_class.grid[1]).all())
         self.assertTrue((self.tg_class.grid[-1] == 0).all())
        

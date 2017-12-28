@@ -226,7 +226,7 @@ class ALDGrid(object):
         pl_key_to_index = {}
         index = 0 
         for cohort in cohorts:
-            print cohort
+            #~ print cohort
             pl_grid.append(ald_grid * pl_factors[cohort]) 
             pl_key_to_index[ cohort ] = index
             index += 1
