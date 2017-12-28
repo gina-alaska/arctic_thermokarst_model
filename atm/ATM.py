@@ -1,25 +1,23 @@
  #!/usr/bin/env python
 """
-________________________________________________________________________________
 Alaska Thermokarst Model (ATM)
-________________________________________________________________________________
+-------------------------------
+
 The purpose of this script is to provide a protype source
 code for testing and development of the Alaska Thermokarst
 Model (ATM) to be integrated into the Alaska Integrated
 Ecosystem Model (AIEM).
-________________________________________________________________________________
-Created: May 2014. Bob Bolton
-Modified: October 2015. Bob Bolton.
-          Incorporating Tanana Flats Frames & Logic
 
-________________________________________________________________________________
+Created: May 2014. Bob Bolton
+
 
 The ATM code is python based and is executed with the following command:
 $ python ATM.py <control file name>
 
 The control file is used to set up the simulation input/output locations,
-defines the model domain, etc.
-________________________________________________________________________________
+defines the model domain, etc. 
+
+See readme for more infromation
 
 """
 
@@ -58,10 +56,26 @@ class ATM(object):
     """
  
     def __init__(self, control_file):
+        """Arctic Thermokarst Model(ATM) class. Sets up and run the ATM model
+        
+        Parameters
+        ----------
+        control_file: path
+            path to control file
+            
+        Attributes
+        ----------
+        control: control.Control
+            ATM control file object
+        grids: grids.Grids
+            ATM grids object
+        stop: int
+            # of years to run model for
+        
+        """
         # ----------------------
         # Simulation Start Time
         # ----------------------
-        
         
         print '==================='
         print ' Initializing ATM'
@@ -94,7 +108,8 @@ class ATM(object):
         self.run_atm()
         
     def remove_old(self):
-        """
+        """Removes old model results from results directory if they exist,
+        but saves the the archived results 
         """
         for d in os.listdir( self.control.Output_dir ):
             if d == 'Archive' or d == 'runtime_data':
@@ -108,7 +123,7 @@ class ATM(object):
             
             
     def save_figures(self):
-        """
+        """saves model figures
         """
         print "Finishing up \n-- saving figures"
         
@@ -263,7 +278,12 @@ class ATM(object):
             
         
     def archive(self, name):
-        """
+        """archive results
+        
+        Parametes
+        ---------
+        name: str
+            name of archive
         """
         path = os.path.join( self.control.Output_dir, 'Archive')
         try:
@@ -362,13 +382,23 @@ class ATM(object):
             
             
     def on_screen(self, start_time, end_time):
-        """
+        """print results on screan
+        
+        Parameters
+        ----------
+        start_time: datetime.datetime
+        end_time: datetime.datetime
         """
         r = results.construnct_results(self, start_time, end_time)
         print r
     
     def on_file(self,name, start_time, end_time):
-        """
+        """save results to file
+        
+        Parameters
+        ----------
+        start_time: datetime.datetime
+        end_time: datetime.datetime
         """
         r = results.construnct_results(self, start_time, end_time)
     
@@ -378,13 +408,12 @@ class ATM(object):
         except:
             pass
             
-        
         with open(os.path.join(path,name),'w') as fd:
             fd.write(r)
 #_______________________________________________________________________________
     def run_atm(self):
-        
-        """ Program sequence """
+        """Run the framework. Creating the results.
+        """
         #====================================================
         # Initialization Process
         #====================================================
@@ -431,15 +460,15 @@ class ATM(object):
         name = t +'_' + self.control.Simulation_name +".tar.gz"
         self.archive(name)
 
-                
-
-            
         print '----------------------------------------'
         print '        Simulation Complete             '
         print '----------------------------------------'        
 
-    def run_model(self, cohort_check_list):
-        """
+    def run_model(self, cohort_list):
+        """run actual model
+        
+        Parameters
+        ----------
         cohort_list ordered list of cohorsts to run
         """
         init_year = self.control['initilzation year']
@@ -480,34 +509,32 @@ class ATM(object):
             current_fdd = self.grids.degreedays.freezing[current_year]
             self.grids.lake_pond.calc_ice_depth(current_fdd)
             
-            ## lake pond expansion: move out of loop to end
-            
-            #~ lp = self.grids.lake_pond.lake_types + self.grids.lake_pond.pond_types 
-            #~ lake_pond_expansion.expansion(lp, current_year, self.grids, self.control)
-            #~ lake_pond_expansion.infill(self.grids.lake_pond.pond_types, current_year, self.grids, self.control)
-            
-            for cohort in cohort_check_list:
+            ## transition list
+            for cohort in cohort_list:
                
                 cohort_control = cohort + '_Control'
                 try:
                     check_type = \
-                        self.control['Cohorts'][cohort_control]['Transition_check_type'].lower()
+                        self.control['Cohorts'][cohort_control]\
+                        ['Transition_check_type'].lower()
                 except KeyError as e:
                     #~ print e    
                     check_type = 'base'
-                #~ print cohort, check_type
-                #~ continue ## for testing
-                
-                #~ self.control[cohort_control]['cohort'] = find_canon_name(cohort)
+
                 name = find_canon_name(cohort)
                 checks.check_metadata[check_type](
                     name,  current_year, self.grids, self.control
                 )
             
-            lp = self.grids.lake_pond.lake_types + self.grids.lake_pond.pond_types 
-            lake_pond_expansion.expansion(lp, current_year, self.grids, self.control)
-            #~ lake_pond_expansion.large_lake_check(lp, current_year, self.grids, self.control)
-            lake_pond_expansion.infill(self.grids.lake_pond.pond_types, current_year, self.grids, self.control)
+            lp = self.grids.lake_pond.lake_types + \
+                self.grids.lake_pond.pond_types 
+            lake_pond_expansion.expansion(
+                lp, current_year, self.grids, self.control
+            )
+            lake_pond_expansion.infill(
+                self.grids.lake_pond.pond_types, current_year, 
+                self.grids, self.control
+            )
                 
             cohort_end = \
                 self.grids.area.get_all_cohorts_at_time_step().sum(0)
@@ -531,8 +558,6 @@ class ATM(object):
                 print 'end: ', cohort_end[location[0]]
                 
                 sys.exit()
-                
-    
                 
                 ## to do add frist cell report
             try:
@@ -585,5 +610,6 @@ class ATM(object):
             
 #_______________________________________________________________________________
 
-
-Variable = ATM(sys.argv[1])
+## runs model from comand line
+if __name__ == "__main__":
+    Variable = ATM(sys.argv[1])

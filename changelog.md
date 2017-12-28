@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2017-12-28
+## changes
+- parameters section for poi transtiontions
+
+## adds
+- comments to atm.py
+
 ## [0.3.1] - 2017-12-21
 ### fixes
 - fixes various bugs caused by typos 

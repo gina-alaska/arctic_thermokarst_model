@@ -9,50 +9,55 @@ transitions_to: FCP_WT_Y
 # The Sigmoid Function
 # POI = A2 + (A1 - A2) / (1. + exp((x - x0) / dx))
 #---------------------------------------------------------
-# Parameter values for cohorts above the drainage threshold
-A1_above: -1.186e-1
-A2_above: 1.01
-x0_above: 4.856e-1
-dx_above: 1.398e-1
-# Parameter values for cohorts below the drainage threshold
-A1_below: 3.454e-2
-A2_below: 1.01
-x0_below: 1.04
-dx_below: 1.617e-1
 #============================================================
 # The Sigmoid2 Function
 # POI = K / (C + (A*x**B))
 #------------------------------------------------------------
-# Parameter values for cohorts ABOVE the drainage threshold
-K_above: 10.
-C_above: 10.
-A_above: 0.5
-B_above: -2.0
-# Parameter values for cohorts BELOW the drainage threshold
-K_below: 10.
-C_below: 10.
-A_below: 3.0
-B_below: -3.0
 #============================================================
 # The linear function
 # POI = a + (b * x )
 #----------------------------------------------------------
-# Parameter values for cohorts above the drainage threshold
-a_above: 0.0
-b_above: 0.4
-# Parameter values for cohorts below the drainage threshold
-a_below: 0.0
-b_below: 0.2
 #===========================================================
 # The Hill Function
 # POI = (B*(x^n))/(1+(x^n))
 #----------------------------------------------------------
-# Parameter values for cohorts above the drainage threshold
-HillB_above: 1.0
-HillN_above: 0.5
-# Parameter values for cohorts below the drainage threshold
-HillB_below: 1.0
-HillN_below: 0.5
+Parameters:
+    # Parameter values for cohorts above the drainage threshold
+    above:
+        sigmoid_A1: -1.186e-1
+        sigmoid_A2: 1.01
+        sigmoid_x0: 4.856e-1
+        sigmoid_dx: 1.398e-1
+        
+        sigmoid2_K: 10.
+        sigmoid2_C: 10.
+        sigmoid2_A: 0.5
+        sigmoid2_B: -2.0
+
+        linear_a: 0.0
+        linear_b: 0.4
+
+        hill_B: 1.0
+        hill_N: 0.5
+
+    # Parameter values for cohorts below the drainage threshold
+    below:
+        sigmoid_A1: 3.454e-2
+        sigmoid_A2: 1.01
+        sigmoid_x0: 1.04
+        sigmoid_dx: 1.617e-1
+
+        sigmoid2_K: 10.
+        sigmoid2_C: 10.
+        sigmoid2_A: 3.0
+        sigmoid2_B: -3.0
+
+
+        linear_a: 0.0
+        linear_b: 0.2
+
+        hill_B: 1.0
+        hill_N: 0.5
 #===========================================================
 # Maximum rate of terrain transition
 #-----------------------------------------------------------

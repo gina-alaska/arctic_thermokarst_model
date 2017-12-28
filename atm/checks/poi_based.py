@@ -68,42 +68,16 @@ def transition (name, year, grids, control):
 
     ## caclualte POI
     fn = functions.table[cohort_config['POI_Function'].lower()]
-    parameters = {
-        'A1': cohort_config['A1_above'], 
-        'A2': cohort_config['A2_above'], 
-        'x0': cohort_config['x0_above'], 
-        'dx': cohort_config['dx_above'], 
-        'a': cohort_config['a_above'],
-        'b': cohort_config['b_above'], 
-        'K': cohort_config['K_above'], 
-        'C': cohort_config['C_above'], 
-        'A': cohort_config['A_above'], 
-        'B': cohort_config['B_above'], 
-        'hB': cohort_config['HillB_above'], 
-        'hN': cohort_config['HillN_above']
-    }
     
     POI_above = np.zeros(grids.shape)
-    POI_above[current_cell_mask] = fn(x , parameters)[current_cell_mask]
-    
-    parameters = {
-        'A1': cohort_config['A1_below'], 
-        'A2': cohort_config['A2_below'], 
-        'x0': cohort_config['x0_below'], 
-        'dx': cohort_config['x0_above'], 
-        'a': cohort_config['a_below'],
-        'b': cohort_config['b_below'], 
-        'K': cohort_config['K_below'], 
-        'C': cohort_config['C_below'], 
-        'A': cohort_config['A_below'], 
-        'B': cohort_config['B_below'], 
-        'hB': cohort_config['HillB_below'], 
-        'hN': cohort_config['HillN_below']
-    }
-    
+    POI_above[current_cell_mask] = fn(
+        x, cohort_config['Parameters']['above']
+    )[current_cell_mask]
     
     POI_below  = np.zeros(grids.shape)
-    POI_below[current_cell_mask] = fn(x , parameters)[current_cell_mask]
+    POI_below[current_cell_mask] = fn(
+        x, cohort_config['Parameters']['below']
+    )[current_cell_mask]
     
     POI = POI_below 
     above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'

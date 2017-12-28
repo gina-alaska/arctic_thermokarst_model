@@ -51,7 +51,7 @@ SaturatedBarrens_WT_Y_PLF: 1.0
 SaturatedBarrens_WT_M_PLF: 1.0
 SaturatedBarrens_WT_O_PLF: 1.0
 Shrubs_WT_O_PLF: 2.0
-Urban_WT_PLF: 5.0
+Urban_WT_O_PLF: 5.0
 LargeLakes_WT_Y_PLF: 2.5
 LargeLakes_WT_M_PLF: 2.5
 LargeLakes_WT_O_PLF: 2.5
