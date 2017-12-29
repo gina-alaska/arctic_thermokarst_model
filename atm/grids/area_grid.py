@@ -535,7 +535,7 @@ class AreaGrid(object):
             ## but 10 == year - star_year, or 1910 == start_year+len(grid)
             ## so, will add a new grid year, because it is end +1, and set 
             ## values to 0
-            self.append_grid_year(True)
+            self.add_time_step(True)
         elif year > self.start_year + len(self.grid):
             raise KeyError, 'Year too far after current end'
         elif year < self.start_year:

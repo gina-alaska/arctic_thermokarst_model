@@ -58,7 +58,7 @@ class TestGrids(unittest.TestCase):
                 'MediumLakes_WT_Y', 'MediumLakes_WT_M', 'MediumLakes_WT_O',
                 'LargeLakes_WT_Y', 'LargeLakes_WT_M', 'LargeLakes_WT_O',
             ],
-            'shape' : (10,10),
+            #~ 'shape' : (10,10),
             'pond depth range' : (.3,.3),
             'lake depth range' : (.3, 5),
             
@@ -71,7 +71,16 @@ class TestGrids(unittest.TestCase):
             },
             
             'climate block range': (5,25),
-            'Met_Control':{'climate_event_probability':0},
+            
+            #~ 'start year': 1901,
+            #~ 'data path': './',
+            'Input_dir': './',
+            #~ 'pickle path': './',
+            'Met_Control':{
+                'climate_event_probability':0,
+                'TDD_file': os.path.join(path,'example_met_larger.data'),
+                'FDD_file': os.path.join(path,'example_met_larger.data'),
+            },
         }
     
         ## ald & poi & ice

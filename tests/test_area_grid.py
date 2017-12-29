@@ -238,7 +238,7 @@ class TestAreaGridClass(unittest.TestCase):
         path = os.path.abspath(os.path.dirname(__file__))
         data_dir = os.path.join(path, 'example_data')
         filename = self.tg_class.save_cohort_at_time_step(
-            'LCP_WT_O', data_dir, bin_only = False
+            'LCP_WT_O', data_dir, 'test', bin_only = False
         )
         
         f1 = os.path.join(data_dir, filename + '.png')

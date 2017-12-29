@@ -82,7 +82,7 @@ class MetGridBase (object):
         -------
         None, str
         """
-        return None, 'base'
+        return None, 'base', 'none'
         
     def __getitem__ (self, key):
         """Get item function

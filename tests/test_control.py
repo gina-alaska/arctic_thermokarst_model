@@ -16,7 +16,7 @@ class TestIOControlFile_dict_style (unittest.TestCase):
         dname = os.path.dirname(abspath)
         dname =  os.path.dirname(dname)
         pth = os.path.join(dname,
-                'example_control_files','Barrow_uniform_control'
+                'example_control_files','Control_barrow.yaml'
                 )
         self.control = control.Control(pth)
         
@@ -34,16 +34,19 @@ class TestIOControlFile_dict_style (unittest.TestCase):
         self.assertIs(type(self.control['Initial_Cohort_List'] ), list)
         self.assertIs(type(self.control.Initial_Cohort_List ), list)
         self.assertIs(
-            type(self.control['SaturatedBarrens_WT_Y_Control'] ), dict
+            type(self.control['Cohorts']['SaturatedBarrens_WT_Y_Control'] ), 
+            dict
         )
         self.assertIs(
-            type(self.control['SaturatedBarrens_WT_Y_Control']['A1_below'] ),
-            float
+            type(self.control[
+                'Cohorts']['CLC_WT_Y_Control']['Parameters'
+            ] ),
+            dict
         )
-        self.assertIs(
-            type(self.control.SaturatedBarrens_WT_Y_Control['A1_below'] ),
-            float
-        )
+        #~ self.assertIs(
+            #~ type(self.control['Cohorts']SaturatedBarrens_WT_Y_Control['A1_below'] ),
+            #~ float
+        #~ )
         
         
         
