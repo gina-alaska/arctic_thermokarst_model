@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.4.0] - 2017-12-28
+### fixes
+- testing suite
+- in area grid last append_grid_year is changed to add_time_step
+
+### changes
+- example_control_files/Control_v2.yaml to 
+example_control_files_Control_barrow.yaml
+
+
+## [0.4.0] - 2017-12-28
 ## changes
 - parameters section for poi transtiontions
 
