@@ -1,7 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.4.0] - 2017-12-28
+## [0.4.2] - 2017-12-29
+### added
+- comments in the calc_degree_days utilit
+- phase 4 report
+
+
+## [0.4.1] - 2017-12-29
 ### fixes
 - testing suite
 - in area grid last append_grid_year is changed to add_time_step

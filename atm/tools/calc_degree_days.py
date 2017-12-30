@@ -213,7 +213,8 @@ def create_day_array (dates):
     
     
 def utility ():
-    """
+    """Utility for caclulating the freezing and thawing degree days into a 
+    fromat that can be read as a memory mapped numpy array.
     
     Flags
     -----

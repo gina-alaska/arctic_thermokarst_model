@@ -17,7 +17,7 @@ configuration system was redesigned, and moved to a later phase. Phase 3
 will tackle the reading and internal management of the control files and
 internal management of the configuration values.
 
-Phase 2: Control Files
+Phase 3: Control Files
 ======================
 
 The control files for the ATM contain all of the information needed for
