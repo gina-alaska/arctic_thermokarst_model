@@ -7,7 +7,7 @@ Run `conda env create -f environment.yml` to set up the environment.
 
 Then use `source activate bolton` to start using the environemnt, and `source deactivate` to stop using it.
 
-For more information on anconada environments see (Managing environments)[https://conda.io/docs/user-guide/tasks/manage-environments.html]
+For more information on anconada environments see [Managing environments](https://conda.io/docs/user-guide/tasks/manage-environments.html)
 
 # Running the model
 1. get the code by cloning this repo
