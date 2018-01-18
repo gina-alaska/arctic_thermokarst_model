@@ -81,6 +81,7 @@ class AreaGrid(object):
         target_resolution = config['target resolution']
         self.start_year = int(config['initilzation year'])
         
+        
         self.input_data = input_data
         ## read input
         ## rename init_grid??
@@ -88,8 +89,10 @@ class AreaGrid(object):
             self.read_layers(target_resolution)
         
         ## rename grid_history?
-        self.grid = [self.init_grid]
-        
+        #~ self.grid = [self.init_grid]
+        self.grid = np.memmap (os.path.join(config['data path'],'area.data'), dtype='float32', mode='w+', shape=(1,self.init_grid.shape[0],self.init_grid.shape[1]))
+        self.grid[0] = self.init_grid
+        self.data_path = config['data path']
         self.check_mass_balance() ## check mass balance at initial time_step
         
         #get resolution, and shape of gird data as read in
@@ -558,7 +561,21 @@ class AreaGrid(object):
         zeros : bool
             set new years data to 0 if true
         """
-        self.grid.append(copy.deepcopy(self.grid[-1]))
+        #~ self.grid.append(copy.deepcopy(self.grid[-1]))
+        
+        shape = self.grid.shape
+        del self.grid
+        
+        os.rename(os.path.join(self.data_path,'area.data'), os.path.join(self.data_path,'area_old.data'))
+        
+        grid_old = np.memmap (os.path.join(self.data_path,'area_old.data'), dtype='float32', mode='r', shape=(shape[0],self.init_grid.shape[0],self.init_grid.shape[1]))
+        self.grid = np.memmap (os.path.join(self.data_path,'area.data'), dtype='float32', mode='w+', shape=(shape[0]+1,self.init_grid.shape[0],self.init_grid.shape[1]))
+
+        self.grid[:-1] = grid_old 
+        self.grid[-1] = grid_old[-1]
+        del grid_old
+        os.remove(os.path.join(self.data_path,'area_old.data'))
+        print 'resized area'
         if zeros:
             self.grid[-1] = self.grid[-1]*0
             
