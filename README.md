@@ -20,10 +20,10 @@ For more information on anconada environments see [Managing environments](https:
 3. cd to repo root.
 4. Make a copy of control_barrow.yaml or control_acp.yaml in example_control_files as my_control_copy.yaml.
 5. Change the Input_dir field in my_control_copy.yaml to be the absoloute path to the data you downloaded.
-5. 
+6. Running the model.
  * If atm-env is active run: `python atm/ATM.py example_control_files/my_control_copy.yaml`.
  * If it is not: `run_atm.sh example_control_files/my_control_copy.yaml`.
-6. Results will be generated in the directory output.
+7. Results will be generated in the directory output.
 
 # running tests
 From atm root with the atm-env active.
