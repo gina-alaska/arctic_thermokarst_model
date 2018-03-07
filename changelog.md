@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.4.3] - 2018-03-07
+### added 
+- run_atm.sh, to lauch conda environment and atm model in one step
+
+### changed
+- name of environment to atm-env
+
 ## [0.4.2] - 2017-12-29
 ### added
 - comments in the calc_degree_days utilit

@@ -1,4 +1,4 @@
-name: bolton
+name: atm-env
 channels:
 - defaults
 dependencies:
