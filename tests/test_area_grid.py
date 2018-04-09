@@ -37,7 +37,7 @@ class TestAreaGridClass(unittest.TestCase):
         #~ print files
         config = {
             'target resolution': (1000,1000),
-            'initilzation year': 1900,
+            'initialization year': 1900,
             'area data': files,
         }
     

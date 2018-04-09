@@ -35,7 +35,7 @@ config_ex = {
     'lake depth range' : (.3, 5),
     
     'ice depth alpha range': (2.31, 2.55),
-    'initilzation year': 1900,
+    'initialization year': 1900,
     
     
     
@@ -81,7 +81,7 @@ class LakePondGrid (object):
             return
         
         self.shape = config['shape']
-        self.start_year = config['initilzation year']
+        self.start_year = config['initialization year']
         self.time_step = 0
         
         self.pond_types = config['pond types']

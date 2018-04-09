@@ -19,7 +19,7 @@ class TestPOIGridClass(unittest.TestCase):
         config = {
             'shape': (10,10),
             'cohort list': ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
-            'initilzation year': 1900
+            'initialization year': 1900
         }
         config['AOI mask'] = \
             np.ones(config['shape']) == np.ones(config['shape'])

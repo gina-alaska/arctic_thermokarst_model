@@ -99,7 +99,7 @@ def construnct_results(self, start_time, end_time):
 
 
     start_year = self.control.start_year
-    end_year =  self.control.initilzation_year + self.stop -1 
+    end_year =  self.control.initialization_year + self.stop -1 
     
     cohort_list = self.grids.area.key_to_index.keys()
     cohort_list = [c for c in cohort_list if c.find('--') == -1]

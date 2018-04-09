@@ -55,7 +55,7 @@ class ALDGrid(object):
         shape = config['shape']
         cohort_list = config['cohort list']
         init_ald = config ['init ald']
-        self.start_year = config ['initilzation year']
+        self.start_year = config ['initialization year']
         
         ## setup soil properties
         self.porosity = config['porosities']

@@ -48,7 +48,7 @@ class POIGrid (object):
         
         
         """
-        self.start_year = int(config['initilzation year'])
+        self.start_year = int(config['initialization year'])
 
         shape = config['shape']
         cohorts = config['cohort list']

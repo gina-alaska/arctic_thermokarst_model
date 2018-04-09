@@ -31,7 +31,7 @@ class TestGrids(unittest.TestCase):
         config = {
             ## cohort grid
             'target resolution': (1000,1000),
-            'initilzation year': 1900,
+            'initialization year': 1900,
             'start year': 1901,
             'area data': files,
             

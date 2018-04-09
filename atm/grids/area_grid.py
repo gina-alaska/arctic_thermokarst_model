@@ -79,7 +79,7 @@ class AreaGrid(object):
         """
         input_data = config['area data']
         target_resolution = config['target resolution']
-        self.start_year = int(config['initilzation year'])
+        self.start_year = int(config['initialization year'])
 
         self.input_data = input_data
         ## read input
