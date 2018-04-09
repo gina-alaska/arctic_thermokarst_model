@@ -1,8 +1,9 @@
 Arctic Thermokarst Model
 
 # Setup
-An anaconda environment is provided to help run the model. You will also have to install ffmpeg.
+An anaconda environment is provided to help run the model. You will also have to install ffmpeg. 
 
+From the model repository directory,
 Run `conda env create -f environment.yml` to set up the environment. 
 
 If you don't need to change the environment, or run the tests skip to Running the model
