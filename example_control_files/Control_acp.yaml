@@ -36,7 +36,7 @@ Simulation_name: Historical_1901-2015
 # File Name Containing Archiving Information
 #---------------------------------------------------------------
 Archive_data: 00_archive_data.yaml
-    
+
 #----------------------------------------------------------------
 # TEST CODE CONTROL (short simulations for testing purposes)
 Test_code: No
@@ -68,14 +68,14 @@ Met_Control: 00_Met_Control.yaml
 #------------------------------------------------------------------------
 Terrestrial_Control: 00_Terrestrial_Control.yaml
 
-#~ Landcover: 
+#~ Landcover:
     # Flag to read & write geotiff files for landcover information
     #~ Read_Geotiff: Yes # Not implmented
     #~ Write_Geotiff: No # Not implmented
-Initial_Cohort_List: 00_Barrow_Initial_Cohort_List.yaml
+Initial_Cohort_List: 00_ACP_Initial_Cohort_List.yaml
 
 Lake_Pond_Control: 00_Lake_Pond_Control.yaml
-    
+
 Transition_order:
     - Meadow_WT
     - LCP_WT
@@ -86,7 +86,7 @@ Transition_order:
     - LargeLakes_WT
     - MediumLakes_WT
     - SmallLakes_WT
- 
+
 #========================================================================
 #cohort and transition contol
 #========================================================================
@@ -109,26 +109,26 @@ Cohorts:
     SandyBarrens_WT_Control: 01_SandyBarrens_WT_Control.yaml
     SmallLakes_WT_Control: 01_SmallLakes_WT_Control.yaml
     Urban_WT_Control: 01_Urban_WT_Control.yaml
-    
+
     ## list template of use else where
-    #~ CLC_WT_Control: 
+    #~ CLC_WT_Control:
     #~ DrainedSlope_WT_Control:
-    #~ FCP_WT_Control: 
-    #~ HCP_WT_Control: 
-    #~ Ice_WT_Control: 
-    #~ LargeLakes_WT_Control: 
-    #~ LCP_WT_Control: 
+    #~ FCP_WT_Control:
+    #~ HCP_WT_Control:
+    #~ Ice_WT_Control:
+    #~ LargeLakes_WT_Control:
+    #~ LCP_WT_Control:
     #~ Meadow_WT_Control:
     #~ MediumLakes_WT_Control:
-    #~ NoData_WT_Control: 
-    #~ Ponds_WT_Control: 
-    #~ RiparianShrub_WT_Control: 
-    #~ Rivers_WT_Control: 
-    #~ SalineCoastalWater_WT_Control: 
+    #~ NoData_WT_Control:
+    #~ Ponds_WT_Control:
+    #~ RiparianShrub_WT_Control:
+    #~ Rivers_WT_Control:
+    #~ SalineCoastalWater_WT_Control:
     #~ SandDunes_WT_Control:
-    #~ SandyBarrens_WT_Control: 
-    #~ SmallLakes_WT_Control: 
-    #~ Urban_WT_Control: 
+    #~ SandyBarrens_WT_Control:
+    #~ SmallLakes_WT_Control:
+    #~ Urban_WT_Control:
 
 
 #================================================================
