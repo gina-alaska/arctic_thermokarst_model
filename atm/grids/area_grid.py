@@ -562,7 +562,7 @@ class AreaGrid(object):
         if zeros:
             self.grid[-1] = self.grid[-1]*0
 
-    def area_of_intrest (self, time_step = 0):
+    def area_of_interest (self, time_step = 0):
         """get area of interest at a time step
 
         Parameters
@@ -772,7 +772,7 @@ class AreaGrid(object):
 
         dom = dom.reshape(self.shape)
 
-        dom[np.logical_not(self.area_of_intrest())] = np.nan
+        dom[np.logical_not(self.area_of_interest())] = np.nan
         return dom , metadata
 
     def dominate_cohort_figure (self, path, filename, title = '',
