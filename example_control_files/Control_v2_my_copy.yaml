@@ -11,16 +11,16 @@
 Simulation_area: Barrow
 #----------------------------------------------------------------
 # Specify location of computer code on local computer
-Run_dir: <add path to rundir>
+Run_dir: /Users/rawser/atm/atm_data/
 #----------------------------------------------------------------
 # Data Input and Output Directories
-Input_dir: <add path to input>
+Input_dir: /Users/rawser/atm/atm_data/Input/Barrow/
 Output_dir: ./Output/Barrow_test/
 Control_dir: ./example_control_files/barrow_random/
 #----------------------------------------------------------------
 # Name of "Notes Files" containing additional information
 #   -- "Blank" is an empty file.
-#~ Notes_file: 2015_August_24_ForCathy # not implemented
+#~ Notes_file: 2015_August_24_ForCathy
 #----------------------------------------------------------------
 
 #================================================================
@@ -39,8 +39,8 @@ Archive_data: 00_archive_data.yaml
     
 #----------------------------------------------------------------
 # TEST CODE CONTROL (short simulations for testing purposes)
-Test_code: No
-Test_code_duration: 2
+Test_code: yes
+Test_code_duration: 10
 
 
 #================================================================

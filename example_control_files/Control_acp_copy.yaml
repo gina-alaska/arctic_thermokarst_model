@@ -14,9 +14,9 @@ Simulation_area: ACP
 Run_dir: <add path>
 #----------------------------------------------------------------
 # Data Input and Output Directories
-Input_dir: <add path>
-Output_dir: ./Output/
-Control_dir: ./Control_files_acp/
+Input_dir: /Users/rawser/atm/atm_data_new_framework/ACP_setup/Input_data_smaller
+Output_dir: ./Output/acp_test
+Control_dir: ./example_control_files/Control_files_acp/
 #----------------------------------------------------------------
 # Name of "Notes Files" containing additional information
 #   -- "Blank" is an empty file.
