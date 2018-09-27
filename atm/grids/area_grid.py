@@ -20,19 +20,26 @@ try:
 except ImportError:
     from ..atm_io import binary, image, raster
 
+try:
+    from tools import read_raster_layers
+except ImportError:
+    from ..tools import read_raster_layers
+
 from constants import ROW, COL
 
 import copy
+
+from multigrids import TemporalMultiGrid
 
 import  moviepy.editor as mpy
 
 class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
 
-class AreaGrid(object):
+class AreaGrid(TemporalMultiGrid):
     """ AreaGrid represents fractional areas of each cohort in a grid element
     """
-    def __init__ (self, config):
+    def __init__ (self, *args, **kwargs):
         """This class represents model area grid as fractional areas of each
         cohort that make up a grid element. In each grid element all
         fractional cohorts should sum to one.
@@ -77,237 +84,151 @@ class AreaGrid(object):
         
         
         """
-        input_data = config['area data'] 
+        config = args [0]
+        input_rasters = config['area data'] 
         target_resolution = config['target resolution']
-        self.start_year = int(config['initilzation year'])
+
+        layers, raster_metadata = read_raster_layers.read_layers(
+            input_rasters, target_resolution
+        ) 
+
+        # add in ages here
+        # print layers.grids.shape
+        layers_with_ages, grid_name_map_with_ages = \
+            self.setup_cohort_ages(layers)
+        # print layers_with_ages
+        # print layers.grids.shape
+
+        args = [
+            layers.grid_shape[ROW], layers.grid_shape[COL], 
+            layers_with_ages.shape[0], 100
+        ]
+
+        kwargs = {}
+        kwargs['data_type'] = 'float'
+        kwargs['mode'] = 'r+'
+        # kwargs['grid_names'] = layers.
+        super(AreaGrid , self).__init__(*args, **kwargs)
+        # print self.grids.shape
+        # self.config['grid_names'] = layers.grid_names
+        self.config['grid_name_map'] = grid_name_map_with_ages
+        self.grids[0,:] = layers_with_ages.reshape(self.memory_shape[1:])
+
+        self.key_to_index = grid_name_map_with_ages
+        self.shape = self.grid_shape
+        self.init_grid = self.grids[0]
         
-        self.input_data = input_data
-        ## read input
-        ## rename init_grid??
-        self.init_grid, self.raster_info, self.key_to_index = \
-            self.read_layers(target_resolution)
+        self.config['start_year'] = int(config['initialization year'])
+        self.config['resolution'] = target_resolution
+
+        # args [0]
+        # input_data = config['area data'] 
+        # target_resolution = config['target resolution']
+        # self.start_year = int(config['initialization year'])
         
-        ## rename grid_history?
-        self.grid = [self.init_grid]
+        # self.input_data = input_data
+        # ## read input
+        # ## rename init_grid??
+        # self.init_grid, self.raster_info, self.key_to_index = \
+        #     self.read_layers(target_resolution)
         
-        self.check_mass_balance() ## check mass balance at initial time_step
+        # ## rename grid_history?
+        # self.grid = [self.init_grid]
         
-        #get resolution, and shape of gird data as read in
-        original = self.raster_info.values()[0]
-        o_shape = (original.nY, original.nX) 
-        o_res = (original.deltaY, original.deltaX) 
-        self.shape = (
-            abs(int(o_shape[ROW] * o_res[ROW] /target_resolution[ROW])),
-            abs(int(o_shape[COL] * o_res[COL] /target_resolution[COL])),
-        )
+        # self.check_mass_balance() ## check mass balance at initial time_step
         
-        ## some times new shape may be off by one
-        try:
-            self.get_cohort_at_time_step(
-                self.key_to_index.keys()[0], flat = False)
-        except ValueError:
-            self.shape = (self.shape[0]+1,self.shape[1]+1)
+        # #get resolution, and shape of gird data as read in
+        # original = self.raster_info.values()[0]
+        # o_shape = (original.nY, original.nX) 
+        # o_res = (original.deltaY, original.deltaX) 
+        # self.shape = (
+        #     abs(int(o_shape[ROW] * o_res[ROW] /target_resolution[ROW])),
+        #     abs(int(o_shape[COL] * o_res[COL] /target_resolution[COL])),
+        # )
+        
+        # ## some times new shape may be off by one
+        # try:
+        #     self.get_cohort_at_time_step(
+        #         self.key_to_index.keys()[0], flat = False)
+        # except ValueError:
+        #     self.shape = (self.shape[0]+1,self.shape[1]+1)
             
-        self.resolution = target_resolution
+        # self.resolution = target_resolution
+
+    def setup_cohort_ages(self, layers):
+        """ Function doc """
+        layers_with_ages = [] 
+        grid_name_map_with_ages = {}
+        index = 0
+        for layer in layers.layer_names:
+            layers_with_ages.append(layers[layer].flatten())
+            grid_name_map_with_ages[layer + '--0'] = index
+            slice_start = index
+            index += 1
+            num_years = 1 # < to be set based on cohort age range later, FOR TRACKING AGE OF COHORTS <<<<<<<<<<<<<
+            for age in range(1, num_years):
+                layers_with_ages.append(
+                    np.zeros(layers.grid_shape[0] * layers.grid_shape[1])
+                )
+                grid_name_map_with_ages[layer + '--' + str(age) ] = index
+                index += 1
+            slice_end = index
+            grid_name_map_with_ages[layer] = slice(slice_start,slice_end)
+
+        layers_with_ages = np.array(layers_with_ages)
+        return layers_with_ages, grid_name_map_with_ages
+
+    @staticmethod
+    def is_grid_with_range(key):
+        return type(key) is tuple and len(key) == 2 and \
+            type(key[0]) in (str,slice) and type(key[1]) is slice
+
+    @staticmethod
+    def is_grid_with_index(key):
+        return type(key) is tuple and len(key) == 2 and \
+            type(key[0]) in (str,slice) and type(key[1]) is int
         
+    ## REDO DOCS
     def __getitem__ (self, key):
         """Gets cohort data.
+
+        AreaGrid[]
         
         Can get data for a cohort at all time steps, all cohorts at a ts, 
         or a cohort at a given ts
         
-        Parameters
-        ----------
-        key: Str, int, or tuple(int,str)
-            if key is a string, it should be a canon cohort name.
-            if key is an int, it should be a year >= start_year, 
-            but < start_year + len(grid)
-            if key is tuple, the int should fit the int requirements, and the 
-            string the string requirements. 
+        # Parameters
+        # ----------
+        # key: Str, int, or tuple(int,str)
+        #     if key is a string, it should be a canon cohort name.
+        #     if key is an int, it should be a year >= start_year, 
+        #     but < start_year + len(grid)
+        #     if key is tuple, the int should fit the int requirements, and the 
+        #     string the string requirements. 
             
-        Returns
-        -------
-        np.array
-            if key is a string, 3D, dimension are[timestep][grid row][grid col],
-            timestep is year(key) - start year
-            if key is a int, 3D, dimension are [cohort #][grid row][grid col],
-            use key_to_int to find cohort #
-            if key is tuple, 2D, [grid row][grid col]
+        # Returns
+        # -------
+        # np.array
+        #     if key is a string, 3D, dimension are[timestep][grid row][grid col],
+        #     timestep is year(key) - start year
+        #     if key is a int, 3D, dimension are [cohort #][grid row][grid col],
+        #     use key_to_int to find cohort #
+        #     if key is tuple, 2D, [grid row][grid col]
         """
-        if type(key) is str: ## cohort at all ts
-            get_type = 'cohort' 
-        elif type(key) is int: ## all cohorts at a ts
-            get_type = 'ts' 
-        else: # tuple ## a cohort at a ts
-            get_type = 'cohort at ts' 
-            
-            
-        if 'cohort' == get_type: 
-            return self.get_cohort(key, False)
-        elif 'ts' == get_type:
-            year = key - self.start_year
-            return self.get_all_cohorts_at_time_step(year, False)
-        elif 'cohort at ts' == get_type:
-            year, cohort = key
-            year = year-self.start_year
-            return self.get_cohort_at_time_step(cohort, year, False)
-        
-        
-    def read_layers(self, target_resolution):
-        """Read cohort layers from raster files
-        
-        Parameters
-        ----------
-        target_resolution: tuple of ints
-            target resolution of each grid element (y,x)
-            
-        Returns
-        -------
-        Layers : np.ndarray
-            2d array of flattened cohort grids, corrected to the proper
-        resolution, and normalized. First dimension is layer index, which can be 
-        found with the keys_to_index dict. The second dimension is gird element 
-        index.
-        metadata_dict : dict
-            metadata for each raster loaded. Keys being canon name of layer
-        keys_to_index : dict
-            Maps each canon cohort name to the int index used in layer grid 
-        """
-        layers = []
-        metadata_dict = {}
-        key_to_index = {}
-        idx = 0
-        shape, resolution = None, None
-        
-        for f in self.input_data:
-            ## add path here
-            #~ print f
-            path = f
-            try:
-                data, metadata = raster.load_raster (path)
-            except AttributeError:
-                print 'FATAL ERROR: Could Not Load Raster File', path
-                sys.exit(0)
-            
-            ## set init shape and resolution
-            ## TODO maybe do this differently 
-            if shape is None:
-                shape = (metadata.nY,metadata.nX)
-            elif shape != (metadata.nY,metadata.nX):
-                raise StandardError, 'Raster Size Mismatch'
-                
-            if resolution is None:    
-                resolution = (abs(metadata.deltaY),abs(metadata.deltaX))
-            elif resolution != (abs(metadata.deltaY), abs(metadata.deltaX)):
-                raise StandardError, 'Resolution Size Mismatch'
-            
-            try:
-                filename = os.path.split(f)[-1]
-                name = find_canon_name(filename.split('.')[0])
-            except KeyError as e:
-                print e
-                continue
-            ## update key to index map, metadata dict, layers, 
-            ## and increment index
-            key_to_index[name + '--0'] = idx
-            slice_start = idx
-            idx += 1 # < moved here because of the loop in a bit
-        
-            metadata_dict[name] = metadata
+        # print key
+        access_key = [slice(None,None) for i in range(4)]
+        if self.is_grid(key):
+            access_key[1] = self.get_grid_number(key)
+        elif self.is_grid_with_range(key) or self.is_grid_with_index(key):
+            access_key[0] = key[1] - self.start_year
+            access_key[1] = self.get_grid_number(key[0])
+        else:
+            access_key = key - self.start_year
+        # print 'key', access_key, type(access_key)
+        return self.grids.reshape(self.real_shape)[access_key]
 
-            
-            cohort_year_0 = self.resize_grid_elements(
-                data, resolution, target_resolution
-            )
-            layers.append( cohort_year_0 ) 
-            
-            flat_grid_size = len(cohort_year_0) 
-            num_years = 1 # < to be set based on cohort age range later, FOR TRACKING AGE OF COHORTS <<<<<<<<<<<<<
-            for age in range(1, num_years):
-                layers.append(np.zeros(flat_grid_size))
-                key_to_index[name + '--' + str(idx) ] = idx
-                idx += 1
-            slice_end = idx
-            key_to_index[name] = slice(slice_start,slice_end)
-           
-        layers = self.normalize_layers(
-            np.array(layers), resolution, target_resolution
-        )
-        #~ print layers
-        return layers, metadata_dict, key_to_index
-       
-    ## make a static method?
-    def normalize_layers(self, layers, current_resolution, target_resolution):
-        """Normalize Layers. Ensures that the fractional cohort areas in each 
-        grid element sums to one. 
-        """
-        total = layers.sum(0) #sum fractional cohorts at each grid element
-        cohorts_required = \
-            (float(target_resolution[ROW])/(current_resolution[ROW])) * \
-            (float(target_resolution[COL])/(current_resolution[COL]))
-
-        cohort_check = total / cohorts_required
-        ## the total is zero in non study cells. Fix warning there
-        adjustment = float(cohorts_required)/total
-
-        check_mask = cohort_check > .5
-        new_layers = []
-        for layer in layers:
-            
-            layer_mask = np.logical_and(check_mask,(layer > 0))
-            layer[layer_mask] = np.multiply(
-                layer,adjustment, where=layer_mask)[layer_mask]
-            
-            layer = np.round((layer) / cohorts_required, decimals = 6)
-            new_layers.append(layer)
-        new_layers = np.array(new_layers)
-        return new_layers
-    
-    ## make a static method?
-    def resize_grid_elements (self, 
-        layer, current_resolution, target_resolution):
-        """resize cells to target resolution
-        
-        Parameters
-        ----------
-        layer : np.ndarray
-            2d raster data
-        current_resolution: tuple of ints
-            current resolution of each grid element (y,x)
-        target_resolution: tuple of ints
-            target resolution of each grid element (y,x)
-            
-        Returns 
-        -------
-        np.ndarray
-            flattened representation of resized layer
-        """
-        ## check that this is correct
-        if target_resolution == current_resolution:
-            layer[layer<=0] = 0
-            layer[layer>0] = 1
-            return layer.flatten()
-        
-        resize_num = (
-            abs(int(target_resolution[ROW]/current_resolution[ROW])),
-            abs(int(target_resolution[COL]/current_resolution[COL]))
-        )
-        #~ print resize_num
-        resized_layer = []
-        
-        shape = layer.shape
-        
-        ## regroup at new resolution
-        for row in range(0, int(shape[ROW]), resize_num[ROW]):
-            for col in range(0, int(shape[COL]), resize_num[COL]):
-                A = layer[row : row+resize_num [ROW], col:col + resize_num[COL]]
-                b = A > 0
-                resized_layer.append(len(A[b]))
-        
-        return np.array(resized_layer)
-        
-        
-    def get_cohort_at_time_step (self, cohort, time_step = -1, flat = True):
+    ## REDO DOCS
+    def get_cohort_at_time_step (self, cohort, time_step = -1, flat = True, sum_age_grids = True):
         """Get a cohort at a given time step
         
         Parameters
@@ -324,23 +245,15 @@ class AreaGrid(object):
         np.array
             The cohorts fractional area grid at a given time step. 
         """
-        cohort = self.key_to_index[cohort]
-        
-        
-        r_val = self.grid[time_step][cohort]
-        if type(cohort) is slice:
-            # sum all age buckets for cohort      
-            r_val = r_val.sum(0)
-       
-        if flat:
-            return r_val
-        else: 
-            return r_val.reshape(
-                self.shape[ROW], self.shape[COL]
-            )
+        if time_step == -1:
+            time_step = self.config['current_ts']
+
+        grids = self.get_cohort(cohort, flat, sum_age_grids)
+
+        return grids[time_step]
     
-    ## NEED TO TEST
-    def get_cohort (self, cohort, flat = True):
+    ## REDO DOCS
+    def get_cohort (self, cohort, flat = True, sum_age_grids = True):
         """Get a cohort at all time steps
         
         Parameters
@@ -355,21 +268,17 @@ class AreaGrid(object):
         np.array
             The cohorts fractional area grid at all time steps. 
         """
-        cohort = self.key_to_index[cohort]
-        
-        
-        r_val = np.array(self.grid)[:,cohort]
-        if type(cohort) is slice:
-            # sum all age buckets for cohort      
-            r_val = r_val.sum(1)
-        
+        grids = self[cohort]
+
+        if sum_age_grids and type(self.get_grid_number(cohort)) is slice:
+            grids = grids.sum(1)
+
         if flat:
-            # sum all age buckets for cohort(check1)
-            return r_val
-        else:
-            return r_val.reshape(len(self.grid),
-                self.shape[ROW], self.shape[COL])
+            grids = grids.reshape(self.num_timesteps, np.prod(self.grid_shape))
+        
+        return grids
                 
+    ## REDO DOCS
     def get_all_cohorts_at_time_step (self, time_step = -1, flat = True):
         """Get all cohorts at a given time step
         
@@ -386,14 +295,13 @@ class AreaGrid(object):
             all cohorts fractional area grids at a given time step in a 2d 
         array. 
         """
-        ## do we want this to sum the age buckets
+        if time_step == -1:
+            time_step = self.current_ts
+        grids = self[time_step + self.start_year ]
         if flat:
-            # sum all age buckets for cohort
-            return self.grid[time_step] 
-        else:
-            return self.grid[time_step].reshape(len(self.init_grid),
-                self.shape[ROW], self.shape[COL])
-                
+            grids = grids.reshape(self.num_grids, np.prod(self.grid_shape))
+        return grids
+          
     def total_franctonal_area(self, time_step):
         """get total fractional area for each grid element at a time step 
         
@@ -406,8 +314,7 @@ class AreaGrid(object):
         np.array
             total fractional area array
         """            
-        grid = self.grid[time_step]
-        
+        grid = self[time_step + self.start_year]
         return np.round(grid.sum(0), decimals = 6 )
                 
     def check_mass_balance (self, time_step=-1):
@@ -429,6 +336,8 @@ class AreaGrid(object):
         Bool
             True if no mass balance problem found.
         """
+        if time_step == -1:
+            time_step = self.current_ts
         ATTM_Total_Fractional_Area = self.total_franctonal_area(time_step)
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
             raise MassBalanceError, 'mass balance problem 1'
@@ -451,6 +360,7 @@ class AreaGrid(object):
         """
         raise NotImplementedError, 'cannot set a cohort at all time steps'
     
+    ## REDO DOCS
     def set_cohort_at_time_step(self, cohort, time_step, data):
         """Set a cohort at a given time step
         
@@ -468,14 +378,9 @@ class AreaGrid(object):
         StandardError
             bad shape
         """
-        if cohort.find('--') == -1:
-            raise StandardError, 'needs the age set'
-        idx = self.key_to_index[cohort]
-        if data.shape != self.shape:
-            raise StandardError, 'Set shape Error'
-        
-        self.grid[time_step][idx] = data.flatten()
-        
+        self[cohort, time_step + self.start_year] = data
+
+    ## REDO DOCS 
     def set_all_cohorts_at_time_step(self, time_step, data):
         """Sets all cohorts at a time step
         
@@ -488,10 +393,11 @@ class AreaGrid(object):
             3D array with shape rebroadcastable to init_grid.shape())
             i.e [cohorts][ages][grid]
         """
-        shape = self.init_grid.shape
-        self.grid[time_step] = data.reshape(shape)
+        # shape = self.init_grid.shape
+        # self.grid[time_step] = data.reshape(shape)
+        self[time_step + self.start_year] = data
         
-         
+    ## REDO DOCS
     def __setitem__ (self, key, data):
         """Set cohort data. 
         
@@ -517,50 +423,19 @@ class AreaGrid(object):
         KeyError, 
             if key's year value < star_year or > star_year + len(grid)
         """
-        if type(key) is str: ## cohort at all ts
-            #~ get_type = 'cohort' 
-            raise NotImplementedError, 'cannot set a cohort at all time steps'
-        elif type(key) is int: ## all cohorts at a ts
-            get_type = 'ts' 
-            year = key
-        else: # tuple ## a cohort at a ts
-            get_type = 'cohort at ts' 
-            year, cohort = key
-            
-        if year == self.start_year + len(self.grid):
-            ## year == end year + 1 
-            ## (I.e start_year == 1900, len(grid) =10, year = 1910)
-            ## time steps from 0 - 9, (1900 - 1909)
-            ## year - star_year = 10, no 10 as a time,
-            ## but 10 == year - star_year, or 1910 == start_year+len(grid)
-            ## so, will add a new grid year, because it is end +1, and set 
-            ## values to 0
-            self.add_time_step(True)
-        elif year > self.start_year + len(self.grid):
-            raise KeyError, 'Year too far after current end'
-        elif year < self.start_year:
-            raise KeyError, 'Year before start year'
-        
-            
-        if  'ts' == get_type:
-            ts = year - self.start_year
-            self.set_all_cohorts_at_time_step(ts, data)
-        elif  'cohort at ts' == get_type:
-            ts = year - self.start_year
-            self.set_cohort_at_time_step(cohort, ts, data)
-            
-        
-    def add_time_step (self, zeros=False):
-        """adds a new grid timestep and exact copy of the previous timestep
-        
-        Parameters
-        ----------
-        zeros : bool
-            set new years data to 0 if true
-        """
-        self.grid.append(copy.deepcopy(self.grid[-1]))
-        if zeros:
-            self.grid[-1] = self.grid[-1]*0
+        access_key = [slice(None,None) for i in range(3)]
+        if self.is_grid(key) or self.is_grid_with_range(key):
+            raise NotImplementedError, 'cannot set a cohort at multiple time steps'
+        elif self.is_grid_with_index(key):
+            if type(self.get_grid_number(key[0])) is slice:
+                raise NotImplementedError, 'cannot set a cohorts age grids as a group, try setting each age one at a time'
+            access_key[0] = key[1] - self.start_year
+            access_key[1] = self.get_grid_number(key[0])
+        else:
+            access_key = key - self.start_year
+        # print 'key', access_key, type(access_key)
+        shape = self.grids[access_key].shape
+        self.grids[access_key] = data.reshape(shape)
             
     def area_of_intrest (self, time_step = 0):
         """get area of interest at a time step
@@ -728,9 +603,7 @@ class AreaGrid(object):
                 os.path.join(path,cohort+"_fraction.mp4"), 
                 progress_bar=False, verbose = False
             )
-        
             
-        
     def get_cohort_list (self):
         """Gets list of cannon cohort names in model
         
@@ -740,8 +613,7 @@ class AreaGrid(object):
             cannon cohorts in model instance
         """
         return [key for key in self.key_to_index if key.find('--') == -1]
-        
-        
+          
     def find_dominate_cohort_at_time_step (self, time_step = -1):
         """Create the dominate cohort map at a time step
         
@@ -850,8 +722,8 @@ def test (files):
     """
     config = {
         'target resolution': (1000,1000),
-        'start year': 1900,
-        'input data': files,
+        'initialization year': 1900,
+        'area data': files,
     }
     
-    return CohortGrid(config)
+    return AreaGrid(config)
