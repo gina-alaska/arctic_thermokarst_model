@@ -19,7 +19,7 @@ RASTER_METADATA = namedtuple('RASTER_METADATA',
 )
 
 def load_raster (filename):
-    """Load a raster file and it's medatadata
+    """Load a raster file and it's metadata
     
     Parameters
     ----------
