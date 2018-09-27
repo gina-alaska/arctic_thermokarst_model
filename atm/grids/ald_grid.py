@@ -16,11 +16,38 @@ except ImportError:
 
 import copy
 
-class ALDGrid(object):
+from multigrids import TemporalMultiGrid
+
+def random_grid (shape, minimum, maximum, mask = None):
+        """create a random ALD grid
+        
+        Parameters
+        ----------
+        shape:  
+        
+        min:
+        max:
+        mask: np.array of bools( optional)
+            if provided ALD is set where mask is true, other wise 0
+        
+        Returns
+        -------
+        np.array
+            random ald grid
+        """
+        grid = np.random.uniform( minimum, maximum, shape ).flatten()
+        if mask is None:
+            mask = grid == grid
+        
+        grid[ mask.flatten() == False ] = 0
+        
+        return grid
+
+class ALDGrid(TemporalMultiGrid):
     """ALD, and PL object """
     
-    def __init__ (self, config):
-        """Represnts ALD, and PL for each cohort for the model
+    def __init__ (self, *args, **kwargs):
+        """Represents ALD, and PL for each cohort for the model
         
         Parameters
         ----------
@@ -52,34 +79,95 @@ class ALDGrid(object):
             starts as zeros, this should be updated once the met values 
             are loaded with setup_ald_constants, and then changed
         """
-        shape = config['shape']
-        cohort_list = config['cohort list']
-        init_ald = config ['init ald']
-        self.start_year = config ['initilzation year']
+        config = args[0]
+
+        grid_names = self.setup_grid_info(config)
+
+        args = [
+            config['grid_shape'][ROW], config['grid_shape'][COL], 
+            len(grid_names), config['model length']
+        ]
+
+        kwargs = {}
+        kwargs['data_type'] = 'float'
+        kwargs['mode'] = 'r+'
+        kwargs['grid_names'] = grid_names
+        super(ALDGrid , self).__init__(*args, **kwargs)
+
+        init_grids = self.setup_grids(config)
+
+        self.grids[0,:] = init_grids
+        self.config['start_year'] = int(config['initialization year'])
+        self.config['index_base'] = self.config['start_year']
+
+        # shape = config['shape']
+        # cohort_list = config['cohort list']
+        # init_ald = config ['init ald']
+        # self.start_year = config ['initialization year']
         
-        ## setup soil properties
-        self.porosity = config['porosities']
-        self.protective_layer_factor = config['PL factors']
-        self.aoi_mask = config['AOI mask']
+        # ## setup soil properties
+        # self.porosity = config['porosities']
+        # self.protective_layer_factor = config['PL factors']
+        # self.aoi_mask = config['AOI mask']
         
-        ald, pl, pl_map = self.setup_grid ( 
-            shape, 
-            cohort_list, 
-            init_ald, 
-            self.aoi_mask, 
-            self.protective_layer_factor 
-        )
-        self.init_ald_grid = ald
-        self.init_pl_grid = pl
-        self.pl_key_to_index = pl_map
+        # ald, pl, pl_map = self.setup_grid ( 
+        #     shape, 
+        #     cohort_list, 
+        #     init_ald, 
+        #     self.aoi_mask, 
+        #     self.protective_layer_factor 
+        # )
+        self.init_ald_grid = self.grids[0,0]
+        self.init_pl_grid =self.grids[0,1:]
+        # self.current_ts = 0
+        # self.pl_key_to_index = pl_map
         
        
-        self.shape = shape
-        self.ald_grid = [ self.init_ald_grid ]
-        self.pl_grid = [ self.init_pl_grid ]
+        # self.shape = shape
+        # self.ald_grid = [ self.init_ald_grid ]
+        # self.pl_grid = [ self.init_pl_grid ]
         
-        self.ald_constants = np.zeros(self.shape)
+        self.ald_constants = np.zeros(self.grid_shape)
     
+    def setup_grids(self, config):
+        """ Function doc """
+        
+        grids = np.zeros(
+            [self.num_grids, self.grid_shape[0]* self.grid_shape[1]]
+        )
+
+        if type(config['Initial ALD']) is tuple:
+            grids[0] = random_grid(
+                self.grid_shape, 
+                config['Initial ALD'][0],
+                config['Initial ALD'][1], 
+                config['AOI mask']
+            )
+        else:
+            grids[0] = self.read_grid(config['Initial ALD'])
+
+        pl_factors = config['PL factors']
+
+        if pl_factors == {}:
+            pl_factors = {key: 1 for key in cohorts}
+        
+        for cohort in config['cohorts']:
+            grids[self.get_grid_number(cohort)] = grids[0] * pl_factors[cohort]
+        return grids
+
+    def setup_grid_info (self, config):
+        """ Function doc """
+        
+        ## count number of grids needed for multigrid
+        grid_names = ['ALD']
+        for cohort in config['cohorts']:
+            #~ print cohort
+            grid_names.append(cohort)
+        
+        return grid_names
+
+
+
         
     def __getitem__ (self, key):
         """Gets ALD or PL or PL for a cohort
@@ -100,45 +188,9 @@ class ALDGrid(object):
         np.array
             requested grid, each grid will match the shape attribute
         """
-        if type(key) is str:
-            if key == 'ALD':
-                return self.get_ald(flat = False)
-            elif key == 'PL':
-                #return self.get_pl()
-                raise NotImplementedError, 'get all PL ts not implemented'
-            else:
-                raise KeyError, 'String key must be ALD, or PL'
-               
-        elif type(key) is tuple:
-            if key[0] == 'ALD':
-                if type(key[1]) is int:
-                    ts = key[1] - self.start_year
-                    return self.get_ald_at_time_step(ts, False)
-                else:
-                    raise KeyError, 'Tuple key(ALD) index 1 must be an int'
-                
-            elif key[0] == 'PL':
-                if type(key[1]) is int:
-                    ts = key[1] - self.start_year
-                    return self.get_pl_at_time_step(ts, flat = False)
-                else:
-                    raise KeyError, 'Tuple key(PL) index 1 must be an int'
-            
-            elif key[0] in self.pl_key_to_index.keys():
-                if type(key[1]) is int:
-                    ts = key[1] - self.start_year
-                    return self.get_pl_at_time_step(ts,
-                        cohort = key[0], flat = False)
-                else:
-                    raise KeyError, 'Tuple key(cohort) index 1 must be an int'
-            
-            else:
-                msg = ('Tuple keys first item must be ALD,'
-                        ' or PL, or a cohort in pl_grid')
-                raise KeyError, msg
-
-        else:
-            raise KeyError, 'Key is not a str or tuple.'
+        if key == 'PL' or 'PL' in key:
+            raise NotImplementedError, 'get all PL ts not implemented'
+        return super(ALDGrid , self).__getitem__(key)
         
     def __setitem__ (self, key, value):
         """Set ALD or PL data. 
@@ -162,78 +214,10 @@ class ALDGrid(object):
             if key is str
         """
         if type(key) is str:
-            raise NotImplementedError, 'cannot set whole ALD or PL array'
-            
-        elif type(key) is tuple:
-            if type(key[1]) is int:
-                year = key[1]
-                if year == self.start_year + len(self.ald_grid):
-                ## year == end year + 1 
-                ## (I.e start_year == 1900, len(grid) =10, year = 1910)
-                ## time steps from 0 - 9, (1900 - 1909)
-                ## year - star_year = 10, no 10 as a time,
-                ## but 10 == year - star_year, or 1910 == start_year+len(grid)
-                ## so, will add a new grid year, because it is end +1, and set 
-                ## values to 0
-                    self.add_time_step(True)
-                elif year > self.start_year + len(self.ald_grid):
-                    raise KeyError, 'Year too far after current end'
-                elif year < self.start_year:
-                    raise KeyError, 'Year before start year'
-            else:
-                raise KeyError, 'tuple index 1 should be int'
-            
-            ts = year - self.start_year
-            
-            if key[0] is 'ALD':
-                self.set_ald_at_time_step(ts, value)
-            elif key[0] == 'PL':
-                self.set_pl_at_time_step(ts, value)
-            elif key[0] in self.pl_key_to_index.keys():
-                self.set_pl_cohort_at_time_step(ts, key[0], value)
-            else: 
-                msg = ('Tuple keys first item must be ALD,'
-                        ' or PL, or a cohort in pl_grid')
-                raise KeyError, msg
-        else:
-            raise KeyError, 'Key is not a str or tuple.'
-        
-        
-    def setup_grid (self, shape, cohorts, init_ald, aoi_mask, pl_factors = {}):
-        """
-        
-        Parameters
-        ----------
-        dimensions: tuple of ints
-            size of grid
-        cohorts: list 
-            list of cohorts in model domain
-        init_ald: tuple, 2d array, of filename
-            if it is as tuple it should have 2 elements (min, max)
-        """
-        ## TODO READ pl_modifiers from config
-        
-        if type(init_ald) is tuple:
-            ald_grid = self.random_grid(shape, init_ald, aoi_mask)
-        else:
-            ald_grid = self.read_grid(init_ald)
-        
-        if pl_factors == {}:
-            pl_factors = {key: 1 for key in cohorts}
-        
-        ## protective layer (pl)
-        pl_grid = []
-        pl_key_to_index = {}
-        index = 0 
-        for cohort in cohorts:
-            #~ print cohort
-            pl_grid.append(ald_grid * pl_factors[cohort]) 
-            pl_key_to_index[ cohort ] = index
-            index += 1
-            
-        return ald_grid, np.array(pl_grid), pl_key_to_index
-        ## need to add random chance + setup for future reading of values
-        
+            raise NotImplementedError('Cannot set layers for entire timeframe')
+        if type(key) is str and 'PL' in key:
+            raise NotImplementedError, 'PL key not implemented'
+        return super(ALDGrid , self).__setitem__(key, value)
     def setup_ald_constants (self, degree_days):
         """Initialize the ALD constant array
         
@@ -248,34 +232,6 @@ class ALDGrid(object):
             pass
         
         self.ald_constants = self.init_ald_grid.flatten() / degree_days
-        
-        
-
-    def random_grid (self, shape, init_ald, aoi_mask = None):
-        """create a random ALD grid
-        
-        Parameters
-        ----------
-        shape:  
-        
-        init_ald: tuple (2 floats)
-            (min, max) ald in each element is set to min <= ald < max
-        aoi_mask: np.array of bools( optional)
-            if provided ALD is set where mask is true, other wise 0
-        
-        Returns
-        -------
-        np.array
-            random ald grid
-        """
-        grid = np.random.uniform(init_ald[0], init_ald[1], shape ).flatten()
-        if aoi_mask is None:
-            aoi_mask = grid == grid
-        
-        grid[ aoi_mask.flatten() == False ] = 0
-        
-        
-        return grid
     
     def read_grid (self, init_ald):
         """Read init ald from file or object"""
@@ -296,10 +252,9 @@ class ALDGrid(object):
         np.array
             ald at time step
         """
-        shape = self.ald_grid[time_step].shape
-        if not flat:
-            shape = self.shape
-        return self.ald_grid[time_step].reshape(shape)
+        if time_step == -1:
+            time_step = self.current_ts
+        return self.get_grid('ALD', time_step, flat)
         
     def get_ald (self, flat = True):
         """gets ald grid
@@ -314,11 +269,12 @@ class ALDGrid(object):
         np.array
             the ald grid at all time steps
         """
-        shape = tuple([len(self.ald_grid)] + list(self.ald_grid[0].shape))
-        if not flat:
-            shape = tuple([len(self.ald_grid)] + list(self.shape))
+        # shape = tuple([len(self.ald_grid)] + list(self.ald_grid[0].shape))
+        # if not flat:
+        #     shape = tuple([len(self.ald_grid)] + list(self.shape))
             
-        return np.array(self.ald_grid).reshape(shape)
+        # return np.array(self.ald_grid).reshape(shape)
+        return self.get_grid_over_time('ALD',None,None,flat=flat)
         
     def set_ald_at_time_step (self, time_step, grid):
         """Sets the ALD grid at a time step
@@ -330,12 +286,12 @@ class ALDGrid(object):
         grid: np.array
             2D array with shape matching shape attribute
         """
-        if grid.shape != self.shape:
+        if grid.shape != self.grid_shape:
             raise StandardError('grid shapes do not match')
-        self.ald_grid[time_step] = grid.flatten()
+        self['ALD', time_step+self.start_year] = grid.flatten()
         
     def get_pl_at_time_step (self, time_step, cohort = None, flat = True):
-        """gets the ALD grid at a time step
+        """gets All PL layers at at a time step
         
         Parameters
         ----------
@@ -353,23 +309,7 @@ class ALDGrid(object):
             returns all cohorts. Data is reshaped to grid shape if flat is
             false
         """
-        if cohort is None:
-            if flat:
-                return pl_self.grid[time_step] 
-            else:
-                return self.pl_grid[time_step].reshape(
-                    len(self.init_pl_grid),
-                    self.shape[ROW],
-                    self.shape[COL]
-                )
-        # else get cohort
-        cohort = self.pl_key_to_index[cohort]
-        r_val = self.pl_grid[time_step][cohort]
-        if flat:
-            return r_val
-        else: 
-            return r_val.reshape(self.shape[ROW], self.shape[COL])
-        
+        raise NotImplementedError('Cannot set all PL layers all at time steps')
         
     def set_pl_at_time_step (self, time_step, data):
         """Sets the PL grid at a time step
@@ -381,10 +321,9 @@ class ALDGrid(object):
         grid: np.array
             3D array that can be reshaped to match initial_l_grid shape
         """
-        shape = self.init_pl_grid.shape
-        self.pl_grid[time_step] = data.reshape(shape)
+        raise NotImplementedError('Cannot set all PL layers all at time steps')
 
-    def set_pl_cohort_at_time_step (self, time_step, cohort, data):
+    def set_pl_cohort_at_time_step (self, cohort, time_step, data):
         """Sets the PL grid for a cohort at a time step
         
         Parameters
@@ -396,11 +335,10 @@ class ALDGrid(object):
         grid: np.array
             2d array that can has shape equal to  self.shape
         """
-        idx = self.pl_key_to_index[cohort]
-        if data.shape != self.shape:
-            raise StandardError, 'Set shape Error'
+        if data.shape != self.grid_shape:
+            raise StandardError('grid shapes do not match')
+        self[cohort, time_step+self.start_year] = data.flatten()
         
-        self.pl_grid[time_step][idx] = data.flatten()
         
     def add_time_step (self, zeros = False):
         """adds a time step for ald_grid and pl_grid
@@ -411,15 +349,17 @@ class ALDGrid(object):
             if set to true data is set as all zeros
         
         """
-        self.ald_grid.append(copy.deepcopy(self.ald_grid[-1]))
-        self.pl_grid.append(copy.deepcopy(self.pl_grid[-1]))
+        # self..append(copy.deepcopy(self.ald_grid[-1]))
+        # self.pl_grid.append(copy.deepcopy(self.pl_grid[-1]))
+        
+        self.current_ts += 1
+        self.grids[self.current_ts, : ] = self.grids[self.current_ts - 1, : ] 
         if zeros:
-            self.ald_grid[-1] = self.ald_grid[-1]*0
-            self.pl_grid[-1] = self.pl_grid[-1]*0
+            self.grids[self.current_ts, : ]  = 0
             
     
     def calc_ald(self, init_tdd, current_tdd, flat = True):
-        """caclulates the ald from thawing degreedays for all cells
+        """calculates the ald from thawing degreedays for all cells
         
         Parameters
         ----------
@@ -467,7 +407,7 @@ class ALDGrid(object):
         binary.save_bin(self.init_ald_grid.reshape(self.shape), filename)
     
     def ald_constants_figure (self, filename):
-        """ save initilal  ald constants figure
+        """ save initial  ald constants figure
         
         Parameters
         ----------
@@ -492,3 +432,32 @@ class ALDGrid(object):
         """
         binary.save_bin(self.ald_constants.reshape(self.shape), filename)
         
+
+def test (files):
+    """
+    """
+    mask = np.ones([5, 10])
+    mask[:,5:] = 0
+    print mask
+    config = {
+        'target resolution': (1000,1000),
+        'grid_shape': [5, 10],
+        'initialization year': 1900,
+        'area data': files,
+        'model length': 100,
+        'Initial ALD': (.9, 1),
+        'AOI mask': mask,
+        'cohorts':[ 
+            'Meadow_WT_Y',
+            'Meadow_WT_M',     
+            'Meadow_WT_O'
+        ],
+        'PL factors': {
+            'Meadow_WT_Y':.25,
+            'Meadow_WT_M':.5,     
+            'Meadow_WT_O':.75
+        }
+
+    }
+    
+    return ALDGrid(config)

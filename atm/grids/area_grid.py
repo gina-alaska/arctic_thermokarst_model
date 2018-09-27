@@ -39,6 +39,8 @@ class MassBalanceError (Exception):
 class AreaGrid(TemporalMultiGrid):
     """ AreaGrid represents fractional areas of each cohort in a grid element
     """
+
+    ## REDO DOCS
     def __init__ (self, *args, **kwargs):
         """This class represents model area grid as fractional areas of each
         cohort that make up a grid element. In each grid element all
@@ -101,7 +103,7 @@ class AreaGrid(TemporalMultiGrid):
 
         args = [
             layers.grid_shape[ROW], layers.grid_shape[COL], 
-            layers_with_ages.shape[0], 100
+            layers_with_ages.shape[0], config['model length']
         ]
 
         kwargs = {}
@@ -120,6 +122,8 @@ class AreaGrid(TemporalMultiGrid):
         
         self.config['start_year'] = int(config['initialization year'])
         self.config['resolution'] = target_resolution
+
+        self.config['index_base'] = self.config['start_year']
 
         # args [0]
         # input_data = config['area data'] 
@@ -188,44 +192,44 @@ class AreaGrid(TemporalMultiGrid):
         return type(key) is tuple and len(key) == 2 and \
             type(key[0]) in (str,slice) and type(key[1]) is int
         
-    ## REDO DOCS
-    def __getitem__ (self, key):
-        """Gets cohort data.
+    # ## REDO DOCS
+    # def __getitem__ (self, key):
+    #     """Gets cohort data.
 
-        AreaGrid[]
+    #     AreaGrid[]
         
-        Can get data for a cohort at all time steps, all cohorts at a ts, 
-        or a cohort at a given ts
+    #     Can get data for a cohort at all time steps, all cohorts at a ts, 
+    #     or a cohort at a given ts
         
-        # Parameters
-        # ----------
-        # key: Str, int, or tuple(int,str)
-        #     if key is a string, it should be a canon cohort name.
-        #     if key is an int, it should be a year >= start_year, 
-        #     but < start_year + len(grid)
-        #     if key is tuple, the int should fit the int requirements, and the 
-        #     string the string requirements. 
+    #     # Parameters
+    #     # ----------
+    #     # key: Str, int, or tuple(int,str)
+    #     #     if key is a string, it should be a canon cohort name.
+    #     #     if key is an int, it should be a year >= start_year, 
+    #     #     but < start_year + len(grid)
+    #     #     if key is tuple, the int should fit the int requirements, and the 
+    #     #     string the string requirements. 
             
-        # Returns
-        # -------
-        # np.array
-        #     if key is a string, 3D, dimension are[timestep][grid row][grid col],
-        #     timestep is year(key) - start year
-        #     if key is a int, 3D, dimension are [cohort #][grid row][grid col],
-        #     use key_to_int to find cohort #
-        #     if key is tuple, 2D, [grid row][grid col]
-        """
-        # print key
-        access_key = [slice(None,None) for i in range(4)]
-        if self.is_grid(key):
-            access_key[1] = self.get_grid_number(key)
-        elif self.is_grid_with_range(key) or self.is_grid_with_index(key):
-            access_key[0] = key[1] - self.start_year
-            access_key[1] = self.get_grid_number(key[0])
-        else:
-            access_key = key - self.start_year
-        # print 'key', access_key, type(access_key)
-        return self.grids.reshape(self.real_shape)[access_key]
+    #     # Returns
+    #     # -------
+    #     # np.array
+    #     #     if key is a string, 3D, dimension are[timestep][grid row][grid col],
+    #     #     timestep is year(key) - start year
+    #     #     if key is a int, 3D, dimension are [cohort #][grid row][grid col],
+    #     #     use key_to_int to find cohort #
+    #     #     if key is tuple, 2D, [grid row][grid col]
+    #     """
+    #     # print key
+    #     access_key = [slice(None,None) for i in range(3)]
+    #     if self.is_grid(key):
+    #         access_key[1] = self.get_grid_number(key)
+    #     elif self.is_grid_with_range(key) or self.is_grid_with_index(key):
+    #         access_key[0] = key[1] - self.start_year
+    #         access_key[1] = self.get_grid_number(key[0])
+    #     else:
+    #         access_key = key - self.start_year
+    #     # print 'key', access_key, type(access_key)
+    #     return self.grids.reshape(self.real_shape)[access_key]
 
     ## REDO DOCS
     def get_cohort_at_time_step (self, cohort, time_step = -1, flat = True, sum_age_grids = True):
@@ -724,6 +728,7 @@ def test (files):
         'target resolution': (1000,1000),
         'initialization year': 1900,
         'area data': files,
+        'model length': 100
     }
     
     return AreaGrid(config)

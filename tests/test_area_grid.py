@@ -39,6 +39,7 @@ class TestAreaGridClass(unittest.TestCase):
             'target resolution': (1000,1000),
             'initialization year': 1900,
             'area data': files,
+            'model length': 100
         }
     
         self.tg_class =  area_grid.AreaGrid(config)
