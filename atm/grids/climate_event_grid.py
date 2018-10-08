@@ -8,12 +8,13 @@ from constants import ROW, COL
 
 from multigrids import TemporalGrid
 
+try:
+    from atm_io import image
+except ImportError:
+    from ..atm_io import image
+
 class GetGridError (Exception):
     """Raised if grid timestep not found"""
-
-class IncrementTimeStepError (Exception):
-    """Raised if grid timestep not found"""
-
 
 class ClimateEventGrid (TemporalGrid):
     """Base class for met grids
@@ -52,87 +53,29 @@ class ClimateEventGrid (TemporalGrid):
         #     ## read from existing pickle
         #     self.load_from_pickle(config)
         #     return
+        # if type()
+        if type(args[0]) is str:
+            super(ClimateEventGrid , self).__init__(*args, **kwargs)
+        else:
+            args = [
+                config['grid_shape'][ROW], 
+                config['grid_shape'][COL], 
+                config['model length']
+            ]
 
-        args = [
-            config['grid_shape'][ROW], 
-            config['grid_shape'][COL], 
-            config['model length']
-        ]
+            kwargs = {}
+            kwargs['data_type'] = 'bool'
+            kwargs['mode'] = 'r+'
+            kwargs['start_timestep'] = int(config['start year'])
+            super(ClimateEventGrid , self).__init__(*args, **kwargs)
 
-        kwargs = {}
-        kwargs['data_type'] = 'bool'
-        kwargs['mode'] = 'r+'
-        kwargs['index_base'] = int(config['start year'])
-        super(ClimateEventGrid , self).__init__(*args, **kwargs)
+            self.config['start_year'] = int(config['start year'])
 
-        self.config['start_year'] = int(config['start year'])
-
-        self.config['probability'] = float(
-            config['Met_Control']['climate_event_probability']
-        )
-        self.config['climate_block_range'] = config['climate block range']
-        self.grid = self.grids[self.current_ts]
-        # self.start_year = config['start year']
-        # self.shape = config['shape']
-        # ## grid initilzed assuming no climate events
-        # self.grid = np.zeros(self.shape).astype(bool)
-        
-        # ## current time step
-        # self.ts = 0
-        
-        # self.climate_block_range = config['climate block range']
-        # self.probability = float(
-        #     config['Met_Control']['climate_event_probability']
-        # )
-        
-        # self.pickle_path = os.path.join(
-        #     config['data path'], 'climate_event_records.pkl'
-        # )
-        
-    # def __getitem__ (self, key):
-    #     """Get item function
-        
-    #     Parameters
-    #     ----------
-    #     key: int 
-    #         a year >= start_year
-            
-    #     Raises
-    #     ------
-    #     index error
-        
-    #     Returns
-    #     -------
-    #     np.array
-    #         grid for year with shape self.shape
-    #     """
-    #     if key < self.start_year:
-    #         raise IndexError, 'index should be after '+ str(self.start_year)
-        
-    #     return self.get_grid(key - self.start_year, False)
-        
-    def increment_time_step (self, archive_results = True):
-        """increment time_step, and by default save records to pickle
-        
-        Parameters
-        ----------
-        archive_results: bool, default True
-            archive results to pickle if true
-            
-        Returns 
-        -------
-        int 
-            year for the new time step
-        """
-        # if archive_results:
-        #     self.write_to_pickle(self.pickle_path)
-        self.current_ts += 1
-        try:
-            self.grid = self.grids[self.current_ts]
-        except IndexError:
-            self.current_ts -= 1
-            raise IncrementTimeStepError('The timestep could not be incremented, because the end of the period has been reached.')
-        return self.start_year + self.current_ts
+            self.config['probability'] = float(
+                config['Met_Control']['climate_event_probability']
+            )
+            self.config['climate_block_range'] = config['climate block range']
+        self.grid = self.grids[self.timestep]
         
     def get_grid (self, time_step = -1, flat = True):
         """Get met grid at ts
@@ -150,27 +93,13 @@ class ClimateEventGrid (TemporalGrid):
             Met gird for given time step
         """
         if time_step == -1:
-            time_step = self.start_year + self.current_ts
+            time_step = self.start_year + self.timestep
         # shape = self.shape
         grid = self[time_step]
         if flat:
             return grid.flatten()
         return grid
 
-            
-        #     shape = self.shape[0] * self.shape[1]
-           
-        # if time_step == -1:
-        #     grid = self.grid
-        # else:
-        #     data = self.read_from_pickle(self.pickle_path, time_step)
-        #     #~ print time_step
-        #     if len(data) == 0:
-        #         raise GetGridError, 'invalid time step requested'
-        #     grid = data['grid']
-            
-        # return grid.reshape(shape)
-        
     def create_climate_events (self):
         """Creates climate events 
         """
@@ -178,7 +107,6 @@ class ClimateEventGrid (TemporalGrid):
             self.climate_block_range[0],
             self.climate_block_range[1]
         )
-        
         
         for row in range(0, self.grid_shape[ROW], block_size):
             for col in range(0, self.grid_shape[COL], block_size):
@@ -188,115 +116,6 @@ class ClimateEventGrid (TemporalGrid):
                     continue
                 ## climate envent occuts in block
                 print "climate event occured"
-                self.grid.reshape(self.grid_shape)[row:row+block_size, col:col+block_size] = True
+                self.grid.reshape(self.grid_shape)\
+                    [row:row+block_size, col:col+block_size] = True
         return block_size
-        
-    # def write_to_pickle(self, pickle_name = None):
-    #     """Save Met object to pickle file
-        
-    #     Parameters
-    #     ----------
-    #     pickle_name:
-    #         name of pickle file
-    #     """
-    #     data = {
-    #         'start year': self.start_year,
-    #         'ts': self.ts,
-    #         'shape': self.shape,
-    #         'grid': self.grid,
-    #         'climate block range': self.climate_block_range,
-    #         'probablity': self.probability,
-    #     }
-        
-    #     if pickle_name is None:
-    #         pickle_name = self.pickle_path
-       
-    #     if self.ts == 0:
-    #         mode = 'wb'
-    #     else:
-    #         mode = 'ab'
-
-    #     with open(pickle_name, mode) as pkl:
-    #         pickle.dump(data, pkl)
-        
-    
-    # def read_from_pickle(self, pickle_name, ts = -1):
-    #     """load state from pickle
-        
-    #     Parameters
-    #     ----------
-    #     pickle_name: str
-    #         pickle file with state
-    #     """
-    #     data = []
-    #     with open(pickle_name, 'rb') as pkl:
-    #         while True:
-    #             try:
-    #                 data.append(pickle.load(pkl))
-    #             except EOFError:
-    #                 break
-                    
-    #     if ts == -1:
-    #         return data[ts]
-    #     else:
-    #         c = 0 
-    #         while c < len(data):
-    #             if data[c]['ts'] == ts:
-    #                 return data[c]
-    #             c += 1
-        
-    #     return {}
-        
-    # def load_from_pickle(self, pickle_name):
-    #     """
-    #     """
-    #     # get last ts from pickle and set state
-    #     data = self.read_from_pickle(pickle_name, -1)
-        
-    #     self.start_year = data['start year']
-    #     self.grid = data['grid']
-    #     self.shape = data['shape']
-    #     self.climate_block_range = data['climate block range']
-    #     self.probability = data['probability']
-    #     self.pickle_path = pickle_name
-    #     self.data_path = os.path.split(pickle_name)[0]
-        
-        
-    ## TODO FIX these
-    def figure (self, filename, year ):
-        """Save a figure for a year
-        
-        Parameters
-        ----------
-        filename: path
-            path to save image at
-        year: int
-            year to save grid for
-        limits: tuple, defaults (None, None)
-            min, max limits for data
-        """
-        image.save_img(
-            self[year].astype(int).reshape(self.grid_shape) , 
-            filename, 
-            self.met_type + '-' + str(year) ,
-            cmap = 'viridis',
-            vmin = 0,
-            vmax = 1
-        )
-        
-    def figures(self, dirname ):
-        """Save figures for every year
-        
-        Parameters
-        ----------
-        dirname: path
-            path to save images at
-        limits: tuple, defaults (None, None)
-            min, max limits for data
-        """
-        for year in range(self.start_year, self.start_year + len(self.history)):
-            filename = os.path.join(
-                dirname, 
-                self.met_type.replace(' ', '_') + '_' + str(year) + '.jpg'
-            )
-            self.figure(filename, year)
