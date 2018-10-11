@@ -5,8 +5,9 @@ import os
 # import pickle
 import numpy as np
 from constants import ROW, COL
+import matplotlib.pyplot as plt
 
-from multigrids import TemporalGrid
+from multigrids import TemporalGrid, figures, common
 
 try:
     from atm_io import image
@@ -119,3 +120,37 @@ class ClimateEventGrid (TemporalGrid):
                 self.grid.reshape(self.grid_shape)\
                     [row:row+block_size, col:col+block_size] = True
         return block_size
+
+    def figure (self, filename, grid_id, **kwargs):
+        """Save a figure for a climate_event_grid
+        
+        Parameters
+        ----------
+        filename: path
+            path to save image at
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        **kwargs: dict
+            dict of key word arguments
+            'cmap': str, defaults 'seismic'
+                matplotlib colormap
+            'cbar_extend': str, defaults 'neither'
+                'neither', 'min' or 'max' 
+        """
+        data = self[grid_id].astype(float)
+        data[np.logical_not(self.mask)] = np.nan
+
+        figure_name = self.dataset_name + ' ' + str( grid_id )
+
+        # limits = load_or_use_default(kwargs, 'limits', (None,None))
+        cmap = common.load_or_use_default(kwargs, 'cmap', 'seismic')
+        # cbar_extend = load_or_use_default(kwargs, 'cbar_extend', 'neither')
+        
+        figures.save_categorical_figure(
+            data.reshape(self.grid_shape) , 
+            filename, 
+            figure_name ,
+            categories = ['no climate event', 'climate event'],
+            cmap = plt.get_cmap(cmap, 2)
+        )

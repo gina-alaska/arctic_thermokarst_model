@@ -491,7 +491,7 @@ class MultiGrid (object):
         data = self[grid_id].astype(float)
         data[np.logical_not(self.mask)] = np.nan
 
-        figure_name = self.dataset_name + ' ' + grid_id
+        figure_name = self.dataset_name + ' ' + str( grid_id )
 
         limits = load_or_use_default(kwargs, 'limits', (None,None))
         cmap = load_or_use_default(kwargs, 'cmap', 'viridis')

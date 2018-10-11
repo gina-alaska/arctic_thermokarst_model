@@ -29,7 +29,7 @@ from constants import ROW, COL
 
 import copy
 
-from multigrids import TemporalMultiGrid
+from multigrids import TemporalMultiGrid, common
 
 import  moviepy.editor as mpy
 
@@ -123,7 +123,7 @@ class AreaGrid(TemporalMultiGrid):
         self.config['start_year'] = int(config['initialization year'])
         self.config['resolution'] = target_resolution
 
-        self.config['index_base'] = self.config['start_year']
+        self.config['start_timestep'] = self.config['start_year']
 
         # args [0]
         # input_data = config['area data'] 
@@ -250,7 +250,7 @@ class AreaGrid(TemporalMultiGrid):
             The cohorts fractional area grid at a given time step. 
         """
         if time_step == -1:
-            time_step = self.config['current_ts']
+            time_step = self.config['timestep']
 
         grids = self.get_cohort(cohort, flat, sum_age_grids)
 
@@ -300,7 +300,7 @@ class AreaGrid(TemporalMultiGrid):
         array. 
         """
         if time_step == -1:
-            time_step = self.current_ts
+            time_step = self.timestep
         grids = self[time_step + self.start_year ]
         if flat:
             grids = grids.reshape(self.num_grids, np.prod(self.grid_shape))
@@ -341,7 +341,7 @@ class AreaGrid(TemporalMultiGrid):
             True if no mass balance problem found.
         """
         if time_step == -1:
-            time_step = self.current_ts
+            time_step = self.timestep
         ATTM_Total_Fractional_Area = self.total_franctonal_area(time_step)
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
             raise MassBalanceError, 'mass balance problem 1'
@@ -428,7 +428,7 @@ class AreaGrid(TemporalMultiGrid):
             if key's year value < star_year or > star_year + len(grid)
         """
         access_key = [slice(None,None) for i in range(3)]
-        if self.is_grid(key) or self.is_grid_with_range(key):
+        if common.is_grid(key) or self.is_grid_with_range(key):
             raise NotImplementedError, 'cannot set a cohort at multiple time steps'
         elif self.is_grid_with_index(key):
             if type(self.get_grid_number(key[0])) is slice:

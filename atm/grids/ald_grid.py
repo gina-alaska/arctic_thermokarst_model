@@ -98,7 +98,7 @@ class ALDGrid(TemporalMultiGrid):
 
         self.grids[0,:] = init_grids
         self.config['start_year'] = int(config['initialization year'])
-        self.config['index_base'] = self.config['start_year']
+        self.config['start_timestep'] = self.config['start_year']
 
         # shape = config['shape']
         # cohort_list = config['cohort list']
@@ -119,7 +119,7 @@ class ALDGrid(TemporalMultiGrid):
         # )
         self.init_ald_grid = self.grids[0,0]
         self.init_pl_grid =self.grids[0,1:]
-        # self.current_ts = 0
+        # self.timestep = 0
         # self.pl_key_to_index = pl_map
         
        
@@ -253,7 +253,7 @@ class ALDGrid(TemporalMultiGrid):
             ald at time step
         """
         if time_step == -1:
-            time_step = self.current_ts
+            time_step = self.timestep
         return self.get_grid('ALD', time_step, flat)
         
     def get_ald (self, flat = True):
@@ -352,10 +352,10 @@ class ALDGrid(TemporalMultiGrid):
         # self..append(copy.deepcopy(self.ald_grid[-1]))
         # self.pl_grid.append(copy.deepcopy(self.pl_grid[-1]))
         
-        self.current_ts += 1
-        self.grids[self.current_ts, : ] = self.grids[self.current_ts - 1, : ] 
+        self.timestep += 1
+        self.grids[self.timestep, : ] = self.grids[self.timestep - 1, : ] 
         if zeros:
-            self.grids[self.current_ts, : ]  = 0
+            self.grids[self.timestep, : ]  = 0
             
     
     def calc_ald(self, init_tdd, current_tdd, flat = True):
