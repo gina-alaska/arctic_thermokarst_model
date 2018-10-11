@@ -1,13 +1,21 @@
+"""
+Multigrid
+---------
+
+multigrid.py
+
+This file contains the MultiGrid class
+
+"""
 import numpy as np
 import os
 from tempfile import mkdtemp
 import yaml
 import copy
 
-import figures
+from . import figures
 
-
-load_or_use_default = lambda c, k, d: c[k] if k in c else d
+from .common import load_or_use_default, GridSizeMismatchError
 
 def open_or_create_memmap_grid(filename, mode, dtype, shape):
     """Initialize or open a memory mapped np.array.
@@ -37,22 +45,47 @@ def open_or_create_memmap_grid(filename, mode, dtype, shape):
 
 class MultiGrid (object):
     """
-        A class to represent a set of multiple related grids of the same dimensions. Implemented using
-    numpy arrays.
+        A class to represent a set of multiple related grids of the same 
+        dimensions. Implemented usin gnumpy arrays.
 
     Parameters
     ----------
-    args: list
-        List of required arguments, containing exactly 3 items: # rows, # columns, # grids.
+    *args: list
+        List of required arguments, containing exactly 3 items: # rows, 
+        # columns, # grids.
         Example call: mg = MultiGrid(rows, cols, n_grids)
-    kwargs: dict
-        
-
+    **kwargs: dict
+        Dictionary of key word arguments. The following options are valid
+        'data_type': data type to use for grid values, defaults 'float'
+        'mode': Mode to open memmap file in. Can be 'r+', 'r', 'w+', or 'c'
+        'dataset_name': Name of data set, defaults 'Unknown'
+        'mask': Mask for the area of intrest(AOI) in the MultiGrid.
+            Should be a np.array of type bool where true values are
+            in the AOI.
+            Defaults to None, which generates a mask that sets all 
+            grid cells to be part of the AOI
+        'grid_names': list of names for each grid in the MultGird, 
+            Defaults None.
+        'filename': name of file if using memmap as data_model.
+            Defaults to None, which will create a temp file.
+        'data_model': how to internally represent data, memmap or array.
+            Defaults  Memmap.
+        'initial_data': Initial data for MultiGrid. Defaults to None. 
+    
     Attributes 
     ----------
     config: dict
+        'grid_shape': 2 tuple, grid shape (rows, cols)
+        'real_shape': 3 tuple, (num_grids, rows, cols)
+        'memory_shape': 2 tuple, (num_grids, rows * cols)
+        'data_type': data type of grid values
+        'mode': Mode memory mapped file is open in. 
+        'dataset_name': Name of data set.
+        'mask': Mask for the area of intrest(AOI) in the MultiGrid grids. 
+        'filename': name of memory mapped file.
+        'data_model': model of data in memory, 'array', or 'memmap'
+        'grid_name_map': map of grid names to gird ids
     grids: np.memmap or np.ndarray 
-
     """
 
     def __init__ (self, *args, **kwargs):
@@ -158,41 +191,6 @@ class MultiGrid (object):
         if other is self:
             return True
         return (self.grids == other.grids).all()
-        
-
-    def setup_internal_memory(self, config):
-        """Setup the internal memory representation of grids
-
-        Parameters
-        ----------
-        config: dict
-            Should have keys 'filename', 'data_model', 'data_type', 
-        and 'memory_shape'. 
-            'filename': name of file to write or None
-            'data_model': Model for data representation: 'array' or 'memmap'
-            'data_type': 
-                String type of data. Must be type supported by np.arrays.
-            'memory_shape': Tuple
-                shape of grids as represented in memory 
-
-        Returns
-        -------
-        grids: np.array or np.memmap
-        """
-        filename = config['filename']
-        if config['filename'] is None and config['data_model'] == 'memmap':
-            filename = os.path.join(mkdtemp(), 'temp.dat')
-            
-        if config['data_model'] == 'memmap':
-            grids = open_or_create_memmap_grid(
-                filename, 
-                config['mode'], 
-                config['data_type'], 
-                config['memory_shape']
-            )
-        else: # array
-            grids = np.zeros(config['memory_shape'])
-        return grids
 
     def new(self, *args, **kwargs):
         """Does setup for a new MultGrid object
@@ -208,7 +206,7 @@ class MultiGrid (object):
         **kwargs: dict
             Dictionary of key word arguments. The following options are valid
             'data_type': data type to use for grid values, defaults 'float'
-            'mode': Mode to open memmap file in. Can be ‘r+’, ‘r’, ‘w+’, or ‘c’
+            'mode': Mode to open memmap file in. Can be 'r+', 'r', 'w+', or 'c'
             'dataset_name': Name of data set, defaults 'Unknown'
             'mask': Mask for the area of intrest(AOI) in the MultiGrid.
                 Should be a np.array of type bool where true values are
@@ -252,7 +250,7 @@ class MultiGrid (object):
         grid_names = load_or_use_default(kwargs, 'grid_names', [])
         
         if len(grid_names) > 0 and config['num_grids'] != len(grid_names):
-            raise StandardError( 'grid name size mismatch' )
+            raise GridSizeMismatchError( 'grid name size mismatch' )
         config['grid_name_map'] = self.create_name_map(grid_names)
             
 
@@ -269,14 +267,23 @@ class MultiGrid (object):
         if not init_data is None:
             grids = init_data.reshape(config['memory_shape'])
         
-        return config, grids
-
-    def create_name_map(self, grid_names):
-        """ Function doc """
-        return {grid_names[i]: i for i in range(len(grid_names))}     
+        return config, grids 
 
     def load(self, file):
-        """ Function doc """
+        """Load a MultiGird object from yaml metadata file and data file
+        
+        Parameters
+        ----------
+        file: path
+            Path to the metadata file for the MultiGrid object.
+
+        Returns
+        -------
+        Config: dict
+            dict to be used as config attribute.
+        Grids: np.array like
+            array to be used as internal memory.
+        """
         with open(file) as conf_text:
             config = yaml.load(conf_text)
         config['memory_shape'] = self.get_memory_shape(config)
@@ -286,7 +293,21 @@ class MultiGrid (object):
         return config, grids
 
     def save(self, file, grid_file_ext = '.mgdata'):
-        """ Function doc """
+        """Save MiltiGrid Object to metadata file and data file
+        The metadata file cantinas the config info, and the data file
+        contains the grids. 
+
+        Parameters
+        ----------
+        file: path
+            Path to the metadata file (yaml) to save. The data file name will
+            be genetated from metadata name if a data file does not all ready
+            exist. 
+        grid_file_ext: str, defaults: '.mgdata' 
+            The extension to save the data file as if the datafile does not
+            already exist. The data is saved as a memory mapped Numpy array,
+            so the extension is more for description than any thing else.
+        """
         s_config = copy.deepcopy(self.config)
         if s_config['data_model'] is 'array' or s_config['filename'] is None:
             try:
@@ -298,7 +319,12 @@ class MultiGrid (object):
             else:
                 grid_file = grid_file.split('.')[0] + grid_file_ext
             data_file = os.path.join(path,grid_file) 
-            save_file = np.memmap(data_file, mode = 'w+', dtype = s_config['data_type'], shape = self.grids.shape )
+            save_file = np.memmap(
+                data_file, 
+                mode = 'w+', 
+                dtype = s_config['data_type'], 
+                shape = self.grids.shape 
+            )
             save_file[:] = self.grids[:]
             del save_file
             s_config['filename'] = data_file
@@ -310,77 +336,211 @@ class MultiGrid (object):
         with open(file, 'w') as sfile:
             sfile.write('#Saved ' + self.__class__.__name__ + " metadata\n")
             yaml.dump(s_config, sfile, default_flow_style=False)
+        
+    def create_name_map(self, grid_names):
+        """Creates a dictionary to map string grid names to their 
+        interger index values. Used to initialize gird_name_map
+        
+        Paramaters
+        ----------
+        grid_names: list of strings
+            List of grid names. Length == num_grids
+
+        Returns
+        -------
+        Dict:
+            String: int, key value pairs
+        """
+        return {grid_names[i]: i for i in range(len(grid_names))}   
+
+    def setup_internal_memory(self, config):
+        """Setup the internal memory representation of grids
+
+        Parameters
+        ----------
+        config: dict
+            Should have keys 'filename', 'data_model', 'data_type', 
+        and 'memory_shape'. 
+            'filename': name of file to write or None
+            'data_model': Model for data representation: 'array' or 'memmap'
+            'data_type': 
+                String type of data. Must be type supported by np.arrays.
+            'memory_shape': Tuple
+                shape of grids as represented in memory 
+
+        Returns
+        -------
+        grids: np.array or np.memmap
+        """
+        filename = config['filename']
+        if config['filename'] is None and config['data_model'] == 'memmap':
+            filename = os.path.join(mkdtemp(), 'temp.dat')
+            
+        if config['data_model'] == 'memmap':
+            grids = open_or_create_memmap_grid(
+                filename, 
+                config['mode'], 
+                config['data_type'], 
+                config['memory_shape']
+            )
+        else: # array
+            grids = np.zeros(config['memory_shape'])
+        return grids 
     
     def get_memory_shape (self, config):
-        """ Function doc """
+        """Construct the shape needed for multigrid in memory from 
+        configuration. 
+
+        Parameters
+        ----------
+        config: dict
+            Must have keys 'num_grids' an int, 'grid_shape' a tuple of 2 ints
+
+        Returns
+        -------
+        Tuple
+            (num_grids, flattened shape of each grid )
+        """
         return (config['num_grids'], 
             config['grid_shape'][0] * config['grid_shape'][1])
 
     def get_real_shape (self, config):
-        """ Function doc """
+        """Construct the shape that represents the real shape of the 
+        data for the MultiGird.
+
+        Parameters
+        ----------
+        config: dict
+            Must have keys 'num_grids' an int, 'grid_shape' a tuple of 2 ints
+
+        Returns
+        -------
+        Tuple
+            ('num_grids', 'rows', 'cols')
+        """
         return (config['num_grids'], 
             config['grid_shape'][0], config['grid_shape'][1])
 
     def get_grid_number(self, grid_id):
-        """ DOC """
+        """Get the Grid number for a grid id
+        
+        Parameters
+        ----------
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+
+        Returns
+        -------
+        int
+            gird id
+        """
         return grid_id if type(grid_id) is int else self.grid_name_map[grid_id]
     
     def get_grid(self, grid_id, flat = True):
-        """ Function doc """
+        """Get a grid
+        
+        Parameters
+        ----------
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        flat: bool, defaults true
+            returns the grid as a flattened array.
+
+        Returns
+        -------
+        np.array
+            1d if flat, 2d otherwise.
+        """
         if flat:
             return self[grid_id].flatten()
         return self[grid_id]
 
     def set_grid(self, grid_id, new_grid):
-        """DOCS"""
-        self[grid_id] = new_grid
+        """Set a grid
+         Parameters
+        ----------
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        new_grid: np.array like
+            Grid to set. must be able to reshape to grid_shape.
+        """
+        self[grid_id] = new_grid.reshape(self.grid_shape)
 
     def figure (self, filename, grid_id, **kwargs):
-        """Save a figure for a year
+        """Save a figure for a grid
         
         Parameters
         ----------
         filename: path
             path to save image at
-        year: int
-            year to save grid for
-        limits: tuple, defaults (None, None)
-            min, max limits for data
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        **kwargs: dict
+            dict of key word arguments
+            'limits': tuple, defaults (None, None)
+                min, max limits for data
+            'cmap': str, defaults 'viridis'
+                matplotlib colormap
+            'cbar_extend': str, defaults 'neither'
+                'neither', 'min' or 'max' 
         """
         data = self[grid_id].astype(float)
         data[np.logical_not(self.mask)] = np.nan
 
-        figure_name = self.dataset_name + grid_id
+        figure_name = self.dataset_name + ' ' + grid_id
+
+        limits = load_or_use_default(kwargs, 'limits', (None,None))
+        cmap = load_or_use_default(kwargs, 'cmap', 'viridis')
+        cbar_extend = load_or_use_default(kwargs, 'cbar_extend', 'neither')
 
         figures.save_figure(
             data.reshape(self.grid_shape) , 
             filename, 
             figure_name ,
-            cmap = 'viridis'
+            cmap = cmap,
+            vmin = limits[0], 
+            vmax = limits[1],
+            cbar_extend = cbar_extend
         )
-
-    def categorical_figure (self, filename, year ):
-        pass
         
-    # def figures(self, dirname):
-    #     """Save figures for every year
+    def figures(self, dirname, **kwargs):
+        """Save figures for every grid
         
-    #     Parameters
-    #     ----------
-    #     dirname: path
-    #         path to save images at
-    #     """
-    #     for year in range(self.start_year, 
-    #         self.start_year + self.num_timesteps):
-    #         filename = os.path.join(
-    #             dirname, 
-    #             'climate_event_grid_' + str(year) + '.jpg'
-    #         )
-    #         self.figure(filename, year)
+        Parameters
+        ----------
+        dirname: path
+            path to save images at
+        **kwargs: dict
+            dict of key word arguments
+            'limits': tuple, defaults (None, None)
+                min, max limits for data
+            'cmap': str, defaults 'viridis'
+                matplotlib colormap
+            'cbar_extend': str, defaults 'neither'
+                'neither', 'min' or 'max' 
+        """
+        grids = self.grid_name_map
+        if grids == {}:
+            grids = range(self.num_grids)
+
+        for grid in grids:
+            filename = os.path.join(
+                dirname, 
+                (self.dataset_name + '_' + grid + '.jpg').replace(' ','_')
+            )
+            self.figure(filename, grid, **kwargs)
 
 
-def dumb_test():
-    """Dumb unit tests, move to testing framework
+def create_example():
+    """create and return an example MultiGrid
+
+    Returns
+    -------
+    MultiGrid
     """
     g_names = ['first', 'second']
 
@@ -388,19 +548,6 @@ def dumb_test():
     init_data[1] += 1
 
     t1 = MultiGrid(5, 10, 2, grid_names = g_names, initial_data = init_data)
-    t2 = MultiGrid(5, 10, 2, grid_names = g_names)
-    print( 't1 != t2:', (t1.grids != t2.grids).all() )
-    print( 't1 == init_data:', (t1.grids == init_data.reshape([2,5*10])).all() )
-    print( 't1 == zeros:', (t2.grids == np.zeros([2,5*10])).all() )
-    print( "t1['first'] == 1's:", (t1['first'] == np.ones([5,10])).all() )
-    print( "t1.get_grid('first') == 1's, flat:", (t1.get_grid('first') == np.ones([5*10])).all() )
-
-
-    t2[0] = np.ones([5,10])
-    t2.set_grid('second', np.arange(50).reshape([5,10]))
-    # print( t2[0] )
-    print( "testing __setitem__: ", (t2[0] == np.ones([5,10])).all() )
-    print( "testing set_grid: ", (t2[1] == np.arange(50).reshape([5,10])).all() )
     
-    return t1, t2
+    return t1
 

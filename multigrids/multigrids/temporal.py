@@ -2,8 +2,36 @@ from .multigrid import MultiGrid
 import numpy as np
 import yaml
 
+from . import common
+
 class TemporalMultiGrid (MultiGrid):
-    """ Class doc """
+    """ A class to represent a set of multiple related grids of the same 
+    dimensions, over a fixed period of time. Implemented using numpy arrays.
+
+    Parameters
+    ----------
+    *args: list
+        List of required arguments, containing exactly 3 items: # rows, 
+        # columns, # grids, # time steps.
+        Example call: mg = MultiGrid(rows, cols, n_grids, n_timesteps)
+    **kwargs: dict
+        Dictionary of key word arguments. Most of the valid arguments 
+        are defined in the MultiGrid class, New and arguments with a different
+        meaning are defined below:
+    
+    Attributes 
+    ----------
+    config: dict
+         see MultiGrid attributes, and: 
+        'grid_shape': 2 tuple, grid shape (rows, cols)
+        'real_shape': 3 tuple, (num_grids, rows, cols)
+        'memory_shape': 2 tuple, (num_grids, rows * cols)
+        'num_timesteps': number of timesteps
+        'timestep': the current timestep, for the grids in current_grids
+        'start_timestep': the timestep to TemporalMultiGird start at. 
+    grids: TemporalMultiGrid data, np.memmap or np.ndarray  
+    current_grids: grids at the current timestep
+    """
     
     def __init__ (self, *args, **kwargs):
         """ Class initializer """
@@ -15,112 +43,180 @@ class TemporalMultiGrid (MultiGrid):
             self.num_timesteps = args[3]
             super(TemporalMultiGrid , self).__init__(*args, **kwargs)
         self.config['num_timesteps'] = self.num_timesteps
-        self.config['current_ts'] = 0
-        self.config['index_base'] = 0
+        self.config['timestep'] = 0
+        self.config['start_timestep'] = \
+            common.load_or_use_default(kwargs, 'start_timestep', 0)
+        self.current_grids = self.grids[0]
 
     def get_memory_shape (self,config):
-        """ Function doc """
+        """Construct the shape needed for multigrid in memory from 
+        configuration. 
+
+        Parameters
+        ----------
+        config: dict
+            Must have keys 'num_grids' an int, 'grid_shape' a tuple of 2 ints
+
+        Returns
+        -------
+        Tuple
+            (num_grids, flattened shape of each grid ) 
+        """
         return (
             self.num_timesteps, config['num_grids'], 
             config['grid_shape'][0] * config['grid_shape'][1]
         )
 
     def get_real_shape (self, config):
-        """ Function doc """
+        """Construct the shape that represents the real shape of the 
+        data for the MultiGird.
+
+        Parameters
+        ----------
+        config: dict
+            Must have keys 'num_grids' an int, 'grid_shape' a tuple of 2 ints
+
+        Returns
+        -------
+        Tuple
+            ('num_grids', 'rows', 'cols')
+        """
         return (
             self.num_timesteps, config['num_grids'], 
             config['grid_shape'][0] , config['grid_shape'][1]
         )
 
-    @staticmethod
-    def is_grid(key):
-        return type(key) is str
-
-    @staticmethod
-    def is_grid_with_range(key):
-        return type(key) is tuple and len(key) == 2 and \
-            type(key[0]) is str and type(key[1]) is slice
-
-    @staticmethod
-    def is_grid_with_index(key):
-        return type(key) is tuple and len(key) == 2 and \
-            type(key[0]) is str and type(key[1]) is int
-
-    @staticmethod
-    def is_grid_list(key):
-        if type(key) is tuple:
-            return np.array([type(k) is str for k in key]).all()
-        return False
-
     def __getitem__(self, key): 
-        """ Function doc
+        """ Get item function
         
-        TMG['grid_name']: returns grid 'grid_name' at all time steps
-        TMG['grid_name', timestep or ts_slice:]: returns grid 'grid_name' 
-            at requested time step(s)
-        TMG[timestep]: returns all grids at timestep
+        Parameters
+        ----------
+        key: str, int, or tuple
+            str keys should be grid names
+            int keys should be a time step
+            tuple keys should be (str, int or slice), where the str is a 
+                grid name, and the int or slice are indexes
 
-
+        Returns
+        -------
+        np.array like
+            if key is str: returns grid 'grid_name' at all time steps
+            if key is int: returns all grids at timestep
+            if key is tuble: returns grid 'grid_name' at requested time step(s)
         """
         ## this key is used to access the data at the end 
         ## of the function. it is modied based on key
         access_key = [slice(None,None) for i in range(3)]
-        if self.is_grid(key):
+        if common.is_grid(key):
             # gets the grid at all timesteps
             access_key[1] = self.get_grid_number(key)
-        elif self.is_grid_with_range(key):
+        elif common.is_grid_with_range(key):
             access_key[0] = slice(
-                key[1].start - self.index_base,
-                key[1].stop - self.index_base
+                key[1].start - self.start_timestep,
+                key[1].stop - self.start_timestep
             )
             access_key[1] = self.get_grid_number(key[0])
-        elif self.is_grid_with_index(key):
-            access_key[0] = key[1] - self.index_base
+        elif common.is_grid_with_index(key):
+            access_key[0] = key[1] - self.start_timestep
             access_key[1] = self.get_grid_number(key[0])
         elif type(key) is int:
-            access_key = key - self.index_base
+            access_key = key - self.start_timestep
+        # elif type(key) is slice: TODO NEED some changes to implement this
+        #                               but it's not very important to do
+        #     access_key = slice(
+        #         key.start - self.start_timestep,
+        #         key.stop - self.start_timestep
+        #     )
         else:
-            raise KeyError(key)
+            raise KeyError( 'Not a key for Temporal Multi Grid: '+ str(key))
         # print 'key', access_key, type(access_key)
         return self.grids.reshape(self.real_shape)[access_key]
 
     def __setitem__ (self ,key, value):
-        """"""
+        """ Set item function
+
+        Sets grids for a given key
+        
+        Parameters
+        ----------
+        key: str, int, or tuple
+            str keys should be grid names
+            int keys should be a time step
+            tuple keys should be (str, int or slice), where the str is a 
+                grid name, and the int or slice are indexes
+        value: np.array like
+            shape must match shape of data returned by getitem
+            with the same key
+        """
         access_key = [slice(None,None) for i in range(3)]
-        if self.is_grid(key):
+        if common.is_grid(key):
             # gets the grid at all timesteps
             access_key[1] = self.get_grid_number(key)
-        elif self.is_grid_with_range(key):
+        elif common.is_grid_with_range(key):
             # print key
             access_key[0] = slice(
-                key[1].start - self.index_base,
-                key[1].stop - self.index_base
+                key[1].start - self.start_timestep,
+                key[1].stop - self.start_timestep
             )
             access_key[1] = self.get_grid_number(key[0])
-        elif self.is_grid_with_index(key):
-            access_key[0] = key[1] - self.index_base
+        elif common.is_grid_with_index(key):
+            access_key[0] = key[1] - self.start_timestep
             access_key[1] = self.get_grid_number(key[0])
         elif type(key) is int:
-            access_key = key - self.index_base
+            access_key = key - self.start_timestep
         else:
-            raise KeyError(key)
+            raise KeyError( 'Not a key for Temporal Multi Grid: '+ str(key))
         
         shape = self.grids[access_key].shape
         self.grids[access_key] = value.reshape(shape)
 
     def get_grid(self, grid_id, time_step, flat = True):
-        """ Function doc """
+        """Get a grid at a time step
+        
+        Parameters
+        ----------
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        time_step: int
+            time step to get grid at
+        flat: bool, defaults true
+            returns the grid as a flattened array.
+
+        Returns
+        -------
+        np.array
+            1d if flat, 2d otherwise.
+        """
         shape = self.memory_shape[-1] if flat else self.grid_shape
         return self.get_grid_over_time(
             grid_id, time_step, time_step+1
         ).reshape(shape)
         
     def get_grid_over_time(self, grid_id, start, stop, flat = True):
-        """ Function doc """
+        """Get a grid at a time step
+        
+        Parameters
+        ----------
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        start: int
+            start time step to get grid at
+        stop: int
+            end time step to get grid at
+        flat: bool, defaults true
+            returns the grid as a flattened array.
+
+        Returns
+        -------
+        np.array
+            2d if flat, 3d otherwise.
+        """
         if not start is None:
-            start += self.index_base
+            start += self.start_timestep
         if not stop is None:
-            stop += self.index_base
+            stop += self.start_timestep
         rows, cols = self.grid_shape[0], self.grid_shape[1]
         if start is None and stop is None:
             shape = (self.num_timesteps, rows, cols )
@@ -136,12 +232,57 @@ class TemporalMultiGrid (MultiGrid):
         return self[grid_id, slice(start,stop)].reshape(shape)
 
     def set_grid(self, grid_id, time_step, new_grid):
-        """ Function doc """
+        """ Set a grid at a timestep
+         Parameters 
+        ----------
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        time_step: int
+            time step to get grid at
+        new_grid: np.array like
+            Grid to set. must be able to reshape to grid_shape.
+        """
+        time_step += self.start_timestep
         self[grid_id, time_step] = new_grid
 
     def set_grid_over_time(self, grid_id, start, stop, new_grids):
-        """ """
+        """Set a grid at a timestep
+         Parameters 
+        ----------
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        time_step: int
+            time step to get grid at
+        new_grids: np.array like
+            Grids to set. shape must match grids being accessed. 
+        """
+        if not start is None:
+            start += self.start_timestep
+        if not stop is None:
+            stop += self.start_timestep
         self[grid_id, start:stop] = new_grids
+
+    def increment_time_step (self):
+        """Increment time_step, for current_girds.
+        
+        Returns 
+        -------
+        int 
+            year for the new time step
+        """
+        self.config['timestep'] += 1
+        
+        if self.config['timestep'] >= self.num_timesteps:
+            self.config['timestep'] -= 1
+            msg = 'The timestep could not be incremented, because the ' +\
+                'end of the period has been reached.'
+            raise common.IncrementTimeStepError(msg)
+        
+        self.current_grids = self.grids[self.config['timestep']]
+        
+        return self.start_timestep + self.config['timestep']
 
 
 def dumb_test():

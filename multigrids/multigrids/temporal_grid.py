@@ -1,14 +1,40 @@
 from .multigrid import MultiGrid
 import numpy as np
 import yaml
-import figures
+# import figures
 import os
 
-class IncrementTimeStepError (Exception):
-    """Raised if grid timestep not found"""
+from . import common
 
 class TemporalGrid (MultiGrid):
-    """ Class doc """
+    """ A class to represent a grid over a fixed period of time,
+    Implemented using numpy arrays.
+
+    Parameters
+    ----------
+    *args: list
+        List of required arguments, containing exactly 3 items: # rows, 
+        # columns, # grids, # time steps.
+        Example call: mg = MultiGrid(rows, cols, n_grids, n_timesteps)
+    **kwargs: dict
+        Dictionary of key word arguments. Most of the valid arguments 
+        are defined in the MultiGrid class, New and arguments with a different
+        meaning are defined below:
+    
+    Attributes 
+    ----------
+    config: dict
+        see MultiGrid attributes, and: 
+        'grid_shape': 2 tuple, grid shape (rows, cols)
+        'real_shape': 3 tuple, (num_grids, rows, cols)
+        'memory_shape': 2 tuple, (num_grids, rows * cols)
+        'num_timesteps': number of timesteps
+        'timestep': the current timestep, for the grids in current_grids
+        'start_timestep': the timestep to TemporalMultiGird start at. 
+        'grid_name_map': map of grid years to their indices.
+    grids: TemporalMultiGrid data, np.memmap or np.ndarray  
+    current_grids: grids at the current timestep
+    """
     
     def __init__ (self, *args, **kwargs):
         """ Class initializer """
@@ -23,23 +49,29 @@ class TemporalGrid (MultiGrid):
         
         self.config['num_timesteps'] = self.num_timesteps
         self.config['timestep'] = 0
+        self.grid = self.grids[0]
         # self.config['start_timestep'] = 0
 
     def new(self, *args, **kwargs):
-        """Function Docs 
+        """Does setup for a new TemporalGrid object
+        
         Parameters
         ----------
+        *args: list
+            see MultiGird docs
+        **kwargs: dict
+            see MultiGird docs and:
+                'start_timestep': int # to ues as the start timestep
+
         Returns
         -------
-        config: dict
-            dictionary of config values for temporal grid
-        grids: np.array like
-            grid data for object
+        Config: dict
+            dict to be used as config attribute.
+        Grids: np.array like
+            array to be used as internal memory.
         """
-        load_or_use_default = lambda c, k, d: c[k] if k in c else d
-
         config = {}
-        ib = load_or_use_default(kwargs, 'start_timestep', 0)
+        ib = common.load_or_use_default(kwargs, 'start_timestep', 0)
         config['start_timestep'] = ib
         kwargs['grid_names'] = [str(i) for i in range(ib, ib + args[2])]
         mg_config, grids = super(TemporalGrid, self).new(*args, **kwargs)
@@ -47,7 +79,16 @@ class TemporalGrid (MultiGrid):
         return mg_config, grids
 
     def __getitem__(self, key): 
-        """ Function doc """
+        """ Get item function
+        
+        Parameters
+        ----------
+        key: str, int, or tuple
+
+        Returns
+        -------
+        np.array like
+        """
         if type(key) in (str,):
             key = self.get_grid_number(key)
         else:
@@ -55,14 +96,38 @@ class TemporalGrid (MultiGrid):
         return self.grids.reshape(self.real_shape)[key].reshape(self.grid_shape)
 
     def get_memory_shape (self,config):
-        """ Function doc """
+        """ Construct the shape needed for multigrid in memory from 
+        configuration. 
+
+        Parameters
+        ----------
+        config: dict
+            Must have key 'grid_shape' a tuple of 2 ints
+
+        Returns
+        -------
+        Tuple
+            (num_timesteps, flattened shape of each grid ) 
+        """ 
         return (
             self.num_timesteps, 
             config['grid_shape'][0] * config['grid_shape'][1]
         )
 
     def get_real_shape (self, config):
-        """ Function doc """
+        """Construct the shape that represents the real shape of the 
+        data for the MultiGird.
+
+        Parameters
+        ----------
+        config: dict
+            Must have key 'grid_shape' a tuple of 2 ints
+
+        Returns
+        -------
+        Tuple
+            (num_timesteps, 'rows', 'cols')
+        """
         return (
             self.num_timesteps, 
             config['grid_shape'][0] , config['grid_shape'][1]
@@ -84,30 +149,9 @@ class TemporalGrid (MultiGrid):
             self.timestep -= 1
             msg = 'The timestep could not be incremented, because the ' +\
                 'end of the period has been reached.'
-            raise IncrementTimeStepError(msg)
+            raise common.IncrementTimeStepError(msg)
         
         self.grid = self.grids[self.timestep]
         
-        return self.start_year + self.timestep
+        return self.start_timestep + self.timestep
 
-def dumb_test():
-    """Dumb unit tests, move to testing framework
-    """
-    g_names = ['first', 'second']
-
-    init_data = np.ones([3,2,5,10])
-    init_data[0,1] += 1
-    init_data[1,0] += 2
-    init_data[1,1] += 3
-    init_data[2,0] += 4
-    init_data[2,1] += 5
-
-    t1 = TemporalMultiGrid(5, 10, 2, 3, grid_names = g_names, initial_data = init_data)
-    t2 = TemporalMultiGrid(5, 10, 2, 3, grid_names = g_names)
-
-    print( 't1 != t2:', (t1.grids != t2.grids).all() )
-    print( 't1 == init_data:', (t1.grids == init_data.reshape(t1.memory_shape)).all() )
-    print( 't1 == zeros:', (t2.grids == np.zeros([3,2,5*10])).all() )
-
-    
-    return t1

@@ -6,7 +6,8 @@ Functions for generating figures
 """
 import matplotlib.pyplot as plt
 
-def save_figure(data, path, title, cmap = 'viridis', vmin = 0.0, vmax = 1.0,
+def save_figure(data, path, title,
+        cmap = 'viridis', vmin = 0.0, vmax = 1.0,
         cbar_extend = 'neither'):
     """save the grid as image, with title and color bar
     

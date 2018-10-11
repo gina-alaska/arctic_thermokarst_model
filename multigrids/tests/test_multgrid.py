@@ -19,6 +19,7 @@ class TestMultiGridClass(unittest.TestCase):
     def setUp(self):
         """setup class for tests 
         """
+        # print("In method", self._testMethodName)
         os.mkdir('.TestMultiGridClass')
 
         self.init_data = np.ones([N_GRIDS,ROWS, COLS])
@@ -71,11 +72,9 @@ class TestMultiGridClass(unittest.TestCase):
         # self.assertNotEqual(t1, t2)
 
     def test_save_and_load (self):
-        """ Function doc """
+        """ Test Save and load capabilities """
         self.t1.save('.TestMultiGridClass/test_init_load.yml', '.testmg')
-
         loaded = MultiGrid('.TestMultiGridClass/test_init_load.yml')
-
         self.assertEqual(loaded.real_shape, (N_GRIDS,ROWS, COLS))
         self.assertEqual(loaded.memory_shape, (N_GRIDS,ROWS* COLS))
         self.assertEqual(loaded.grid_shape, (ROWS, COLS))
@@ -98,9 +97,10 @@ class TestMultiGridClass(unittest.TestCase):
 
 
     def test_getattr(self):
-        """ Function doc """
+        """ Test Get attr functions """
         for c in self.t1.config:
-            exec('self.assertEqual(self.t1.config[c], self.t1.' + c + ')' )
+            if c != 'mask':
+                exec('self.assertEqual(self.t1.config[c], self.t1.' + c + ')' )
         
         self.t1.config['random spaced cfg item'] = 0
         self.assertEqual( 
@@ -109,7 +109,7 @@ class TestMultiGridClass(unittest.TestCase):
         )
 
     def test_getitem(self):
-        """ Function doc """
+        """ test getitem """
         self.assertEqual( self.t1[0].shape, (ROWS,COLS) )
         self.assertEqual (self.t2['first'].shape, (ROWS,COLS) )
 
@@ -118,7 +118,7 @@ class TestMultiGridClass(unittest.TestCase):
 
 
     def test_setitem(self):
-        """ Function doc """
+        """ test setitem """
         data = np.ones((ROWS,COLS)) * 3
 
         self.t1[1] = data
@@ -152,7 +152,7 @@ class TestMultiGridClass(unittest.TestCase):
 
 
     def test_equality(self):
-        """ Function doc """
+        """ test equality """
         self.assertNotEqual(self.t1, self.t2)
         self.assertEqual(self.t1, self.t1)
         
@@ -161,7 +161,7 @@ class TestMultiGridClass(unittest.TestCase):
     
 
     def test_get_grid_number (self):
-        """ Function doc """
+        """ test get grid number """
         self.assertIsInstance(self.t2.get_grid_number('first'), int)
         self.assertIsInstance(self.t2.get_grid_number(0), int)
 
@@ -174,7 +174,7 @@ class TestMultiGridClass(unittest.TestCase):
             self.assertIsInstance(self.t2.get_grid_number(3), int)
 
     def test_get_grid(self):
-        """ Function doc """
+        """ test get grid function """
         self.assertEqual( self.t1.get_grid(0).shape, (ROWS *COLS,) )
         self.assertEqual( self.t1.get_grid(0, False).shape, (ROWS,COLS) )
         self.assertEqual( self.t2.get_grid(0).shape, (ROWS *COLS,) )
@@ -194,7 +194,7 @@ class TestMultiGridClass(unittest.TestCase):
         )
 
     def test_set_grid (self):
-        """ Function doc """
+        """ test set grid function """
         data = np.ones((ROWS,COLS)) * 3
         self.t1.set_grid(1, data) 
         self.t2.set_grid('second', data)
