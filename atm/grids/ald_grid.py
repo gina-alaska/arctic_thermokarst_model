@@ -88,7 +88,7 @@ class ALDGrid(TemporalMultiGrid):
             len(grid_names), config['model length']
         ]
 
-        kwargs = {}
+        kwargs = copy.deepcopy(config) 
         kwargs['data_type'] = 'float'
         kwargs['mode'] = 'r+'
         kwargs['grid_names'] = grid_names

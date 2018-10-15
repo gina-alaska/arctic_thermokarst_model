@@ -64,7 +64,7 @@ class ClimateEventGrid (TemporalGrid):
                 config['model length']
             ]
 
-            kwargs = {}
+            kwargs = copy.deepcopy(config) 
             kwargs['data_type'] = 'bool'
             kwargs['mode'] = 'r+'
             kwargs['start_timestep'] = int(config['start year'])

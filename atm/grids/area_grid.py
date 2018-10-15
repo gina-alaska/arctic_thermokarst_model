@@ -106,7 +106,7 @@ class AreaGrid(TemporalMultiGrid):
             layers_with_ages.shape[0], config['model length']
         ]
 
-        kwargs = {}
+        kwargs = copy.deepcopy(config) 
         kwargs['data_type'] = 'float'
         kwargs['mode'] = 'r+'
         # kwargs['grid_names'] = layers.

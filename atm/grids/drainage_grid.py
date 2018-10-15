@@ -6,12 +6,17 @@ Grid for drainage efficiency
 """
 import os
 import numpy as np
-import pickle
 
 try:
     from atm_io import binary, image
 except ImportError:
     from ..atm_io import binary, image
+
+from multigrids import Grid, common
+from constants import ROW, COL
+import copy
+
+import matplotlib.pyplot as plt
 
 config_ex = {
     'Terrestrial_Control': {
@@ -20,17 +25,17 @@ config_ex = {
         'Drainage_Efficiency_Figure':		'Yes' ,
     },
     'pickle path': './pickles',
-    'shape': (10,10),
-    'AOI mask': np.random.choice([True,False],(10,10))
+    'grid_shape': (10,10),
+    'mask': np.random.choice([True,False],(10,10))
 }
 
 class DrainageTypeInvalid(Exception):
     """Raised if lake/pond type not found"""
 
-class DrainageGrid (object):
+class DrainageGrid (Grid):
     """ DrainageGrid """
     
-    def __init__ (self, config):
+    def __init__ (self, *args, **kwargs):
         """Drainage Efficiency Grid 
         
         Parameters
@@ -47,24 +52,46 @@ class DrainageGrid (object):
         pickle_path: path
             path to pickle file
         """
-        if type(config) is str:
-            ## read from existing pickle
-            self.load_from_pickle(config)
-            return
-            
-        self.shape = config['shape']
-        aoi = config['AOI mask']
-        eff = config['Terrestrial_Control']['Drainage_Efficiency_Distribution']
-        threshold = config['Terrestrial_Control']\
-            ['Drainage_Efficiency_Random_Value']
-        
-        
-        self.grid = self.setup(eff, self.shape, threshold, aoi)
-        self.pickle_path = os.path.join(
-            config['pickle path'], 'drainage_grid.pkl'
-        )
+        config = args[0]    
+        if type(args[0]) is str:
+            super(DrainageGrid , self).__init__(*args, **kwargs)
+        else:
+            args = [
+                config['grid_shape'][ROW], 
+                config['grid_shape'][COL]
+            ]
 
-    def setup (self, efficiency, shape, threshold = .5, aoi = None):
+            kwargs = copy.deepcopy(config) 
+            kwargs['data_type'] = 'string'
+            kwargs['dataset_name'] = 'Drainage efficiency'
+            kwargs['mode'] = 'r+'
+            super(DrainageGrid , self).__init__(*args, **kwargs)
+
+            threshold = config['Terrestrial_Control']\
+                ['Drainage_Efficiency_Random_Value']
+            eff = config['Terrestrial_Control']\
+                ['Drainage_Efficiency_Distribution']
+            self.grids = self.create_drainage_gird(
+                eff, self.shape, threshold, self.config['mask']
+            )
+        self.grid = self.grids
+
+            
+        # self.shape = config['shape']
+        # aoi = config['AOI mask']
+        
+        # threshold = config['Terrestrial_Control']\
+        #     ['Drainage_Efficiency_Random_Value']
+        
+        
+        # self.grid = self.setup(eff, self.shape, threshold, aoi)
+        # self.pickle_path = os.path.join(
+        #     config['pickle path'], 'drainage_grid.pkl'
+        # )
+
+    def create_drainage_gird (
+            self, efficiency, shape, threshold = .5, aoi = None
+        ):
         """setup grid
         
         Parameters
@@ -110,61 +137,6 @@ class DrainageGrid (object):
             
         return grid
         
-    def get_grid (self, flat = True):
-        """gets the gird
-        
-        Parameters
-        ----------
-        flat: bool, Default True
-            if False, retruned grid is reshaped to shape
-        
-        Returns
-        -------
-        np.array
-            the grid
-        """
-        shape = self.shape[0]*self.shape[1] if flat == True else self.shape
-        return self.grid.reshape(shape)
-        
-
-    def load_from_pickle(self, pickle_name, timestep=-1):
-        """load state from pickle file. sets shape, and grid to values
-        in file, and pickle_path to pickle_name
-    
-        Parameters
-        ----------
-        pickel_name: path
-            path to pickle file
-        """
-        with open(pickle_name, 'rb') as pkl:
-            data = pickle.load(pkl)
-            
-        self.shape = data['shape']
-        self.grid = data['grid']
-        self.pickle_path = pickle_name
-        
-    def write_to_pickle (self, pickle_name = None):
-        """Write to pickle, object are serialized as a python dictionary 
-        with shape, and grid as keys
-        
-        Parameters
-        ----------
-        pickle_name: path, optional
-            path to write to.
-        """
-        if pickle_name is None:
-            pickle_name = self.pickle_path
-        
-        data = {
-            'shape': self.shape,
-            'grid': self.grid
-        }    
-        
-        mode = 'wb'
-
-        with open(pickle_name, mode) as pkl:
-            pickle.dump(data, pkl)
-        
     def as_numbers(self):
         """converts grid to a numerical representaion.
         
@@ -174,15 +146,15 @@ class DrainageGrid (object):
             shpae is shape, 0 is substituted for 'none', 1 for 'above', and
             2 for 'below'
         """
-        grid = self.get_grid(False)
+        grid = copy.deepcopy(self.get_grid(False))
         
-        grid[grid == 'none'] = 0
+        grid[grid == 'none'] = np.nan
         grid[grid == 'above'] = 1
         grid[grid == 'below'] = 2
-        return grid.astype(int)
+        return grid.astype(float)
         
         
-    def figure (self, filename):
+    def figure (self, filename, **kwargs):
         """save a figure
         
         Parameters
@@ -190,24 +162,34 @@ class DrainageGrid (object):
         filename: path
             file to save
         """
-        image.save_img(
-            self.as_numbers(), 
-            filename, 
-            'Drainage efficiency',
-            cmap = 'bone',
-            vmin = 0,
-            vmax = 2
-        )
+        temp = copy.deepcopy(self.grids)
+        self.grid = self.as_numbers()
+        limits = common.load_or_use_default(kwargs,'limits',(1,2))
+        cmap = common.load_or_use_default(kwargs,'cmap','bone')
+        dtype = common.load_or_use_default(kwargs, 'type', float)
+        kwargs['limits'] = limits
+        kwargs['cmap'] = plt.get_cmap(cmap, 2)
+        kwargs['dtype'] = dtype 
+        super(DrainageGrid , self).figure(filename, **kwargs)
+        # image.save_img(
+        #     self.as_numbers(), 
+        #     filename, 
+        #     'Drainage efficiency',
+        #     cmap = 'bone',
+        #     vmin = 0,
+        #     vmax = 2
+        # )
+        self.grid = temp
         
-    def binary (self, filename):
-        """save a binary representation
+    # def binary (self, filename):
+    #     """save a binary representation
         
-        Parameters
-        ----------
-        filename: path
-            file to save
-        """
-        binary.save_bin(self.as_numbers(), filename)
+    #     Parameters
+    #     ----------
+    #     filename: path
+    #         file to save
+    #     """
+    #     binary.save_bin(self.as_numbers(), filename)
         
         
         

@@ -8,6 +8,10 @@ This file contains the Grid class
 
 """
 from .multigrid import MultiGrid
+from . import common
+from . import figures
+import numpy as np
+
 
 class Grid (MultiGrid):
     """
@@ -38,6 +42,8 @@ class Grid (MultiGrid):
         grid data
     grid: np.memmap or np.ndarray 
         alias of grids
+    shape: Tuple (int, int)
+        Alias of grid_shape 
     """
     
     def __init__ (self, *args, **kwargs):
@@ -50,6 +56,7 @@ class Grid (MultiGrid):
         super(Grid , self).__init__(*args, **kwargs)
         
         self.grid = self.grids
+        self.shape = self.grid_shape
         del self.config['grid_name_map']
     
     def get_memory_shape (self, config):
@@ -116,3 +123,46 @@ class Grid (MultiGrid):
         np.array like, or value of type data_type
         """
         return self.grid.reshape(self.real_shape)[key]
+
+    def figure (self, filename, **kwargs):
+        """Save a figure for a grid
+        
+        Parameters
+        ----------
+        filename: path
+            path to save image at
+        grid_id: int or str
+            if an int, it should be the grid number.
+            if a str, it should be a grid name.
+        **kwargs: dict
+            dict of key word arguments
+            'limits': tuple, defaults (None, None)
+                min, max limits for data
+            'cmap': str, defaults 'viridis'
+                matplotlib colormap
+            'cbar_extend': str, defaults 'neither'
+                'neither', 'min' or 'max' 
+        """
+        dtype = common.load_or_use_default(kwargs, 'type', float)
+        data = self.grid.astype(dtype)
+        if dtype is float:
+            data[np.logical_not(self.mask)] = np.nan
+
+        figure_name = self.dataset_name 
+
+        limits = common.load_or_use_default(kwargs, 'limits', (None,None))
+        cmap = common.load_or_use_default(kwargs, 'cmap', 'viridis')
+        cbar_extend = common.load_or_use_default(
+            kwargs, 'cbar_extend', 'neither'
+        )
+        
+
+        figures.save_figure(
+            data.reshape(self.grid_shape) , 
+            filename, 
+            figure_name ,
+            cmap = cmap,
+            vmin = limits[0], 
+            vmax = limits[1],
+            cbar_extend = cbar_extend
+        )
