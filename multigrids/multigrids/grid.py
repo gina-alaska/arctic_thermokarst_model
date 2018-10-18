@@ -57,7 +57,10 @@ class Grid (MultiGrid):
         
         self.grid = self.grids
         self.shape = self.grid_shape
-        del self.config['grid_name_map']
+        try:
+            del self.config['grid_name_map']
+        except KeyError:
+            pass
     
     def get_memory_shape (self, config):
         """Construct the shape needed for multigrid in memory from 

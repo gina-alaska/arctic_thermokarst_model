@@ -40,8 +40,12 @@ class DrainageGrid (Grid):
         
         Parameters
         ----------
-        config: dict or atm.control or path to pickle file
-            configuration for object
+        *args: list
+            List of required arguments, containing exactly 1 argument
+            the config dictionary or string file name of yaml file
+            containing config
+        **kwargs: dict
+            Dictionary of key word arguments. Place holder for later extension.
             
         Attributes
         ----------
@@ -62,7 +66,7 @@ class DrainageGrid (Grid):
             ]
 
             kwargs = copy.deepcopy(config) 
-            kwargs['data_type'] = 'string'
+            kwargs['data_type'] = 'object'
             kwargs['dataset_name'] = 'Drainage efficiency'
             kwargs['mode'] = 'r+'
             super(DrainageGrid , self).__init__(*args, **kwargs)
@@ -71,7 +75,7 @@ class DrainageGrid (Grid):
                 ['Drainage_Efficiency_Random_Value']
             eff = config['Terrestrial_Control']\
                 ['Drainage_Efficiency_Distribution']
-            self.grids = self.create_drainage_gird(
+            self.grids = self.initialize_grid(
                 eff, self.shape, threshold, self.config['mask']
             )
         self.grid = self.grids
@@ -89,7 +93,7 @@ class DrainageGrid (Grid):
         #     config['pickle path'], 'drainage_grid.pkl'
         # )
 
-    def create_drainage_gird (
+    def initialize_grid (
             self, efficiency, shape, threshold = .5, aoi = None
         ):
         """setup grid
@@ -171,14 +175,6 @@ class DrainageGrid (Grid):
         kwargs['cmap'] = plt.get_cmap(cmap, 2)
         kwargs['dtype'] = dtype 
         super(DrainageGrid , self).figure(filename, **kwargs)
-        # image.save_img(
-        #     self.as_numbers(), 
-        #     filename, 
-        #     'Drainage efficiency',
-        #     cmap = 'bone',
-        #     vmin = 0,
-        #     vmax = 2
-        # )
         self.grid = temp
         
     # def binary (self, filename):
