@@ -72,7 +72,7 @@ Terrestrial_Control: 00_Terrestrial_Control.yaml
     # Flag to read & write geotiff files for landcover information
     #~ Read_Geotiff: Yes # Not implmented
     #~ Write_Geotiff: No # Not implmented
-Initial_Cohort_List: 00_Barrow_Initial_Cohort_List.yaml
+Initial_Cohort_List: 00_ACP_Initial_Cohort_List.yaml
 
 Lake_Pond_Control: 00_Lake_Pond_Control.yaml
     

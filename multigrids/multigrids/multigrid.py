@@ -59,7 +59,7 @@ class MultiGrid (object):
         'data_type': data type to use for grid values, defaults 'float'
         'mode': Mode to open memmap file in. Can be 'r+', 'r', 'w+', or 'c'
         'dataset_name': Name of data set, defaults 'Unknown'
-        'mask': Mask for the area of intrest(AOI) in the MultiGrid.
+        'mask': Mask for the area of interest(AOI) in the MultiGrid.
             Should be a np.array of type bool where true values are
             in the AOI.
             Defaults to None, which generates a mask that sets all 
@@ -81,7 +81,7 @@ class MultiGrid (object):
         'data_type': data type of grid values
         'mode': Mode memory mapped file is open in. 
         'dataset_name': Name of data set.
-        'mask': Mask for the area of intrest(AOI) in the MultiGrid grids. 
+        'mask': Mask for the area of interest(AOI) in the MultiGrid grids. 
         'filename': name of memory mapped file.
         'data_model': model of data in memory, 'array', or 'memmap'
         'grid_name_map': map of grid names to gird ids
@@ -208,7 +208,7 @@ class MultiGrid (object):
             'data_type': data type to use for grid values, defaults 'float'
             'mode': Mode to open memmap file in. Can be 'r+', 'r', 'w+', or 'c'
             'dataset_name': Name of data set, defaults 'Unknown'
-            'mask': Mask for the area of intrest(AOI) in the MultiGrid.
+            'mask': Mask for the area of interest(AOI) in the MultiGrid.
                 Should be a np.array of type bool where true values are
                 in the AOI.
                 Defaults to None, which generates a mask that sets all 

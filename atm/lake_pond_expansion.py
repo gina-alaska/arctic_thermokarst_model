@@ -83,7 +83,7 @@ def expansion ( lp_cohorts, year, grids, control):
         
     ## aoi 
     
-    model_area_mask = grids.area.area_of_intrest()
+    model_area_mask = grids.area.area_of_interest()
     
     ## water bodies can expand if area is present and not filling entire cell
     can_expand = np.logical_and(total > 0.0, total < 1.0)

@@ -36,7 +36,7 @@ config_ex = {
     'lake depth range' : (.3, 5),
     
     'ice depth alpha range': (2.31, 2.55),
-    'initilzation year': 1900,
+    'initialization year': 1900,
     'model length': 5
     
     

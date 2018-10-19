@@ -41,7 +41,7 @@ def transition (name, year, grids, control):
     cohort_config = control['Cohorts'][name + '_Control'] 
     
     ## mask out non-test area
-    model_area_mask = grids.area.area_of_intrest()
+    model_area_mask = grids.area.area_of_interest()
     
     ## get_ice contents
     ice_slope = grids.ice.get_ice_slope_grid( name )

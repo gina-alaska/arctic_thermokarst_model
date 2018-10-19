@@ -298,7 +298,7 @@ class AreaGrid(TemporalMultiGrid):
             grids = grids.reshape(self.num_grids, np.prod(self.grid_shape))
         return grids
           
-    def total_franctonal_area(self, time_step):
+    def total_fractional_area(self, time_step):
         """get total fractional area for each grid element at a time step 
         
         Parameters
@@ -334,7 +334,7 @@ class AreaGrid(TemporalMultiGrid):
         """
         if time_step == -1:
             time_step = self.timestep
-        ATTM_Total_Fractional_Area = self.total_franctonal_area(time_step)
+        ATTM_Total_Fractional_Area = self.total_fractional_area(time_step)
         if (np.round(ATTM_Total_Fractional_Area, decimals = 4) > 1.0).any():
             raise MassBalanceError, 'mass balance problem 1'
             ## write a check to locate mass balance error
@@ -433,7 +433,7 @@ class AreaGrid(TemporalMultiGrid):
         shape = self.grids[access_key].shape
         self.grids[access_key] = data.reshape(shape)
             
-    def area_of_intrest (self, time_step = 0):
+    def area_of_interest (self, time_step = 0):
         """get area of interest at a time step
         
         Parameters
@@ -445,7 +445,7 @@ class AreaGrid(TemporalMultiGrid):
         np.array
             a grid of booleans where true elements are in AOI, false are not
         """
-        return (self.total_franctonal_area(time_step) > 0.0).reshape(self.shape)
+        return (self.total_fractional_area(time_step) > 0.0).reshape(self.shape)
         
     def save_cohort_at_time_step (self, cohort, path, filename, title = '', 
             time_step = -1, bin_only = True, binary_pixels = False, 
@@ -640,7 +640,7 @@ class AreaGrid(TemporalMultiGrid):
             
         dom = dom.reshape(self.shape)
             
-        dom[np.logical_not(self.area_of_intrest())] = np.nan
+        dom[np.logical_not(self.area_of_interest())] = np.nan
         return dom , metadata
         
     def dominate_cohort_figure (self, path, filename, title = '', 

@@ -54,7 +54,7 @@ class ModelGrids (object):
         self.area = AreaGrid(config)
         
         self.shape = self.area.shape
-        self.aoi = self.area.area_of_intrest()
+        self.aoi = self.area.area_of_interest()
         # set for other objects
         config['shape'] = self.shape
         config['AOI mask'] = self.aoi

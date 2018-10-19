@@ -32,7 +32,7 @@ def transition (name, year, grids, control):
         See [add link]
 
     """
-    model_area_mask = grids.area.area_of_intrest()
+    model_area_mask = grids.area.area_of_interest()
     cohort_present_mask = grids.area[ year, name ] > 0
     
     current_cell_mask = np.logical_and(model_area_mask, cohort_present_mask)

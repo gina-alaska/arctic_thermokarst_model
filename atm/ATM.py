@@ -471,7 +471,7 @@ class ATM(object):
         ----------
         cohort_list ordered list of cohorsts to run
         """
-        init_year = self.control['initilzation year']
+        init_year = self.control['initialization year']
         init_tdd = self.grids.degreedays.thawing[init_year+1]
         
         ## ts zero is initial data state 
