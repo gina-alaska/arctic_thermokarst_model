@@ -21,6 +21,7 @@ try:
 except ImportError:
     from ..atm_io import binary, image, raster
 
+from multigrids import TemporalMultiGrid, common
 
 config_ex = {
     'pickle path': './pickles',
@@ -30,12 +31,13 @@ config_ex = {
         'MediumLakes_WT_Y', 'MediumLakes_WT_M', 'MediumLakes_WT_O',
         'LargeLakes_WT_Y', 'LargeLakes_WT_M', 'LargeLakes_WT_O',
     ],
-    'shape' : (10,10),
+    'grid_shape' : (10,10),
     'pond depth range' : (.3,.3),
     'lake depth range' : (.3, 5),
     
     'ice depth alpha range': (2.31, 2.55),
     'initilzation year': 1900,
+    'model length': 5
     
     
     
@@ -46,17 +48,16 @@ class LakePondNotFoundError (Exception):
     """Raised if lake/pond type not found"""
 
 
-class LakePondGrid (object):
+class LakePondGrid (TemporalMultiGrid):
     """Lake Pond Depth grid
     """
     
-    def __init__ (self, config):
+    def __init__ (self, *args, **kwargs):
         """Lake Pond Depth grid
         
         Parameters
         ----------
-        config: dict or atm.control or path to pickle file
-            configuration for object
+        
         
         Attributes
         ----------
@@ -75,18 +76,45 @@ class LakePondGrid (object):
         ice_depth_constatns: np.array
             array of alpha ice constatns for stephan equation
         """
+        config = args [0]
         if type(config) is str:
-            ## read from existing pickle
-            self.load_from_pickle(config)
-            return
+            super(LakePondGrid , self).__init__(*args, **kwargs)
+        else:
+
+            lake_pond_types = config['pond types'] + config['lake types']
+            grid_names = [lp + '_depth' for lp in lake_pond_types]
+            grid_names += [lp + '_count' for lp in lake_pond_types]
+            grid_names += \
+                [lp + '_time_since_growth' for lp in config['pond types']]
+            grid_names += [
+                'ice_depth',
+                'ice_depth_constants',
+                'climate_expansion_lakes',
+                'climate_expansion_ponds',
+            ]
         
-        self.shape = config['shape']
-        self.start_year = config['initilzation year']
-        self.time_step = 0
+            args = [
+                config['grid_shape'][ROW], config['grid_shape'][COL], 
+                len(grid_names), config['model length']
+            ]
+
+            kwargs = copy.deepcopy(config) 
+            kwargs['data_type'] = 'float'
+            kwargs['mode'] = 'r+'
+            # kwargs['grid_names'] = layers.
+            super(AreaGrid , self).__init__(*args, **kwargs)
+
+            self.config['start_year'] = int(config['initialization year'])
+
+        self.shape = self.grid_shape
+        self.config['start_timestep'] = self.config['start_year']
         
-        self.pond_types = config['pond types']
-        self.lake_types = config['lake types']
+        # self.time_step = 0
         
+        # self.pond_types = config['pond types']
+        # self.lake_types = config['lake types']
+        
+        #############
         self.counts = self.setup_counts(config['pond types'], self.shape)
         self.counts.update(self.setup_counts(config['lake types'], self.shape))
         
@@ -94,6 +122,7 @@ class LakePondGrid (object):
         init_pond = config['pond depth range']
         init_lake = config['lake depth range']
         
+        #############
         self.depths = self.setup_depths(
             config['pond types'], self.shape, init_pond
         )
@@ -107,14 +136,17 @@ class LakePondGrid (object):
         
         
         alpha_range = config['ice depth alpha range']
+        #############
         self.ice_depth_constants = self.setup_ice_depth_constants(
             self.shape, alpha_range
         )
         
         ## current ice depth starts as zeros
+        #############
         self.ice_depth = np.zeros(self.shape).flatten()
         
         ## climate expansion expansion
+        #############
         self.climate_expansion_lakes = np.zeros(self.shape).flatten()
         self.climate_expansion_ponds = np.zeros(self.shape).flatten()
         

@@ -33,6 +33,29 @@ from multigrids import TemporalMultiGrid, common
 
 import  moviepy.editor as mpy
 
+
+def get_example_config( data_dir ):
+    """
+    Patameters
+    ----------
+    data_dir: path
+        path to input raster layers
+    
+    Returns
+    -------
+    dict
+        example configs
+    """
+    files = [ os.path.join(data_dir, f) for f in os.listdir( data_dir )] 
+    config_ex = {
+        'target resolution': (1000,1000),
+        'initialization year': 1900,
+        'area data': files,
+        'model length': 100
+    }
+    return config_ex
+
+
 class MassBalanceError (Exception):
     """Raised if there is a mass balance problem"""
 
@@ -87,77 +110,46 @@ class AreaGrid(TemporalMultiGrid):
         
         """
         config = args [0]
-        input_rasters = config['area data'] 
-        target_resolution = config['target resolution']
+        if type(config) is str:
+            super(AreaGrid , self).__init__(*args, **kwargs)
+        else:
+            input_rasters = config['area data'] 
+            target_resolution = config['target resolution']
 
-        layers, raster_metadata = read_raster_layers.read_layers(
-            input_rasters, target_resolution
-        ) 
+            layers, raster_metadata = read_raster_layers.read_layers(
+                input_rasters, target_resolution
+            ) 
 
-        # add in ages here
-        # print layers.grids.shape
-        layers_with_ages, grid_name_map_with_ages = \
-            self.setup_cohort_ages(layers)
-        # print layers_with_ages
-        # print layers.grids.shape
+            # add in ages here
+            # print layers.grids.shape
+            layers_with_ages, grid_name_map_with_ages = \
+                self.setup_cohort_ages(layers)
+            # print layers_with_ages
+            # print layers.grids.shape
 
-        args = [
-            layers.grid_shape[ROW], layers.grid_shape[COL], 
-            layers_with_ages.shape[0], config['model length']
-        ]
+            args = [
+                layers.grid_shape[ROW], layers.grid_shape[COL], 
+                layers_with_ages.shape[0], config['model length']
+            ]
 
-        kwargs = copy.deepcopy(config) 
-        kwargs['data_type'] = 'float'
-        kwargs['mode'] = 'r+'
-        # kwargs['grid_names'] = layers.
-        super(AreaGrid , self).__init__(*args, **kwargs)
-        # print self.grids.shape
-        # self.config['grid_names'] = layers.grid_names
-        self.config['grid_name_map'] = grid_name_map_with_ages
-        self.grids[0,:] = layers_with_ages.reshape(self.memory_shape[1:])
+            kwargs = copy.deepcopy(config) 
+            kwargs['data_type'] = 'float'
+            kwargs['mode'] = 'r+'
+            # kwargs['grid_names'] = layers.
+            super(AreaGrid , self).__init__(*args, **kwargs)
+            # print self.grids.shape
+            # self.config['grid_names'] = layers.grid_names
+            self.config['grid_name_map'] = grid_name_map_with_ages
+            self.grids[0,:] = layers_with_ages.reshape(self.memory_shape[1:])
 
-        self.key_to_index = grid_name_map_with_ages
-        self.shape = self.grid_shape
-        self.init_grid = self.grids[0]
+            self.key_to_index = grid_name_map_with_ages
         
-        self.config['start_year'] = int(config['initialization year'])
-        self.config['resolution'] = target_resolution
+            self.config['start_year'] = int(config['initialization year'])
+            self.config['resolution'] = target_resolution
 
         self.config['start_timestep'] = self.config['start_year']
-
-        # args [0]
-        # input_data = config['area data'] 
-        # target_resolution = config['target resolution']
-        # self.start_year = int(config['initialization year'])
-        
-        # self.input_data = input_data
-        # ## read input
-        # ## rename init_grid??
-        # self.init_grid, self.raster_info, self.key_to_index = \
-        #     self.read_layers(target_resolution)
-        
-        # ## rename grid_history?
-        # self.grid = [self.init_grid]
-        
-        # self.check_mass_balance() ## check mass balance at initial time_step
-        
-        # #get resolution, and shape of gird data as read in
-        # original = self.raster_info.values()[0]
-        # o_shape = (original.nY, original.nX) 
-        # o_res = (original.deltaY, original.deltaX) 
-        # self.shape = (
-        #     abs(int(o_shape[ROW] * o_res[ROW] /target_resolution[ROW])),
-        #     abs(int(o_shape[COL] * o_res[COL] /target_resolution[COL])),
-        # )
-        
-        # ## some times new shape may be off by one
-        # try:
-        #     self.get_cohort_at_time_step(
-        #         self.key_to_index.keys()[0], flat = False)
-        # except ValueError:
-        #     self.shape = (self.shape[0]+1,self.shape[1]+1)
-            
-        # self.resolution = target_resolution
+        self.shape = self.grid_shape
+        self.init_grid = self.grids[0]
 
     def setup_cohort_ages(self, layers):
         """ Function doc """
