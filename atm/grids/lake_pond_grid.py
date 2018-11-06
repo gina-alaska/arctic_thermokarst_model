@@ -80,6 +80,7 @@ class LakePondGrid (TemporalMultiGrid):
         config = args [0]
         if type(config) is str:
             super(LakePondGrid , self).__init__(*args, **kwargs)
+            self.config['start_timestep'] = self.config['start_year']
         else:
 
             lake_pond_types = config['pond types'] + config['lake types']
@@ -174,7 +175,7 @@ class LakePondGrid (TemporalMultiGrid):
         # if lake_pond_type in self.depths:
         try:
             self[lake_pond_type + '_depth', self.current_year()]\
-                [np.logical_not(mask)] = 0
+                [np.logical_not(mask.reshape(self.grid_shape))] = 0
         except KeyError:
             msg = 'Lake/Pond type(' + lake_pond_type +\
                 ') not found in LakePondGrid depth data'
@@ -191,8 +192,7 @@ class LakePondGrid (TemporalMultiGrid):
             Grid data that can be reshaped to grid_shape
         """
         try:
-            self[grid_name, self.current_year()] =\
-                grid.reshape(self.shape)
+            self[grid_name, self.current_year()] = grid.reshape(self.grid_shape)
         except KeyError:
             msg = 'Lake/Pond type(' + grid_name +\
                 ') not found in LakePondGrid data'

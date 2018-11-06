@@ -148,6 +148,7 @@ class TemporalMultiGrid (MultiGrid):
             shape must match shape of data returned by getitem
             with the same key
         """
+        
         access_key = [slice(None,None) for i in range(3)]
         if common.is_grid(key):
             # gets the grid at all timesteps
@@ -168,6 +169,8 @@ class TemporalMultiGrid (MultiGrid):
             raise KeyError( 'Not a key for Temporal Multi Grid: '+ str(key))
         
         shape = self.grids[access_key].shape
+        if type(value) in (int,float,str,bool):
+            value = np.full(shape, value)
         self.grids[access_key] = value.reshape(shape)
 
     def get_grid(self, grid_id, time_step, flat = True):
