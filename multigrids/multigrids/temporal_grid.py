@@ -153,5 +153,14 @@ class TemporalGrid (MultiGrid):
         
         self.grid = self.grids[self.timestep]
         
-        return self.start_timestep + self.timestep
-
+        return self.current_timestep()
+    
+    def current_timestep (self):
+        """gets current timestep adjused for start_timestep
+        
+        Returns
+        -------
+        int
+            year of last time step in model
+        """
+        return self.start_timestep + self.config['timestep']

@@ -126,15 +126,17 @@ class MultiGrid (object):
         -------
         value of attribute
         """
-        # print( attr )
-        if attr in self.config and attr != 'config'  and attr != 'config':
-            return self.config[attr]
-        elif attr.replace('_',' ') in self.config and attr != 'config':
-            return self.config[attr.replace('_',' ')]
-        else:
-            s = "'" + self.__class__.__name__ + \
-                "' object has no attribute '" + attr + "'"
-            raise AttributeError ( s )
+        try:
+            if attr in self.config and attr != 'config'  and attr != 'config':
+                return self.config[attr]
+            elif attr.replace('_',' ') in self.config and attr != 'config':
+                return self.config[attr.replace('_',' ')]
+            else:
+                s = "'" + self.__class__.__name__ + \
+                    "' object has no attribute '" + attr + "'"
+                raise AttributeError ( s )
+        except(AttributeError) as e:
+            raise AttributeError ( e )
         
     def __repr__ (self):
         """Get string representation of object
