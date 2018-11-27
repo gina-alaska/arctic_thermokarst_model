@@ -31,7 +31,7 @@ import copy
 
 from multigrids import TemporalMultiGrid, common
 
-import  moviepy.editor as mpy
+import moviepy.editor as mpy
 
 
 def get_example_config( data_dir ):
