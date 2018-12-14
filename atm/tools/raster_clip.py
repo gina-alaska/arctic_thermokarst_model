@@ -4,11 +4,10 @@ Raster Clip
 
 clip out a sub raster from input file
 """
-
-from atm.atm_io import raster
 import gdal
 import os
 import numpy as np
+import glob
 
 def clip_raster (in_raster, out_raster, extent):
     """Clip a raster to extent
@@ -39,13 +38,47 @@ def clip_rasters (in_dir, out_dir, extent, ext = '.tif'):
     ext: optional, (.tif)
         file extension to filter for in in_dir
     """
-    files = [f for f in os.listdir(in_dir) if f[-4:] == ext]
-    #~ print files
+    files = glob.glob(in_dir+'/*' + ext)
     for f in files:
-        out_path = os.path.join(out_dir,f)
-        in_path = os.path.join(in_dir,f)
-        #~ print in_path, out_path
+        print f
+        out_f = os.path.split(f)[1]
+        out_path = os.path.join(out_dir,out_f)
+        in_path = f
         clip_raster(in_path, out_path, extent)
 
+def tool():
+    """Command line tool for calling clip_rasters
+    """
+    import clite
+    try:
+        arguments = clite.CLIte([
+            '--input-dir',
+            '--output-dir',
+            '--extent'
+            ],
+            ['--extension']
+        )
+    except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError):
+        print tool.__doc__
+        return
 
+    in_dir = arguments['--input-dir']
+    out_dir = arguments['--output-dir']
+    extent = arguments['--extent']
+    
+    ext = 'tif' if arguments['--extension']  is None else arguments['--extension'] 
 
+    try:
+        extent = extent.replace('(','').replace(')','')
+        extent = [float(n) for n in extent.split(',')]
+        if len(extent) != 4:
+            raise ValueError
+    except ValueError:
+        print 'Extent must be in format, (Upper,Left,Lower,Right)' +\
+            ' or Upper,Left,Lower,Right'
+        return
+   
+    clip_rasters(in_dir, out_dir, extent, ext)
+
+if __name__ == '__main__':
+    tool()
