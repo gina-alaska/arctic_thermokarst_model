@@ -90,6 +90,10 @@ class CLIte (object):
                 except KeyError:
                     pass
             
+    def __repr__ (self):
+        """
+        """
+        return str(self.args)
         
     def __getitem__ (self, key):
         """get opperator for utility, gets a flags value
