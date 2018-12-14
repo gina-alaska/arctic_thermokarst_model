@@ -34,7 +34,6 @@ def load_raster (filename):
         metadata on raster file read
     """
     dataset = gdal.Open(filename, gdal.GA_ReadOnly)
-    #~ print type(dataset)
     (X, deltaX, rotation, Y, rotation, deltaY) = dataset.GetGeoTransform()
 
     metadata = RASTER_METADATA(
@@ -50,3 +49,31 @@ def load_raster (filename):
     ## assumes one band, also gdal uses one based indexing here 
     data = dataset.GetRasterBand(1).ReadAsArray()
     return data, metadata
+
+def save_raster(filename, data, transform, projection, 
+    datatype = gdal.GDT_Float32):
+    """Function Docs 
+    Parameters
+    ----------
+    filename: path
+        path to file to save
+    data: np.array like
+        2D array to save
+    transform: tuple
+        (origin X, X resolution, 0, origin Y, 0, Y resolution) 
+    projection: string
+        SRS projection in WTK format
+    datatype:
+        Gdal data type
+    
+    """
+    write_driver = gdal.GetDriverByName('GTiff') 
+    raster = write_driver.Create(
+        filename, data.shape[1], data.shape[0], 1, datatype
+    )
+    raster.SetGeoTransform(transform)  
+    outband = raster.GetRasterBand(1)  
+    outband.WriteArray(data) 
+    raster.SetProjection(projection) 
+    outband.FlushCache()  
+    raster.FlushCache()      
