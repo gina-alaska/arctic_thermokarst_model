@@ -236,7 +236,9 @@ class MultiGrid (object):
         config['num_grids'] = args[2]
         config['memory_shape'] = self.get_memory_shape(config)
         config['real_shape'] = self.get_real_shape(config)
-        config['data_type'] = load_or_use_default(kwargs, 'data_type', 'float')
+        config['data_type'] = load_or_use_default(
+            kwargs, 'data_type', 'float32'
+        )
         config['mode'] = load_or_use_default(kwargs, 'mode', 'r+')
         config['dataset_name'] = load_or_use_default(
             kwargs, 'dataset_name', 'Unknown'
@@ -288,6 +290,8 @@ class MultiGrid (object):
         """
         with open(file) as conf_text:
             config = yaml.load(conf_text)
+
+        config['cfg_path'] = os.path.split(file)[0]
         config['memory_shape'] = self.get_memory_shape(config)
         config['real_shape'] = self.get_real_shape(config)
         grids = self.setup_internal_memory(config)
@@ -329,7 +333,7 @@ class MultiGrid (object):
             )
             save_file[:] = self.grids[:]
             del save_file
-            s_config['filename'] = data_file
+            s_config['filename'] = os.path.split(data_file)[1]
         
         del s_config['memory_shape']
         del s_config['real_shape']
@@ -379,6 +383,11 @@ class MultiGrid (object):
             filename = os.path.join(mkdtemp(), 'temp.dat')
             
         if config['data_model'] == 'memmap':
+           
+            if not os.path.exists(filename):
+                filename = os.path.split(filename)[1]
+                filename = os.path.join(config['cfg_path'], filename)
+            # print filename
             grids = open_or_create_memmap_grid(
                 filename, 
                 config['mode'], 

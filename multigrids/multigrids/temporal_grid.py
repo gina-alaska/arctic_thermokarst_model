@@ -14,8 +14,8 @@ class TemporalGrid (MultiGrid):
     ----------
     *args: list
         List of required arguments, containing exactly 3 items: # rows, 
-        # columns, # grids, # time steps.
-        Example call: mg = MultiGrid(rows, cols, n_grids, n_timesteps)
+        # columns, # time steps.
+        Example call: mg = MultiGrid(rows, cols, n_timesteps)
     **kwargs: dict
         Dictionary of key word arguments. Most of the valid arguments 
         are defined in the MultiGrid class, New and arguments with a different
