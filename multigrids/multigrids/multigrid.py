@@ -12,6 +12,7 @@ import os
 from tempfile import mkdtemp
 import yaml
 import copy
+import sys
 
 from . import figures
 
@@ -126,17 +127,21 @@ class MultiGrid (object):
         -------
         value of attribute
         """
+        # if not hasattr(self, 'config'):
+        #     sys.exit(1)
         try:
-            if attr in self.config and attr != 'config'  and attr != 'config':
+            if attr == 'config':
+                return self.config
+            elif attr in self.config and attr != 'config'  and attr != 'config':
                 return self.config[attr]
             elif attr.replace('_',' ') in self.config and attr != 'config':
                 return self.config[attr.replace('_',' ')]
             else:
                 s = "'" + self.__class__.__name__ + \
                     "' object has no attribute '" + attr + "'"
-                raise AttributeError ( s )
+                return s
         except(AttributeError) as e:
-            raise AttributeError ( e )
+            return 'not attr'
         
     def __repr__ (self):
         """Get string representation of object
@@ -381,12 +386,13 @@ class MultiGrid (object):
         filename = config['filename']
         if config['filename'] is None and config['data_model'] == 'memmap':
             filename = os.path.join(mkdtemp(), 'temp.dat')
+        elif not os.path.exists(filename):
+            filename = os.path.split(filename)[1]
+            filename = os.path.join(config['cfg_path'], filename)
             
         if config['data_model'] == 'memmap':
            
-            if not os.path.exists(filename):
-                filename = os.path.split(filename)[1]
-                filename = os.path.join(config['cfg_path'], filename)
+            
             # print filename
             grids = open_or_create_memmap_grid(
                 filename, 
