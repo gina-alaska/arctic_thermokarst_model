@@ -7,6 +7,7 @@ Resize elements in a grid
 
 import numpy as np
 import os
+import sys
 
 from multigrids import MultiGrid
 

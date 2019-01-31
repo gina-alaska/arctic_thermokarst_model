@@ -24,9 +24,8 @@ config_ex = {
         'Drainage_Efficiency_Random_Value': 	0.85,
         'Drainage_Efficiency_Figure':		'Yes' ,
     },
-    'pickle path': './pickles',
     'grid_shape': (10,10),
-    'mask': np.random.choice([True,False],(10,10))
+    'AOI mask': np.random.choice([True,False],(10,10))
 }
 
 class DrainageTypeInvalid(Exception):
@@ -71,12 +70,13 @@ class DrainageGrid (Grid):
             kwargs['mode'] = 'r+'
             super(DrainageGrid , self).__init__(*args, **kwargs)
 
+            self.config['AOI mask'] = config['AOI mask']
             threshold = config['Terrestrial_Control']\
                 ['Drainage_Efficiency_Random_Value']
             eff = config['Terrestrial_Control']\
                 ['Drainage_Efficiency_Distribution']
             self.grids = self.initialize_grid(
-                eff, self.shape, threshold, self.config['mask']
+                eff, self.shape, threshold, self.config['AOI mask']
             )
         self.grid = self.grids
 

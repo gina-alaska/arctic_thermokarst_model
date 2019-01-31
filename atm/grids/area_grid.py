@@ -31,7 +31,11 @@ import copy
 
 from multigrids import TemporalMultiGrid, common
 
-import moviepy.editor as mpy
+
+try:
+    import moviepy.editor as mpy
+except StandardError:
+    mpy = None
 
 
 def get_example_config( data_dir ):
@@ -591,7 +595,7 @@ class AreaGrid(TemporalMultiGrid):
                 break
         files = [os.path.join(path, f) for f in files]
         #~ print files
-        if video:
+        if video and not mpy is None:
             
             
             clip = mpy.ImageSequenceClip(files, fps=5)

@@ -4,7 +4,6 @@ lake pond grid
 
 """
 import numpy as np
-# import pickle
 import os
 
 from constants import ROW, COL
@@ -25,7 +24,6 @@ from multigrids import TemporalMultiGrid, common
 import copy
 
 config_ex = {
-    'pickle path': './pickles',
     'pond types': ['Ponds_WT_Y', 'Ponds_WT_M', 'Ponds_WT_O'],
     'lake types': [
         'SmallLakes_WT_Y', 'SmallLakes_WT_M', 'SmallLakes_WT_O',
@@ -72,8 +70,6 @@ class LakePondGrid (TemporalMultiGrid):
             counts for each type of lake/pond
         depths: dict
             lake/pond depth range grids
-        pickel_path: path
-            path to pickle file
         ice_depth_constatns: np.array
             array of alpha ice constatns for stephan equation
         """

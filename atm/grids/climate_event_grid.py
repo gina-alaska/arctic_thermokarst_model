@@ -6,7 +6,7 @@ import os
 import numpy as np
 from constants import ROW, COL
 import matplotlib.pyplot as plt
-
+import copy
 from multigrids import TemporalGrid, figures, common
 
 try:

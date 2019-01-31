@@ -27,9 +27,9 @@ config_ex = {
             'POND':{'poor':.2, 'pore':.4, 'wedge':.6, 'massive':.8}
             },
     'init ice': ICE_TYPES,
-    'mask': np.ones((10,10)) == np.ones((10,10))
+    'AOI mask': np.ones((10,10)) == np.ones((10,10))
 }
-config_ex['mask'][:5] = False
+config_ex['AOI mask'][:5] = False
 
 
 class IceGrid(Grid):
@@ -80,8 +80,9 @@ class IceGrid(Grid):
             #     ['Drainage_Efficiency_Distribution']
             init_ice = config['init ice']
             self.config['cohort_coeffs'] = config['cohort ice slopes']
+            self.config['AOI mask'] = config['AOI mask']
             self.grids = self.initialize_grid(
-                self.shape, init_ice, self.config['mask']
+                self.shape, init_ice, self.config['AOI mask']
             )
         self.grid = self.grids
         

@@ -16,7 +16,7 @@ from climate_event_grid import ClimateEventGrid
 from met_grid import DegreeDayGrids
 
 class ModelGrids (object):
-    """Class containg all grid objects for the ATM model
+    """Class containing all grid objects for the ATM model
         
         Parameters
         ----------
@@ -57,6 +57,7 @@ class ModelGrids (object):
         self.aoi = self.area.area_of_interest()
         # set for other objects
         config['shape'] = self.shape
+        config['grid_shape'] = self.area.grid_shape
         config['AOI mask'] = self.aoi
         config['cohort list'] = self.area.get_cohort_list()
         self.ald = ALDGrid(config)
@@ -65,14 +66,19 @@ class ModelGrids (object):
         self.lake_pond = LakePondGrid(config)
         self.climate_event = ClimateEventGrid(config)
         #~ print config['pond types'] + config['lake types']
-        for lpt  in config['pond types'] + config['lake types']:
-            #~ print lpt
-            mask = self.area[lpt][0] > 0 # all cells in first ts > 0
-            self.lake_pond.apply_mask(lpt, mask)
+        ## TODO:redo masks here
+        # for lpt  in config['pond types'] + config['lake types']:
+        #     #~ print lpt
+        #     mask = self.area[lpt][0] > 0 # all cells in first ts > 0
+        #     self.lake_pond.apply_mask(lpt, mask)
         self.drainage = DrainageGrid(config)
         
-        self.degreedays = DegreeDayGrids(config)
+        self.degreedays = DegreeDayGrids(
+            config['Met_Control']['FDD_file'],
+            config['Met_Control']['TDD_file']
+        )
         
+        ## what does this do?
         self.ald.setup_ald_constants(
             self.degreedays.thawing[config['start year']]
         )
@@ -85,21 +91,21 @@ class ModelGrids (object):
         int:
             number timesteps, based on length of degree day arrays
         """
-        return len(self.degreedays.thawing.history)
+        return self.degreedays.thawing.num_timesteps
         
-    def add_time_step(self, zeros = False):
-        """add a time step for all grids where nessary/possible
+    # def add_time_step(self, zeros = False):
+    #     """add a time step for all grids where nessary/possible
         
-        Parameters
-        ----------
-        zeros: bool
-            if set to true data is set as all zeros
-        """
-        self.area.add_time_step(zeros)
-        self.ald.add_time_step(zeros)
-        self.poi.add_time_step(zeros)
-        self.lake_pond.increment_time_step()
-        self.climate_event.increment_time_step()
+    #     Parameters
+    #     ----------
+    #     zeros: bool
+    #         if set to true data is set as all zeros
+    #     """
+    #     self.area.add_time_step(zeros)
+    #     self.ald.add_time_step(zeros)
+    #     self.poi.add_time_step(zeros)
+    #     self.lake_pond.increment_time_step()
+    #     self.climate_event.increment_time_step()
         
     
     def __getitem__ (self, key):

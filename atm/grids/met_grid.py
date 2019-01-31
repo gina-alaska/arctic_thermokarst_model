@@ -64,9 +64,10 @@ class DegreeDayGrids (object):
             self.freezing = load_degree_days(
                 rows, cols, timesteps, args[3], **kwargs
             )
+        # elif len(args) == 2:
         else:
-            self.thawing = load_degree_days(args[1], **kwargs)
-            self.freezing = load_degree_days(args[0], **kwargs)
+            self.thawing = MetGridBase(args[1], **kwargs)
+            self.freezing = MetGridBase(args[0], **kwargs)
         
         
     def save(self, path, filename_start):

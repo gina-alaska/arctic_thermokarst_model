@@ -18,6 +18,9 @@ from . import figures
 
 from .common import load_or_use_default, GridSizeMismatchError
 
+class MultigridConfigError (Exception):
+    """Raised if a multgrid class is missing its configuration"""
+
 def open_or_create_memmap_grid(filename, mode, dtype, shape):
     """Initialize or open a memory mapped np.array.
     
@@ -105,8 +108,10 @@ class MultiGrid (object):
 
     def __del__ (self):
         """deconstructor for class"""
-        del(self.config)
-        del(self.grids)
+        if hasattr(self, 'config'):
+            del(self.config)
+        if hasattr(self, 'grids'):
+            del(self.grids)
 
     def __getattr__(self, attr):
         """get attribute, allows access to config dictionary values
@@ -127,21 +132,21 @@ class MultiGrid (object):
         -------
         value of attribute
         """
-        # if not hasattr(self, 'config'):
-        #     sys.exit(1)
-        try:
-            if attr == 'config':
-                return self.config
-            elif attr in self.config and attr != 'config'  and attr != 'config':
-                return self.config[attr]
-            elif attr.replace('_',' ') in self.config and attr != 'config':
-                return self.config[attr.replace('_',' ')]
-            else:
-                s = "'" + self.__class__.__name__ + \
-                    "' object has no attribute '" + attr + "'"
-                return s
-        except(AttributeError) as e:
-            return 'not attr'
+        if not hasattr(self, 'config'):
+            raise MultigridConfigError, "config dictionary not found"
+        # try:
+        if attr == 'config':
+            return self.config
+        elif attr in self.config and attr != 'config'  and attr != 'config':
+            return self.config[attr]
+        elif attr.replace('_',' ') in self.config and attr != 'config':
+            return self.config[attr.replace('_',' ')]
+        else:
+            s = "'" + self.__class__.__name__ + \
+                "' object has no attribute '" + attr + "'"
+            raise AttributeError, s
+        # except(AttributeError) as e:
+        #     return 'not attr'
         
     def __repr__ (self):
         """Get string representation of object
@@ -150,7 +155,11 @@ class MultiGrid (object):
         -------
         string
         """
-        return str(self.grids.reshape(self.real_shape))
+        # print 'something'
+        try: 
+            return str(self.grids.reshape(self.real_shape))
+        except AttributeError:
+            return "object not initialized"
         
     def __getitem__(self, key): 
         """Get item function
@@ -386,7 +395,7 @@ class MultiGrid (object):
         filename = config['filename']
         if config['filename'] is None and config['data_model'] == 'memmap':
             filename = os.path.join(mkdtemp(), 'temp.dat')
-        elif not os.path.exists(filename):
+        elif not config['filename'] is None and not os.path.exists(filename):
             filename = os.path.split(filename)[1]
             filename = os.path.join(config['cfg_path'], filename)
             
