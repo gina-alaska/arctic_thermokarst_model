@@ -54,7 +54,7 @@ def get_example_config( data_dir ):
     config_ex = {
         'target resolution': (1000,1000),
         'initialization year': 1900,
-        'area data': files,
+        'initial area data': files,
         'model length': 100
     }
     return config_ex
@@ -117,9 +117,10 @@ class AreaGrid(TemporalMultiGrid):
         if type(config) is str:
             super(AreaGrid , self).__init__(*args, **kwargs)
         else:
-            input_rasters = config['area data'] 
+            input_rasters = config['initial area data'] 
             target_resolution = config['target resolution']
 
+            
             layers, raster_metadata = read_raster_layers.read_layers(
                 input_rasters, target_resolution
             ) 
@@ -139,6 +140,9 @@ class AreaGrid(TemporalMultiGrid):
             kwargs = copy.deepcopy(config) 
             kwargs['data_type'] = 'float'
             kwargs['mode'] = 'r+'
+            # kwargs['filename'] = 'test.mgdatatest'
+            # kwargs['cfg_path'] = './'
+
             # kwargs['grid_names'] = layers.
             super(AreaGrid , self).__init__(*args, **kwargs)
             # print self.grids.shape
@@ -398,44 +402,44 @@ class AreaGrid(TemporalMultiGrid):
         self[time_step + self.start_year] = data
         
     ## REDO DOCS
-    def __setitem__ (self, key, data):
-        """Set cohort data. 
+    # def __setitem__ (self, key, data):
+    #     """Set cohort data. 
         
-        Can set a grid for a cohort(or all cohorts) at a timestep. Will add 
-        time step id desired time step == len(grid)
+    #     Can set a grid for a cohort(or all cohorts) at a timestep. Will add 
+    #     time step id desired time step == len(grid)
         
-        Parameters
-        ----------
-        key: Str, int, or tuple(int,str)
-            if key is a string, raises NotImplementedError
-            if key is an int, it should be a year >= start_year, 
-            but <= start_year + len(grid)
-            if key is tuple, the int should fit the int requirements, and the 
-            string should be a canon cohort name
-        data: np.ndarray
-            data of the proper shape. for tuple key shape = shape attribute, 
-            else rebroadcastable to shape of init_grid
+    #     Parameters
+    #     ----------
+    #     key: Str, int, or tuple(int,str)
+    #         if key is a string, raises NotImplementedError
+    #         if key is an int, it should be a year >= start_year, 
+    #         but <= start_year + len(grid)
+    #         if key is tuple, the int should fit the int requirements, and the 
+    #         string should be a canon cohort name
+    #     data: np.ndarray
+    #         data of the proper shape. for tuple key shape = shape attribute, 
+    #         else rebroadcastable to shape of init_grid
             
-        Raises
-        ------
-        NotImplementedError
-            if key is str, 'cannot set a cohort at all time steps'
-        KeyError, 
-            if key's year value < star_year or > star_year + len(grid)
-        """
-        access_key = [slice(None,None) for i in range(3)]
-        if common.is_grid(key) or self.is_grid_with_range(key):
-            raise NotImplementedError, 'cannot set a cohort at multiple time steps'
-        elif self.is_grid_with_index(key):
-            if type(self.get_grid_number(key[0])) is slice:
-                raise NotImplementedError, 'cannot set a cohorts age grids as a group, try setting each age one at a time'
-            access_key[0] = key[1] - self.start_year
-            access_key[1] = self.get_grid_number(key[0])
-        else:
-            access_key = key - self.start_year
-        # print 'key', access_key, type(access_key)
-        shape = self.grids[access_key].shape
-        self.grids[access_key] = data.reshape(shape)
+    #     Raises
+    #     ------
+    #     NotImplementedError
+    #         if key is str, 'cannot set a cohort at all time steps'
+    #     KeyError, 
+    #         if key's year value < star_year or > star_year + len(grid)
+    #     """
+    #     access_key = [slice(None,None) for i in range(3)]
+    #     if common.is_grid(key) or self.is_grid_with_range(key):
+    #         raise NotImplementedError, 'cannot set a cohort at multiple time steps'
+    #     elif self.is_grid_with_index(key):
+    #         if type(self.get_grid_number(key[0])) is slice:
+    #             raise NotImplementedError, 'cannot set a cohorts age grids as a group, try setting each age one at a time'
+    #         access_key[0] = key[1] - self.start_year
+    #         access_key[1] = self.get_grid_number(key[0])
+    #     else:
+    #         access_key = key - self.start_year
+    #     # print 'key', access_key, type(access_key)
+    #     shape = self.grids[access_key].shape
+    #     self.grids[access_key] = data.reshape(shape)
             
     def area_of_interest (self, time_step = 0):
         """get area of interest at a time step
@@ -723,7 +727,7 @@ def test (files):
     config = {
         'target resolution': (1000,1000),
         'initialization year': 1900,
-        'area data': files,
+        'initial initial area data': files,
         'model length': 100
     }
     

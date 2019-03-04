@@ -25,10 +25,11 @@ def construnct_results(self, start_time, end_time):
     string +=  '=' * long_divider+ nl
     string +=  'ATM version: '+str(__version__)+ nl
     string +=  'Code URL: '+str(__codeurl__)+ nl
-    string +=  'Simulation name: '+ self.control.Simulation_name+ nl
+    string +=  'Simulation name: '+ self.control['Simulation_name']+ nl
     string +=  'Start Date / Time : '+str( start_time)+ nl
     string +=  'End Date / Time : '+str(end_time)+ nl
-    string +=  'Total Simulation Time (minutes): '+ str( (start_time - end_time)) + nl
+    string +=  'Total Simulation Time (minutes): '+ str( (end_time - start_time)) + nl
+    return string
     if self.control.Archive_simulation:
         string +=  'Archive Status: Active'+ nl
         string +=  'Archive Name : '+str(self.control.Simulation_name)+ nl

@@ -75,7 +75,8 @@ class ClimateEventGrid (TemporalGrid):
             self.config['probability'] = float(
                 config['Met_Control']['climate_event_probability']
             )
-            self.config['climate_block_range'] = config['climate block range']
+            self.config['climate_block_range'] = \
+                config['_FAST_get_climate_block_range']
         self.grid = self.grids[self.timestep]
         
     def get_grid (self, time_step = -1, flat = True):

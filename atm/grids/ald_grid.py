@@ -106,7 +106,7 @@ class ALDGrid(TemporalMultiGrid):
         # self.start_year = config ['initialization year']
         
         # ## setup soil properties
-        # self.porosity = config['porosities']
+        self.porosity = config['_FAST_get_get_porosities']
         # self.protective_layer_factor = config['PL factors']
         # self.aoi_mask = config['AOI mask']
         
@@ -136,22 +136,29 @@ class ALDGrid(TemporalMultiGrid):
             [self.num_grids, self.grid_shape[0]* self.grid_shape[1]]
         )
 
-        if type(config['Initial ALD']) is tuple:
+        # print config['Terrestrial_Control']['Initial ALD']
+        if type(config['Terrestrial_Control']['Initial ALD']) in [tuple, list]:
             grids[0] = random_grid(
                 self.grid_shape, 
-                config['Initial ALD'][0],
-                config['Initial ALD'][1], 
+                config['Terrestrial_Control']['Initial ALD'][0],
+                config['Terrestrial_Control']['Initial ALD'][1], 
                 config['AOI mask']
             )
         else:
-            grids[0] = self.read_grid(config['Initial ALD'])
+            grids[0] = self.read_grid(
+                config['Terrestrial_Control']['Initial ALD']
+            )
 
-        pl_factors = config['PL factors']
+        pl_factors = config['_FAST_get_pl_factors']#.get_protective_layer_factors()#['PL factors']
+
+        # print pl_factors
 
         if pl_factors == {}:
             pl_factors = {key: 1 for key in cohorts}
         
-        for cohort in config['cohorts']:
+        # print config['cohorts'].keys()
+        # print self.grid_name_map
+        for cohort in config['_FAST_get_cohorts']:
             grids[self.get_grid_number(cohort)] = grids[0] * pl_factors[cohort]
         return grids
 
@@ -160,7 +167,7 @@ class ALDGrid(TemporalMultiGrid):
         
         ## count number of grids needed for multigrid
         grid_names = ['ALD']
-        for cohort in config['cohorts']:
+        for cohort in config['_FAST_get_cohorts']:
             #~ print cohort
             grid_names.append(cohort)
         
@@ -375,9 +382,9 @@ class ALDGrid(TemporalMultiGrid):
         np.array
             the ald grid
         """ 
-        shape = self.shape
+        shape = self.grid_shape
         if flat:
-            shape = self.shape[0] * self.shape[1]
+            shape = shape[0] * shape[1]
         return (self.init_ald_grid.flatten() * \
             np.sqrt(current_tdd / init_tdd).flatten()).reshape(shape)
         

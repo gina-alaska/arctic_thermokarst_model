@@ -69,7 +69,6 @@ class DegreeDayGrids (object):
             self.thawing = MetGridBase(args[1], **kwargs)
             self.freezing = MetGridBase(args[0], **kwargs)
         
-        
     def save(self, path, filename_start):
         """save the fdd and tdd , in the tempoal_grid output format
 

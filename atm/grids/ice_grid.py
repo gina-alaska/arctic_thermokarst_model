@@ -78,8 +78,10 @@ class IceGrid(Grid):
             #     ['Drainage_Efficiency_Random_Value']
             # eff = config['Terrestrial_Control']\
             #     ['Drainage_Efficiency_Distribution']
-            init_ice = config['init ice']
-            self.config['cohort_coeffs'] = config['cohort ice slopes']
+            init_ice = ICE_TYPES##config['init ice']
+            self.config['cohort_coeffs'] = \
+                config['_FAST_get_ice_slope_coefficients']
+            # print self.config['cohort_coeffs']
             self.config['AOI mask'] = config['AOI mask']
             self.grids = self.initialize_grid(
                 self.shape, init_ice, self.config['AOI mask']

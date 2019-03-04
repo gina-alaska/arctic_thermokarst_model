@@ -14,6 +14,7 @@ from drainage_grid import DrainageGrid
 from climate_event_grid import ClimateEventGrid
 
 from met_grid import DegreeDayGrids
+import os
 
 class ModelGrids (object):
     """Class containing all grid objects for the ATM model
@@ -53,7 +54,8 @@ class ModelGrids (object):
         """
         self.area = AreaGrid(config)
         
-        self.shape = self.area.shape
+        self.shape = self.area.grid_shape
+        # print self.area.grids.shape
         self.aoi = self.area.area_of_interest()
         # set for other objects
         config['shape'] = self.shape
@@ -74,8 +76,10 @@ class ModelGrids (object):
         self.drainage = DrainageGrid(config)
         
         self.degreedays = DegreeDayGrids(
-            config['Met_Control']['FDD_file'],
-            config['Met_Control']['TDD_file']
+            os.path.join(
+                config['Input_dir'], config['Met_Control']['FDD_file']),
+            os.path.join(
+                config['Input_dir'], config['Met_Control']['TDD_file'])
         )
         
         ## what does this do?
@@ -107,6 +111,26 @@ class ModelGrids (object):
     #     self.lake_pond.increment_time_step()
     #     self.climate_event.increment_time_step()
         
+    def increment_time_step(self):
+        """Increment time step for all temporal grids
+        """
+        for grid in self.get_grid_list():
+            try:
+                self[grid].increment_time_step()
+            except AttributeError:
+                pass
+
+    def get_grid_list (self):
+        """
+        Returns
+        -------
+        list
+            list of grids in object
+        """
+        return [
+            'area', 'ald', 'poi', 'ice', 'lake pond',
+            'drainage', 'degree-day','climate event'
+        ]
     
     def __getitem__ (self, key):
         """get item

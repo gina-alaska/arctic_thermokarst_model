@@ -78,12 +78,13 @@ class LakePondGrid (TemporalMultiGrid):
             super(LakePondGrid , self).__init__(*args, **kwargs)
             self.config['start_timestep'] = self.config['start_year']
         else:
-
-            lake_pond_types = config['pond types'] + config['lake types']
+            pond_types = config['_FAST_get_pond_types']
+            lake_types = config['_FAST_get_lake_types']
+            lake_pond_types =  pond_types + lake_types
             grid_names = [lp + '_depth' for lp in lake_pond_types]
             grid_names += [lp + '_count' for lp in lake_pond_types]
             grid_names += \
-                [lp + '_time_since_growth' for lp in config['pond types']]
+                [lp + '_time_since_growth' for lp in pond_types]
             grid_names += [
                 'ice_depth',
                 # 'ice_depth_constants', ## constants don't change over time,
@@ -106,21 +107,23 @@ class LakePondGrid (TemporalMultiGrid):
             self.config['start_timestep'] = self.config['start_year']
 
              
-            init_pond = config['pond depth range']
-            init_lake = config['lake depth range']
+            init_pond = config['_FAST_get_pond_depth_range']
+            init_lake = config['_FAST_get_lake_depth_range']
             self.setup_random_range(
-                [t + '_depth' for t in config['pond types']],
+                [t + '_depth' for t in pond_types],
                 self.grid_shape, 
                 init_pond
             )
                 
             self.setup_random_range(
-                [t + '_depth' for t in config['lake types']], 
+                [t + '_depth' for t in lake_types], 
                 self.grid_shape, 
                 init_lake
             )
 
-            alpha_range = config['ice depth alpha range']
+            alpha_range = config['_FAST_get_ice_depth_alpha_range']
+            
+            
             #############
             self.config['ice_depth_constants'] =  np.random.uniform(
                 alpha_range[0], alpha_range[1], self.grid_shape

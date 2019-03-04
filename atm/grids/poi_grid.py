@@ -55,7 +55,8 @@ class POIGrid (TemporalMultiGrid):
             super(POIGrid , self).__init__(*args, **kwargs)
         else: 
            
-            grid_names = config['cohorts']
+            grid_names = config['_FAST_get_cohorts']##['cohorts']
+
             args = [
                 config['grid_shape'][ROW], config['grid_shape'][COL], 
                 len(grid_names), config['model length']
@@ -67,6 +68,8 @@ class POIGrid (TemporalMultiGrid):
             kwargs['grid_names'] = grid_names
             
             super(POIGrid , self).__init__(*args, **kwargs)
+
+        self.config['start_timestep'] = config['start_year']
 
         # self.start_year = int(config['initialization year'])
 
