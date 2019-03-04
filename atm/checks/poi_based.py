@@ -98,10 +98,10 @@ def transition (name, year, grids, control):
 
     ## use POI to find rate of transtion
     max_rot = cohort_config['max_terrain_transition']
+
     rate_of_transition = \
         grids.poi[name, year] * ice_slope.reshape(grids.shape) * max_rot
     rate_of_transition[ rate_of_transition > max_rot ] = max_rot
-
     ## calculate chage
     change = rate_of_transition * grids.area[name, year]
 
@@ -119,6 +119,15 @@ def transition (name, year, grids, control):
 
     grids.area[name + '--0', year][cohort_present_mask ] = \
         (current - change)[cohort_present_mask ]
+
+    if np.isnan(grids.area[name + '--0', year][cohort_present_mask]).any():
+        plt.imshow(grids.area[name, year])
+        plt.show()
+        plt.imshow(grids.area[name, year-1])
+        plt.show()
+        print (year, name)
+        import sys
+        sys.exit()
 
     # print grids.area[name, year-1].flatten()[157]
     # print grids.area[name, year].flatten()[157]

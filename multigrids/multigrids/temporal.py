@@ -296,7 +296,7 @@ class TemporalMultiGrid (MultiGrid):
             msg = 'The timestep could not be incremented, because the ' +\
                 'end of the period has been reached.'
             raise common.IncrementTimeStepError(msg)
-        
+        self.grids[self.timestep][:] = self.grids[self.timestep-1][:] 
         self.current_grids = self.grids[self.config['timestep']]
         
         return self.current_timestep()
