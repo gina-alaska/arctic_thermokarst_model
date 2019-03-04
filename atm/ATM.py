@@ -559,15 +559,13 @@ class ATM(object):
                 # plt.imshow(self.grids.area[cohort, current_year])
                 # plt.show()
 
-
-            ## TODO: fix these
-            # lake_pond_expansion.expansion(
-            #     lp_types, current_year, self.grids, self.control
-            # )
-            # lake_pond_expansion.infill(
-            #     pond_types, current_year, 
-            #     self.grids, self.control
-            # )
+            lake_pond_expansion.expansion(
+                lp_types, current_year, self.grids, self.control
+            )
+            lake_pond_expansion.infill(
+                pond_types, current_year, 
+                self.grids, self.control
+            )
                 
 
             # for cohort in cohort_list:
