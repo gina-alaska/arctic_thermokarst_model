@@ -102,24 +102,33 @@ class TemporalMultiGrid (MultiGrid):
         np.array like
             if key is str: returns grid 'grid_name' at all time steps
             if key is int: returns all grids at timestep
-            if key is tuble: returns grid 'grid_name' at requested time step(s)
+            if key is tuple: returns grid 'grid_name' at requested time step(s)
         """
         ## this key is used to access the data at the end 
         ## of the function. it is modied based on key
+        # print self.grid_name_map
+        # print key,  self.start_timestep
         access_key = [slice(None,None) for i in range(3)]
         if common.is_grid(key):
+            # print 'a'
             # gets the grid at all timesteps
             access_key[1] = self.get_grid_number(key)
         elif common.is_grid_with_range(key):
+            # print 'b'
             access_key[0] = slice(
                 key[1].start - self.start_timestep,
                 key[1].stop - self.start_timestep
             )
             access_key[1] = self.get_grid_number(key[0])
         elif common.is_grid_with_index(key):
+            # print 'c'
             access_key[0] = key[1] - self.start_timestep
-            access_key[1] = self.get_grid_number(key[0])
+            ac_1 = self.get_grid_number(key[0])
+            if type(ac_1) is slice:
+                ac_1 = ac_1.start
+            access_key[1] = ac_1
         elif type(key) is int:
+            # print 'd'
             access_key = key - self.start_timestep
         # elif type(key) is slice: TODO NEED some changes to implement this
         #                               but it's not very important to do
@@ -130,6 +139,7 @@ class TemporalMultiGrid (MultiGrid):
         else:
             raise KeyError( 'Not a key for Temporal Multi Grid: '+ str(key))
         # print 'key', access_key, type(access_key)
+        # print access_key
         return self.grids.reshape(self.real_shape)[access_key]
 
     def __setitem__ (self ,key, value):
@@ -152,18 +162,22 @@ class TemporalMultiGrid (MultiGrid):
         access_key = [slice(None,None) for i in range(3)]
         if common.is_grid(key):
             # gets the grid at all timesteps
+            # print 'a'
             access_key[1] = self.get_grid_number(key)
         elif common.is_grid_with_range(key):
             # print key
+            # print 'b'
             access_key[0] = slice(
                 key[1].start - self.start_timestep,
                 key[1].stop - self.start_timestep
             )
             access_key[1] = self.get_grid_number(key[0])
         elif common.is_grid_with_index(key):
+            # print 'c'
             access_key[0] = key[1] - self.start_timestep
             access_key[1] = self.get_grid_number(key[0])
         elif type(key) is int:
+            # print 'd'
             access_key = key - self.start_timestep
         else:
             raise KeyError( 'Not a key for Temporal Multi Grid: '+ str(key))

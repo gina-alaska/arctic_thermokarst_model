@@ -96,7 +96,6 @@ class MultiGrid (object):
         """ Class initializer """
         # print( args )
         # print( kwargs )
-        
         if type(args[0]) is int:
             # print('new')
             init_func = self.new
@@ -304,12 +303,10 @@ class MultiGrid (object):
         """
         with open(file) as conf_text:
             config = yaml.load(conf_text)
-
         config['cfg_path'] = os.path.split(file)[0]
         config['memory_shape'] = self.get_memory_shape(config)
         config['real_shape'] = self.get_real_shape(config)
         grids = self.setup_internal_memory(config)
-
         return config, grids
 
     def save(self, file, grid_file_ext = '.mgdata'):
@@ -394,8 +391,10 @@ class MultiGrid (object):
         """
         filename = config['filename']
         if config['filename'] is None and config['data_model'] == 'memmap':
+            # print "a"
             filename = os.path.join(mkdtemp(), 'temp.dat')
         elif not config['filename'] is None and not os.path.exists(filename):
+            # print "b", filename
             filename = os.path.split(filename)[1]
             filename = os.path.join(config['cfg_path'], filename)
             
