@@ -23,8 +23,8 @@ degree_day_method: read
 # (00_FDD/TDD_historical_1901-2006, 00_FDD/TDD_CCCMA_2001-2100,
 # 00_FDD/TDD_ECHAM5_2001-2100)
 #------------------------------------------------------------
-TDD_file: Degree_Days/00_TDD_Barrow_Peninsula_1901-2009
-FDD_file: Degree_Days/00_FDD_Barrow_Peninsula_1901-2009
+TDD_file: Degree_Days/barrow_tdd/barrow_tdd.yml
+FDD_file: Degree_Days/barrow_fdd/barrow_fdd.yml
 #============================================================
 # Information for Major Climatic Events
 #------------------------------------------------------------
