@@ -24,8 +24,8 @@ def transition (name, year, grids, control):
     grids: atm.grids.grids.ModelGrids
         The Grids representing the model area
     control: Dict or Dict like
-        An object containg the control keys(type): name + '_Control' (Dict).
-        Where name + '_Control' is the the cohort spesfic contntrol dict that 
+        An object containing the control keys(type): name + '_Control' (Dict).
+        Where name + '_Control' is the the cohort specific control dict that 
         contains the following keys (type): 'POI_Function'(String), 
         'A1_above'(float),'A2_above'(float),'x0_above'(float),'x0_above'(float),
         'a_above'(float),'b_above'(float),'K_above'(float),'C_above'(float),
@@ -119,15 +119,6 @@ def transition (name, year, grids, control):
 
     grids.area[name + '--0', year][cohort_present_mask ] = \
         (current - change)[cohort_present_mask ]
-
-    if np.isnan(grids.area[name + '--0', year][cohort_present_mask]).any():
-        plt.imshow(grids.area[name, year])
-        plt.show()
-        plt.imshow(grids.area[name, year-1])
-        plt.show()
-        print (year, name)
-        import sys
-        sys.exit()
 
     # print grids.area[name, year-1].flatten()[157]
     # print grids.area[name, year].flatten()[157]
