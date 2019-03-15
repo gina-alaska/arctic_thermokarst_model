@@ -288,7 +288,7 @@ class ATM(object):
         name: str
             name of archive
         """
-        path = os.path.join( self['Output_dir'], 'Archive')
+        path = os.path.join( self.control['Output_dir'], 'Archive')
         try:
             os.makedirs(path)
         except:
@@ -457,8 +457,9 @@ class ATM(object):
                 self.control['Archive_simulation'].lower() == 'yes':
             name = t +'_' +self.control['Simulation_name'] + '.txt'
             self.on_file(name, start_time, end_time)
-            
-        self.save_figures()
+        
+        print("The save figures feature must be re-enabled before 0.5.0 is ready")
+        # self.save_figures()
 
         name = t +'_' + self.control['Simulation_name'] +".tar.gz"
         self.archive(name)
