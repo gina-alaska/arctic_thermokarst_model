@@ -7,6 +7,8 @@ Transition function metadata
 import poi_based
 import lake_to_pond
 import pond_to_lake
+import poi_based_hill
+import poi_based_sigmoid2
     
 check_metadata = {
         

@@ -49,8 +49,9 @@ def calc_poi(shape, current_cell_mask, ald, pl, fn, last_poi, p_above, p_below, 
     
 
 
-@jit( nogil=True, cache = True)
-def transition (name, year, grids, control):
+@jit#(nopython=True, nogil=True)
+def transition (from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, ice_slope,
+                ALD, PL, AOI, POIn, POInm1, above_idx, porosity, params, max_rot):
     """This checks for any area in the cohort 'name' that should be transitioned
     to the next cohort, and then transitions the area. 
 
@@ -81,68 +82,58 @@ def transition (name, year, grids, control):
         See https://github.com/gina-alaska/arctic_thermokarst_model/wiki/POI-transition-function
 
     """
-    
-    cohort_config = control['cohorts'][name + '_Control'] 
-    
-    ## mask out non-test area
-    # model_area_mask = grids.area.area_of_interest()
-    
-    ## get_ice contents
-    ice_slope = grids.ice.get_ice_slope_grid( name )
-    
-    ## get_cell with 'current cohort present'
-    cohort_present_mask = grids.area[name, year] > 0
+    x = (ALD / PL) - 1
 
-    current_cell_mask = calc_mask(
-        grids.area[name, year], 
-        grids.ald['ALD', year],
-        grids.ald[name, year],
-        grids.area.area_of_interest() 
-    )
 
-    ald, pl = grids.ald['ALD', year], grids.ald[name ,year]
+    present = from_cohort > 0
+    pl_breach = ALD >= PL
+    current_cell_mask = np.logical_and(np.logical_and(AOI, present),  pl_breach)
 
-    fn = cohort_config['POI_Function'].lower()
-    # print(fn)
+
+
 
     ## update cumulative POI
-    above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'
-    grids.poi[name, year] = calc_poi(
-        grids.shape, current_cell_mask, ald, pl, fn,  grids.poi[name, year-1],
-        cohort_config['Parameters']['above'], 
-        cohort_config['Parameters']['below'], above_idx 
-    )
+    
+    B_a = 0
+    N_a = 1
+    B_b = 2
+    N_b = 3
+    above = (params[B_a] * (x ** params[N_a])) / (1. + (x ** params[N_a]))
+    below = (params[B_b] * (x ** params[N_b])) / (1. + (x ** params[N_b]))
+    above[np.logical_not(above_idx)] = below[np.logical_not(above_idx)] 
+    
+    POIn = POInm1 + above
+    POIn[np.logical_not( current_cell_mask )] = 0.0
+    
 
     ## change PL[year] if ALD > PL
-    porosity = grids.ald.porosity[name]
-    grids.ald[name, year ][ current_cell_mask ] = (
-        grids.ald[name, year-1 ] + \
-        (grids.ald['ALD', year] - grids.ald[name, year-1 ] ) * porosity
-    )[ current_cell_mask ] 
+    ALD[ current_cell_mask ] = (ALD + (ALD - PL) * porosity)[current_cell_mask]
 
-    ## use POI to find rate of transtion
-    max_rot = cohort_config['max_terrain_transition']
 
-    rate_of_transition = \
-        grids.poi[name, year] * ice_slope.reshape(grids.shape) * max_rot
+    rate_of_transition = POIn * ice_slope * max_rot
     rate_of_transition[ rate_of_transition > max_rot ] = max_rot
     ## calculate chage
-    change = rate_of_transition * grids.area[name, year]
+    change = rate_of_transition * from_cohort
 
     
     ## if change is bigger than area available
     ## TODO: handle age buckets
-    current = grids.area[name, year]
-    change[np.logical_and(cohort_present_mask, change > current )] = \
-        current [np.logical_and(cohort_present_mask, change > current )]
+    change[np.logical_and(present, change > from_cohort )] = \
+        from_cohort[np.logical_and(present, change > from_cohort )]
+
     
     ## apply change
-    transitions_to = cohort_config['transitions_to']
-    grids.area[ transitions_to + '--0', year][cohort_present_mask ] = \
-        (grids.area[transitions_to, year] + change)[cohort_present_mask ]
+    to_cohort_a0[ present] = (to_cohort + change)[ present]
 
-    grids.area[name + '--0', year][cohort_present_mask ] = \
-        (current - change)[cohort_present_mask ]
+    # grids.area[ transitions_to + '--0', year][present] = \
+    #     (grids.area[transitions_to, year] + change)[present]
+
+
+    from_cohort_a0[ present] = (from_cohort - change)[ present]
+
+    # grids.area[name + '--0', year][present] = \
+    #     (current - change)[present]
+
 
     # print grids.area[name, year-1].flatten()[157]
     # print grids.area[name, year].flatten()[157]
