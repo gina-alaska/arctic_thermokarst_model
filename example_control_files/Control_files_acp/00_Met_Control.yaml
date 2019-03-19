@@ -23,8 +23,8 @@ degree_day_method: read
 # (00_FDD/TDD_historical_1901-2006, 00_FDD/TDD_CCCMA_2001-2100,
 # 00_FDD/TDD_ECHAM5_2001-2100)
 #------------------------------------------------------------
-TDD_file: Degree_Days/tdd_1901-2015.data
-FDD_file: Degree_Days/fdd_1901-2015.data
+TDD_file: Degree_Days/acp_tdd.yml
+FDD_file: Degree_Days/acp_fdd.yml
 #============================================================
 # Information for Major Climatic Events
 #------------------------------------------------------------
