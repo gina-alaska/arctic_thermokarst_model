@@ -9,6 +9,8 @@ import numpy as np
 import os
 import sys
 
+import math
+
 from multigrids import MultiGrid
 
 try:
@@ -146,8 +148,8 @@ def scale_layer_down (layer, current_resolution, target_resolution):
     
     shape = layer.shape
     dimensions = (
-        abs(int(shape[ROW] * current_resolution[ROW] /target_resolution[ROW])),
-        abs(int(shape[COL] * current_resolution[COL] /target_resolution[COL]))
+        int(math.ceil(abs(shape[ROW] * current_resolution[ROW] /target_resolution[ROW]))),
+        int(math.ceil(abs(shape[COL] * current_resolution[COL] /target_resolution[COL])))
     )
     ## regroup at new resolution
     for row in range(0, int(shape[ROW]), resize_num[ROW]):

@@ -14,7 +14,7 @@ Simulation_area: ACP
 Run_dir: <add path>
 #----------------------------------------------------------------
 # Data Input and Output Directories
-Input_dir: /Users/rawser/atm/atm_data_new_framework/ACP_setup/Input_data_smaller
+Input_dir: ../acp_data
 Output_dir: ./Output/acp_test
 Control_dir: ./example_control_files/Control_files_acp/
 #----------------------------------------------------------------
@@ -48,13 +48,14 @@ Test_code_duration: 2
 #================================================================
 
 # where does the model start at?
-initialization_year: 1900
+initialization year: 1900
 start_year: 1901
 
 #----------------------------------------------------------------
 # Model resolution [meters]
-X_model_resolution: 1000.
-Y_model_resolution: 1000.
+## target resloution [Y, X]
+target resolution: [1000, 1000]
+
 
 # Information needed to initialize the model
 Initialize_Control: 00_Initialize_Control.yaml ## rename initialization figures?
@@ -72,7 +73,7 @@ Terrestrial_Control: 00_Terrestrial_Control.yaml
     # Flag to read & write geotiff files for landcover information
     #~ Read_Geotiff: Yes # Not implmented
     #~ Write_Geotiff: No # Not implmented
-Initial_Cohort_List: 00_Barrow_Initial_Cohort_List.yaml
+initial area data: 00_ACP_Initial_Cohort_List.yaml
 
 Lake_Pond_Control: 00_Lake_Pond_Control.yaml
     
@@ -90,7 +91,7 @@ Transition_order:
 #========================================================================
 #cohort and transition contol
 #========================================================================
-Cohorts:
+cohorts:
     CLC_WT_Control: 01_CLC_WT_Control.yaml
     DrainedSlope_WT_Control: 01_DrainedSlope_WT_Control.yaml
     FCP_WT_Control: 01_FCP_WT_Control.yaml

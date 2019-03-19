@@ -52,8 +52,9 @@ class ModelGrids (object):
         config: dict
             configuration for grid objects
         """
+        print('loading AREA')
         self.area = AreaGrid(config)
-        
+        print('post AREA setup')
         self.shape = self.area.grid_shape
         # print self.area.grids.shape
         self.aoi = self.area.area_of_interest()
@@ -62,10 +63,15 @@ class ModelGrids (object):
         config['grid_shape'] = self.area.grid_shape
         config['AOI mask'] = self.aoi
         config['cohort list'] = self.area.get_cohort_list()
+        print('loading ALD')
         self.ald = ALDGrid(config)
+        print('loading POI')
         self.poi = POIGrid(config)
+        print('loading ICE')
         self.ice = IceGrid(config)
+        print('loading LAKE POND')
         self.lake_pond = LakePondGrid(config)
+        print('loading CLIMATE EVENT')
         self.climate_event = ClimateEventGrid(config)
         #~ print config['pond types'] + config['lake types']
         ## TODO:redo masks here
@@ -73,8 +79,10 @@ class ModelGrids (object):
         #     #~ print lpt
         #     mask = self.area[lpt][0] > 0 # all cells in first ts > 0
         #     self.lake_pond.apply_mask(lpt, mask)
+        print('loading DRAINGAGE')
         self.drainage = DrainageGrid(config)
         
+        print('loading DEGREE DAY')
         self.degreedays = DegreeDayGrids(
             os.path.join(
                 config['Input_dir'], config['Met_Control']['FDD_file']),
