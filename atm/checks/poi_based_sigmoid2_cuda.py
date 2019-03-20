@@ -8,14 +8,14 @@ import numpy as np
 import functions
 import matplotlib.pyplot as plt
 
-from numba import njit, prange, jit, float32
+from numba import njit, prange, jit, float32, cuda
 
 
-import llvmlite.binding as llvm
-llvm.set_option('', '--debug-only=loop-vectorize')
 
 
-@jit(nopython=True, nogil=True, parallel=True)
+
+# @jit(nopython=True, nogil=True)#), parallel=True)
+@cuda.jit
 def transition (from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, ice_slope,
                 ALD, PL, AOI, POIn, POInm1, above_idx, porosity, params, max_rot):
     """This checks for any area in the cohort 'name' that should be transitioned
@@ -56,13 +56,12 @@ def transition (from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, ice_slope,
     C_b = 1
     A_b = 2
     B_b = 3
+    
     for row in range(above_idx.shape[0]):
         for col in range(above_idx.shape[1]):
             present = from_cohort[row,col] > 0
             pl_breach = ALD[row,col] >= PL[row,col]
             current_cell_mask = pl_breach and present and AOI[row, col]
-            if not current_cell_mask:
-                continue
 
             x = 0
             if  PL[row,col] != 0:
