@@ -53,6 +53,7 @@ def read_layers(input_rasters, target_resolution):
     layer_names = []
     
     for f in input_rasters:
+        print "LOADING RASTER:", f
         path = f
         try:
             data, metadata = raster.load_raster (path)

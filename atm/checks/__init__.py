@@ -9,6 +9,7 @@ import lake_to_pond
 import pond_to_lake
 import poi_based_hill
 import poi_based_sigmoid2
+import poi_based_sigmoid2_jit
     
 check_metadata = {
         

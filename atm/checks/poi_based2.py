@@ -8,6 +8,48 @@ import numpy as np
 import functions
 import matplotlib.pyplot as plt
 
+from numba import njit, prange, jit, float32
+
+@jit(nopython=True, nogil=True)
+def find_x (ald, pl):
+    return (ald / pl) - 1
+
+@jit(nopython=True, nogil=True)
+def calc_mask (frac_area, ald, pl, aoi):
+    pl_breach = ald >= pl
+    present = frac_area > 0
+
+    return np.logical_and(np.logical_and(aoi, present),  pl_breach)
+
+@jit( nogil=True, cache = True)
+def calc_poi(shape, current_cell_mask, ald, pl, fn, last_poi, p_above, p_below, above_idx):
+    ## find 'x'
+    # x = np.zeros(shape)
+    x = find_x(ald, pl)
+    
+    # POI_above = np.zeros(shape)
+    POI_above = functions.call_function(
+        fn, x, p_above
+    )
+    
+    # POI_below  = np.zeros(shape)
+
+    POI_below = functions.call_function(
+        fn, x, p_below
+    )
+
+    POI = POI_below 
+   
+    POI[above_idx] = POI_above[above_idx]
+
+    ## update cumulative POI
+    new_poi = last_poi + POI
+    new_poi[np.logical_not( current_cell_mask )] = 0.0
+    return new_poi
+    
+
+
+@jit( nogil=True, cache = True)
 def transition (name, year, grids, control):
     """This checks for any area in the cohort 'name' that should be transitioned
     to the next cohort, and then transitions the area. 
@@ -39,55 +81,37 @@ def transition (name, year, grids, control):
         See https://github.com/gina-alaska/arctic_thermokarst_model/wiki/POI-transition-function
 
     """
+    
     cohort_config = control['cohorts'][name + '_Control'] 
     
     ## mask out non-test area
-    model_area_mask = grids.area.area_of_interest()
+    # model_area_mask = grids.area.area_of_interest()
     
     ## get_ice contents
     ice_slope = grids.ice.get_ice_slope_grid( name )
     
     ## get_cell with 'current cohort present'
     cohort_present_mask = grids.area[name, year] > 0
-    
-    ### where is ald >= PL
-    pl_breach_mask = grids.ald['ALD', year] >= grids.ald[name, year]
-    
-    ### cells where change may occur
-    current_cell_mask = np.logical_and(
-        np.logical_and(
-            model_area_mask, cohort_present_mask
-        ),  
-        pl_breach_mask 
-    )
-    
-    ## find 'x'
-    x = np.zeros(grids.shape)
-    x[current_cell_mask] = (
-        grids.ald['ALD', year] / grids.ald[name ,year]
-    )[current_cell_mask] - 1
 
-    ## caclualte POI
-    fn = functions.table[cohort_config['POI_Function'].lower()]
-    
-    POI_above = np.zeros(grids.shape)
-    POI_above[current_cell_mask] = fn(
-        x, cohort_config['Parameters']['above']
-    )[current_cell_mask]
-    
-    POI_below  = np.zeros(grids.shape)
-    POI_below[current_cell_mask] = fn(
-        x, cohort_config['Parameters']['below']
-    )[current_cell_mask]
-    
-    POI = POI_below 
-    above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'
-    POI[above_idx] = POI_above[above_idx]
+    current_cell_mask = calc_mask(
+        grids.area[name, year], 
+        grids.ald['ALD', year],
+        grids.ald[name, year],
+        grids.area.area_of_interest() 
+    )
+
+    ald, pl = grids.ald['ALD', year], grids.ald[name ,year]
+
+    fn = cohort_config['POI_Function'].lower()
+    # print(fn)
 
     ## update cumulative POI
-    grids.poi[name, year] = grids.poi[name, year-1] + POI
-    ### POI where ALD < PL, reset cumulative POI to 0
-    grids.poi[name, year][np.logical_not( current_cell_mask )] = 0.0
+    above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'
+    grids.poi[name, year] = calc_poi(
+        grids.shape, current_cell_mask, ald, pl, fn,  grids.poi[name, year-1],
+        cohort_config['Parameters']['above'], 
+        cohort_config['Parameters']['below'], above_idx 
+    )
 
     ## change PL[year] if ALD > PL
     porosity = grids.ald.porosity[name]
@@ -124,3 +148,4 @@ def transition (name, year, grids, control):
     # print grids.area[name, year].flatten()[157]
 
     
+
