@@ -5,6 +5,7 @@ grids
 object to manage all grid objects
 """
 
+import numpy as np
 from area_grid import AreaGrid
 from ald_grid import ALDGrid
 from poi_grid import POIGrid
@@ -53,7 +54,9 @@ class ModelGrids (object):
             configuration for grid objects
         """
         print('loading AREA')
+        config['data_type'] = np.float32
         self.area = AreaGrid(config)
+        print(self.area.grids.dtype, type(self.area.grids)) 
         print('post AREA setup')
         self.shape = self.area.grid_shape
         # print self.area.grids.shape

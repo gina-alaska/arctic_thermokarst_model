@@ -37,18 +37,16 @@ calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
 
 @jit(nopython=True, nogil=True) ## jit works?
 def calc_new_poi(params, x, above_idx):
-    K_a = 0
-    C_a = 1
-    A_a = 2
-    B_a = 3
-    K_b = 4
-    C_b = 5
-    A_b = 6
-    B_b = 7
+    B_a = 0
+    N_a = 1
+    B_b = 2
+    N_b = 3
     
     new_poi = np.zeros(x.shape)
-    above = params[K_a] / (params[C_a] + (params[A_a] * x**params[B_a])) 
-    below = params[K_b] / (params[C_b] + (params[A_b] * x**params[B_b]))
+    above = (params[B_a] * (x ** params[N_a]))/(1. + (x ** params[N_a]))
+    below = (params[B_b] * (x ** params[N_b]))/(1. + (x ** params[N_b]))
+    # above = params[K_a] / (params[C_a] + (params[A_a] * x**params[B_a])) 
+    # below = params[K_b] / (params[C_b] + (params[A_b] * x**params[B_b]))
     for row in range(above_idx.shape[0]):
         for col in range(above_idx.shape[1]):
 

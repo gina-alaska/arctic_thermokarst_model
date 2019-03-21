@@ -99,7 +99,7 @@ class LakePondGrid (TemporalMultiGrid):
             ]
 
             kwargs = copy.deepcopy(config) 
-            kwargs['data_type'] = 'float'
+            # kwargs['data_type'] = 'float'
             kwargs['mode'] = 'r+'
             kwargs['grid_names'] = grid_names
             super(LakePondGrid , self).__init__(*args, **kwargs)

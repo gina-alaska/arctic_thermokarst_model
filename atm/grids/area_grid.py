@@ -138,7 +138,7 @@ class AreaGrid(TemporalMultiGrid):
             ]
 
             kwargs = copy.deepcopy(config) 
-            kwargs['data_type'] = 'float'
+            # kwargs['data_type'] = 'float'
             kwargs['mode'] = 'r+'
             # kwargs['filename'] = 'test.mgdatatest'
             # kwargs['cfg_path'] = './'
