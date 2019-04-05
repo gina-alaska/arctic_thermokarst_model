@@ -8,57 +8,71 @@ from atm.cohorts import find_canon_name, DISPLAY_COHORT_NAMES
 from collections import namedtuple
 import numpy as np
 
+from atm.logger import Logger
+
 GEORASTER = namedtuple('GEORASTER', ["data", "metadata"])
 
-def load_rasters(directory):
-    
+def load_rasters(directory, target_resolution=[1000,1000], log = Logger(None)):
+    log.add("Loading started.")
     input_rasters = glob.glob(os.path.join(directory, "*.tif"))
     # raster_metadata = {}
     raster_data = {}
-
-    
     for f in input_rasters:
         path = f
-        try:
-            data, metadata = rio.load_raster (path)
-        except AttributeError:
-            print 'FATAL ERROR: Could Not Load Raster File', path
-            sys.exit(0)
-
         filename = os.path.split(f)[-1]
         try:
             name = find_canon_name(filename.split('.')[0])
         except KeyError as e:
-            print("could not find canon name for:", filename, ". Using filename")
+            log.add("could not find canon name for: " + filename + ". Using filename")
             name = filename 
-        raster_data[name] = GEORASTER(data, metadata)
 
-    return raster_data
 
-def check_rasters (rasters):
-    """ensure all rasters have same shape/resolution
-    """
-    resolution = None
-    shape = None
-    for name in rasters:
-        r=rasters[name]
-        if resolution is None:
-            resolution = (abs(r.metadata.deltaY),abs(r.metadata.deltaX))
-        if shape is None:
-            shape = (r.metadata.nY,r.metadata.nX)
+        log.add("Loading raster: " + f)
+        try:
+            
+            data, metadata = rio.load_raster (path)
+            source_resolution = (abs(metadata.deltaY),abs(metadata.deltaX))
+            log.add("Scaling: " + name)
+            data = rio.scale_layer_down(data, source_resolution, target_resolution)
         
-        if shape != (r.metadata.nY,r.metadata.nX):
-            raise AttributeError("Raster shape does not match: " + name)
-        if resolution != (abs(r.metadata.deltaY),abs(r.metadata.deltaX)):
-            raise AttributeError("Raster resolution does not match: " + name)
-    return True
+        except AttributeError:
+            log.add('FATAL: Could Not Load Raster File: ' + path, 'FATAL')
+            print "uh oh"
+            sys.exit(0)
 
-def scale_and_normalize (rasters, target_resolution):
-    
-    if not check_rasters(rasters):
-        raise AttributeError("Bad raster input")
+        # log.add("Creating GEORASTER")
+        log.add("Storing data")
+        raster_data[name] = data
 
-    metadata = rasters[rasters.keys()[0]].metadata
+    log.add("Loading finished.")
+    return raster_data, metadata
+
+# def check_rasters (rasters):
+#     """ensure all rasters have same shape/resolution
+#     """
+#     log.add("Loading started.")
+#     resolution = None
+#     shape = None
+#     for name in rasters:
+#         r=rasters[name]
+#         if resolution is None:
+#             resolution = (abs(r.metadata.deltaY),abs(r.metadata.deltaX))
+#         if shape is None:
+#             shape = (r.metadata.nY,r.metadata.nX)
+        
+#         if shape != (r.metadata.nY,r.metadata.nX):
+#             raise AttributeError("Raster shape does not match: " + name)
+#         if resolution != (abs(r.metadata.deltaY),abs(r.metadata.deltaX)):
+#             raise AttributeError("Raster resolution does not match: " + name)
+#     return True
+
+def scale_and_normalize (rasters, target_resolution, metadata, log = Logger(None)):
+    log.add("scale_and_normalize started.")
+    # log.add("Checking Rasters.")
+    # if not check_rasters(rasters):
+    #     raise AttributeError("Bad raster input")
+    # log.add("Checking complete.")
+    # metadata = rasters[rasters.keys()[0]].metadata
     source_resolution = (abs(metadata.deltaY),abs(metadata.deltaX))
     shape = (metadata.nY,metadata.nX)
 
@@ -66,19 +80,25 @@ def scale_and_normalize (rasters, target_resolution):
     new_data = []
     new_data_order = []
     for name in rasters:
-        scaled_data = rio.scale_layer_down(
-            rasters[name].data, source_resolution, target_resolution
-        )
-        new_data.append(scaled_data)
+        # log.add("Scaling: " + name)
+        # scaled_data = rio.scale_layer_down(
+        #     rasters[name].data, source_resolution, target_resolution
+        # )
+        new_data.append(rasters[name])
         new_data_order.append(name)
 
+    # new_data = rasters
+
+    log.add("Normalizing data.")
     normalized = rio.normalize_layers(
         new_data, source_resolution, target_resolution
     )
 
     new_rasters = {}
+    print metadata
     for  idx, name in enumerate(new_data_order):
-        meta = rasters[name].metadata
+        log.add("Updating metadata: " + name)
+        meta = metadata
         # 'transform', 'projection', 
         # 'nX', 'nY', 'deltaX', 'deltaY', 'originX', 'originY'
         transform = (
@@ -93,13 +113,16 @@ def scale_and_normalize (rasters, target_resolution):
         )
         new_rasters[name] = GEORASTER(normalized[idx], new_meta )
 
+    log.add("Finised Scale and Normalize")
     return new_rasters
 
 def preprocess(in_dir, out_dir, target_resolution=[1000,1000]):
-    init_data = load_rasters(in_dir)
-    s_and_n_data = scale_and_normalize(init_data, target_resolution)
+    log = Logger("log.csv", True)
+    init_data, metadata = load_rasters(in_dir, log=log)
+    s_and_n_data = scale_and_normalize(init_data, target_resolution, metadata, log=log)
 
     for name in s_and_n_data:
+        log.add("Saving: " + name)
         raster = s_and_n_data[name]
         path = os.path.join(out_dir,name+"_scaled_and_normalized.tif")
         rio.save_raster(path, raster.data, raster.metadata.transform, raster.metadata.projection)

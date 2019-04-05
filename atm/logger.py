@@ -109,7 +109,7 @@ class Logger(object):
         if self.also_print:
             print(self.pretty_log_str(-1, '. '))
 
-    def pretty_log_str(self, index, sep = ','):
+    def pretty_log_str(self, index, sep = ',', write_loc_info=False):
         """convert an entry in log to string.
 
         Parameters
@@ -128,14 +128,15 @@ class Logger(object):
         s = ''
         s += datetime.strftime(entry.datetime, "%Y-%m-%d %H:%M:%S") + sep
         s += entry.level + sep + entry.message + sep
-        s += "File: "
-        s += str(entry.file) if not entry.file is None else 'N/A'
-        s += sep
-        s += "In: "
-        s += str(entry.location) if not entry.location is None else 'N/A'
-        s += sep
-        s += "At line: "
-        s += str(entry.line) if not entry.line is None else 'N/A'
+        if write_loc_info:
+            s += "File: "
+            s += str(entry.file) if not entry.file is None else 'N/A'
+            s += sep
+            s += "In: "
+            s += str(entry.location) if not entry.location is None else 'N/A'
+            s += sep
+            s += "At line: "
+            s += str(entry.line) if not entry.line is None else 'N/A'
         
         return s
 
@@ -163,7 +164,9 @@ class Logger(object):
 
         with open(filename, 'w') as output:
             for line_no in range(len(self.log)):
-                output.write(self.pretty_log_str(line_no) +'\n')
+                output.write(
+                    self.pretty_log_str(line_no, write_loc_info=True) +'\n'
+                )
         
         return True
 

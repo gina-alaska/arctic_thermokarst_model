@@ -38,7 +38,6 @@ def load_raster (filename):
         metadata on raster file read
     """
     dataset = gdal.Open(filename, gdal.GA_ReadOnly)
-    #~ print type(dataset)
     (X, deltaX, rotation, Y, rotation, deltaY) = dataset.GetGeoTransform()
 
     metadata = RASTER_METADATA(
@@ -187,10 +186,12 @@ def clip_raster (in_raster, out_raster, extent):
     extent: tuple
         (minX, maxY, maxX, minY)
     """
+
     tiff = gdal.Translate(
         out_raster, in_raster, projWin = extent, 
         format='GTiff', outputType=gdal.GDT_Float32 
     ) 
+    print tiff
     tiff.GetRasterBand(1).FlushCache()
     tiff.FlushCache()
     return True
