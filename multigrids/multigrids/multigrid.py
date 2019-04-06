@@ -18,6 +18,11 @@ from . import figures
 
 from .common import load_or_use_default, GridSizeMismatchError
 
+try: 
+    import gdal
+except ImportError:
+    gdal = None
+
 class MultigridConfigError (Exception):
     """Raised if a multgrid class is missing its configuration"""
 
@@ -559,6 +564,44 @@ class MultiGrid (object):
             )
             self.figure(filename, grid, **kwargs)
 
+    def save_as_geotiff(self, filename, grid_id, **kwargs):
+        """save a grid as a tiff file
+        """
+        if gdal is None:
+            raise IOError("gdal not found: cannot save tif")
+
+        transform = kwargs['transform']
+        projection = kwargs['projection']
+        datatype = gdal.GDT_Float32
+
+        data = self[grid_id].astype(np.float32)
+
+        write_driver = gdal.GetDriverByName('GTiff') 
+        raster = write_driver.Create(
+            filename, data.shape[1], data.shape[0], 1, datatype
+        )
+        raster.SetGeoTransform(transform)  
+        outband = raster.GetRasterBand(1)  
+        outband.WriteArray(data) 
+        raster.SetProjection(projection) 
+        outband.FlushCache()  
+        raster.FlushCache()      
+
+    def save_all_as_geotiff(self, dirname, **kwargs):
+        """save all grid as a tiff file
+        """
+        grids = self.grid_name_map
+        if grids == {}:
+            grids = range(self.num_grids)
+
+        for grid in grids:
+            filename = os.path.join(
+                dirname, 
+                (self.dataset_name + '_' + grid + '.tif').replace(' ','_')
+            )
+            self.save_as_geotiff(filename, grid, **kwargs)
+
+        
 
 def create_example():
     """create and return an example MultiGrid
