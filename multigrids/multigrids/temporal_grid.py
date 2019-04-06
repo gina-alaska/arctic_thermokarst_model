@@ -95,6 +95,26 @@ class TemporalGrid (MultiGrid):
             key -= self.start_timestep
         return self.grids.reshape(self.real_shape)[key].reshape(self.grid_shape)
 
+    def get_grids_at_keys(self,keys):
+        """return the grids for the given keys
+
+        Parameters
+        ----------
+        keys: list
+            list of grids
+        
+        Returns
+        -------
+        np.array
+        """
+        select = np.zeros([len(keys), self.grid_shape[0],self.grid_shape[1] ] )
+        c = 0
+        for k in keys:
+            select[c] = self[k]
+            c += 1
+        return select
+        
+
     def get_memory_shape (self,config):
         """ Construct the shape needed for multigrid in memory from 
         configuration. 
