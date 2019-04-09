@@ -1,5 +1,5 @@
 
-from atm_io import raster
+from atm.io import raster
 from multigrids import temporal_grid
 import glob
 import numpy as np
@@ -188,9 +188,9 @@ def create_avgs (precip, tdd, fdd, directory, years = 'all'):
 
 
 
-precip = temporal_grid.TemporalGrid('/Users/rwspicer/Desktop/ns_precip_monthly/cliped-precip-loaded-data-1901-2015.yml')
-fdd = temporal_grid.TemporalGrid('/Users/rwspicer/Desktop/ns_fdd/fdd.yml')
-tdd = temporal_grid.TemporalGrid('/Users/rwspicer/Desktop/ns_tdd/tdd.yml')
+# precip = temporal_grid.TemporalGrid('/Users/rwspicer/Desktop/ns_precip_monthly/cliped-precip-loaded-data-1901-2015.yml')
+# fdd = temporal_grid.TemporalGrid('/Users/rwspicer/Desktop/ns_fdd/fdd.yml')
+# tdd = temporal_grid.TemporalGrid('/Users/rwspicer/Desktop/ns_tdd/tdd.yml')
 
 
 ## 0 = precip <= avg, fdd <= avg, fdd <= avg

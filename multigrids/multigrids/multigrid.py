@@ -26,6 +26,10 @@ except ImportError:
 class MultigridConfigError (Exception):
     """Raised if a multgrid class is missing its configuration"""
 
+class MultigridIOError (Exception):
+    """Raised during multigrid IO"""
+
+
 def open_or_create_memmap_grid(filename, mode, dtype, shape):
     """Initialize or open a memory mapped np.array.
     
@@ -314,7 +318,7 @@ class MultiGrid (object):
         grids = self.setup_internal_memory(config)
         return config, grids
 
-    def save(self, file, grid_file_ext = '.mgdata'):
+    def save(self, file=None, grid_file_ext = '.mgdata'):
         """Save MiltiGrid Object to metadata file and data file
         The metadata file cantinas the config info, and the data file
         contains the grids. 
@@ -330,6 +334,15 @@ class MultiGrid (object):
             already exist. The data is saved as a memory mapped Numpy array,
             so the extension is more for description than any thing else.
         """
+        if file is None and self.config['dataset_name'].lower() == "Unknown":
+            msg = "Error saving multigrid, no filename. Provided" +\
+                " a filename to the save function, or set the dataset_name in"+\
+                " the multigrid config to a value other than Unknown or" +\
+                " unknown."
+            raise MultigridIOError()
+        elif file is None and self.config['dataset_name'].lower() != "Unknown":
+            file = self.config['dataset_name'].lower().replace(' ','_') + '.yml'
+
         s_config = copy.deepcopy(self.config)
         if s_config['data_model'] is 'array' or s_config['filename'] is None:
             try:
@@ -355,6 +368,7 @@ class MultiGrid (object):
         del s_config['real_shape']
 
         s_config['mode'] = 'r+'
+
         with open(file, 'w') as sfile:
             sfile.write('#Saved ' + self.__class__.__name__ + " metadata\n")
             yaml.dump(s_config, sfile, default_flow_style=False)
