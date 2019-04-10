@@ -15,7 +15,7 @@ from numba import njit, prange, jit, float32
 import llvmlite.binding as llvm
 llvm.set_option('', '--debug-only=loop-vectorize')
 
-@jit(nopython=True, nogil=True)
+#@jit(nopython=True, nogil=True)
 def calc_x(ALD,PL): ## jit works
     x = np.zeros(ALD.shape)
     for row in range(x.shape[0]):
@@ -26,7 +26,7 @@ def calc_x(ALD,PL): ## jit works
 
 calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
 
-# # @jit(nopython=True, nogil=True) ## jit does not work
+# # #@jit(nopython=True, nogil=True) ## jit does not work
 # def apply_change(to_cohort, to_cohort_a0, from_cohort, from_cohort_a0, change, present):
 #     # present = from_cohort > 0
 #     for row in range(from_cohort.shape[0]):
@@ -35,7 +35,7 @@ calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
 #                 to_cohort_a0[ row, col ] = to_cohort[ row, col] + change[ row, col]
 #                 from_cohort_a0[row, col] = from_cohort[ row, col] - change[ row, col]
 
-@jit(nopython=True, nogil=True) ## jit works?
+#@jit(nopython=True, nogil=True) ## jit works?
 def calc_new_poi(params, x, above_idx):
     B_a = 0
     N_a = 1
@@ -56,7 +56,7 @@ def calc_new_poi(params, x, above_idx):
                 new_poi[row, col] = below[row,col]
     return new_poi
 
-@jit(nopython=True, nogil=True) ## jit works?
+#@jit(nopython=True, nogil=True) ## jit works?
 def update_poi (POIn, POInm1, new, current_cell_mask):
     POIn = POInm1 + new
     for row in range(POIn.shape[0]):
@@ -67,7 +67,7 @@ def update_poi (POIn, POInm1, new, current_cell_mask):
 calc_new_poi(np.ones(8).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
 update_poi(np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
 
-@jit(nopython=True, nogil=True) ## jit works?
+#@jit(nopython=True, nogil=True) ## jit works?
 def calc_change (rate_of_transition, from_cohort, present):
     """
     """
@@ -85,7 +85,7 @@ def calc_change (rate_of_transition, from_cohort, present):
 calc_change(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32)==np.ones([10,10]).astype(np.float32) )
 
 
-@jit(nopython=True, nogil=True) ## jit works?
+#@jit(nopython=True, nogil=True) ## jit works?
 def calc_rot(POIn, ice_slope, max_rot):
     ## rot = rate of transition
     rot = POIn * ice_slope * max_rot
@@ -98,14 +98,14 @@ def calc_rot(POIn, ice_slope, max_rot):
 # print(np.ones([10,10]).astype(float).dtype, np.ones([10,10]).astype(float).dtype, type(.5))
 calc_rot(np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), .5)
 
-# @jit(nopython=True, nogil=True) ## jit not working?
+# #@jit(nopython=True, nogil=True) ## jit not working?
 # def update_ald(ALD,PL, porosity, current_cell_mask):
 #     for row in range(ALD.shape[0]):
 #         for col in range(ALD.shape[1]):
 #             if current_cell_mask[row,col]: 
 #                 ALD[ row, col ] = (ALD + (ALD - PL) * porosity)[ row, col ]
 
-# @jit(nopython=True, nogil=True)
+# #@jit(nopython=True, nogil=True)
 def transition (from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, ice_slope,
                 ALD, PL, AOI, POIn, POInm1, above_idx, porosity, params, max_rot):
     """This checks for any area in the cohort 'name' that should be transitioned

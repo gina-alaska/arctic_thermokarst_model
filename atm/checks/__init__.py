@@ -10,8 +10,9 @@ import pond_to_lake_jit as pond_to_lake
 import poi_based_hill
 import poi_based_hill_jit
 import poi_based_sigmoid2
-import poi_based_sigmoid2_jit
-    
+# import poi_based_sigmoid2_jit
+import poi_based_sigmoid2_cuda as poi_based_sigmoid2_jit
+
 check_metadata = {
         
         #~ 'base': check_base.check_base,

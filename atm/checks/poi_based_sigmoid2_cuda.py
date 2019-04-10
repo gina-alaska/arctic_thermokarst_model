@@ -8,7 +8,7 @@ import numpy as np
 import functions
 import matplotlib.pyplot as plt
 
-from numba import njit, prange, jit, float32, cuda
+from numba import njit, prange, jit, float32, cuda, SmartArray
 
 
 
@@ -27,9 +27,9 @@ def calc_x(x, ALD,PL): ## jit works
             x[row,col] = (ALD[row,col] / PL[row,col]) - 1
     # return x
 
-calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
+calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
 
-# # @jit(nopython=True, nogil=True) ## jit does not work
+# # ##@jit(nopython=True, nogil=True) ## jit does not work
 # def apply_change(to_cohort, to_cohort_a0, from_cohort, from_cohort_a0, change, present):
 #     # present = from_cohort > 0
 #     for row in range(from_cohort.shape[0]):
@@ -110,7 +110,7 @@ calc_rot(np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32
 #             if current_cell_mask[row,col]: 
 #                 ALD[ row, col ] = (ALD + (ALD - PL) * porosity)[ row, col ]
 
-# @jit(nopython=True, nogil=True)
+# ##@jit(nopython=True, nogil=True)
 def transition (from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, ice_slope,
                 ALD, PL, AOI, POIn, POInm1, above_idx, porosity, params, max_rot):
     """This checks for any area in the cohort 'name' that should be transitioned
@@ -147,12 +147,12 @@ def transition (from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, ice_slope,
     ## x = (ALD / PL) - 1
     blocks  =  (32, 32)
     threads = (
-        (np.ceil(ALD.shape[0] / blocks[0])),
-        (np.ceil(ALD.shape[1] / blocks[1]))
+        int(np.ceil(ALD.shape[0] / blocks[0])),
+        int(np.ceil(ALD.shape[1] / blocks[1]))
     )
     
-    X = np.zeros(ALD.shape)
-    calc_x[blocks, threads](X, ALD,PL)#.astype(np.float32)
+    x = np.zeros(ALD.shape).astype(np.float32)
+    calc_x[blocks, threads](x, ALD,PL)#.astype(np.float32)
 
 
     present = from_cohort > 0
