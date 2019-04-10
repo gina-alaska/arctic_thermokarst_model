@@ -545,11 +545,11 @@ class ATM(object):
 
                 mode = ''
                 try: 
-                    if self.control['use_git'] == "yes":
+                    if self.control['use_jit'] == "yes":
                         mode = '_jit'
                 except KeyError:
                     pass
-
+                #print mode
                 checks.check_metadata[check_type + mode](
                     name,  current_year, self.grids, self.control
                 )
