@@ -524,24 +524,10 @@ class ATM(object):
             ## set current ice thickness(depth)
             current_fdd = self.grids.degreedays.freezing[current_year]
             self.grids.lake_pond.calc_ice_depth(current_fdd)
-           
-            
-            # for cohort in cohort_list:
-            #     print cohort
-            
-            #     plt.imshow(self.grids.area[cohort, current_year-1])
-            #     plt.show()
-            #     plt.imshow(self.grids.area[cohort, current_year])
-            #     plt.show()
 
             ## transition list
             for cohort in cohort_list:
                 # print cohort
-            
-                # plt.imshow(self.grids.area[cohort, current_year-1])
-                # plt.show()
-                # plt.imshow(self.grids.area[cohort, current_year])
-                # plt.show()
                 cohort_control = cohort + '_Control'
                 try:
                     check_type = \
@@ -552,78 +538,17 @@ class ATM(object):
                     check_type = 'base'
 
                 name = find_canon_name(cohort)
-                # print "main", current_year,hex(id(self.grids['area'])),hex(id(self.grids.area[name,current_year-1]))
-                # plt.imshow(self.grids.area[cohort, current_year-1])
-                # plt.show()
-                cc = self.control['cohorts'][name + '_Control']
-                if cc['Transition_check_type'].lower() == 'poi' and cc['POI_Function'].lower() == "hill":
-                    year = current_year
-                    from_cohort_a0 = self.grids.area[name + '--0', year]
-                    from_cohort = self.grids.area[name, year]
-                    transitions_to = cc['transitions_to']
-                    to_cohort_a0 = self.grids.area[transitions_to + '--0', year]
-                    to_cohort = self.grids.area[transitions_to + '--0', year]
-                    ice_slope = self.grids.ice.get_ice_slope_grid( name ).reshape(self.grids.shape).astype(np.float32)
-                    ALD, PL = self.grids.ald['ALD', year], self.grids.ald[name ,year] 
-                    AOI = self.grids.area.area_of_interest()
-                    POIn = self.grids.poi[name, year]
-                    POInm1 = self.grids.poi[name, year-1]
-                    drainage = self.grids.drainage.grid.reshape(self.grids.shape)
-                    above_idx = drainage == 'above'
-                    porosity = self.grids.ald.porosity[name]
-                    params = np.array([
-                        cc['Parameters']['above']['hill_B'],
-                        cc['Parameters']['above']['hill_N'],
-                        cc['Parameters']['below']['hill_B'],
-                        cc['Parameters']['below']['hill_N'],
-                    ]).astype(np.float32)
-                    max_rot = cc['max_terrain_transition']
 
-                    checks.poi_based_hill_jit.transition(
-                        from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, 
-                        ice_slope, ALD, PL, AOI, POIn, POInm1, 
-                        above_idx, porosity, params, max_rot
-                    )
-                elif cc['Transition_check_type'].lower() == 'poi' and cc['POI_Function'].lower() == "sigmoid2":
-                    year = current_year
-                    from_cohort_a0 = self.grids.area[name + '--0', year]
-                    from_cohort = self.grids.area[name, year]
-                    transitions_to = cc['transitions_to']
-                    to_cohort_a0 = self.grids.area[transitions_to + '--0', year]
-                    to_cohort = self.grids.area[transitions_to + '--0', year]
-                    ice_slope = self.grids.ice.get_ice_slope_grid( name ).reshape(self.grids.shape).astype(np.float32)
-                    ALD, PL = self.grids.ald['ALD', year], self.grids.ald[name ,year] 
-                    AOI = self.grids.area.area_of_interest()
-                    POIn = self.grids.poi[name, year]
-                    POInm1 = self.grids.poi[name, year-1]
-                    drainage = self.grids.drainage.grid.reshape(self.grids.shape)
-                    above_idx = drainage == 'above'
-                    porosity = self.grids.ald.porosity[name]
-                    params = np.array([
-                        cc['Parameters']['above']['sigmoid2_K'],
-                        cc['Parameters']['above']['sigmoid2_C'],
-                        cc['Parameters']['above']['sigmoid2_A'],
-                        cc['Parameters']['above']['sigmoid2_B'],
-                        cc['Parameters']['below']['sigmoid2_K'],
-                        cc['Parameters']['below']['sigmoid2_C'],
-                        cc['Parameters']['below']['sigmoid2_A'],
-                        cc['Parameters']['below']['sigmoid2_B'],
-                    ]).astype(np.float32)
-                    max_rot = cc['max_terrain_transition']
+                mode = ''
+                try: 
+                    if self.control['use_git'] == "yes":
+                        mode = '_jit'
+                except KeyError:
+                    pass
 
-                    checks.poi_based_sigmoid2_jit.transition(
-                        from_cohort, from_cohort_a0, to_cohort, to_cohort_a0, 
-                        ice_slope, ALD, PL, AOI, POIn, POInm1, 
-                        above_idx, porosity, params, max_rot
-                    )
-                else:
-                    checks.check_metadata[check_type](
-                        name,  current_year, self.grids, self.control
-                    )
-                # plt.imshow(self.grids.area[cohort, current_year-1])
-                # plt.show()
-                # plt.imshow(self.grids.area[cohort, current_year])
-                # plt.show()
+                checks.check_metadata[check_type + mode](
+                    name,  current_year, self.grids, self.control
+                )
 
             lake_pond_expansion.expansion(
                 lp_types, current_year, self.grids, self.control
