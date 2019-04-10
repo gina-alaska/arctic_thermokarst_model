@@ -49,6 +49,8 @@ from grids.grids import ModelGrids
 from grids import area_grid
 from cohorts import find_canon_name
 
+from logger import Logger
+
 
 
 #_______________________________________________________________________________
@@ -56,7 +58,7 @@ class ATM(object):
     """ATM class
     """
  
-    def __init__(self, control_file):
+    def __init__(self, control_file, logger=Logger(None)):
         """Arctic Thermokarst Model(ATM) class. Sets up and run the ATM model
         
         Parameters
@@ -74,6 +76,8 @@ class ATM(object):
             # of years to run model for
         
         """
+
+        self.logger = logger
         # ----------------------
         # Simulation Start Time
         # ----------------------
