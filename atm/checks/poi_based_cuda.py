@@ -27,7 +27,7 @@ def calc_x(x, ALD,PL): ## jit works
             x[row,col] = (ALD[row,col] / PL[row,col]) - 1
     # return x
 
-calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
+calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
 
 @cuda.jit
 def calc_new_sig2_poi(new_poi, params, x, above_idx):
@@ -43,15 +43,14 @@ def calc_new_sig2_poi(new_poi, params, x, above_idx):
     row, col = cuda.grid(2)
     if row < x.shape[0] and col < x.shape[1]:
         if above_idx[row,col] == True: 
-            new_poi[row, col] = params[K_a] / (params[C_a] + (params[A_a] * x**params[B_a]))
+            new_poi[row, col] = params[K_a] / (params[C_a] + (params[A_a] * x[row, col] ** params[B_a]))
         else:
-            new_poi[row, col] = params[K_b] / (params[C_b] + (params[A_b] * x**params[B_b]))
+            new_poi[row, col] = params[K_b] / (params[C_b] + (params[A_b] * x[row, col] ** params[B_b]))
     
     
 
 @cuda.jit
 def update_poi (POIn, POInm1, new, current_cell_mask):
-
     row, col = cuda.grid(2)
 
     if row < POIn.shape[0] and col < POIn.shape[1]:
@@ -66,7 +65,7 @@ update_poi(np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float
 def calc_change (change_amnts, rate_of_transition, from_cohort, present):
     """
     """
-
+    return
     row, col = cuda.grid(2)
 
     if row < from_cohort.shape[0] and col < from_cohort.shape[1]:
@@ -84,6 +83,7 @@ calc_change(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float
 @cuda.jit
 def calc_rot(rot, POIn, ice_slope, max_rot):
     ## rot = rate of transition
+    return
     if row < from_cohort.shape[0] and col < from_cohort.shape[1]:
         rot[ row, col ] = POIn[ row, col ] * ice_slope[ row, col ] * max_rot
         
@@ -173,16 +173,16 @@ def transition(name, year, grids, control):
     ## work ---------------
     blocks  =  (32, 32)
     threads = (
-        (np.ceil(ALD.shape[0] / blocks[0])),
-        (np.ceil(ALD.shape[1] / blocks[1]))
+        int(np.ceil(ALD.shape[0] / blocks[0])),
+        int(np.ceil(ALD.shape[1] / blocks[1]))
     )
     
     X = np.zeros(ALD.shape)
     calc_x[blocks, threads](X, ALD,PL)#.astype(np.float32)
 
     
-    new_poi = np.zeros(x.shape)
-    poi_func(new_poi, params, x, above_idx).astype(np.float32)
+    new_poi = np.zeros(X.shape)
+    poi_func(new_poi, params, X, above_idx)
 
 
     update_poi[blocks, threads](POIn, POInm1, new_poi, current_cell_mask)
@@ -191,10 +191,10 @@ def transition(name, year, grids, control):
     # not cuda'd
     ALD[ current_cell_mask ] = ALD[current_cell_mask] + (ALD[current_cell_mask] - PL[ current_cell_mask ] ) * porosity
 
-    rate_of_transition = np.zeros(POIn.shape) + np.nan
+    rate_of_transition = np.zeros(POIn.shape) 
     calc_rot[blocks, threads](rate_of_transition, POIn, ice_slope, max_rot)
 
-    change = np.zeros(POIn.shape) + np.nan
+    change = np.zeros(POIn.shape) 
     calc_change[blocks, threads](
         change, rate_of_transition, from_cohort, present
     )

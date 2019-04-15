@@ -547,12 +547,20 @@ class ATM(object):
                 try: 
                     if self.control['use_jit'] == "yes":
                         mode = '_jit'
+                    elif self.control['use_jit'] == "cuda":
+                        mode = '_cuda'
                 except KeyError:
                     pass
-                #print mode
-                checks.check_metadata[check_type + mode](
-                    name,  current_year, self.grids, self.control
-                )
+                
+                try:
+                    checks.check_metadata[check_type + mode](
+                        name,  current_year, self.grids, self.control
+                    )
+                except KeyError:
+                    self.logger.add("using fallback for " + check_type + mode)
+                    checks.check_metadata[check_type](
+                        name,  current_year, self.grids, self.control
+                    )
 
             lake_pond_expansion.expansion(
                 lp_types, current_year, self.grids, self.control
