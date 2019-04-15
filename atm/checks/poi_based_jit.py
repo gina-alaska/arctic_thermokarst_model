@@ -1,8 +1,8 @@
 """
-POI Based transition
---------------------
+Just in time POI Based transition
+---------------------------------
 
-Transition functions for POI based changes in area
+Numba just in time enhanced Transition functions for POI based changes in area
 """
 import numpy as np
 import functions
