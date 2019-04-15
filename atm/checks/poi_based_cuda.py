@@ -1,0 +1,208 @@
+"""
+POI Based transition
+--------------------
+
+Transition functions for POI based changes in area
+"""
+import numpy as np
+import functions
+import matplotlib.pyplot as plt
+
+from numba import njit, prange, jit, float32, cuda
+
+
+
+import llvmlite.binding as llvm
+llvm.set_option('', '--debug-only=loop-vectorize')
+
+@cuda.jit
+def calc_x(x, ALD,PL): ## jit works
+    # x = np.zeros(ALD.shape)
+    # for row in range(x.shape[0]):
+    #     for col in range(x.shape[1]):
+
+    row, col = cuda.grid(2)
+    if row < ALD.shape[0] and col < ALD.shape[1]:
+        if PL[row,col] != 0 :
+            x[row,col] = (ALD[row,col] / PL[row,col]) - 1
+    # return x
+
+calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
+
+@cuda.jit
+def calc_new_sig2_poi(new_poi, params, x, above_idx):
+    K_a = 0
+    C_a = 1
+    A_a = 2
+    B_a = 3
+    K_b = 4
+    C_b = 5
+    A_b = 6
+    B_b = 7
+
+    row, col = cuda.grid(2)
+    if row < x.shape[0] and col < x.shape[1]:
+        if above_idx[row,col] == True: 
+            new_poi[row, col] = params[K_a] / (params[C_a] + (params[A_a] * x**params[B_a]))
+        else:
+            new_poi[row, col] = params[K_b] / (params[C_b] + (params[A_b] * x**params[B_b]))
+    
+    
+
+@cuda.jit
+def update_poi (POIn, POInm1, new, current_cell_mask):
+
+    row, col = cuda.grid(2)
+
+    if row < POIn.shape[0] and col < POIn.shape[1]:
+        POIn[row,col] = 0 
+        if current_cell_mask[row,col] == True:
+            POIn[row,col] = POInm1[row,col] + new[row,col]
+
+calc_new_sig2_poi(np.ones([10,10]).astype(np.float32), np.ones(8).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
+update_poi(np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
+
+@cuda.jit
+def calc_change (change_amnts, rate_of_transition, from_cohort, present):
+    """
+    """
+
+    row, col = cuda.grid(2)
+
+    if row < from_cohort.shape[0] and col < from_cohort.shape[1]:
+        change_amnts[row,col] = \
+            rate_of_transition[row,col] * from_cohort[row,col] 
+
+        if present[row, col] and change_amnts[row, col] > from_cohort[row, col]:
+                change_amnts[row, col] = from_cohort[row,col]
+
+
+
+calc_change(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32)==np.ones([10,10]).astype(np.float32) )
+
+
+@cuda.jit
+def calc_rot(rot, POIn, ice_slope, max_rot):
+    ## rot = rate of transition
+    if row < from_cohort.shape[0] and col < from_cohort.shape[1]:
+        rot[ row, col ] = POIn[ row, col ] * ice_slope[ row, col ] * max_rot
+        
+        if rot[row, col] > max_rot:
+            rot[ row, col ] = max_rot
+
+
+
+calc_rot(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), .5)
+
+# @jit(nopython=True, nogil=True) ## jit not working?
+# def update_ald(ALD,PL, porosity, current_cell_mask):
+#     for row in range(ALD.shape[0]):
+#         for col in range(ALD.shape[1]):
+#             if current_cell_mask[row,col]: 
+#                 ALD[ row, col ] = (ALD + (ALD - PL) * porosity)[ row, col ]
+
+# @jit(nopython=True, nogil=True)
+def transition(name, year, grids, control):
+    """This checks for any area in the cohort 'name' that should be transitioned
+    to the next cohort, and then transitions the area. 
+
+    Note: .. 
+        Assuming year '0' is the inital data, this should start with year 1
+        
+    Parameters
+    ----------
+    name: string
+        Name of the current cohort.
+    year: int
+        The current year >= control['start_year'].
+    grids: atm.grids.grids.ModelGrids
+        The Grids representing the model area
+    control: Dict or Dict like
+        An object containing the control keys(type): name + '_Control' (Dict).
+        Where name + '_Control' is the the cohort specific control dict that 
+        contains the following keys (type): 'POI_Function'(String), 
+        'A1_above'(float),'A2_above'(float),'x0_above'(float),'x0_above'(float),
+        'a_above'(float),'b_above'(float),'K_above'(float),'C_above'(float),
+        'A_above'(float),'B_above'(float),'HillB_above'(float),
+        'HillN_above'(float),'A1_below'(float),'A2_below'(float),
+        'x0_below'(float),'x0_below'(float),
+        'a_below'(float),'b_below'(float),'K_below'(float),'C_below'(float),
+        'A_below'(float),'B_below'(float),'HillB_below'(float),
+        'HillN_below'(float), 'max_terrain_transition'(float), 
+        'transitions_to'(str).
+        See https://github.com/gina-alaska/arctic_thermokarst_model/wiki/POI-transition-function
+
+    """
+    ## SETUP -------------------------------------------------
+    cc = control['cohorts'][name + '_Control']
+    from_cohort_a0 = grids.area[name + '--0', year]
+    from_cohort = grids.area[name, year]
+    transitions_to = cc['transitions_to']
+    to_cohort_a0 = grids.area[transitions_to + '--0', year]
+    to_cohort = grids.area[transitions_to + '--0', year]
+    ice_slope = \
+        grids.ice.get_ice_slope_grid( name )\
+        .reshape(grids.shape).astype(np.float32)
+    ALD, PL = grids.ald['ALD', year], grids.ald[name ,year] 
+    AOI = grids.area.area_of_interest()
+    POIn = grids.poi[name, year]
+    POInm1 = grids.poi[name, year-1]
+    drainage = grids.drainage.grid.reshape(grids.shape)
+    above_idx = drainage == 'above'
+    porosity = grids.ald.porosity[name]
+
+    max_rot = cc['max_terrain_transition']
+
+    # if cc['POI_Function'] == 'Sigmoid2':
+    params = np.array([
+        cc['Parameters']['above']['sigmoid2_K'],
+        cc['Parameters']['above']['sigmoid2_C'],
+        cc['Parameters']['above']['sigmoid2_A'],
+        cc['Parameters']['above']['sigmoid2_B'],
+        cc['Parameters']['below']['sigmoid2_K'],
+        cc['Parameters']['below']['sigmoid2_C'],
+        cc['Parameters']['below']['sigmoid2_A'],
+        cc['Parameters']['below']['sigmoid2_B'],
+    ]).astype(np.float32)
+    poi_func = calc_new_sig2_poi
+
+    present = from_cohort > 0
+    pl_breach = ALD >= PL
+    current_cell_mask = np.logical_and(np.logical_and(AOI, present),  pl_breach)
+
+    ## work ---------------
+    blocks  =  (32, 32)
+    threads = (
+        (np.ceil(ALD.shape[0] / blocks[0])),
+        (np.ceil(ALD.shape[1] / blocks[1]))
+    )
+    
+    X = np.zeros(ALD.shape)
+    calc_x[blocks, threads](X, ALD,PL)#.astype(np.float32)
+
+    
+    new_poi = np.zeros(x.shape)
+    poi_func(new_poi, params, x, above_idx).astype(np.float32)
+
+
+    update_poi[blocks, threads](POIn, POInm1, new_poi, current_cell_mask)
+    
+
+    # not cuda'd
+    ALD[ current_cell_mask ] = ALD[current_cell_mask] + (ALD[current_cell_mask] - PL[ current_cell_mask ] ) * porosity
+
+    rate_of_transition = np.zeros(POIn.shape) + np.nan
+    calc_rot[blocks, threads](rate_of_transition, POIn, ice_slope, max_rot)
+
+    change = np.zeros(POIn.shape) + np.nan
+    calc_change[blocks, threads](
+        change, rate_of_transition, from_cohort, present
+    )
+    
+    # not cuda'd
+    to_cohort_a0[present] = to_cohort[present] + change[present]
+    from_cohort_a0[present] =  from_cohort[present] - change[present]
+  
+
+    
+
