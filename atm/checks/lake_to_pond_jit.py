@@ -6,13 +6,12 @@ Checks for transitions from lake to pond
 """
 import numpy as np
 
-from numba import njit, prange, jit, float32
+from numba import jit
 
-## time for acp was   0:03:00.623743
-
-import llvmlite.binding as llvm
-llvm.set_option('', '--debug-only=loop-vectorize')
-
+from debug import DEBUG
+if DEBUG:
+    import llvmlite.binding as llvm
+    llvm.set_option('', '--debug-only=loop-vectorize')
 
 @jit(nopython=True, nogil=True)
 def update_depth(depth_grid, elapsed_ts, depth_factor):
