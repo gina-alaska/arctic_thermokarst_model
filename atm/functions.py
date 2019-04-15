@@ -31,7 +31,7 @@ def sigmoid (x, parameters):
     return A2 + (A1 - A2)/(1.+ np.exp((x - x0)/dx))
     
 def sigmoid2 (x, parameters):
-    """Sigmoid function
+    """Sigmoid 2 function
     POI = K / (C + (A*x**B))
     
     Parameters
@@ -75,7 +75,7 @@ def linear (x, parameters):
     return a + (b * x)
     
 def hill (x, parameters):
-    """Sigmoid function
+    """Hill function
     POI = (B*(x^n))/(1+(x^n))
     
     Parameters
