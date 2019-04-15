@@ -18,6 +18,21 @@ if DEBUG:
 
 @jit(nopython=True, nogil=True)
 def calc_x(ALD,PL): ## jit works
+    """Just in time version of the calc X function
+
+    Find the ration of the active layer to the protective layer minus 1
+
+    Parameters
+    ----------
+    ALD: np.array like (floats) [m,n]
+        ALD grid for a year
+    PL: np.array like (floats) [m,n]
+        Protective layer grid for a cohort in a year
+
+    Returns
+    -------
+    x: np.array like (floats) [m,n] 
+    """
     x = np.zeros(ALD.shape)
     for row in range(x.shape[0]):
         for col in range(x.shape[1]):
@@ -25,19 +40,28 @@ def calc_x(ALD,PL): ## jit works
                 x[row,col] = (ALD[row,col] / PL[row,col]) - 1
     return x
 
-calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32))
-
-# # @jit(nopython=True, nogil=True) ## jit does not work
-# def apply_change(to_cohort, to_cohort_a0, from_cohort, from_cohort_a0, change, present):
-#     # present = from_cohort > 0
-#     for row in range(from_cohort.shape[0]):
-#         for col in range(from_cohort.shape[1]):
-#             if present[row, col]:
-#                 to_cohort_a0[ row, col ] = to_cohort[ row, col] + change[ row, col]
-#                 from_cohort_a0[row, col] = from_cohort[ row, col] - change[ row, col]
-
 @jit(nopython=True, nogil=True) ## jit works?
 def calc_new_sig2_poi(params, x, above_idx):
+    """Just in time sigmoid 2 poi calculation function 
+
+    POI = K / C + A * x ^ B
+
+    Parameters
+    ----------
+    params: list [8] <IN>
+        list of sigmoid 2 parametes for above and below the draining threshold
+        specified in above_idx. [K above, C above, A above, B above, 
+        K below, C below, A below, B below]
+    x: np.array like (floats) [m,n] <IN>
+        calculated x values
+    above_idx: np.array like (bools) [m,n] <IN>
+        indcates if cells are above(true) or below(false) the drainage 
+        threshold.
+
+    Returns
+    -------
+    new_poi: np.array like (floats) [m,n]
+    """
     K_a = 0
     C_a = 1
     A_a = 2
@@ -61,6 +85,27 @@ def calc_new_sig2_poi(params, x, above_idx):
 
 @jit(nopython=True, nogil=True) ## jit works?
 def calc_new_sig_poi(params, x, above_idx):
+    """Just in time sigmoid poi calculation function 
+
+    POI = A2 + (A1 - A2) / (1. + exp((x - x0) / dx))
+
+    Parameters
+    ----------
+    
+    params: list [8] <IN>
+        list of sigmoid 2 parametes for above and below the draining threshold
+        specified in above_idx. [A1 above, A2 above, x0 above, dx above, 
+        A1 below, A2 below, x0 below, dx below]
+    x: np.array like (floats) [m,n] <IN>
+        calculated x values
+    above_idx: np.array like (bools) [m,n] <IN>
+        indcates if cells are above(true) or below(false) the drainage 
+        threshold.
+
+    Returns
+    -------
+    new_poi: np.array like (floats) [m,n]
+    """
     A1_a = 0
     A2_a = 1
     x0_a = 2
@@ -72,7 +117,6 @@ def calc_new_sig_poi(params, x, above_idx):
     
     new_poi = np.zeros(x.shape)
 
-    # A2 + (A1 - A2)/(1.+ np.exp((x - x0)/dx))
     above = \
         params[A2_a] + \
         (params[A1_a] - params[A2_a]) / \
@@ -93,17 +137,32 @@ def calc_new_sig_poi(params, x, above_idx):
 
 @jit(nopython=True, nogil=True) ## jit works?
 def calc_new_linear_poi(params, x, above_idx):
+    """Just in time linear poi calculation function 
+
+    POI = a + (b * x )
+
+    Parameters
+    ----------
+    params: list [8] <IN>
+        list of sigmoid 2 parametes for above and below the draining threshold
+        specified in above_idx. [a above, b above, a below, b below]
+    x: np.array like (floats) [m,n] <IN>
+        calculated x values
+    above_idx: np.array like (bools) [m,n] <IN>
+        indcates if cells are above(true) or below(false) the drainage 
+        threshold.
+    
+    Returns
+    -------
+    new_poi: np.array like (floats) [m,n]
+    """
     a_a = 0
     b_a = 1
     a_b = 2
     b_b = 3
 
-    
     new_poi = np.zeros(x.shape)
 
-    # a = parameters['linear_a']
-    # b = parameters['linear_b']
-    # return a + (b * x)
     above = params[a_a] + (params[b_a] + x)
     below = params[a_b] + (params[b_b] + x)
     
@@ -118,17 +177,31 @@ def calc_new_linear_poi(params, x, above_idx):
 
 @jit(nopython=True, nogil=True) ## jit works?
 def calc_new_hill_poi(params, x, above_idx):
+    """Just in time hill poi calculation function 
+
+    POI = (B*(x^n))/(1+(x^n))
+
+    Parameters
+    ----------
+    params: list [8] <IN>
+        list of sigmoid 2 parametes for above and below the draining threshold
+        specified in above_idx. [B above, N above, B below, N below]
+    x: np.array like (floats) [m,n] <IN>
+        calculated x values
+    above_idx: np.array like (bools) [m,n] <IN>
+        indcates if cells are above(true) or below(false) the drainage 
+        threshold.
+
+    Returns
+    -------
+    new_poi: np.array like (floats) [m,n] 
+    """
     B_a = 0
     N_a = 1
     B_b = 2
     N_b = 3
 
-    
     new_poi = np.zeros(x.shape)
-
-    # B = parameters['hill_B']
-    # N = parameters['hill_N']
-    # return (B * (x**N))/(1. + (x**N))
     above = (params[B_a] * (x ** params[N_a]) / (1 + x ** params[N_a]))
     below = (params[B_b] * (x ** params[N_b]) / (1 + x ** params[N_b]))
 
@@ -143,25 +216,50 @@ def calc_new_hill_poi(params, x, above_idx):
 
 @jit(nopython=True, nogil=True) ## jit works?
 def update_poi (POIn, POInm1, new, current_cell_mask):
+    """Just in time update POI function
+
+    where cell in in current_cell_mask 
+        poi[n] = poi[n-1] + new
+
+    Parameters
+    ----------
+    POInm1: np.array like (floats) [m,n] <IN> 
+        the last years poi 
+    new: np.array like (floats) [m,n] <IN> 
+        the new additions for the poi
+    current_cell_mask: np.array like (bools) [m,n] <IN>
+        indcates if cells are active
+
+    Returns
+    -------
+    POIn: np.array like (floats) [m,n]
+    """
     POIn = POInm1 + new
     for row in range(POIn.shape[0]):
         for col in range(POIn.shape[1]):
             if current_cell_mask[row,col] == False: 
                 POIn[row, col] = 0.0
 
-calc_new_sig2_poi(np.ones(8).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
-calc_new_sig_poi(np.ones(8).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
-calc_new_linear_poi(np.ones(8).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
-calc_new_hill_poi(np.ones(8).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
-update_poi(np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), np.ones([10,10])==np.ones([10,10]) )
 
 @jit(nopython=True, nogil=True) ## jit works?
 def calc_change (rate_of_transition, from_cohort, present):
-    """
+    """Just in time calc change. Calculates cohort the change for each cell.
+
+    Parameters
+    ----------
+    rate_of_transition: np.array like (floats) [m,n] <IN>
+        Rate of transition grid.
+    from_cohort: np.array like (floats) [m,n] <IN> 
+        Grid for the cohort that is being changed. 
+    present: np.array like (bools) [m,n] <IN> 
+        Gird indicating that cohort should change
+
+    Returns
+    -------
+    change_amnts: np.array like (floats) [m,n]
     """
     change = rate_of_transition * from_cohort
 
-    
     # if change is bigger than area available
     # TODO: handle age buckets
     for row in range(change.shape[0]):
@@ -170,28 +268,31 @@ def calc_change (rate_of_transition, from_cohort, present):
                 change[row, col] = from_cohort[row,col]
     return change
 
-calc_change(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32)==np.ones([10,10]).astype(np.float32) )
-
-
 @jit(nopython=True, nogil=True) ## jit works?
 def calc_rot(POIn, ice_slope, max_rot):
-    ## rot = rate of transition
+    """Just in time calc rate of transition. Calculates rate of transition 
+    the change for each cell.
+
+    Parameters
+    ----------
+    
+    POIn: np.array like (floats) [m,n] <IN>
+        Rate of transition grid.
+    ice_slope: np.array like (floats) [m,n] <IN> 
+        Grid of ice slope constants 
+    max_rot: float <IN> 
+        Maximum rate of change 0 < max_rot <= 1
+
+    Returns
+    -------
+    rot: np.array like (floats) [m,n]
+    """
     rot = POIn * ice_slope * max_rot
     for row in range(rot.shape[0]):
         for col in range(rot.shape[1]):
             if rot[row, col] > max_rot:
                 rot[ row, col ] = max_rot
     return rot
-
-# print(np.ones([10,10]).astype(float).dtype, np.ones([10,10]).astype(float).dtype, type(.5))
-calc_rot(np.ones([10,10]).astype(np.float32), np.ones([10,10]).astype(np.float32), .5)
-
-# @jit(nopython=True, nogil=True) ## jit not working?
-# def update_ald(ALD,PL, porosity, current_cell_mask):
-#     for row in range(ALD.shape[0]):
-#         for col in range(ALD.shape[1]):
-#             if current_cell_mask[row,col]: 
-#                 ALD[ row, col ] = (ALD + (ALD - PL) * porosity)[ row, col ]
 
 def transition (name, year, grids, control):
     """This checks for any area in the cohort 'name' that should be transitioned
@@ -302,7 +403,9 @@ def transition (name, year, grids, control):
     
 
   
-    ALD[ current_cell_mask ] = ALD[current_cell_mask] + (ALD[current_cell_mask] - PL[ current_cell_mask ] ) * porosity
+    ALD[ current_cell_mask ] = \
+        ALD[current_cell_mask] + \
+        (ALD[current_cell_mask] - PL[ current_cell_mask ] ) * porosity
 
 
 
@@ -316,5 +419,44 @@ def transition (name, year, grids, control):
     from_cohort_a0[present ] =  from_cohort[present ] - change[present ]
   
 
-    
+## pre run compilation
+calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32)) 
 
+calc_new_sig2_poi(
+    np.ones(8).astype(np.float32), 
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10])==np.ones([10,10])
+)
+calc_new_sig_poi(
+    np.ones(8).astype(np.float32),
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10])==np.ones([10,10]) 
+)
+calc_new_linear_poi(
+    np.ones(8).astype(np.float32),
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10])==np.ones([10,10]) 
+)
+calc_new_hill_poi(
+    np.ones(8).astype(np.float32), 
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10])==np.ones([10,10])
+)
+update_poi(
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10])==np.ones([10,10]) 
+)
+
+calc_change(
+    np.ones([10,10]).astype(np.float32),
+    np.ones([10,10]).astype(np.float32),
+    np.ones([10,10]).astype(np.bool))
+)
+
+calc_rot(
+    np.ones([10,10]).astype(np.float32), 
+    np.ones([10,10]).astype(np.float32), 
+    .5
+)
