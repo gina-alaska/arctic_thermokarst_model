@@ -430,13 +430,13 @@ class ATM(object):
             if self.control['use_jit'] == "yes":
                 self.logger.add("use_jit set to yes, starting precompilation")
                 mode = '_jit'
-                for f in checks.jit_precomplie:
+                for f in checks.jit_precompile:
                     f()
                 self.logger.add("finished precompilation")
             elif self.control['use_jit'] == "cuda":
                 self.logger.add("use_jit set to cuda, starting precompilation")
                 mode = '_cuda'
-                for f in checks.cuda_precomplie:
+                for f in checks.cuda_precompile:
                     f()
                 self.logger.add("finished precompilation")
         except KeyError:
