@@ -1,8 +1,8 @@
 """
-Lake To Pond Transition
------------------------
+Just in time Lake To Pond Transition
+------------------------------------
 
-Checks for transitions from lake to pond
+Just in time Checks for transitions from lake to pond
 """
 import numpy as np
 
@@ -15,26 +15,41 @@ if DEBUG:
 
 @jit(nopython=True, nogil=True)
 def update_depth(depth_grid, elapsed_ts, depth_factor):
+    """Just in time Update Depth for lake to pond
+
+    Parameters
+    ----------
+    depth_grid: np.array like (float)
+        grid of current lake depths
+    elapsed_ts: float
+        number timesteps since start year
+    depth_factor: float
+
+    Returns
+    -------
+    np.array
+        updated depth grid
+    """
     new = np.zeros(depth_grid.shape)
     for row in range(depth_grid.shape[0]):
         for col in range(depth_grid.shape[0]):
-            # if mask[row, col]:
-            new[row,col] = depth_grid[row,col] + (np.sqrt(elapsed_ts) / depth_factor)
+            new[row,col] = \
+                depth_grid[row,col] + (np.sqrt(elapsed_ts) / depth_factor)
     return new
-
-update_depth(np.zeros([10,10]).astype(np.float32), 10, 1)
     
 @jit(nopython=True, nogil=True)
 def apply_change(transitions_to, transitions_from):
-    """
+    """Just in time apply change for lake to pond transition
+    
+    if the lake freezes to bottom then it is a pond
+
+    Parameters
+    ----------
+    transitions_to: np.array
+    transitions_from: np.array
     """
     transitions_to += transitions_from
     transitions_from[:] = 0.0
-
-# print(np.zeros([10]).astype(np.float32).dtype,np.zeros([10]).astype(np.float32).dtype)
-
-apply_change(np.zeros([10]).astype(np.float32),np.zeros([10]).astype(np.float32))
-
 
 def transition (name, year, grids, control):
     """This checks for any area in the lake cohort 'name' that should be 
@@ -68,13 +83,6 @@ def transition (name, year, grids, control):
     
     current_cell_mask = np.logical_and(model_area_mask, cohort_present_mask)
 
-
-    # grids.lake_pond[name + '_depth', year][current_cell_mask] = (
-    #     grids.lake_pond[name + '_depth', year].reshape(grids.shape)[current_cell_mask] +\
-    #     (np.sqrt(year - control['start year']+1)\
-    #     / control['Lake_Pond_Control'][name + '_depth_control'])
-    # )
-    # print  grids.lake_pond[name + '_depth', year].dtype, type(year - control['start year']+1), type(control['Lake_Pond_Control'][name + '_depth_control'])
     grids.lake_pond[name + '_depth', year][current_cell_mask] = update_depth(
         grids.lake_pond[name + '_depth', year], 
         year - control['start year']+1, 
@@ -89,10 +97,13 @@ def transition (name, year, grids, control):
        
     shifts_to = control['cohorts'][name + '_Control']['transitions_to']
 
-    # print grids.area[shifts_to, year][freezes].dtype , grids.area[name, year][freezes].dtype
-    apply_change(grids.area[shifts_to, year][freezes], grids.area[name, year][freezes] )
-    # grids.area[shifts_to, year][ freezes ] = \
-    #     grids.area[shifts_to, year][freezes] + \
-    #     grids.area[name, year][freezes]
-        
-    # grids.area[name, year][ freezes ] = 0.0
+    apply_change(
+        grids.area[shifts_to, year][freezes], grids.area[name, year][freezes]
+    )
+
+# compile 
+update_depth(np.zeros([10,10]).astype(np.float32), 10, 1)
+apply_change(
+    np.zeros([10]).astype(np.float32),
+    np.zeros([10]).astype(np.float32)
+)

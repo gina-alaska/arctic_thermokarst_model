@@ -1,8 +1,8 @@
 """
-Lake To Pond Transition
------------------------
+CUDA Lake To Pond Transition
+----------------------------
 
-Checks for transitions from lake to pond
+CUDA Checks for transitions from lake to pond
 """
 import numpy as np
 
@@ -15,16 +15,38 @@ if DEBUG:
 
 @cuda.jit
 def update_depth(new, depth_grid, elapsed_ts, depth_factor, mask):
+    """CUDA Update Depth for lake to pond
+
+    Parameters
+    ----------
+    new:  np.array like (float) [m,n] <OUT>
+        values to be calculated
+    depth_grid: np.array like (float) [m,n] <IN>
+        grid of current lake depths
+    elapsed_ts: float
+        number timesteps since start year
+    depth_factor: float
+    mask: np.array (bool) [m,n]
+        true were lakes are presnet 
+    """
     row, col = cuda.grid(2)
     if row < depth_grid.shape[0] and col < depth_grid.shape[1]:
         if mask[row,col] == True:
-            new[row,col] = depth_grid[row,col] + ((elapsed_ts ** .5) / depth_factor)
+            new[row,col] = \
+                depth_grid[row,col] + ((elapsed_ts ** .5) / depth_factor)    
 
-update_depth(np.zeros([10,10]).astype(np.float32), np.zeros([10,10]).astype(np.float32), 10, 1, np.ones([10,10]).astype(np.bool))
-    
 @cuda.jit
 def apply_change(transitions_to, transitions_from, freezes):
-    """
+    """CUDA apply change for lake to pond transition
+
+    if the lake freezes to bottom then it is a pond
+
+    Parameters
+    ----------
+    transitions_to: np.array (float) [m,n] <IN/OUT>
+    transitions_from: np.array (float) [m,n] <IN/OUT>
+    freezes: np.array (bool) [m,n]
+        true if the lake freezes to bottom
     """
     row, col = cuda.grid(2)
     if row < transitions_to.shape[0] and col < transitions_to.shape[1]:
@@ -32,9 +54,7 @@ def apply_change(transitions_to, transitions_from, freezes):
             transitions_to[row, col] += transitions_from[row, col]
             transitions_from[row, col] = 0.0
 
-# print(np.zeros([10]).astype(np.float32).dtype,np.zeros([10]).astype(np.float32).dtype)
 
-apply_change(np.zeros([10,10]).astype(np.float32),np.zeros([10,10]).astype(np.float32), np.ones([10,10]).astype(np.bool) )
 
 
 def transition (name, year, grids, control):
@@ -68,13 +88,10 @@ def transition (name, year, grids, control):
         int(np.ceil(grids.shape[1] / blocks[1]))
     )
 
-    # # print grids.lake_pond.grid_name_map
     model_area_mask = grids.area.area_of_interest()
     cohort_present_mask = grids.area[name, year] > 0
     
     current_cell_mask = np.logical_and(model_area_mask, cohort_present_mask)
-
-
 
     update_depth[blocks, threads](
         grids.lake_pond[name + '_depth', year],
@@ -92,10 +109,21 @@ def transition (name, year, grids, control):
        
     shifts_to = control['cohorts'][name + '_Control']['transitions_to']
 
-    # print grids.area[shifts_to, year][freezes].dtype , grids.area[name, year][freezes].dtype
-    apply_change[blocks, threads](grids.area[shifts_to, year], grids.area[name, year], freezes)
-    # grids.area[shifts_to, year][ freezes ] = \
-    #     grids.area[shifts_to, year][freezes] + \
-    #     grids.area[name, year][freezes]
-        
-    # grids.area[name, year][ freezes ] = 0.0
+    apply_change[blocks, threads](
+        grids.area[shifts_to, year], grids.area[name, year], freezes
+    )
+
+
+# compile
+update_depth(
+    np.zeros([10,10]).astype(np.float32), 
+    np.zeros([10,10]).astype(np.float32), 
+    10, 1, 
+    np.ones([10,10]).astype(np.bool)
+)
+
+apply_change(
+    np.zeros([10,10]).astype(np.float32),
+    np.zeros([10,10]).astype(np.float32), 
+    np.ones([10,10]).astype(np.bool)
+)

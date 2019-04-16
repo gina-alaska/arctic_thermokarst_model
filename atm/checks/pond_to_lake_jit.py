@@ -15,35 +15,51 @@ if DEBUG:
 
 
 @jit(nopython=True, nogil=True)
-def update_depth(depth_grid, elapsed_ts, depth_factor):
+def update_depth(depth_grid, elapsed_ts, depth_factor, update_pond_depth):
+    """Just in time Update Depth for pond to lake
+
+    Parameters
+    ----------
+    depth_grid: np.array like (float)
+        grid of current lake depths
+    elapsed_ts: np.array like (float)
+        number timesteps since growth
+    depth_factor: float
+    update_pond_depth: np.array (bools)
+        true where pond depth changes
+
+    Returns
+    -------
+    np.array
+        updated depth grid
+    """
     new = np.zeros(depth_grid.shape)
     for row in range(depth_grid.shape[0]):
         for col in range(depth_grid.shape[0]):
-            # if mask[row, col]:
-            new[row,col] = depth_grid[row,col] + (np.sqrt(elapsed_ts[row,col]) / depth_factor)
+            if update_pond_depth[row, col]:
+                new[row,col] = \
+                    depth_grid[row,col] + \
+                    (np.sqrt(elapsed_ts[row,col]) / depth_factor)
     return new
 
-
-update_depth(np.zeros([10,10]).astype(np.float32), np.zeros([10,10]).astype(np.float32), 1)
-
 @jit(nopython=True, nogil=True)
-def apply_change(transitions_to, transitions_from, depth, no_grown, grown):
-    """
+def apply_change(transitions_to, transitions_from, depth, growth, no_growth):
+    """Just in time apply change for lake to pond transition
+    
+    if the lake does not freeze to bottom then it is a pond
+
+    Parameters
+    ----------
+    transitions_to: np.array
+    transitions_from: np.array
+    depth: np.array
     """
     transitions_to += transitions_from
     transitions_from[:] = 0.0
     ## TODO is the grow/no grow backwards?
     depth[:]= 0
-    no_grown +=1
-    grown[:] = 0
-
-apply_change(
-    np.zeros([10]).astype(np.float32),
-    np.zeros([10]).astype(np.float32),
-    np.zeros([10]).astype(np.float32),
-    np.zeros([10]).astype(np.float32),
-    np.zeros([10]).astype(np.float32)
-    )
+    growth +=1
+    no_growth[:] = 0
 
 
 def transition (name, year, grids, control):
@@ -100,23 +116,11 @@ def transition (name, year, grids, control):
     ## NEW MAX DEGREE DAY(pond depth chages)
     update_pond_depth = np.logical_and(new_max, current_cell_mask)
     
-    # print 'aa', grids.lake_pond.grid_name_map
-    # print grids.lake_pond[name + '_depth', year].shape
-    # print grids.lake_pond[name + '_depth', year][update_pond_depth].shape
-    # print  control['Lake_Pond_Control'][name + '_depth_control']
-    # print np.sqrt(grids.lake_pond[name + '_count', year][update_pond_depth]).shape
-
-    # print (grids.lake_pond[name + '_depth', year].dtype,np.sqrt(grids.lake_pond[name + '_count', year]).dtype)
-    # grids.lake_pond[name + '_depth', year][update_pond_depth]= (
-    #     grids.lake_pond[name + '_depth', year].reshape(grids.shape)[update_pond_depth] +\
-    #     (np.sqrt(grids.lake_pond[name + '_count', year].reshape(grids.shape))[
-    #         update_pond_depth
-    #     ] / control['Lake_Pond_Control'][name + '_depth_control'])
-    # )
-    update_depth(
+    grids.lake_pond[name + '_depth', year] = update_depth(
         grids.lake_pond[name + '_depth', year],
         grids.lake_pond[name + '_count', year],
-        control['Lake_Pond_Control'][name + '_depth_control']
+        control['Lake_Pond_Control'][name + '_depth_control'],
+        update_pond_depth
     )
     
         
@@ -132,13 +136,6 @@ def transition (name, year, grids, control):
     
     lake_shift = control['cohorts'][name + '_Control']['transitions_to']
     
-    # ## convert to lakes
-    # grids.area[lake_shift, year][to_lakes] = \
-    #     grids.area[lake_shift, year][to_lakes] + \
-    #     grids.area[name, year][to_lakes]
-    
-    # ## zero out ponds
-    # grids.area[name, year][to_lakes] = 0.0
     apply_change(
         grids.area[lake_shift, year][to_lakes],
         grids.area[name, year][to_lakes],
@@ -148,15 +145,19 @@ def transition (name, year, grids, control):
         )
 
 
-    # grids.lake_pond[name + '_depth', year][to_lakes] = 0.0
-   
-    # # Update pond growth array
-    # grids.lake_pond[name + '_time_since_growth', year][to_lakes] += 1
-    
-    
-    # grids.lake_pond[name + '_time_since_growth', year][np.logical_not(to_lakes)]\
-    #     = 0
-    
-    # print "out of here"
-    
+update_depth(
+    np.zeros([10,10]).astype(np.float32), 
+    np.zeros([10,10]).astype(np.float32), 
+    1
+)
+
+
+apply_change(
+    np.zeros([10]).astype(np.float32),
+    np.zeros([10]).astype(np.float32),
+    np.zeros([10]).astype(np.float32),
+    np.zeros([10]).astype(np.float32),
+    np.zeros([10]).astype(np.float32)
+)
+
    
