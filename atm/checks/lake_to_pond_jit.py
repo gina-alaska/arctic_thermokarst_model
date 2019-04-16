@@ -101,9 +101,11 @@ def transition (name, year, grids, control):
         grids.area[shifts_to, year][freezes], grids.area[name, year][freezes]
     )
 
-# compile 
-update_depth(np.zeros([10,10]).astype(np.float32), 10, 1)
-apply_change(
-    np.zeros([10]).astype(np.float32),
-    np.zeros([10]).astype(np.float32)
-)
+def compile():
+    """precompile functions
+    """
+    update_depth(np.zeros([10,10]).astype(np.float32), 10, 1)
+    apply_change(
+        np.zeros([10]).astype(np.float32),
+        np.zeros([10]).astype(np.float32)
+    )

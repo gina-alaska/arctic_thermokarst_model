@@ -419,44 +419,48 @@ def transition (name, year, grids, control):
     from_cohort_a0[present ] =  from_cohort[present ] - change[present ]
   
 
-## pre run compilation
-calc_x(np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32)) 
+def compile():
+    """precompile functions
+    """
+    calc_x(
+        np.ones([10,10]).astype(np.float32),np.ones([10,10]).astype(np.float32)
+    ) 
 
-calc_new_sig2_poi(
-    np.ones(8).astype(np.float32), 
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10])==np.ones([10,10])
-)
-calc_new_sig_poi(
-    np.ones(8).astype(np.float32),
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10])==np.ones([10,10]) 
-)
-calc_new_linear_poi(
-    np.ones(8).astype(np.float32),
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10])==np.ones([10,10]) 
-)
-calc_new_hill_poi(
-    np.ones(8).astype(np.float32), 
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10])==np.ones([10,10])
-)
-update_poi(
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10])==np.ones([10,10]) 
-)
+    calc_new_sig2_poi(
+        np.ones(8).astype(np.float32), 
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10])==np.ones([10,10])
+    )
+    calc_new_sig_poi(
+        np.ones(8).astype(np.float32),
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10])==np.ones([10,10]) 
+    )
+    calc_new_linear_poi(
+        np.ones(8).astype(np.float32),
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10])==np.ones([10,10]) 
+    )
+    calc_new_hill_poi(
+        np.ones(8).astype(np.float32), 
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10])==np.ones([10,10])
+    )
+    update_poi(
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10])==np.ones([10,10]) 
+    )
 
-calc_change(
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.bool))
-)
+    calc_change(
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.bool)
+    )
 
-calc_rot(
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10]).astype(np.float32), 
-    .5
-)
+    calc_rot(
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10]).astype(np.float32), 
+        .5
+    )

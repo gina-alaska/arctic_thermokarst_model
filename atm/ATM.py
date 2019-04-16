@@ -425,6 +425,22 @@ class ATM(object):
         # Initialization Process
         #====================================================
 
+        mode = ''
+        try: 
+            if self.control['use_jit'] == "yes":
+                self.logger.add("use_jit set to yes, starting precompilation")
+                mode = '_jit'
+                for f in checks.jit_precomplie:
+                    f()
+                self.logger.add("finished precompilation")
+            elif self.control['use_jit'] == "cuda":
+                self.logger.add("use_jit set to cuda, starting precompilation")
+                mode = '_cuda'
+                for f in checks.cuda_precomplie:
+                    f()
+                self.logger.add("finished precompilation")
+        except KeyError:
+            pass
 
         start_time = datetime.datetime.now()
         
@@ -435,7 +451,7 @@ class ATM(object):
 
 
             
-        self.run_model(self.control['Transition_order'])
+        self.run_model(self.control['Transition_order'], mode)
 
 
         print '=================================================='
@@ -473,7 +489,7 @@ class ATM(object):
         print '        Simulation Complete             '
         print '----------------------------------------'        
 
-    def run_model(self, cohort_list):
+    def run_model(self, cohort_list, mode = ''):
         """run actual model
         
         Parameters
@@ -492,8 +508,6 @@ class ATM(object):
         
         ## ts zero is initial data state 
         ## ts one is frist year to make chages
-        
-
         for time in range(1, self.stop):
 
             print '    at time step: ', time
@@ -542,17 +556,9 @@ class ATM(object):
                     check_type = 'base'
 
                 name = find_canon_name(cohort)
-
-                mode = ''
-                try: 
-                    if self.control['use_jit'] == "yes":
-                        mode = '_jit'
-                    elif self.control['use_jit'] == "cuda":
-                        mode = '_cuda'
-                except KeyError:
-                    pass
                 
                 try:
+                    # print(check_type + mode)
                     checks.check_metadata[check_type + mode](
                         name,  current_year, self.grids, self.control
                     )
@@ -658,4 +664,4 @@ class ATM(object):
 
 ## runs model from comand line
 if __name__ == "__main__":
-    Variable = ATM(sys.argv[1])
+    Variable = ATM(sys.argv[1], Logger(None, also_print=True))

@@ -19,16 +19,27 @@ import pond_to_lake_cuda
 
 # table of transition functions
 check_metadata = {
-        'poi': poi_based.transition,
-        'pond_to_lake': pond_to_lake.transition,
-        'lake_to_pond': lake_to_pond.transition,
-        
-        'poi_jit': poi_based_jit.transition,
-        'pond_to_lake_jit': pond_to_lake_jit.transition,
-        'lake_to_pond_jit': lake_to_pond_jit.transition,
+    'poi': poi_based.transition,
+    'pond_to_lake': pond_to_lake.transition,
+    'lake_to_pond': lake_to_pond.transition,
 
-        'poi_cuda': poi_based_cuda.transition,
-        'pond_to_lake_cuda': pond_to_lake_cuda.transition,
-        'lake_to_pond_cuda': lake_to_pond_cuda.transition,
+    'poi_jit': poi_based_jit.transition,
+    'pond_to_lake_jit': pond_to_lake_jit.transition,
+    'lake_to_pond_jit': lake_to_pond_jit.transition,
+
+    'poi_cuda': poi_based_cuda.transition,
+    'pond_to_lake_cuda': pond_to_lake_cuda.transition,
+    'lake_to_pond_cuda': lake_to_pond_cuda.transition,
 
 } 
+
+cuda_precompile = [
+    poi_based_cuda.compile, 
+    lake_to_pond_cuda.compile, 
+    pond_to_lake_cuda.compile
+]
+jit_precomplie = [
+    poi_based_jit.compile, 
+    lake_to_pond_jit.compile, 
+    pond_to_lake_jit.compile
+]

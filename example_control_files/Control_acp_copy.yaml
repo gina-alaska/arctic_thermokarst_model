@@ -14,9 +14,11 @@ Simulation_area: ACP
 Run_dir: <add path>
 #----------------------------------------------------------------
 # Data Input and Output Directories
-Input_dir: ../acp_data
+Input_dir: ../acp_area_data_scaled
 Output_dir: ./Output/acp_test
 Control_dir: ./example_control_files/Control_files_acp/
+
+use_jit: 'yes'
 #----------------------------------------------------------------
 # Name of "Notes Files" containing additional information
 #   -- "Blank" is an empty file.

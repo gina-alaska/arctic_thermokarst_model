@@ -114,16 +114,18 @@ def transition (name, year, grids, control):
     )
 
 
-# compile
-update_depth(
-    np.zeros([10,10]).astype(np.float32), 
-    np.zeros([10,10]).astype(np.float32), 
-    10, 1, 
-    np.ones([10,10]).astype(np.bool)
-)
+def compile():
+    """precompile functions
+    """
+    update_depth(
+        np.zeros([10,10]).astype(np.float32), 
+        np.zeros([10,10]).astype(np.float32), 
+        10, 1, 
+        np.ones([10,10]).astype(np.bool)
+    )
 
-apply_change(
-    np.zeros([10,10]).astype(np.float32),
-    np.zeros([10,10]).astype(np.float32), 
-    np.ones([10,10]).astype(np.bool)
-)
+    apply_change(
+        np.zeros([10,10]).astype(np.float32),
+        np.zeros([10,10]).astype(np.float32), 
+        np.ones([10,10]).astype(np.bool)
+    )

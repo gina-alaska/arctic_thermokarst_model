@@ -136,10 +136,12 @@ def calc_new_hill_poi(new_poi, params, x, above_idx):
     if row < x.shape[0] and col < x.shape[1]:
         if above_idx[row,col] == True: 
             new_poi[row, col] = \
-                params[B_a] * (x ** params[N_a]) / (1 + x ** params[N_a]))
+                params[B_a] * (x[row, col] ** params[N_a]) \
+                / (1 + x[row, col] ** params[N_a])
         else:
             new_poi[row, col] = \
-                (params[B_b] * (x ** params[N_b]) / (1 + x ** params[N_b]))
+                params[B_b] * (x[row, col] ** params[N_b]) \
+                / (1 + x[row, col] ** params[N_b])
 
 @cuda.jit
 def calc_new_linear_poi(new_poi, params, x, above_idx):
@@ -168,9 +170,9 @@ def calc_new_linear_poi(new_poi, params, x, above_idx):
     row, col = cuda.grid(2)
     if row < x.shape[0] and col < x.shape[1]:
         if above_idx[row,col] == True: 
-            new_poi[row, col] = params[a_a] + (params[b_a] + x)
+            new_poi[row, col] = params[a_a] + (params[b_a] + x[row, col])
         else:
-            new_poi[row, col] = params[a_b] + (params[b_b] + x)
+            new_poi[row, col] = params[a_b] + (params[b_b] + x[row, col])
 @cuda.jit
 def update_poi (POIn, POInm1, new, current_cell_mask):
     """CUDA update POI function
@@ -378,65 +380,64 @@ def transition(name, year, grids, control):
     from_cohort_a0[present] =  from_cohort[present] - change[present]
   
 
-## do precompilation, maybe move somewhere else/find a better way to do this
-calc_x(
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32)
-)
+def compile():
+    """precompile functions
+    """
+    calc_x(
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32)
+    )
 
-calc_new_sig2_poi(
-    np.ones([10,10]).astype(np.float32),
-    np.ones(8).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10])==np.ones([10,10])
-)
-
-
-calc_new_sig_poi(
-    np.ones([10,10]).astype(np.float32),
-    np.ones(8).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10])==np.ones([10,10])
-)
-
-calc_new_hill_poi(
-    np.ones([10,10]).astype(np.float32),
-    np.ones(8).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10])==np.ones([10,10])
-)
-
-calc_new_linear_poi(
-    np.ones([10,10]).astype(np.float32),
-    np.ones(8).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10])==np.ones([10,10])
-)
+    calc_new_sig2_poi(
+        np.ones([10,10]).astype(np.float32),
+        np.ones(8).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10])==np.ones([10,10])
+    )
 
 
-update_poi(
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10])==np.ones([10,10])
-)
+    calc_new_sig_poi(
+        np.ones([10,10]).astype(np.float32),
+        np.ones(8).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10])==np.ones([10,10])
+    )
+
+    calc_new_hill_poi(
+        np.ones([10,10]).astype(np.float32),
+        np.ones(8).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10])==np.ones([10,10])
+    )
+
+    calc_new_linear_poi(
+        np.ones([10,10]).astype(np.float32),
+        np.ones(8).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10])==np.ones([10,10])
+    )
 
 
-calc_rot(
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32), 
-    np.ones([10,10]).astype(np.float32), 
-    .5
-)
-
-calc_change(
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.float32),
-    np.ones([10,10]).astype(np.bool)
-)
+    update_poi(
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10])==np.ones([10,10])
+    )
 
 
-    
+    calc_rot(
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32), 
+        np.ones([10,10]).astype(np.float32), 
+        .5
+    )
+
+    calc_change(
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.float32),
+        np.ones([10,10]).astype(np.bool)
+    )
 
