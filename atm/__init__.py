@@ -11,7 +11,7 @@ __credits__    = [
 __license__    = "GPL"
 __version__    = "0.4.3"
 __codeurl__    = \
-    'https://github.com/gina-alaska/arctic_thermokarst_model/tree/0.4.2'
+    'https://github.com/gina-alaska/arctic_thermokarst_model/tree/0.4.3'
 __maintainer__ = "Bob Bolton"
 __email__      = "bbolton@iarc.uaf.edu"
 __status__     = "Development"
