@@ -18,7 +18,7 @@ Input_dir: ../acp_area_data_scaled
 Output_dir: ./Output/acp_test
 Control_dir: ./example_control_files/Control_files_acp/
 
-use_jit: 'yes'
+use_jit: 'no'
 #----------------------------------------------------------------
 # Name of "Notes Files" containing additional information
 #   -- "Blank" is an empty file.

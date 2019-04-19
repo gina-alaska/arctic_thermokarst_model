@@ -8,12 +8,14 @@ import numpy as np
 
 from numba import jit
 
-from debug import DEBUG
+from debug import DEBUG, PARALLEL
 if DEBUG:
     import llvmlite.binding as llvm
     llvm.set_option('', '--debug-only=loop-vectorize')
 
-@jit(nopython=True, nogil=True)
+
+
+@jit(parallel=PARALLEL, nopython=True, nogil=True)
 def update_depth(depth_grid, elapsed_ts, depth_factor):
     """Just in time Update Depth for lake to pond
 
@@ -37,7 +39,7 @@ def update_depth(depth_grid, elapsed_ts, depth_factor):
                 depth_grid[row,col] + (np.sqrt(elapsed_ts) / depth_factor)
     return new
     
-@jit(nopython=True, nogil=True)
+@jit(parallel=PARALLEL, nopython=True, nogil=True)
 def apply_change(transitions_to, transitions_from):
     """Just in time apply change for lake to pond transition
     

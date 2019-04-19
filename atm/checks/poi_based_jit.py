@@ -10,13 +10,13 @@ import matplotlib.pyplot as plt
 
 from numba import jit
 
-from debug import DEBUG
+from debug import DEBUG, PARALLEL
 if DEBUG:
     import llvmlite.binding as llvm
     llvm.set_option('', '--debug-only=loop-vectorize')
 
 
-@jit(nopython=True, nogil=True)
+@jit(parallel=PARALLEL, nopython=True, nogil=True)
 def calc_x(ALD,PL): ## jit works
     """Just in time version of the calc X function
 
@@ -40,7 +40,7 @@ def calc_x(ALD,PL): ## jit works
                 x[row,col] = (ALD[row,col] / PL[row,col]) - 1
     return x
 
-@jit(nopython=True, nogil=True) ## jit works?
+@jit(parallel=PARALLEL, nopython=True, nogil=True) ## jit works?
 def calc_new_sig2_poi(params, x, above_idx):
     """Just in time sigmoid 2 poi calculation function 
 
@@ -83,7 +83,7 @@ def calc_new_sig2_poi(params, x, above_idx):
                 new_poi[row, col] = below[row,col]
     return new_poi
 
-@jit(nopython=True, nogil=True) ## jit works?
+@jit(parallel=PARALLEL, nopython=True, nogil=True) ## jit works?
 def calc_new_sig_poi(params, x, above_idx):
     """Just in time sigmoid poi calculation function 
 
@@ -135,7 +135,7 @@ def calc_new_sig_poi(params, x, above_idx):
                 new_poi[row, col] = below[row,col]
     return new_poi
 
-@jit(nopython=True, nogil=True) ## jit works?
+@jit(parallel=PARALLEL, nopython=True, nogil=True) ## jit works?
 def calc_new_linear_poi(params, x, above_idx):
     """Just in time linear poi calculation function 
 
@@ -175,7 +175,7 @@ def calc_new_linear_poi(params, x, above_idx):
                 new_poi[row, col] = below[row,col]
     return new_poi
 
-@jit(nopython=True, nogil=True) ## jit works?
+@jit(parallel=PARALLEL, nopython=True, nogil=True) ## jit works?
 def calc_new_hill_poi(params, x, above_idx):
     """Just in time hill poi calculation function 
 
@@ -214,7 +214,7 @@ def calc_new_hill_poi(params, x, above_idx):
                 new_poi[row, col] = below[row,col]
     return new_poi
 
-@jit(nopython=True, nogil=True) ## jit works?
+@jit(parallel=PARALLEL, nopython=True, nogil=True) ## jit works?
 def update_poi (POIn, POInm1, new, current_cell_mask):
     """Just in time update POI function
 
@@ -241,7 +241,7 @@ def update_poi (POIn, POInm1, new, current_cell_mask):
                 POIn[row, col] = 0.0
 
 
-@jit(nopython=True, nogil=True) ## jit works?
+@jit(parallel=PARALLEL, nopython=True, nogil=True) ## jit works?
 def calc_change (rate_of_transition, from_cohort, present):
     """Just in time calc change. Calculates cohort the change for each cell.
 
@@ -268,7 +268,7 @@ def calc_change (rate_of_transition, from_cohort, present):
                 change[row, col] = from_cohort[row,col]
     return change
 
-@jit(nopython=True, nogil=True) ## jit works?
+@jit(parallel=PARALLEL, nopython=True, nogil=True) ## jit works?
 def calc_rot(POIn, ice_slope, max_rot):
     """Just in time calc rate of transition. Calculates rate of transition 
     the change for each cell.
