@@ -28,7 +28,12 @@ def construnct_results(self, start_time, end_time):
     string +=  'Simulation name: '+ self.control['Simulation_name']+ nl
     string +=  'Start Date / Time : '+str( start_time)+ nl
     string +=  'End Date / Time : '+str(end_time)+ nl
-    string +=  'Total Simulation Time (minutes): '+ str( (end_time - start_time)) + nl
+    duration = (end_time - start_time)
+    string +=  'Total Simulation Time (minutes): '+ str(duration) + nl
+    string +=  'Total Simulation Time (seconds): '+ str(duration.total_seconds()) + nl
+    string +=  'Number of time steps in the simulation: '+ str(self.stop)+ nl
+    string +=  'Time(Seconds)/Timestemp: ' + str(duration.total_seconds()/self.stop) + nl
+
     return string
     if self.control.Archive_simulation:
         string +=  'Archive Status: Active'+ nl

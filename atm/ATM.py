@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 """
 Alaska Thermokarst Model (ATM)
 -------------------------------
