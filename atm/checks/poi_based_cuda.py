@@ -7,6 +7,7 @@ Transition functions for POI based changes in area with CUDA
 import numpy as np
 import functions
 import matplotlib.pyplot as plt
+import math
 
 from numba import  cuda
 
@@ -103,10 +104,10 @@ def calc_new_sig_poi(new_poi, params, x, above_idx):
     if row < x.shape[0] and col < x.shape[1]:
         if above_idx[row,col] == True: 
             new_poi[row, col] = params[A2_a] + (params[A1_a] - params[A2_a]) \
-                / (1.+ np.exp((x[row, col] - params[x0_a])/params[dx_a]))
+                / (1.+ math.exp((x[row, col] - params[x0_a])/params[dx_a]))
         else:
             new_poi[row, col] = params[A2_b] + (params[A1_b] - params[A2_b]) \
-                / (1.+ np.exp((x[row, col] - params[x0_b])/params[dx_b]))
+                / (1.+ math.exp((x[row, col] - params[x0_b])/params[dx_b]))
 
 @cuda.jit
 def calc_new_hill_poi(new_poi, params, x, above_idx):
@@ -240,7 +241,7 @@ def calc_rot(rot, POIn, ice_slope, max_rot):
     """
     row, col = cuda.grid(2)
 
-    if row < from_cohort.shape[0] and col < from_cohort.shape[1]:
+    if row < POIn.shape[0] and col < POIn.shape[1]:
         rot[ row, col ] = POIn[ row, col ] * ice_slope[ row, col ] * max_rot
         
         if rot[row, col] > max_rot:

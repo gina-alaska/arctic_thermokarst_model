@@ -38,7 +38,7 @@ cuda_precompile = [
     lake_to_pond_cuda.compile, 
     pond_to_lake_cuda.compile
 ]
-jit_precomplie = [
+jit_precompile = [
     poi_based_jit.compile, 
     lake_to_pond_jit.compile, 
     pond_to_lake_jit.compile
