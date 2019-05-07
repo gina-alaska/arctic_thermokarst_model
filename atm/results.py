@@ -33,10 +33,10 @@ def construnct_results(self, start_time, end_time):
     string +=  'Number of time steps in the simulation: '+ str(self.stop)+ nl
     string +=  'Time(Seconds)/Timestemp: ' + str(duration.total_seconds()/self.stop) + nl
 
-    return string
-    if self.control.Archive_simulation:
+    # return string
+    if self.control['Archive_simulation']:
         string +=  'Archive Status: Active'+ nl
-        string +=  'Archive Name : '+str(self.control.Simulation_name)+ nl
+        string +=  'Archive Name : '+str(self.control['Simulation_name'])+ nl
     else:
         string +=  'Archive Status: Inactive'+ nl
     string +=  ' '+ nl
@@ -77,19 +77,19 @@ def construnct_results(self, start_time, end_time):
     string +=  '-' * short_divider+ nl
     string +=  '   Meteorologic Data Information   '+ nl
     string +=  '-' * short_divider+ nl
-    if self.control.Met_Control['met_distribution'].lower() == 'point':
+    if self.control['Met_Control']['met_distribution'].lower() == 'point':
         string +=  'Point meteorologic data is used.'+ nl
     else:
         string +=  'Meteorologic data is distributed.'+ nl
-    string +=  'Meteorologic Data File: '+ str(self.control.Met_Control['met_file_distributed'])+ nl
-    if self.control.Met_Control['degree_day_method'].lower() == 'read':
-        string +=  'Degree Days read from files: ' + self.control.Met_Control['TDD_file'] +' and '+self.control.Met_Control['FDD_file']+ nl
+    string +=  'Meteorologic Data File: '+ str(self.control['Met_Control']['met_file_distributed'])+ nl
+    if self.control['Met_Control']['degree_day_method'].lower() == 'read':
+        string +=  'Degree Days read from files: ' + self.control['Met_Control']['TDD_file'] +' and '+self.control['Met_Control']['FDD_file']+ nl
     else:
         string +=  'Degree Days calculated during simulation.'+ nl
     string +=  ' '+ nl
 
     string +=  'Outputs:'+ nl
-    if self.control.Met_Control['Degree_Day_Output']:
+    if self.control['Met_Control']['Degree_Day_Output']:
         string +=  '  Degree-Days are output.'+ nl
         
     # Note: Might want to add climatic event probability and block size here
@@ -97,14 +97,14 @@ def construnct_results(self, start_time, end_time):
     string +=  '-' * short_divider+ nl
     string +=  '   General Terrestrial Information   '+ nl
     string +=  '-' * short_divider+ nl
-    string +=  'Ground Ice Distribution: '+self.control.Terrestrial_Control['Ice_Distribution']+ nl
-    string +=  'Drainage Efficiency Distribution: '+ self.control.Terrestrial_Control['Drainage_Efficiency_Distribution']+ nl
-    string +=  'Initial Active Layer Depth Distribution: '+self.control.Terrestrial_Control['ALD_Distribution']+ nl
+    string +=  'Ground Ice Distribution: '+self.control['Terrestrial_Control']['Ice_Distribution']+ nl
+    string +=  'Drainage Efficiency Distribution: '+ self.control['Terrestrial_Control']['Drainage_Efficiency_Distribution']+ nl
+    string +=  'Initial Active Layer Depth Distribution: '+self.control['Terrestrial_Control']['ALD_Distribution']+ nl
     string +=  ' '+ nl
 
 
-    start_year = self.control.start_year
-    end_year =  self.control.initialization_year + self.stop -1 
+    start_year = self.control['start_year']
+    end_year =  self.control['initialization year'] + self.stop -1 
     
     cohort_list = self.grids.area.key_to_index.keys()
     cohort_list = [c for c in cohort_list if c.find('--') == -1]
@@ -125,8 +125,8 @@ def construnct_results(self, start_time, end_time):
             for c in sorted(cohort_list):
                 if c.find(cohort_type) == -1:
                     continue
-                init_total += self.grids.area[start_year,c].sum()
-                final_total += self.grids.area[end_year,c].sum()
+                init_total += self.grids.area[c, start_year].sum()
+                final_total += self.grids.area[c, end_year].sum()
             string += 'Initial Fractional Area (km2): ' +  str(init_total)  + nl
             string += 'Final Fractional Area (km2): ' +  str(final_total)  + nl
             diff = final_total - init_total
@@ -142,8 +142,8 @@ def construnct_results(self, start_time, end_time):
         string += cohorts.DISPLAY_COHORT_NAMES[cohort]  + nl
         string += '-'*short_divider  + nl
         
-        init_total = self.grids.area[start_year,cohort].sum()
-        final_total = self.grids.area[end_year,cohort].sum()
+        init_total = self.grids.area[cohort, start_year].sum()
+        final_total = self.grids.area[cohort, end_year].sum()
         string += 'Initial Fractional Area (km2): ' +  str(init_total )  + nl
         string += 'Final Fractional Area (km2): ' +   str(final_total)  + nl
         diff = final_total - init_total
