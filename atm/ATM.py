@@ -624,8 +624,6 @@ class ATM(object):
                     self.logger.add('mass has been removed')
                 sys.exit()
                         
-                
-    
         
         ### debug stuff
         # print 'start: ', cohort_start.sum()
@@ -644,9 +642,23 @@ class ATM(object):
         #     else:
         #         d = 'reduction'
         #     print cohort, 'start:', s, 'end:', e, d
+
+    def __del__(self):
+        """
+        destructor
+        """
+    
+        # print(self.control['save_log_to'])
+        try:
+            if self.control['save_log_to']:
+                self.logger.save(self.control['save_log_to'], False)
+        except KeyError:
+            pass
             
 #_______________________________________________________________________________
 
 ## runs model from comand line
 if __name__ == "__main__":
     Variable = ATM(sys.argv[1], Logger(None, also_print=True))
+    # del(Variable)
+

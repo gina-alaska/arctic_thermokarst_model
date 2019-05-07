@@ -140,7 +140,7 @@ class Logger(object):
         
         return s
 
-    def save(self, filename = None):
+    def save(self, filename = None,write_loc_info =True ):
         """save the log to a file
 
         Parameters
@@ -165,7 +165,7 @@ class Logger(object):
         with open(filename, 'w') as output:
             for line_no in range(len(self.log)):
                 output.write(
-                    self.pretty_log_str(line_no, write_loc_info=True) +'\n'
+                    self.pretty_log_str(line_no, write_loc_info=write_loc_info) +'\n'
                 )
         
         return True
