@@ -15,10 +15,10 @@ except ImportError:
     
     
     
-try:
-    from atm_io import binary, image, raster
-except ImportError:
-    from ..atm_io import binary, image, raster
+# try:
+from atm.images import binary, raster
+# except ImportError:
+#     from ..io import binary, image, raster
 
 from multigrids import TemporalMultiGrid, common
 import copy
@@ -265,6 +265,7 @@ class LakePondGrid (TemporalMultiGrid):
         time_step: int 
             time step to save
         """
+        # raise Stand
         if time_step == -1:
             time_step = self.current_year()
         title = 'Inital Depth \n' + DISPLAY_COHORT_NAMES[cohort] 

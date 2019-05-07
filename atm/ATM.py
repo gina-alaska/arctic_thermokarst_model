@@ -20,7 +20,7 @@ defines the model domain, etc.
 See readme for more infromation
 
 """
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 ################################################################################
 # Authorship moved to __init__.py

@@ -5,7 +5,7 @@ Control
 for manageing control confguration in the ATM
 
 """
-from atm_io import control_file
+# from atm.io import control_file
 import os
 
 from cohorts import find_canon_name

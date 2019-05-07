@@ -1,8 +1,7 @@
 import numpy as np
 import os, sys
 import datetime, time
-from matplotlib.dates import date2num
-from matplotlib.dates import num2date
+
 from __init__ import __version__, __codeurl__
 
 import cohorts

@@ -9,10 +9,10 @@ import numpy as np
 
 from constants import ROW, COL
 
-try:
-    from atm_io import binary, image, raster
-except ImportError:
-    from ..atm_io import binary, image, raster
+# try:
+from atm.images import binary, image, raster
+# except ImportError:
+#     from ..io import binary, image, raster
 
 import copy
 

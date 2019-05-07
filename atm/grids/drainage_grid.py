@@ -7,10 +7,10 @@ Grid for drainage efficiency
 import os
 import numpy as np
 
-try:
-    from atm_io import binary, image
-except ImportError:
-    from ..atm_io import binary, image
+# try:
+from atm.images import binary
+# except ImportError:
+#     from ..atm_io import binary, image
 
 from multigrids import Grid, common
 from constants import ROW, COL

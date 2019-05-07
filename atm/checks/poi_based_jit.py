@@ -6,7 +6,7 @@ Numba just in time enhanced Transition functions for POI based changes in area
 """
 import numpy as np
 import functions
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 from numba import jit
 

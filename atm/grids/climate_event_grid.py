@@ -9,10 +9,6 @@ import matplotlib.pyplot as plt
 import copy
 from multigrids import TemporalGrid, figures, common
 
-try:
-    from atm_io import image
-except ImportError:
-    from ..atm_io import image
 
 class GetGridError (Exception):
     """Raised if grid timestep not found"""

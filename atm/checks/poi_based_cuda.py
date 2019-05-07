@@ -6,7 +6,7 @@ Transition functions for POI based changes in area with CUDA
 """
 import numpy as np
 import functions
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import math
 
 from numba import  cuda

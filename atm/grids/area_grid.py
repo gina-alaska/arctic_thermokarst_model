@@ -15,10 +15,10 @@ except ImportError:
     
     
     
-try:
-    from atm_io import binary, image, raster
-except ImportError:
-    from ..atm_io import binary, image, raster
+# try:
+from atm.images import binary, raster
+# except ImportError:
+#     from ..atm_io import binary, image, raster
 
 try:
     from tools import read_raster_layers

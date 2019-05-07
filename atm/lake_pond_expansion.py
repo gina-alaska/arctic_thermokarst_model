@@ -94,8 +94,6 @@ def expansion ( lp_cohorts, year, grids, control):
     ## True -> 1, False ->0, +1 -> 2, 1 respectivly
     climate_events = grids.climate_event[year].astype(int) + 1
     
-    import matplotlib.pyplot as plt
-    
     #~ plt.imshow(climate_events)
     #~ plt.colorbar()
     #~ plt.show()

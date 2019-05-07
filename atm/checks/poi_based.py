@@ -6,7 +6,7 @@ Transition functions for POI based changes in area
 """
 import numpy as np
 import functions
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 def transition (name, year, grids, control):
     """This checks for any area in the cohort 'name' that should be transitioned
