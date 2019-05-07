@@ -45,7 +45,7 @@ class ModelGrids (object):
             a grid of booleans where true elements are in AOI, false are not
     """
     
-    def __init__ (self, config):
+    def __init__ (self, config, logger):
         """Class containg all grid objects for the ATM model
         
         Parameters
@@ -53,39 +53,36 @@ class ModelGrids (object):
         config: dict
             configuration for grid objects
         """
-        print('loading AREA')
+        self.logger = logger
+        self.logger.add('loading AREA')
         config['data_type'] = np.float32
-        self.area = AreaGrid(config)
-        print(self.area.grids.dtype, type(self.area.grids)) 
-        print('post AREA setup')
+        self.area = AreaGrid(config,logger = self.logger)
+        self.logger.add('performing post AREA setup')
         self.shape = self.area.grid_shape
-        # print self.area.grids.shape
         self.aoi = self.area.area_of_interest()
-        # set for other objects
         config['shape'] = self.shape
         config['grid_shape'] = self.area.grid_shape
         config['AOI mask'] = self.aoi
         config['cohort list'] = self.area.get_cohort_list()
-        print('loading ALD')
-        self.ald = ALDGrid(config)
-        print('loading POI')
-        self.poi = POIGrid(config)
-        print('loading ICE')
-        self.ice = IceGrid(config)
-        print('loading LAKE POND')
-        self.lake_pond = LakePondGrid(config)
-        print('loading CLIMATE EVENT')
-        self.climate_event = ClimateEventGrid(config)
-        #~ print config['pond types'] + config['lake types']
+        self.logger.add('loading ALD')
+        self.ald = ALDGrid(config,logger = self.logger)
+        self.logger.add('loading POI')
+        self.poi = POIGrid(config,logger = self.logger)
+        self.logger.add('loading ICE')
+        self.ice = IceGrid(config,logger = self.logger)
+        self.logger.add('loading LAKE POND')
+        self.lake_pond = LakePondGrid(config,logger = self.logger)
+        self.logger.add('loading CLIMATE EVENT')
+        self.climate_event = ClimateEventGrid(config,logger = self.logger)
         ## TODO:redo masks here
         # for lpt  in config['pond types'] + config['lake types']:
         #     #~ print lpt
         #     mask = self.area[lpt][0] > 0 # all cells in first ts > 0
         #     self.lake_pond.apply_mask(lpt, mask)
-        print('loading DRAINGAGE')
-        self.drainage = DrainageGrid(config)
+        self.logger.add('loading DRAINGAGE')
+        self.drainage = DrainageGrid(config,logger = self.logger)
         
-        print('loading DEGREE DAY')
+        self.logger.add('loading DEGREE DAY')
         self.degreedays = DegreeDayGrids(
             os.path.join(
                 config['Input_dir'], config['Met_Control']['FDD_file']),

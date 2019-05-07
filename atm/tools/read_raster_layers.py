@@ -29,7 +29,7 @@ except ImportError:
     from ..cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
 
 
-def read_layers(input_rasters, target_resolution):
+def read_layers(input_rasters, target_resolution, logger = None):
     """Read cohort layers from raster files
     
     Parameters
@@ -53,12 +53,16 @@ def read_layers(input_rasters, target_resolution):
     layer_names = []
     
     for f in input_rasters:
-        print "LOADING RASTER:", f
+        if logger:
+            logger.add("LOADING RASTER:" + f )
         path = f
         try:
             data, metadata = raster.load_raster (path)
         except AttributeError:
-            print 'FATAL ERROR: Could Not Load Raster File', path
+            if logger:
+                logger.add('Could Not Load Raster File'+ path, 'fatal')
+            else:
+                print('Could Not Load Raster File', path, 'fatal error')
             sys.exit(0)
         
         shape = (metadata.nY,metadata.nX)

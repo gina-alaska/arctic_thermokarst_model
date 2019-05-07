@@ -98,7 +98,7 @@ class ClimateEventGrid (TemporalGrid):
             return grid.flatten()
         return grid
 
-    def create_climate_events (self):
+    def create_climate_events (self, logger = None, log_ce=False):
         """Creates climate events 
         """
         block_size = np.random.randint(
@@ -113,7 +113,8 @@ class ClimateEventGrid (TemporalGrid):
                 if not climate_event <= self.probability:
                     continue
                 ## climate envent occuts in block
-                print "climate event occured"
+                if logger and log_ce:
+                    logger.add("     A climate event occurred")
                 self.grid.reshape(self.grid_shape)\
                     [row:row+block_size, col:col+block_size] = True
         return block_size

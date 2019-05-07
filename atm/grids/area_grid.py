@@ -120,9 +120,11 @@ class AreaGrid(TemporalMultiGrid):
             input_rasters = config['initial area data'] 
             target_resolution = config['target resolution']
 
-            
+            logger = None
+            if 'logger' in kwargs:
+                logger = kwargs["logger"]
             layers, raster_metadata = read_raster_layers.read_layers(
-                input_rasters, target_resolution
+                input_rasters, target_resolution, logger
             ) 
 
             # add in ages here
