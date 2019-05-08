@@ -125,47 +125,64 @@ class Grid (MultiGrid):
         ------
         np.array like, or value of type data_type
         """
+        if key is None:
+            return self.grid.reshape(self.real_shape)
         return self.grid.reshape(self.real_shape)[key]
 
-    def figure (self, filename, **kwargs):
-        """Save a figure for a grid
-        
-        Parameters
-        ----------
-        filename: path
-            path to save image at
-        grid_id: int or str
-            if an int, it should be the grid number.
-            if a str, it should be a grid name.
-        **kwargs: dict
-            dict of key word arguments
-            'limits': tuple, defaults (None, None)
-                min, max limits for data
-            'cmap': str, defaults 'viridis'
-                matplotlib colormap
-            'cbar_extend': str, defaults 'neither'
-                'neither', 'min' or 'max' 
+    def save_figure (
+            self, filename, figure_func=figures.default, figure_args={}
+        ):
         """
-        dtype = common.load_or_use_default(kwargs, 'type', float)
-        data = self.grid.astype(dtype)
-        if dtype is float:
-            data[np.logical_not(self.mask)] = np.nan
+        """
+        super(Grid , self).save_figure(None, filename, figure_func, figure_args)
 
-        figure_name = self.dataset_name 
 
-        limits = common.load_or_use_default(kwargs, 'limits', (None,None))
-        cmap = common.load_or_use_default(kwargs, 'cmap', 'viridis')
-        cbar_extend = common.load_or_use_default(
-            kwargs, 'cbar_extend', 'neither'
-        )
+    def show_figure (self, figure_func=figures.default, figure_args={}):
+        """
+        """
+        super(Grid , self).show_figure(None, figure_func, figure_args)
+
+    # def save_figure (self, filename, **kwargs):
+    #     """Save a figure for a grid
+        
+    #     Parameters
+    #     ----------
+    #     filename: path
+    #         path to save image at
+    #     grid_id: int or str
+    #         if an int, it should be the grid number.
+    #         if a str, it should be a grid name.
+    #     **kwargs: dict
+    #         dict of key word arguments
+    #         'limits': tuple, defaults (None, None)
+    #             min, max limits for data
+    #         'cmap': str, defaults 'viridis'
+    #             matplotlib colormap
+    #         'cbar_extend': str, defaults 'neither'
+    #             'neither', 'min' or 'max' 
+    #     """
+
+
+        # dtype = common.load_or_use_default(kwargs, 'type', float)
+        # data = self.grid.astype(dtype)
+        # if dtype is float:
+        #     data[np.logical_not(self.mask)] = np.nan
+
+        # figure_name = self.dataset_name 
+
+        # limits = common.load_or_use_default(kwargs, 'limits', (None,None))
+        # cmap = common.load_or_use_default(kwargs, 'cmap', 'viridis')
+        # cbar_extend = common.load_or_use_default(
+        #     kwargs, 'cbar_extend', 'neither'
+        # )
         
 
-        figures.save_figure(
-            data.reshape(self.grid_shape) , 
-            filename, 
-            figure_name ,
-            cmap = cmap,
-            vmin = limits[0], 
-            vmax = limits[1],
-            cbar_extend = cbar_extend
-        )
+        # figures.save_figure(
+        #     data.reshape(self.grid_shape) , 
+        #     filename, 
+        #     figure_name ,
+        #     cmap = cmap,
+        #     vmin = limits[0], 
+        #     vmax = limits[1],
+        #     cbar_extend = cbar_extend
+        # )

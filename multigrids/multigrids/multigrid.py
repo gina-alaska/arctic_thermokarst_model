@@ -13,6 +13,7 @@ from tempfile import mkdtemp
 import yaml
 import copy
 import sys
+import matplotlib.pyplot as plt
 
 from . import figures
 
@@ -141,7 +142,7 @@ class MultiGrid (object):
         value of attribute
         """
         if not hasattr(self, 'config'):
-            raise MultigridConfigError, "config dictionary not found"
+            raise MultigridConfigError( "config dictionary not found" )
         # try:
         if attr == 'config':
             return self.config
@@ -513,59 +514,40 @@ class MultiGrid (object):
         """
         self[grid_id] = new_grid.reshape(self.grid_shape)
 
-    def figure (self, filename, grid_id, **kwargs):
-        """Save a figure for a grid
-        
-        Parameters
-        ----------
-        filename: path
-            path to save image at
-        grid_id: int or str
-            if an int, it should be the grid number.
-            if a str, it should be a grid name.
-        **kwargs: dict
-            dict of key word arguments
-            'limits': tuple, defaults (None, None)
-                min, max limits for data
-            'cmap': str, defaults 'viridis'
-                matplotlib colormap
-            'cbar_extend': str, defaults 'neither'
-                'neither', 'min' or 'max' 
+    def save_figure(
+            self, grid_id, filename, figure_func=figures.default, figure_args={}
+        ):
+        """
         """
         data = self[grid_id].astype(float)
         data[np.logical_not(self.mask)] = np.nan
-
-        figure_name = self.dataset_name + ' ' + str( grid_id )
-
-        limits = load_or_use_default(kwargs, 'limits', (None,None))
-        cmap = load_or_use_default(kwargs, 'cmap', 'viridis')
-        cbar_extend = load_or_use_default(kwargs, 'cbar_extend', 'neither')
-
-        figures.save_figure(
-            data.reshape(self.grid_shape) , 
-            filename, 
-            figure_name ,
-            cmap = cmap,
-            vmin = limits[0], 
-            vmax = limits[1],
-            cbar_extend = cbar_extend
-        )
         
-    def figures(self, dirname, **kwargs):
-        """Save figures for every grid
+        if not 'title' in figure_args:
+            figure_args['title'] = self.dataset_name 
+            if not grid_id is None:
+                figure_args['title' ]+= ' ' + str( grid_id )
+        fig = figure_func(data, figure_args)
+        plt.savefig(filename)
+        plt.close()
+
+    def show_figure(self, grid_id, figure_func=figures.default, figure_args={}):
+        """
+        """
+        data = self[grid_id].astype(float)
+        data[np.logical_not(self.mask)] = np.nan
+        if not 'title' in figure_args:
+            figure_args['title'] = self.dataset_name
+            if not grid_id is None:
+                figure_args['title' ] += ' ' + str( grid_id )
+        fig = figure_func(data, figure_args)
+        plt.show()
+        plt.close()
+
         
-        Parameters
-        ----------
-        dirname: path
-            path to save images at
-        **kwargs: dict
-            dict of key word arguments
-            'limits': tuple, defaults (None, None)
-                min, max limits for data
-            'cmap': str, defaults 'viridis'
-                matplotlib colormap
-            'cbar_extend': str, defaults 'neither'
-                'neither', 'min' or 'max' 
+    def save_all_figures(
+            self, dirname, figure_func=figures.default, figure_args={}
+        ):
+        """
         """
         grids = self.grid_name_map
         if grids == {}:
@@ -574,9 +556,10 @@ class MultiGrid (object):
         for grid in grids:
             filename = os.path.join(
                 dirname, 
-                (self.dataset_name + '_' + grid + '.jpg').replace(' ','_')
+                (self.dataset_name + '_' + str(grid) + '.png').replace(' ','_')
             )
-            self.figure(filename, grid, **kwargs)
+            self.save_figure(grid, filename, figure_func, figure_args)
+
 
     def save_as_geotiff(self, filename, grid_id, **kwargs):
         """save a grid as a tiff file

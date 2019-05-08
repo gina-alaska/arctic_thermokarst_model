@@ -5,6 +5,116 @@ figures
 Functions for generating figures
 """
 import matplotlib.pyplot as plt
+import copy
+
+def default(data, new_fig_args):
+    """create a categorical plot
+
+    Parameters
+    ----------
+    data: np.array
+        2d array
+    new_fig_args: dict
+        must contain keys:
+            "title": str
+    Returns
+    -------
+    matplotlib.image.AxesImage
+    """
+    fig_args = {
+        "interpolation": 'nearest',
+        "cmap": 'viridis',
+        "orientation": 'vertical',
+        "threshold": 0,
+        "cbar_extend": 'neither',
+        "vmin": None,
+        "vmax": None}
+    fig_args.update(new_fig_args)
+
+    imgplot = plt.imshow(
+        data,
+        interpolation = fig_args["interpolation"], 
+        cmap = fig_args["cmap"], 
+        vmin = fig_args["vmin"],
+        vmax = fig_args["vmax"]
+    )
+    cb = plt.colorbar(
+        # ticks = range(len(fig_args["categories"])), 
+        orientation = fig_args["orientation"],
+        extend =  fig_args["cbar_extend"]
+    )
+    plt.title(fig_args['title'], wrap = True)
+    return imgplot
+
+def categorical(data, new_fig_args):
+    """create a categorical plot
+
+    Parameters
+    ----------
+    data: np.array
+        2d array
+    new_fig_args: dict
+        must contain keys:
+            "categories": list
+            "title": str
+        may contain keys:
+            "interpolation": str
+            "cmap": str,
+            "orientation": str
+    Returns
+    -------
+    matplotlib.image.AxesImage
+    """
+    fig_args = {
+        "interpolation": 'nearest',
+        "cmap": 'viridis',
+        "orientation": 'vertical'
+    }
+    fig_args.update(new_fig_args)
+    imgplot = plt.imshow(
+        data, 
+        interpolation = fig_args["interpolation"], 
+        cmap = plt.cm.get_cmap(fig_args["cmap"], len(fig_args["categories"])), 
+        vmin = 0,
+        vmax = len(fig_args["categories"])
+    )
+    plt.title(fig_args["title"], wrap = True)
+    cb = plt.colorbar(
+        ticks = range(len(fig_args["categories"])), 
+        orientation = fig_args["orientation"]
+    )
+    cb.set_ticklabels(fig_args["categories"])
+    plt.clim(-0.5, 2.5)
+    return imgplot
+
+def threshold(data, new_fig_args):
+    """
+    """
+    data = copy.deepcopy(data)
+    fig_args = {
+        "interpolation": 'nearest',
+        "cmap": 'bone',
+        "orientation": 'vertical',
+        "threshold": 0,
+        "cbar_extend": 'neither',
+    }
+    fig_args.update(new_fig_args)
+
+    data[data>fig_args["threshold"]] = 1
+    imgplot = plt.imshow(
+        data, 
+        interpolation = fig_args["interpolation"], 
+        cmap = fig_args["cmap"], 
+    )
+    plt.title(fig_args["title"], wrap = True)
+    cb = plt.colorbar(
+        # ticks = range(len(fig_args["categories"])), 
+        orientation = fig_args["orientation"],
+        extend =  fig_args["cbar_extend"]
+    )
+    # cb.set_ticklabels(fig_args["categories"])
+    # plt.clim(-0.5, 2.5)
+    return imgplot
 
 def save_figure(data, path, title,
         cmap = 'viridis', vmin = 0.0, vmax = 1.0,
@@ -39,38 +149,5 @@ def save_figure(data, path, title,
     plt.colorbar(extend = cbar_extend, shrink = 0.92)
     #~ imgplot.save(path)
     #~ plt.imsave(path, imgplot)
-    plt.savefig(path)
-    plt.close()
-
-
-def save_categorical_figure(
-        data, path, title, categories,
-        cmap = 'seismic',
-        ):
-    """save the grid as image, with title and color bar
-    
-    Parameters
-    ----------
-    data: np.array
-        grid to save
-    path: path
-        path with filename to save file at
-    title:
-        title to put on image
-    catagories: list of str
-        categories
-    cmap: str
-        colormap
-    """
-    imgplot = plt.imshow(
-        data, 
-        interpolation = 'nearest', 
-        cmap = cmap, 
-        vmin = 0,
-        vmax = len(categories)
-    )
-    plt.title(title, wrap = True)
-    cb = plt.colorbar(ticks = range(len(categories)), orientation = 'vertical')
-    cb.set_ticklabels(categories)
     plt.savefig(path)
     plt.close()
