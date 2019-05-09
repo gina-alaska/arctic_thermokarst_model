@@ -313,11 +313,12 @@ class TemporalMultiGrid (MultiGrid):
         return self.start_timestep + self.config['timestep']
 
     def save_figure(
-            self, grid_id, ts, filename, figure_func=figures.default, figure_args={}
+            self, grid_id, ts, filename, figure_func=figures.default, figure_args={}, data=None
         ):
         """
         """
-        data = self[grid_id, ts].astype(float)
+        if data is None:
+            data = self[grid_id, ts].astype(float)
         # data[np.logical_not(self.AOI_mask)] = np.nan
         
         if not 'title' in figure_args:
@@ -328,10 +329,11 @@ class TemporalMultiGrid (MultiGrid):
         plt.savefig(filename)
         plt.close()
 
-    def show_figure(self, grid_id, ts, figure_func=figures.default, figure_args={}):
+    def show_figure(self, grid_id, ts, figure_func=figures.default, figure_args={}, data=None):
         """
         """
-        data = self[grid_id, ts].astype(float)
+        if data is None:
+            data = self[grid_id, ts].astype(float)
         # data[np.logical_not(self.AOI_mask)] = np.nan
         if not 'title' in figure_args:
             figure_args['title'] = self.dataset_name

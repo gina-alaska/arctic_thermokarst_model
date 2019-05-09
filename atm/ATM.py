@@ -148,7 +148,6 @@ class ATM(object):
             if self.control['Initialize_Control']['Initial_Cohort_Age_Figure'] and\
                      self.control['Initialize_Control'][figure] and \
                      figure.lower().find('age') > 0:
-                print cohort
                 fig_args = {
                     'title': disp_name + ' - Present In Initial Area',
                     "categories": ['not present', 'present']
@@ -193,12 +192,6 @@ class ATM(object):
                     figure_func=figures.threshold, 
                     figure_args=fig_args
                 )
-                self.grids.area.show_figure(
-                    cohort, start_year, 
-                    # os.path.join(cohort_path, 'Initial_' + cohort +'.png'), 
-                    figure_func=figures.threshold, 
-                    figure_args=fig_args
-                )
                 # self.grids.area.save_init_dist_figure(cohort, cohort_path)
                     
             
@@ -211,12 +204,20 @@ class ATM(object):
         self.logger.add("  -- Terrestrial Figures")
         self.logger.add("    -- Ice_Distribution_Figure")
         if self.control['Terrestrial_Control']['Ice_Distribution_Figure']:
-            self.grids.ice.figure(
-                os.path.join(init_path,'Ground_Ice_Content.png')
-            )
-            self.grids.ice.binary(
-                os.path.join(init_path,'Ground_Ice_Content.bin')
-            )
+            fig_args = {
+                    'title': 'Ground Ice Content',
+                    "categories": ['none'] + [t for t in self.grids.ice.ice_types],
+                     'vmin': 0, 'vmax': 4,
+                }
+            self.grids.ice.save_figure( os.path.join(init_path,'Ground_Ice_Content.png'), figures.categorical, fig_args)
+            self.grids.ice.show_figure(figures.categorical, fig_args)
+
+            #     
+            # )
+
+            # self.grids.ice.binary(
+            #     os.path.join(init_path,'Ground_Ice_Content.bin')
+            # )
         self.logger.add("    -- Drainage_Efficiency_Figure")
         if self.control['Terrestrial_Control']['Drainage_Efficiency_Figure']:
             self.grids.drainage.figure(

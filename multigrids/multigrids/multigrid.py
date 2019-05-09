@@ -515,11 +515,12 @@ class MultiGrid (object):
         self[grid_id] = new_grid.reshape(self.grid_shape)
 
     def save_figure(
-            self, grid_id, filename, figure_func=figures.default, figure_args={}
+            self, grid_id, filename, figure_func=figures.default, figure_args={}, data=None
         ):
         """
         """
-        data = self[grid_id].astype(float)
+        if data is None:
+            data = self[grid_id].astype(float)
         # data[np.logical_not(self.mask)] = np.nan
         
         if not 'title' in figure_args:
@@ -530,10 +531,11 @@ class MultiGrid (object):
         plt.savefig(filename)
         plt.close()
 
-    def show_figure(self, grid_id, figure_func=figures.default, figure_args={}):
+    def show_figure(self, grid_id, figure_func=figures.default, figure_args={}, data=None):
         """
         """
-        data = self[grid_id].astype(float)
+        if data is None:
+            data = self[grid_id].astype(float)
         # data[np.logical_not(self.mask)] = np.nan
         if not 'title' in figure_args:
             figure_args['title'] = self.dataset_name

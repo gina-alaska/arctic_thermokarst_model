@@ -90,7 +90,7 @@ def categorical(data, new_fig_args):
         shrink = fig_args["shrink"]
     )
     cb.set_ticklabels(fig_args["categories"])
-    plt.clim(-0.5, 2.5)
+    plt.clim(-0.5, len(fig_args["categories"]) - .5)
     return imgplot
 
 def threshold(data, new_fig_args):
