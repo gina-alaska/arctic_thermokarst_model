@@ -2,7 +2,8 @@ from .multigrid import MultiGrid
 import numpy as np
 import yaml
 
-from . import common
+from . import common, figures
+import matplotlib.pyplot as plt
 
 class TemporalMultiGrid (MultiGrid):
     """ A class to represent a set of multiple related grids of the same 
@@ -310,6 +311,35 @@ class TemporalMultiGrid (MultiGrid):
             year of last time step in model
         """
         return self.start_timestep + self.config['timestep']
+
+    def save_figure(
+            self, grid_id, ts, filename, figure_func=figures.default, figure_args={}
+        ):
+        """
+        """
+        data = self[grid_id, ts].astype(float)
+        # data[np.logical_not(self.AOI_mask)] = np.nan
+        
+        if not 'title' in figure_args:
+            figure_args['title'] = self.dataset_name 
+            if not grid_id is None:
+                figure_args['title' ]+= ' ' + str( grid_id )
+        fig = figure_func(data, figure_args)
+        plt.savefig(filename)
+        plt.close()
+
+    def show_figure(self, grid_id, ts, figure_func=figures.default, figure_args={}):
+        """
+        """
+        data = self[grid_id, ts].astype(float)
+        # data[np.logical_not(self.AOI_mask)] = np.nan
+        if not 'title' in figure_args:
+            figure_args['title'] = self.dataset_name
+            if not grid_id is None:
+                figure_args['title' ] += ' ' + str( grid_id )
+        fig = figure_func(data, figure_args)
+        plt.show()
+        plt.close()
 
 
 def dumb_test():

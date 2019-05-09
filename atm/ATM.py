@@ -47,11 +47,11 @@ import results
 from control import Control
 from grids.grids import ModelGrids
 from grids import area_grid
-from cohorts import find_canon_name
+from cohorts import find_canon_name, DISPLAY_COHORT_NAMES
 
 from logger import Logger
 
-
+from multigrids import figures
 
 #_______________________________________________________________________________
 class ATM(object):
@@ -133,7 +133,7 @@ class ATM(object):
         self.logger.add("Finishing up -- saving figures")
         
         outdir = self.control['Output_dir']
-        
+        start_year = self.control['start_year']
         self.logger.add("  -- Initial Figures")
         for figure in self.control['Initialize_Control']:
             cohort = '_'.join(figure.split('_')[:-1])
@@ -144,23 +144,62 @@ class ATM(object):
                 os.makedirs(cohort_path)
             except:
                 pass
-            
+            disp_name = DISPLAY_COHORT_NAMES[cohort]
             if self.control['Initialize_Control']['Initial_Cohort_Age_Figure'] and\
                      self.control['Initialize_Control'][figure] and \
                      figure.lower().find('age') > 0:
-                self.grids.area.save_init_age_figure(cohort, cohort_path)
+                print cohort
+                fig_args = {
+                    'title': disp_name + ' - Present In Initial Area',
+                    "categories": ['not present', 'present']
+                    }
+                self.grids.area.save_figure(
+                    cohort, start_year, 
+                    os.path.join(cohort_path, cohort+'_age.png'), 
+                    figure_func=figures.categorical_threshold, 
+                    figure_args=fig_args
+                )
+            
             if self.control['Initialize_Control'][
                         'Normalized_Cohort_Distribution_Figure'
                      ] and\
                      self.control['Initialize_Control'][figure] and \
                      figure.lower().find('normal') > 0:
-                self.grids.area.save_init_normal_figure(cohort, cohort_path)
+                fig_args = {
+                    'title': disp_name + ' - Initial Fractional Area',
+                    # "categories": ['not present', 'present']
+                     'vmin': 0, 'vmax': 1,
+                    }
+                self.grids.area.save_figure(
+                    cohort, start_year, 
+                    os.path.join(cohort_path, cohort+'_fractional_cohorts.png'), 
+                    figure_func=figures.default, 
+                    figure_args=fig_args
+                )
+
             if self.control['Initialize_Control'][
                         'Initial_Cohort_Distribution_Figure'
                      ] and\
                      self.control['Initialize_Control'][figure] and \
                      figure.lower().find('figure') > 0:
-                self.grids.area.save_init_dist_figure(cohort, cohort_path)
+                fig_args = {
+                    'title': disp_name + ' - Initial Fractional Area',
+                    # "categories": ['not present', 'present']
+                    #  'vmin': 0, 'vmax': 1,
+                    }
+                self.grids.area.save_figure(
+                    cohort, start_year, 
+                    os.path.join(cohort_path, 'Initial_' + cohort +'.png'), 
+                    figure_func=figures.threshold, 
+                    figure_args=fig_args
+                )
+                self.grids.area.show_figure(
+                    cohort, start_year, 
+                    # os.path.join(cohort_path, 'Initial_' + cohort +'.png'), 
+                    figure_func=figures.threshold, 
+                    figure_args=fig_args
+                )
+                # self.grids.area.save_init_dist_figure(cohort, cohort_path)
                     
             
         init_path = os.path.join( outdir, 'Initialization')
@@ -475,7 +514,7 @@ class ATM(object):
             self.to_file(name, start_time, end_time)
         
         self.logger.add("The save figures feature must be re-enabled before 0.5.0 is ready", 'warn')
-        # self.save_figures()
+        self.save_figures()
 
         name = t +'_' + self.control['Simulation_name'] +".tar.gz"
         self.archive(name)

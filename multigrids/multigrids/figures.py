@@ -5,6 +5,7 @@ figures
 Functions for generating figures
 """
 import matplotlib.pyplot as plt
+import numpy as np
 import copy
 
 def default(data, new_fig_args):
@@ -28,7 +29,9 @@ def default(data, new_fig_args):
         "threshold": 0,
         "cbar_extend": 'neither',
         "vmin": None,
-        "vmax": None}
+        "vmax": None,
+        "shrink": .75,
+        }
     fig_args.update(new_fig_args)
 
     imgplot = plt.imshow(
@@ -41,7 +44,8 @@ def default(data, new_fig_args):
     cb = plt.colorbar(
         # ticks = range(len(fig_args["categories"])), 
         orientation = fig_args["orientation"],
-        extend =  fig_args["cbar_extend"]
+        extend =  fig_args["cbar_extend"],
+        shrink = fig_args["shrink"]
     )
     plt.title(fig_args['title'], wrap = True)
     return imgplot
@@ -68,7 +72,8 @@ def categorical(data, new_fig_args):
     fig_args = {
         "interpolation": 'nearest',
         "cmap": 'viridis',
-        "orientation": 'vertical'
+        "orientation": 'vertical',
+        "shrink": .75,
     }
     fig_args.update(new_fig_args)
     imgplot = plt.imshow(
@@ -81,7 +86,8 @@ def categorical(data, new_fig_args):
     plt.title(fig_args["title"], wrap = True)
     cb = plt.colorbar(
         ticks = range(len(fig_args["categories"])), 
-        orientation = fig_args["orientation"]
+        orientation = fig_args["orientation"],
+        shrink = fig_args["shrink"]
     )
     cb.set_ticklabels(fig_args["categories"])
     plt.clim(-0.5, 2.5)
@@ -97,6 +103,7 @@ def threshold(data, new_fig_args):
         "orientation": 'vertical',
         "threshold": 0,
         "cbar_extend": 'neither',
+        "shrink": .75,
     }
     fig_args.update(new_fig_args)
 
@@ -110,10 +117,50 @@ def threshold(data, new_fig_args):
     cb = plt.colorbar(
         # ticks = range(len(fig_args["categories"])), 
         orientation = fig_args["orientation"],
-        extend =  fig_args["cbar_extend"]
+        extend =  fig_args["cbar_extend"],
+        shrink = fig_args["shrink"]
     )
     # cb.set_ticklabels(fig_args["categories"])
     # plt.clim(-0.5, 2.5)
+    return imgplot
+
+def categorical_threshold(data, new_fig_args):
+    """
+    """
+    data = copy.deepcopy(data)
+    fig_args = {
+        "interpolation": 'nearest',
+        "cmap": 'bone',
+        "orientation": 'vertical',
+        "threshold": 0,
+        "cbar_extend": 'neither',
+        "shrink": .75,
+    }
+    fig_args.update(new_fig_args)
+
+    if  len(fig_args["categories"]) != 2:
+        raise AttributeError("2, and only 2,  categories must be provided")
+
+    # mask = np.isnan(data)
+    data[data>fig_args["threshold"]] = 1
+    data[np.logical_not(data>fig_args["threshold"])] = 0
+    # data[mask] = np.nan
+    imgplot = plt.imshow(
+        data, 
+        interpolation = fig_args["interpolation"], 
+        cmap = plt.cm.get_cmap(fig_args["cmap"], len(fig_args["categories"])), 
+        vmin = 0,
+        vmax = len(fig_args["categories"])
+    )
+    plt.title(fig_args["title"], wrap = True)
+    cb = plt.colorbar(
+        ticks = range(len(fig_args["categories"])), 
+        orientation = fig_args["orientation"],
+        extend =  fig_args["cbar_extend"],
+        shrink = fig_args["shrink"]
+    )
+    cb.set_ticklabels(fig_args["categories"])
+    plt.clim(-0.5, 1.5)
     return imgplot
 
 def save_figure(data, path, title,

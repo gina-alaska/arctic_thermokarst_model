@@ -520,7 +520,7 @@ class MultiGrid (object):
         """
         """
         data = self[grid_id].astype(float)
-        data[np.logical_not(self.mask)] = np.nan
+        # data[np.logical_not(self.mask)] = np.nan
         
         if not 'title' in figure_args:
             figure_args['title'] = self.dataset_name 
@@ -534,7 +534,7 @@ class MultiGrid (object):
         """
         """
         data = self[grid_id].astype(float)
-        data[np.logical_not(self.mask)] = np.nan
+        # data[np.logical_not(self.mask)] = np.nan
         if not 'title' in figure_args:
             figure_args['title'] = self.dataset_name
             if not grid_id is None:

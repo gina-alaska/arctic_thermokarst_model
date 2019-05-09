@@ -158,8 +158,11 @@ class AreaGrid(TemporalMultiGrid):
             self.config['resolution'] = target_resolution
 
         self.config['start_timestep'] = self.config['start_year']
+        
         self.shape = self.grid_shape
         self.init_grid = self.grids[0]
+        self.config['AOI mask'] = self.area_of_interest()
+        # self.config['mask'] = self.area_of_interest()
 
     def setup_cohort_ages(self, layers):
         """ Function doc """
