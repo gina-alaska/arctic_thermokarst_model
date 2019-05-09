@@ -205,27 +205,34 @@ class ATM(object):
         self.logger.add("    -- Ice_Distribution_Figure")
         if self.control['Terrestrial_Control']['Ice_Distribution_Figure']:
             fig_args = {
-                    'title': 'Ground Ice Content',
-                    "categories": ['none'] + [t for t in self.grids.ice.ice_types],
-                     'vmin': 0, 'vmax': 4,
-                }
-            self.grids.ice.save_figure( os.path.join(init_path,'Ground_Ice_Content.png'), figures.categorical, fig_args)
-            self.grids.ice.show_figure(figures.categorical, fig_args)
-
-            #     
-            # )
+                'title': 'Ground Ice Content',
+                "categories": ['none'] + [t for t in self.grids.ice.ice_types],
+                'vmin': 0, 'vmax': 4,
+            }
+            self.grids.ice.save_figure( 
+                os.path.join(init_path,'Ground_Ice_Content.png'), 
+                figures.categorical, fig_args
+            )
+            # self.grids.ice.show_figure(figures.categorical, fig_args)
 
             # self.grids.ice.binary(
             #     os.path.join(init_path,'Ground_Ice_Content.bin')
             # )
         self.logger.add("    -- Drainage_Efficiency_Figure")
         if self.control['Terrestrial_Control']['Drainage_Efficiency_Figure']:
-            self.grids.drainage.figure(
-                os.path.join(init_path,'Drainage_efficiency.png')
-            )
-            self.grids.drainage.binary(
-                os.path.join(init_path,'Drainage_efficiency.bin')
-            )
+            fig_args = {
+                'title': 'Drainage efficiency',
+                "categories": ['none', 'above', 'below'],
+                'vmin': 0, 'vmax': 4,
+                'cmap': 'Greys'    
+                }
+            print self.grids.drainage.as_numbers()
+            self.grids.drainage.save_figure( os.path.join(init_path,'Drainage_efficiency.png'), figures.categorical, fig_args)
+            # self.grids.drainage.show_figure(figures.categorical, fig_args)
+
+            # self.grids.drainage.binary(
+            #     os.path.join(init_path,'Drainage_efficiency.bin')
+            # )
         
         self.logger.add( "    -- ALD_Distribution_Output")
         if self.control['Terrestrial_Control']['ALD_Distribution_Output']:

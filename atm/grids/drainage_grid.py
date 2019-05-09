@@ -8,11 +8,11 @@ import os
 import numpy as np
 
 # try:
-from atm.images import binary
+# from atm.images import binary
 # except ImportError:
 #     from ..atm_io import binary, image
 
-from multigrids import Grid, common
+from multigrids import Grid, common, figures
 from constants import ROW, COL
 import copy
 
@@ -156,26 +156,39 @@ class DrainageGrid (Grid):
         grid[grid == 'above'] = 1
         grid[grid == 'below'] = 2
         return grid.astype(float)
-        
-        
-    def figure (self, filename, **kwargs):
-        """save a figure
-        
-        Parameters
-        ----------
-        filename: path
-            file to save
+
+    def save_figure (
+            self, filename, figure_func=figures.default, figure_args={}
+        ):
         """
-        temp = copy.deepcopy(self.grids)
-        self.grid = self.as_numbers()
-        limits = common.load_or_use_default(kwargs,'limits',(1,2))
-        cmap = common.load_or_use_default(kwargs,'cmap','bone')
-        dtype = common.load_or_use_default(kwargs, 'type', float)
-        kwargs['limits'] = limits
-        kwargs['cmap'] = plt.get_cmap(cmap, 2)
-        kwargs['dtype'] = dtype 
-        super(DrainageGrid , self).figure(filename, **kwargs)
-        self.grid = temp
+        """
+        super(Grid , self).save_figure(None, filename, figure_func, figure_args, data = self.as_numbers())
+
+
+    def show_figure (self, figure_func=figures.default, figure_args={}):
+        """
+        """
+        super(Grid , self).show_figure(None, figure_func, figure_args, data = self.as_numbers()) 
+        
+        
+    # def figure (self, filename, **kwargs):
+    #     """save a figure
+        
+    #     Parameters
+    #     ----------
+    #     filename: path
+    #         file to save
+    #     """
+    #     temp = copy.deepcopy(self.grids)
+    #     self.grid = self.as_numbers()
+    #     limits = common.load_or_use_default(kwargs,'limits',(1,2))
+    #     cmap = common.load_or_use_default(kwargs,'cmap','bone')
+    #     dtype = common.load_or_use_default(kwargs, 'type', float)
+    #     kwargs['limits'] = limits
+    #     kwargs['cmap'] = plt.get_cmap(cmap, 2)
+    #     kwargs['dtype'] = dtype 
+    #     super(DrainageGrid , self).figure(filename, **kwargs)
+    #     self.grid = temp
         
     # def binary (self, filename):
     #     """save a binary representation
