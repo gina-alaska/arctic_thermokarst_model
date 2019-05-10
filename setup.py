@@ -10,7 +10,7 @@ config = {
     'url': atm.__codeurl__,
     'author_email': atm.__email__ ,
     'version': atm.__version__,
-    'install_requires': ['numpy','pyyaml', 'gdal'],
+    'install_requires': ['numpy','pyyaml', 'gdal', 'matplotlib'],
     'packages': find_packages(),
     'scripts': [],
     'package_data': {},
