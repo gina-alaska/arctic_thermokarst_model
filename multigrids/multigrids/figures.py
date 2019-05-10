@@ -74,6 +74,7 @@ def categorical(data, new_fig_args):
         "cmap": 'viridis',
         "orientation": 'vertical',
         "shrink": .75,
+        "ax_labelsize": 10,
     }
     fig_args.update(new_fig_args)
     imgplot = plt.imshow(
@@ -87,10 +88,12 @@ def categorical(data, new_fig_args):
     cb = plt.colorbar(
         ticks = range(len(fig_args["categories"])), 
         orientation = fig_args["orientation"],
-        shrink = fig_args["shrink"]
+        shrink = fig_args["shrink"],
+        # labelsize = 10,
     )
     cb.set_ticklabels(fig_args["categories"])
     plt.clim(-0.5, len(fig_args["categories"]) - .5)
+    cb.ax.tick_params(labelsize=fig_args['ax_labelsize'])
     return imgplot
 
 def threshold(data, new_fig_args):

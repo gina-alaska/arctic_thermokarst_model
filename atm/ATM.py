@@ -277,8 +277,32 @@ class ATM(object):
         
         self.logger.add("    -- Dominant Cohort Figure")
         if self.control['Terrestrial_Control']['Figure']:
-            vid = self.control['Terrestrial_Control']['Movie']
-            self.grids.area.dominate_cohort_timeseries( dom_path, vid)
+            dc_data = self.grids.area.create_dominate_cohort_dataset()
+            fig_args = {
+                'title': '',
+                'cbar_extend': 'max',
+                "categories": sorted(dc_data.cohort_list),
+                # 'vmin': 0, 'vmax': 4,
+                'cmap': 'viridis', 
+                'ax_labelsize': 5 ,  
+                }
+
+
+            for year in range(start_year, start_year + self.stop):
+                fig_args['title'] = 'Dominant Cohort -' + str(year)
+                dc_data.save_figure(
+                    year, 
+                    os.path.join(
+                        dom_path,
+                        'Dominant_Cohort_'+ str(year) + '.png'
+                    ),
+                    figures.categorical, 
+                    fig_args
+                )
+                
+            # vid = self.control['Terrestrial_Control']['Movie']
+            # self.grids.area.dominate_cohort_timeseries( dom_path, vid)
+            
         
         
         

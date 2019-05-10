@@ -29,7 +29,7 @@ from constants import ROW, COL
 
 import copy
 
-from multigrids import TemporalMultiGrid, common
+from multigrids import TemporalMultiGrid, common, TemporalGrid
 
 
 try:
@@ -725,7 +725,37 @@ class AreaGrid(TemporalMultiGrid):
                 os.path.join(path, "Dominant_Cohort.mp4"), 
                 progress_bar=False, verbose = False
             )   
+
+    def create_dominate_cohort_dataset (self):
+        """
+        """
+        data = TemporalGrid(
+            self.real_shape[2], self.real_shape[3], self.real_shape[0],
+            start_timestep = self.start_timestep
+        )
         
+
+        for year in range(
+            self.start_timestep, self.start_timestep+self.num_timesteps
+        ):
+            dom = np.zeros(self.grid_shape)
+            # this loop finds the max cohort for each cell per year
+            for idx, grid in enumerate(sorted(self.get_cohort_list())):
+                # print grid, idx
+                
+                dom[self[grid, year] > dom] = idx
+            
+            dom[np.logical_not(self.AOI_mask)] = np.nan
+            
+            data[year][:] = dom
+
+        data.config['cohort list'] = sorted(self.get_cohort_list())
+        data.config['cohort display names'] = [
+            DISPLAY_COHORT_NAMES[n] for n in sorted(self.get_cohort_list())
+        ]
+
+        return data
+
 def test (files):
     """
     """
