@@ -325,12 +325,37 @@ class ATM(object):
             except:
                 pass
             
-            self.grids.degreedays.thawing.figures(
-                    os.path.join(dd_path, tdd), (0, 1250)
+            fig_args = {
+                'title': '',
+                # 'cbar_extend': 'max',
+                # "categories": sorted(dc_data.cohort_list),
+                # 'vmin': 0, 'vmax': 4,
+                # 'cmap': 'viridis', 
+                # 'ax_labelsize': 5 ,  
+                'cbar_extend': 'both'
+                }
+
+
+            for year in range(start_year, start_year + self.stop):
+                fig_args['title'] = 'Thawing Degree Days -' + str(year)
+                fig_args['vmin'] = 0
+                fig_args['vmax'] = 1250
+                self.grids.degreedays.thawing.save_figure(
+                    year, 
+                    os.path.join(dd_path, tdd, 'tdd_'+ str(year) + '.png'),
+                    figures.default, 
+                    fig_args
                 )
-            self.grids.degreedays.freezing.figures(
-                    os.path.join(dd_path, fdd), (-6000, -2000)
+                fig_args['title'] = 'Freezing Degree Days -' + str(year)
+                fig_args['vmin'] = -6000
+                fig_args['vmax'] = -2000
+                self.grids.degreedays.freezing.save_figure(
+                    year, 
+                    os.path.join(dd_path, fdd, 'fdd_'+ str(year) + '.png'),
+                    figures.default, 
+                    fig_args
                 )
+
             
         
         lp_types = \

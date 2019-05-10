@@ -31,8 +31,12 @@ def default(data, new_fig_args):
         "vmin": None,
         "vmax": None,
         "shrink": .75,
+        "mask": None
         }
     fig_args.update(new_fig_args)
+
+    if not fig_args["mask"] is None:
+        data[np.logical_not(fig_args["mask"])] = np.nan
 
     imgplot = plt.imshow(
         data,
