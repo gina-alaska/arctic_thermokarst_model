@@ -288,7 +288,7 @@ class ATM(object):
                 }
 
 
-            for year in range(start_year, start_year + self.stop):
+            for year in range(start_year, start_year + self.stop-1):
                 fig_args['title'] = 'Dominant Cohort -' + str(year)
                 dc_data.save_figure(
                     year, 
@@ -327,16 +327,11 @@ class ATM(object):
             
             fig_args = {
                 'title': '',
-                # 'cbar_extend': 'max',
-                # "categories": sorted(dc_data.cohort_list),
-                # 'vmin': 0, 'vmax': 4,
-                # 'cmap': 'viridis', 
-                # 'ax_labelsize': 5 ,  
                 'cbar_extend': 'both'
                 }
 
 
-            for year in range(start_year, start_year + self.stop):
+            for year in range(start_year, start_year + self.stop-1):
                 fig_args['title'] = 'Thawing Degree Days -' + str(year)
                 fig_args['vmin'] = 0
                 fig_args['vmax'] = 1250
@@ -359,11 +354,12 @@ class ATM(object):
             
         
         lp_types = \
-                self.control['_FAST_get_pond_type'] +\
-                self.control['_FAST_get_lake_type']   
+                self.control['_FAST_get_pond_types'] +\
+                self.control['_FAST_get_lake_types']   
         self.logger.add( "  -- Lake Pond Figures" )
-        for figure in self.control['Lake_Pond_Control']:
-
+        for figure in self.control['Lake_Pond_Control']['figures']:
+            if not self.control['Lake_Pond_Control']['figures'][figure]:
+                continue
             lpt = '_'.join(figure.split('_')[:-2])
             if lpt not in lp_types:
                 continue 
@@ -374,10 +370,19 @@ class ATM(object):
                 os.makedirs(path)
             except:
                 pass
-            self.grids.lake_pond.depth_figure(
-                lpt, os.path.join(path,'Initial_'+lpt+'_Depth.png') , 1
+            fig_args = {
+                'title': 
+                    'Initial Depth ('+str(start_year)+') \n' + \
+                    DISPLAY_COHORT_NAMES[lpt],
+                # 'cbar_extend': 'both',
+                'mask': self.grids.aoi,
+                }
+            self.grids.lake_pond.save_figure(
+                lpt+'_depth', start_year,
+                os.path.join(path,'Initial_'+lpt+'_Depth.png'),
+                figure_args=fig_args
             )
-        
+
         self.logger.add("  -- Cohort Figures/Video")
         for control in sorted(self.control['cohorts']):
             if type(self.control['cohorts'][control]) is str:
@@ -393,7 +398,29 @@ class ATM(object):
                 pass
             vid = self.control['cohorts'][control]['Movie']
             self.logger.add( "    -- " + cohort + " Figures/Video")
-            self.grids.area.save_cohort_timeseries(cohort, path, vid)
+            fig_args = {
+                'title': '',
+                # 'cbar_extend': 'both'
+                'mask': self.grids.aoi,
+                'vmin': 0,
+                'vmax': 1,
+                }
+
+
+            for year in range(start_year, start_year + self.stop-1):
+                fig_args['title'] = \
+                    DISPLAY_COHORT_NAMES[cohort] +' - ' + str(year)
+                self.grids.area.save_figure(
+                    cohort, year, 
+                    os.path.join(path, cohort + '_Fractional_Area_'+ str(year)),
+                    figures.default, 
+                    fig_args
+                )
+                
+
+            # self.grids.area.save_cohort_timeseries(cohort, path, vid)
+
+
             
         
     def archive(self, name):
@@ -588,7 +615,6 @@ class ATM(object):
             name = t +'_' +self.control['Simulation_name'] + '.txt'
             self.to_file(name, start_time, end_time)
         
-        self.logger.add("The save figures feature must be re-enabled before 0.5.0 is ready", 'warn')
         self.save_figures()
 
         name = t +'_' + self.control['Simulation_name'] +".tar.gz"
