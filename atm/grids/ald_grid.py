@@ -238,7 +238,9 @@ class ALDGrid(TemporalMultiGrid):
         except AttributeError:
             pass
         
-        self.ald_constants = self.init_ald_grid.flatten() / degree_days
+        self.ald_constants = (
+            self.init_ald_grid.flatten() / degree_days
+        ).reshape(self.grid_shape)
     
     def read_grid (self, init_ald):
         """Read init ald from file or object"""

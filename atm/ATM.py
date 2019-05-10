@@ -226,7 +226,7 @@ class ATM(object):
                 'vmin': 0, 'vmax': 4,
                 'cmap': 'Greys'    
                 }
-            print self.grids.drainage.as_numbers()
+            # print self.grids.drainage.as_numbers()
             self.grids.drainage.save_figure( os.path.join(init_path,'Drainage_efficiency.png'), figures.categorical, fig_args)
             # self.grids.drainage.show_figure(figures.categorical, fig_args)
 
@@ -236,20 +236,38 @@ class ATM(object):
         
         self.logger.add( "    -- ALD_Distribution_Output")
         if self.control['Terrestrial_Control']['ALD_Distribution_Output']:
-            self.grids.ald.init_ald_figure(
-                os.path.join(init_path,'Initial_ALD.png')
+            fig_args = {
+                'title': 'Initial Active Layer Depth',
+                'cbar_extend': 'max',
+                # "categories": ['none', 'above', 'below'],
+                # 'vmin': 0, 'vmax': 4,
+                'cmap': 'bone'    
+                }
+            self.grids.ald.save_figure('ALD', start_year, 
+                os.path.join(init_path,'Initial_ALD.png'),
+                figure_args = fig_args
             )
-            self.grids.ald.init_ald_binary(
-                os.path.join(init_path,'Initial_ALD.bin')
-            )
+            # self.grids.ald.init_ald_binary(
+            #     os.path.join(init_path,'Initial_ALD.bin')
+            # )
         self.logger.add("    -- ALD_Factor_Output")
         if self.control['Terrestrial_Control']['ALD_Factor_Output']:
-            self.grids.ald.ald_constants_figure(
-                os.path.join(init_path,'Active_Layer_Factor.png')
+
+            fig_args = {
+                'title': 'Initial Active Layer Depth Constants',
+                'cbar_extend': 'max',
+                # "categories": ['none', 'above', 'below'],
+                # 'vmin': 0, 'vmax': 4,
+                'cmap': 'bone'    
+                }
+            self.grids.ald.save_figure('ALD', start_year, 
+                os.path.join(init_path,'Active_Layer_Factor.png'),
+                figure_args = fig_args,
+                data = self.grids.ald.ald_constants
             )
-            self.grids.ald.ald_constants_binary(
-                os.path.join(init_path,'Active_Layer_Factor.bin')
-            )
+            # self.grids.ald.ald_constants_binary(
+            #     os.path.join(init_path,'Active_Layer_Factor.bin')
+            # )
         
         dom_path = os.path.join( outdir, 'All_cohorts', 'year_cohorts')
         try: 
