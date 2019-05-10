@@ -32,28 +32,29 @@ def transition (name, year, grids, control):
         See [add link]
 
     """
-    model_area_mask = grids.area.area_of_intrest()
-    cohort_present_mask = grids.area[ year, name ] > 0
+    # return
+    # # print grids.lake_pond.grid_name_map
+    model_area_mask = grids.area.area_of_interest()
+    cohort_present_mask = grids.area[name, year] > 0
     
     current_cell_mask = np.logical_and(model_area_mask, cohort_present_mask)
 
 
-    grids.lake_pond.depths[name][current_cell_mask.flatten()] = (
-        grids.lake_pond.depths[name].reshape(grids.shape)[current_cell_mask] +\
+    grids.lake_pond[name + '_depth', year][current_cell_mask] = (
+        grids.lake_pond[name + '_depth', year].reshape(grids.shape)[current_cell_mask] +\
         (np.sqrt(year - control['start year']+1)\
         / control['Lake_Pond_Control'][name + '_depth_control'])
-    ).flatten()
+    )
     
     freezes = \
-        grids.lake_pond.depths[name].reshape(grids.shape) <= \
-        grids.lake_pond.ice_depth 
+        grids.lake_pond[name + '_depth', year].reshape(grids.shape) <= \
+        grids.lake_pond['ice_depth', year]
         
     freezes = np.logical_and(freezes, current_cell_mask)
        
-    shifts_to = control['Cohorts'][name + '_Control']['transitions_to']
+    shifts_to = control['cohorts'][name + '_Control']['transitions_to']
+    grids.area[shifts_to, year][ freezes ] = \
+        grids.area[shifts_to, year][freezes] + \
+        grids.area[name, year][freezes]
         
-    grids.area[year, shifts_to][ freezes ] = \
-        grids.area[year, shifts_to][freezes] + \
-        grids.area[year, name][freezes]
-        
-    grids.area[year, name][ freezes ] = 0.0
+    grids.area[name, year][ freezes ] = 0.0

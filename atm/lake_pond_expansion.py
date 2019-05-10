@@ -47,7 +47,7 @@ def infill ( ponds, year, grids, control):
     pond_area = np.zeros(shape)
     
     for p in ponds:
-        pond_area += grids.area[year, p ]
+        pond_area += grids.area[ p, year ]
     
     change_pond_area = np.logical_and(pond_area > 0,  pond_area < 1)   
     
@@ -62,9 +62,9 @@ def infill ( ponds, year, grids, control):
         p_buckets = [b for b in p_buckets if b.find('--') != -1]
         
         for b in p_buckets:
-            change = grids.area[year, b][change_pond_area]  * infill_const
-            grids.area[year, b][change_pond_area] -= change
-            grids.area[year, transitions_to][change_pond_area] -= change
+            change = grids.area[b, year][change_pond_area]  * infill_const
+            grids.area[b, year][change_pond_area] -= change
+            grids.area[transitions_to, year][change_pond_area] -= change
         
             
         
@@ -79,11 +79,11 @@ def expansion ( lp_cohorts, year, grids, control):
     ## get total
     total = np.zeros(shape)
     for cohort in lp_cohorts:
-        total += grids.area[year,cohort]
+        total += grids.area[cohort, year]
         
     ## aoi 
     
-    model_area_mask = grids.area.area_of_intrest()
+    model_area_mask = grids.area.area_of_interest()
     
     ## water bodies can expand if area is present and not filling entire cell
     can_expand = np.logical_and(total > 0.0, total < 1.0)
@@ -93,8 +93,6 @@ def expansion ( lp_cohorts, year, grids, control):
     ## create 2x multiplier where climate events is true
     ## True -> 1, False ->0, +1 -> 2, 1 respectivly
     climate_events = grids.climate_event[year].astype(int) + 1
-    
-    import matplotlib.pyplot as plt
     
     #~ plt.imshow(climate_events)
     #~ plt.colorbar()
@@ -124,7 +122,7 @@ def expansion ( lp_cohorts, year, grids, control):
     #~ print 'land_cohorts',land_cohorts
     land_available = np.zeros(shape)
     for cohort in land_cohorts:
-        land_available += grids.area[year,cohort]
+        land_available += grids.area[cohort, year]
         
     ## Expands to entire land area
     #~ plt.imshow(expansion)
@@ -132,10 +130,10 @@ def expansion ( lp_cohorts, year, grids, control):
     #~ plt.show()
     entire_area = np.logical_and(can_expand, expansion >= land_available)
     for cohort in lp_cohorts:
-        area = grids.area[year,cohort]
+        area = grids.area[cohort, year]
         exp = area  + (area / total) * land_available
     
-        grids.area[year,cohort + '--0'][entire_area] = exp[entire_area]
+        grids.area[cohort + '--0', year][entire_area] = exp[entire_area]
     
     for cohort in land_cohorts:
         bucket_list = [
@@ -144,7 +142,7 @@ def expansion ( lp_cohorts, year, grids, control):
         for bucket in bucket_list:
             if bucket.find('--') == -1:
                 continue
-            grids.area[year, bucket][entire_area] = 0.0
+            grids.area[bucket, year][entire_area] = 0.0
     
     #~ return 
     ## expand and reduce 
@@ -157,10 +155,10 @@ def expansion ( lp_cohorts, year, grids, control):
     
     
     for cohort in lp_cohorts:
-        area = grids.area[year, cohort + '--0']
+        area = grids.area[cohort + '--0', year]
         exp = climate_events * control['Lake_Pond_Control'][cohort + '_Expansion']
 
-        grids.area[year,cohort + '--0'][not_entire_area] = \
+        grids.area[cohort + '--0', year][not_entire_area] = \
             area[not_entire_area] + exp[not_entire_area]
     
     
@@ -168,7 +166,7 @@ def expansion ( lp_cohorts, year, grids, control):
     
     count = np.zeros(shape)
     for cohort in land_cohorts:
-        has_area = grids.area[year,cohort] > 0
+        has_area = grids.area[cohort, year] > 0
         has_area = np.logical_and(has_area, not_entire_area )
         
         count[has_area] += 1
@@ -177,35 +175,35 @@ def expansion ( lp_cohorts, year, grids, control):
     
     left_over = np.zeros(shape)
     for cohort in land_cohorts:
-        has_area = grids.area[year,cohort] > 0
+        has_area = grids.area[cohort, year] > 0
         has_area = np.logical_and(has_area, not_entire_area )
         
         
-        not_enough = np.logical_and(has_area, grids.area[year,cohort] <= fraction )
+        not_enough = np.logical_and(has_area, grids.area[cohort, year] <= fraction )
         ## has_area = np.logical_and(has_area, grids.area[year,cohort] > fraction )
         
-        grids.area[year,cohort + '--0'][ has_area ] -= fraction [ has_area ] 
+        grids.area[cohort + '--0', year][ has_area ] -= fraction [ has_area ] 
            
-        left_over[not_enough] += np.abs(grids.area[year,cohort + '--0'][ not_enough ])
-        grids.area[year,cohort+ '--0'][ not_enough ]  = 0 
+        left_over[not_enough] += np.abs(grids.area[cohort + '--0', year][ not_enough ])
+        grids.area[cohort+ '--0', year][ not_enough ]  = 0 
         
     count = np.zeros(shape)
     for cohort in lp_cohorts:
-        has_area = grids.area[year,cohort] > 0
+        has_area = grids.area[cohort,year] > 0
         has_area = np.logical_and(has_area, not_entire_area )
         count[has_area] += 1
         
     reduction = left_over/count
     
     for cohort in lp_cohorts:
-        has_area = grids.area[year,cohort] > 0
+        has_area = grids.area[cohort, year] > 0
         has_area = np.logical_and(has_area, not_entire_area )
-        grids.area[year,cohort+ '--0'][  has_area ] -= reduction[ has_area ]
+        grids.area[cohort+ '--0', year][  has_area ] -= reduction[ has_area ]
         
 
     total = np.zeros(shape)
     for cohort in lp_cohorts:
-        total += grids.area[year,cohort]
+        total += grids.area[cohort, year]
         
     normalize = total >= 1.0
     
@@ -213,11 +211,11 @@ def expansion ( lp_cohorts, year, grids, control):
         #~ print 'normalize'
     
     for cohort in lp_cohorts:
-        grids.area[year,cohort+ '--0'][ normalize ]  =  \
-            grids.area[year,cohort+ '--0'][ normalize ]/\
+        grids.area[cohort+ '--0', year][ normalize ]  =  \
+            grids.area[cohort+ '--0', year][ normalize ]/\
             total[ normalize ]
         
     
     for cohort in land_cohorts:
-        grids.area[year,cohort+ '--0'][ normalize ] = 0
+        grids.area[cohort+ '--0', year][ normalize ] = 0
 

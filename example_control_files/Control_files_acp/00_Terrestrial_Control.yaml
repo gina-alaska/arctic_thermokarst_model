@@ -16,6 +16,7 @@ Drainage_Efficiency_Figure: Yes
 ALD_Distribution: random
 ALD_Distribution_Lower_Bound: 0.3
 ALD_Distribution_Upper_Bound: 0.75
+Initial ALD: [.3,.3]
 #------------------------------------------------------------
 ALD_Distribution_Output: Yes
 ALD_Factor_Output: No

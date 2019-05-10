@@ -2,4 +2,5 @@
 *.DS_Store
 *~$*.docx
 tests/example_data
-
+*.egg-info*
+__pycache__/

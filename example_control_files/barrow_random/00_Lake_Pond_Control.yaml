@@ -111,18 +111,19 @@ Ponds_WT_M_depth_control: 10
 Ponds_WT_O_depth_control: 10
 #============================================================
 # Output Control for Lake & Pond Depth
-Lakes_Depth_Figure: Yes
-LargeLakes_WT_Y_Depth_Figure: Yes
-LargeLakes_WT_M_Depth_Figure: Yes
-LargeLakes_WT_0_Depth_Figure: Yes
-MediumLakes_WT_Y_Depth_Figure: Yes
-MediumLakes_WT_M_Depth_Figure: Yes
-MediumLakes_WT_O_Depth_Figure: Yes
-SmallLakes_WT_Y_Depth_Figure: Yes
-SmallLakes_WT_M_Depth_Figure: Yes
-SmallLakes_WT_O_Depth_Figure: Yes
-Ponds_Depth_Figure: Yes
-Ponds_WT_Y_Depth_Figure:  Yes
-Ponds_WT_M_Depth_Figure:  Yes
-Ponds_WT_O_Depth_Figure:  Yes
+figures:
+    Lakes_Depth_Figure: Yes
+    LargeLakes_WT_Y_Depth_Figure: Yes
+    LargeLakes_WT_M_Depth_Figure: Yes
+    LargeLakes_WT_0_Depth_Figure: Yes
+    MediumLakes_WT_Y_Depth_Figure: Yes
+    MediumLakes_WT_M_Depth_Figure: Yes
+    MediumLakes_WT_O_Depth_Figure: Yes
+    SmallLakes_WT_Y_Depth_Figure: Yes
+    SmallLakes_WT_M_Depth_Figure: Yes
+    SmallLakes_WT_O_Depth_Figure: Yes
+    Ponds_Depth_Figure: Yes
+    Ponds_WT_Y_Depth_Figure:  Yes
+    Ponds_WT_M_Depth_Figure:  Yes
+    Ponds_WT_O_Depth_Figure:  Yes
 

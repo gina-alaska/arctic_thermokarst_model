@@ -5,6 +5,7 @@ grids
 object to manage all grid objects
 """
 
+import numpy as np
 from area_grid import AreaGrid
 from ald_grid import ALDGrid
 from poi_grid import POIGrid
@@ -14,9 +15,10 @@ from drainage_grid import DrainageGrid
 from climate_event_grid import ClimateEventGrid
 
 from met_grid import DegreeDayGrids
+import os
 
 class ModelGrids (object):
-    """Class containg all grid objects for the ATM model
+    """Class containing all grid objects for the ATM model
         
         Parameters
         ----------
@@ -43,7 +45,7 @@ class ModelGrids (object):
             a grid of booleans where true elements are in AOI, false are not
     """
     
-    def __init__ (self, config):
+    def __init__ (self, config, logger):
         """Class containg all grid objects for the ATM model
         
         Parameters
@@ -51,28 +53,44 @@ class ModelGrids (object):
         config: dict
             configuration for grid objects
         """
-        self.area = AreaGrid(config)
-        
-        self.shape = self.area.shape
-        self.aoi = self.area.area_of_intrest()
-        # set for other objects
+        self.logger = logger
+        self.logger.add('loading AREA')
+        config['data_type'] = np.float32
+        self.area = AreaGrid(config,logger = self.logger)
+        self.logger.add('performing post AREA setup')
+        self.shape = self.area.grid_shape
+        self.aoi = self.area.area_of_interest()
         config['shape'] = self.shape
+        config['grid_shape'] = self.area.grid_shape
         config['AOI mask'] = self.aoi
         config['cohort list'] = self.area.get_cohort_list()
-        self.ald = ALDGrid(config)
-        self.poi = POIGrid(config)
-        self.ice = IceGrid(config)
-        self.lake_pond = LakePondGrid(config)
-        self.climate_event = ClimateEventGrid(config)
-        #~ print config['pond types'] + config['lake types']
-        for lpt  in config['pond types'] + config['lake types']:
-            #~ print lpt
-            mask = self.area[lpt][0] > 0 # all cells in first ts > 0
-            self.lake_pond.apply_mask(lpt, mask)
-        self.drainage = DrainageGrid(config)
+        self.logger.add('loading ALD')
+        self.ald = ALDGrid(config,logger = self.logger)
+        self.logger.add('loading POI')
+        self.poi = POIGrid(config,logger = self.logger)
+        self.logger.add('loading ICE')
+        self.ice = IceGrid(config,logger = self.logger)
+        self.logger.add('loading LAKE POND')
+        self.lake_pond = LakePondGrid(config,logger = self.logger)
+        self.logger.add('loading CLIMATE EVENT')
+        self.climate_event = ClimateEventGrid(config,logger = self.logger)
+        ## TODO:redo masks here
+        # for lpt  in config['pond types'] + config['lake types']:
+        #     #~ print lpt
+        #     mask = self.area[lpt][0] > 0 # all cells in first ts > 0
+        #     self.lake_pond.apply_mask(lpt, mask)
+        self.logger.add('loading DRAINGAGE')
+        self.drainage = DrainageGrid(config,logger = self.logger)
         
-        self.degreedays = DegreeDayGrids(config)
+        self.logger.add('loading DEGREE DAY')
+        self.degreedays = DegreeDayGrids(
+            os.path.join(
+                config['Input_dir'], config['Met_Control']['FDD_file']),
+            os.path.join(
+                config['Input_dir'], config['Met_Control']['TDD_file'])
+        )
         
+        ## what does this do?
         self.ald.setup_ald_constants(
             self.degreedays.thawing[config['start year']]
         )
@@ -85,22 +103,42 @@ class ModelGrids (object):
         int:
             number timesteps, based on length of degree day arrays
         """
-        return len(self.degreedays.thawing.history)
+        return self.degreedays.thawing.num_timesteps
         
-    def add_time_step(self, zeros = False):
-        """add a time step for all grids where nessary/possible
+    # def add_time_step(self, zeros = False):
+    #     """add a time step for all grids where nessary/possible
         
-        Parameters
-        ----------
-        zeros: bool
-            if set to true data is set as all zeros
+    #     Parameters
+    #     ----------
+    #     zeros: bool
+    #         if set to true data is set as all zeros
+    #     """
+    #     self.area.add_time_step(zeros)
+    #     self.ald.add_time_step(zeros)
+    #     self.poi.add_time_step(zeros)
+    #     self.lake_pond.increment_time_step()
+    #     self.climate_event.increment_time_step()
+        
+    def increment_time_step(self):
+        """Increment time step for all temporal grids
         """
-        self.area.add_time_step(zeros)
-        self.ald.add_time_step(zeros)
-        self.poi.add_time_step(zeros)
-        self.lake_pond.increment_time_step()
-        self.climate_event.increment_time_step()
-        
+        for grid in self.get_grid_list():
+            try:
+                self[grid].increment_time_step()
+            except AttributeError:
+                pass
+
+    def get_grid_list (self):
+        """
+        Returns
+        -------
+        list
+            list of grids in object
+        """
+        return [
+            'area', 'ald', 'poi', 'ice', 'lake pond',
+            'drainage', 'degree-day','climate event'
+        ]
     
     def __getitem__ (self, key):
         """get item

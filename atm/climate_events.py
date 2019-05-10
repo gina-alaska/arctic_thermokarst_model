@@ -9,13 +9,22 @@ def drain_lakes (drain_to, year, grids, control):
         #~ grids.lake_pond.lake_type + grids.lake_pond.ponds_types
         
     shape = grids.shape
+    # print shape
     lakes = np.zeros(shape)
-    for cohort in grids.lake_pond.lake_types:
-        lakes += grids.area[year, cohort]
+
+    pond_types = control['_FAST_get_pond_types']
+    lake_types = control['_FAST_get_lake_types']
+    lp_types = pond_types + lake_types
+                
+    # print lp_types
+
+    for cohort in lake_types:
+        # print grids.area[cohort, year].shape
+        lakes += grids.area[cohort, year]
             
     ponds = np.zeros(shape)
-    for cohort in grids.lake_pond.pond_types:
-        ponds += grids.area[year, cohort]
+    for cohort in pond_types:
+        ponds += grids.area[cohort, year]
     
     lake_rates = np.zeros(shape)
     pond_rates = np.zeros(shape)
@@ -79,19 +88,19 @@ def drain_lakes (drain_to, year, grids, control):
     idx = lakes == 1.0
     lake_rates[idx] = 0.0
     
-    for cohort in grids.lake_pond.pond_types:
+    for cohort in pond_types:
         change = np.minimum(
-            grids.area[year, cohort] * pond_rates, grids.area[year, cohort]
+            grids.area[cohort, year] * pond_rates, grids.area[cohort, year]
         )
-        grids.area[year, cohort + '--0'] = grids.area[year, cohort] - change
-        grids.area[year, drain_to + '--0'] = grids.area[year, drain_to] + change
+        grids.area[cohort + '--0', year] = grids.area[cohort, year] - change
+        grids.area[drain_to + '--0', year] = grids.area[drain_to, year]  + change
     
-    for cohort in grids.lake_pond.lake_types:
+    for cohort in lake_types:
         change = np.minimum(
-            grids.area[year, cohort] * pond_rates, grids.area[year, cohort]
+            grids.area[cohort, year] * pond_rates, grids.area[cohort, year]
         )
-        grids.area[year, cohort + '--0'] = grids.area[year, cohort] - change
-        grids.area[year, drain_to + '--0'] = grids.area[year, drain_to] + change
+        grids.area[cohort + '--0', year] = grids.area[cohort, year] - change
+        grids.area[drain_to + '--0', year] = grids.area[drain_to, year] + change
             
 
     

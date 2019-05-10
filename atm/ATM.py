@@ -1,4 +1,4 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 """
 Alaska Thermokarst Model (ATM)
 -------------------------------
@@ -20,6 +20,7 @@ defines the model domain, etc.
 See readme for more infromation
 
 """
+# import matplotlib.pyplot as plt
 
 ################################################################################
 # Authorship moved to __init__.py
@@ -46,16 +47,18 @@ import results
 from control import Control
 from grids.grids import ModelGrids
 from grids import area_grid
-from cohorts import find_canon_name
+from cohorts import find_canon_name, DISPLAY_COHORT_NAMES
 
+from logger import Logger
 
+from multigrids import figures
 
 #_______________________________________________________________________________
 class ATM(object):
     """ATM class
     """
  
-    def __init__(self, control_file):
+    def __init__(self, control_file, logger=Logger(None)):
         """Arctic Thermokarst Model(ATM) class. Sets up and run the ATM model
         
         Parameters
@@ -73,30 +76,31 @@ class ATM(object):
             # of years to run model for
         
         """
+
+        self.logger = logger
         # ----------------------
         # Simulation Start Time
         # ----------------------
         
-        print '==================='
-        print ' Initializing ATM'
-        print '==================='
+        # '==================='
+        # ' Initializing ATM'
+        # '==================='
+        self.logger.add('===== Initializing ATM =====')
         self.control = Control(control_file)
         
-        #~ print 'Control loaded'
         
         faulthandler.enable()
-        #~ clock.start(self)
         
-        print '==================='
-        print ' Creating Grids'
-        print '==================='
-        
-        self.grids = ModelGrids(self.control)
+        # '==================='
+        # ' Creating Grids'
+        # '==================='
+        self.logger.add('===== Creating Grids =====')
+        self.grids = ModelGrids(self.control, self.logger)
         #--------------------------------------
 
-        if self.control.Test_code or \
-                str(self.control.Test_code).lower() == 'yes':
-            self.stop = self.control.Test_code_duration
+        if self.control['Test_code'] or \
+                str(self.control['Test_code']).lower() == 'yes':
+            self.stop = self.control['Test_code_duration']
         else:
             self.stop = int(self.grids.get_max_time_steps())
         
@@ -111,12 +115,13 @@ class ATM(object):
         """Removes old model results from results directory if they exist,
         but saves the the archived results 
         """
-        for d in os.listdir( self.control.Output_dir ):
-            if d == 'Archive' or d == 'runtime_data':
-                continue
-            shutil.rmtree(os.path.join(self.control.Output_dir,d), True)
+        if os.path.exists(self.control['Output_dir']):
+            for d in os.listdir( self.control['Output_dir'] ):
+                if d == 'Archive' or d == 'runtime_data':
+                    continue
+                shutil.rmtree(os.path.join(self.control['Output_dir'],d), True)
             
-        pth = os.path.join(self.control.Output_dir,'Archive','*.txt')
+        pth = os.path.join(self.control['Output_dir'],'Archive','*.txt')
         text_files = glob.glob(pth)
         for f in text_files:
              os.remove(f)
@@ -125,12 +130,12 @@ class ATM(object):
     def save_figures(self):
         """saves model figures
         """
-        print "Finishing up \n-- saving figures"
+        self.logger.add("Finishing up -- saving figures")
         
-        outdir = self.control.Output_dir
-        
-        print "  -- Initial Figures"
-        for figure in self.control.Initialize_Control:
+        outdir = self.control['Output_dir']
+        start_year = self.control['start_year']
+        self.logger.add("  -- Initial Figures")
+        for figure in self.control['Initialize_Control']:
             cohort = '_'.join(figure.split('_')[:-1])
             if cohort not in self.grids.area.get_cohort_list():
                 continue              
@@ -139,23 +144,55 @@ class ATM(object):
                 os.makedirs(cohort_path)
             except:
                 pass
-            
-            if self.control.Initialize_Control['Initial_Cohort_Age_Figure'] and\
-                     self.control.Initialize_Control[figure] and \
+            disp_name = DISPLAY_COHORT_NAMES[cohort]
+            if self.control['Initialize_Control']['Initial_Cohort_Age_Figure'] and\
+                     self.control['Initialize_Control'][figure] and \
                      figure.lower().find('age') > 0:
-                self.grids.area.save_init_age_figure(cohort, cohort_path)
-            if self.control.Initialize_Control[
+                fig_args = {
+                    'title': disp_name + ' - Present In Initial Area',
+                    "categories": ['not present', 'present']
+                    }
+                self.grids.area.save_figure(
+                    cohort, start_year, 
+                    os.path.join(cohort_path, cohort+'_age.png'), 
+                    figure_func=figures.categorical_threshold, 
+                    figure_args=fig_args
+                )
+            
+            if self.control['Initialize_Control'][
                         'Normalized_Cohort_Distribution_Figure'
                      ] and\
-                     self.control.Initialize_Control[figure] and \
+                     self.control['Initialize_Control'][figure] and \
                      figure.lower().find('normal') > 0:
-                self.grids.area.save_init_normal_figure(cohort, cohort_path)
-            if self.control.Initialize_Control[
+                fig_args = {
+                    'title': disp_name + ' - Initial Fractional Area',
+                    # "categories": ['not present', 'present']
+                     'vmin': 0, 'vmax': 1,
+                    }
+                self.grids.area.save_figure(
+                    cohort, start_year, 
+                    os.path.join(cohort_path, cohort+'_fractional_cohorts.png'), 
+                    figure_func=figures.default, 
+                    figure_args=fig_args
+                )
+
+            if self.control['Initialize_Control'][
                         'Initial_Cohort_Distribution_Figure'
                      ] and\
-                     self.control.Initialize_Control[figure] and \
+                     self.control['Initialize_Control'][figure] and \
                      figure.lower().find('figure') > 0:
-                self.grids.area.save_init_dist_figure(cohort, cohort_path)
+                fig_args = {
+                    'title': disp_name + ' - Initial Fractional Area',
+                    # "categories": ['not present', 'present']
+                    #  'vmin': 0, 'vmax': 1,
+                    }
+                self.grids.area.save_figure(
+                    cohort, start_year, 
+                    os.path.join(cohort_path, 'Initial_' + cohort +'.png'), 
+                    figure_func=figures.threshold, 
+                    figure_args=fig_args
+                )
+                # self.grids.area.save_init_dist_figure(cohort, cohort_path)
                     
             
         init_path = os.path.join( outdir, 'Initialization')
@@ -164,40 +201,73 @@ class ATM(object):
         except:
             pass
             
-        print "  -- Terrestrial Figures"
-        print "    -- Ice_Distribution_Figure"
-        if self.control.Terrestrial_Control['Ice_Distribution_Figure']:
-            self.grids.ice.figure(
-                os.path.join(init_path,'Ground_Ice_Content.png')
+        self.logger.add("  -- Terrestrial Figures")
+        self.logger.add("    -- Ice_Distribution_Figure")
+        if self.control['Terrestrial_Control']['Ice_Distribution_Figure']:
+            fig_args = {
+                'title': 'Ground Ice Content',
+                "categories": ['none'] + [t for t in self.grids.ice.ice_types],
+                'vmin': 0, 'vmax': 4,
+            }
+            self.grids.ice.save_figure( 
+                os.path.join(init_path,'Ground_Ice_Content.png'), 
+                figures.categorical, fig_args
             )
-            self.grids.ice.binary(
-                os.path.join(init_path,'Ground_Ice_Content.bin')
-            )
-        print "    -- Drainage_Efficiency_Figure"
-        if self.control.Terrestrial_Control['Drainage_Efficiency_Figure']:
-            self.grids.drainage.figure(
-                os.path.join(init_path,'Drainage_efficiency.png')
-            )
-            self.grids.drainage.binary(
-                os.path.join(init_path,'Drainage_efficiency.bin')
-            )
+            # self.grids.ice.show_figure(figures.categorical, fig_args)
+
+            # self.grids.ice.binary(
+            #     os.path.join(init_path,'Ground_Ice_Content.bin')
+            # )
+        self.logger.add("    -- Drainage_Efficiency_Figure")
+        if self.control['Terrestrial_Control']['Drainage_Efficiency_Figure']:
+            fig_args = {
+                'title': 'Drainage efficiency',
+                "categories": ['none', 'above', 'below'],
+                'vmin': 0, 'vmax': 4,
+                'cmap': 'Greys'    
+                }
+            # print self.grids.drainage.as_numbers()
+            self.grids.drainage.save_figure( os.path.join(init_path,'Drainage_efficiency.png'), figures.categorical, fig_args)
+            # self.grids.drainage.show_figure(figures.categorical, fig_args)
+
+            # self.grids.drainage.binary(
+            #     os.path.join(init_path,'Drainage_efficiency.bin')
+            # )
         
-        print "    -- ALD_Distribution_Output"
-        if self.control.Terrestrial_Control['ALD_Distribution_Output']:
-            self.grids.ald.init_ald_figure(
-                os.path.join(init_path,'Initial_ALD.png')
+        self.logger.add( "    -- ALD_Distribution_Output")
+        if self.control['Terrestrial_Control']['ALD_Distribution_Output']:
+            fig_args = {
+                'title': 'Initial Active Layer Depth',
+                'cbar_extend': 'max',
+                # "categories": ['none', 'above', 'below'],
+                # 'vmin': 0, 'vmax': 4,
+                'cmap': 'bone'    
+                }
+            self.grids.ald.save_figure('ALD', start_year, 
+                os.path.join(init_path,'Initial_ALD.png'),
+                figure_args = fig_args
             )
-            self.grids.ald.init_ald_binary(
-                os.path.join(init_path,'Initial_ALD.bin')
+            # self.grids.ald.init_ald_binary(
+            #     os.path.join(init_path,'Initial_ALD.bin')
+            # )
+        self.logger.add("    -- ALD_Factor_Output")
+        if self.control['Terrestrial_Control']['ALD_Factor_Output']:
+
+            fig_args = {
+                'title': 'Initial Active Layer Depth Constants',
+                'cbar_extend': 'max',
+                # "categories": ['none', 'above', 'below'],
+                # 'vmin': 0, 'vmax': 4,
+                'cmap': 'bone'    
+                }
+            self.grids.ald.save_figure('ALD', start_year, 
+                os.path.join(init_path,'Active_Layer_Factor.png'),
+                figure_args = fig_args,
+                data = self.grids.ald.ald_constants
             )
-        print "    -- ALD_Factor_Output"
-        if self.control.Terrestrial_Control['ALD_Factor_Output']:
-            self.grids.ald.ald_constants_figure(
-                os.path.join(init_path,'Active_Layer_Factor.png')
-            )
-            self.grids.ald.ald_constants_binary(
-                os.path.join(init_path,'Active_Layer_Factor.bin')
-            )
+            # self.grids.ald.ald_constants_binary(
+            #     os.path.join(init_path,'Active_Layer_Factor.bin')
+            # )
         
         dom_path = os.path.join( outdir, 'All_cohorts', 'year_cohorts')
         try: 
@@ -205,65 +275,119 @@ class ATM(object):
         except:
             pass
         
-        print "    -- Dominant Cohort Figure"
-        if self.control.Terrestrial_Control['Figure']:
-            vid = self.control.Terrestrial_Control['Movie']
-            self.grids.area.dominate_cohort_timeseries( dom_path, vid)
+        self.logger.add("    -- Dominant Cohort Figure")
+        if self.control['Terrestrial_Control']['Figure']:
+            dc_data = self.grids.area.create_dominate_cohort_dataset()
+            fig_args = {
+                'title': '',
+                'cbar_extend': 'max',
+                "categories": sorted(dc_data.cohort_list),
+                # 'vmin': 0, 'vmax': 4,
+                'cmap': 'viridis', 
+                'ax_labelsize': 5 ,  
+                }
+
+
+            for year in range(start_year, start_year + self.stop-1):
+                fig_args['title'] = 'Dominant Cohort -' + str(year)
+                dc_data.save_figure(
+                    year, 
+                    os.path.join(
+                        dom_path,
+                        'Dominant_Cohort_'+ str(year) + '.png'
+                    ),
+                    figures.categorical, 
+                    fig_args
+                )
+                
+            # vid = self.control['Terrestrial_Control']['Movie']
+            # self.grids.area.dominate_cohort_timeseries( dom_path, vid)
+            
         
         
         
-        print "  -- Met Figures"  
-        print "    -- Degree Days"
+        self.logger.add( "  -- Met Figures" )
+        self.logger.add( "    -- Degree Days")
         dd_path = os.path.join( outdir, 'Initialization', 'Degree_Days')
         try: 
             os.makedirs(dd_path)
         except:
             pass
-        if self.control.Met_Control['Degree_Day_Output']:
-            tdd = self.control.Met_Control['TDD_Output']
+        if self.control['Met_Control']['Degree_Day_Output']:
+            tdd = self.control['Met_Control']['TDD_Output']
             try: 
                 os.makedirs(os.path.join(dd_path, tdd))
             except:
                 pass
-            fdd = self.control.Met_Control['FDD_Output']
+            fdd = self.control['Met_Control']['FDD_Output']
             try: 
                 os.makedirs(os.path.join(dd_path, fdd))
             except:
                 pass
             
-            self.grids.degreedays.thawing.figures(
-                    os.path.join(dd_path, tdd), (0, 1250)
+            fig_args = {
+                'title': '',
+                'cbar_extend': 'both'
+                }
+
+
+            for year in range(start_year, start_year + self.stop-1):
+                fig_args['title'] = 'Thawing Degree Days -' + str(year)
+                fig_args['vmin'] = 0
+                fig_args['vmax'] = 1250
+                self.grids.degreedays.thawing.save_figure(
+                    year, 
+                    os.path.join(dd_path, tdd, 'tdd_'+ str(year) + '.png'),
+                    figures.default, 
+                    fig_args
                 )
-            self.grids.degreedays.freezing.figures(
-                    os.path.join(dd_path, fdd), (-6000, -2000)
+                fig_args['title'] = 'Freezing Degree Days -' + str(year)
+                fig_args['vmin'] = -6000
+                fig_args['vmax'] = -2000
+                self.grids.degreedays.freezing.save_figure(
+                    year, 
+                    os.path.join(dd_path, fdd, 'fdd_'+ str(year) + '.png'),
+                    figures.default, 
+                    fig_args
                 )
+
             
         
         lp_types = \
-                self.control.get_pond_types() + self.control.get_lake_types()    
-        print "  -- Lake Pond Figures"
-        for figure in self.control.Lake_Pond_Control:
-
+                self.control['_FAST_get_pond_types'] +\
+                self.control['_FAST_get_lake_types']   
+        self.logger.add( "  -- Lake Pond Figures" )
+        for figure in self.control['Lake_Pond_Control']['figures']:
+            if not self.control['Lake_Pond_Control']['figures'][figure]:
+                continue
             lpt = '_'.join(figure.split('_')[:-2])
-            #~ print lpt, lp_types
             if lpt not in lp_types:
                 continue 
             
-            print "    -- " + lpt + ' Depth'
+            self.logger.add("    -- " + lpt + ' Depth')
             path = os.path.join(outdir, lpt)
             try: 
                 os.makedirs(path)
             except:
                 pass
-            self.grids.lake_pond.depth_figure(
-                lpt, os.path.join(path,'Initial_'+lpt+'_Depth.png') , 1
+            fig_args = {
+                'title': 
+                    'Initial Depth ('+str(start_year)+') \n' + \
+                    DISPLAY_COHORT_NAMES[lpt],
+                # 'cbar_extend': 'both',
+                'mask': self.grids.aoi,
+                }
+            self.grids.lake_pond.save_figure(
+                lpt+'_depth', start_year,
+                os.path.join(path,'Initial_'+lpt+'_Depth.png'),
+                figure_args=fig_args
             )
-        
-        print "  -- Cohort Figures/Video"
-        for control in sorted(self.control.init_control['Cohorts']):
-            if type(self.control.init_control['Cohorts'][control]) is str:
+
+        self.logger.add("  -- Cohort Figures/Video")
+        for control in sorted(self.control['cohorts']):
+            if type(self.control['cohorts'][control]) is str:
                 continue
-            if not self.control.init_control['Cohorts'][control]['Figures']:
+            if not self.control['cohorts'][control]['Figures']:
                 continue
             
             cohort = '_'.join(control.split('_')[:-1])
@@ -272,9 +396,31 @@ class ATM(object):
                 os.makedirs(path)
             except:
                 pass
-            vid = self.control.init_control['Cohorts'][control]['Movie']
-            print "    -- " + cohort + " Figures/Video"
-            self.grids.area.save_cohort_timeseries(cohort, path, vid)
+            vid = self.control['cohorts'][control]['Movie']
+            self.logger.add( "    -- " + cohort + " Figures/Video")
+            fig_args = {
+                'title': '',
+                # 'cbar_extend': 'both'
+                'mask': self.grids.aoi,
+                'vmin': 0,
+                'vmax': 1,
+                }
+
+
+            for year in range(start_year, start_year + self.stop-1):
+                fig_args['title'] = \
+                    DISPLAY_COHORT_NAMES[cohort] +' - ' + str(year)
+                self.grids.area.save_figure(
+                    cohort, year, 
+                    os.path.join(path, cohort + '_Fractional_Area_'+ str(year)),
+                    figures.default, 
+                    fig_args
+                )
+                
+
+            # self.grids.area.save_cohort_timeseries(cohort, path, vid)
+
+
             
         
     def archive(self, name):
@@ -285,14 +431,14 @@ class ATM(object):
         name: str
             name of archive
         """
-        path = os.path.join( self.control.Output_dir, 'Archive')
+        path = os.path.join( self.control['Output_dir'], 'Archive')
         try:
             os.makedirs(path)
         except:
             pass
         archive_file = tarfile.open(os.path.join(path,name), mode='w:gz')
         
-        control = self.control.Archive_data
+        control = self.control['Archive_data']
         
         if control['Simulation_Summary']:
             pth = os.path.join(path,'*.txt')
@@ -302,11 +448,11 @@ class ATM(object):
                 
         if control['Met'] and  control['Figures']:
             for d in [
-                self.control.Met_Control['TDD_Output'], 
-                self.control.Met_Control['FDD_Output']
+                self.control['Met_Control']['TDD_Output'], 
+                self.control['Met_Control']['FDD_Output']
             ]:
                 pth = os.path.join(
-                    self.control.Output_dir,
+                    self.control['Output_dir'],
                     'Initialization','Degree_Days',d, '*.png'
                 )
                 text_files = glob.glob(pth)
@@ -315,10 +461,10 @@ class ATM(object):
                         'Initialization','Degree_Days',d,os.path.split(f)[1]
                     ))
         
-        archive_file.add(self.control.Control_dir, 'Control_Files')
-        archive_file.add(self.control.Control_dir, 'runtime_data')
+        archive_file.add(self.control['Control_dir'], 'Control_Files')
+        archive_file.add(self.control['Control_dir'], 'runtime_data')
         
-        for directory in os.listdir(self.control.Output_dir):
+        for directory in os.listdir(self.control['Output_dir']):
             if directory == 'Archive':
                 continue
             if not control['All_Cohorts']:
@@ -331,13 +477,13 @@ class ATM(object):
                     if control['Other_Cohorts']:
                         continue
             
-            pth = os.path.join( self.control.Output_dir,directory,'*.bin')
+            pth = os.path.join( self.control['Output_dir'],directory,'*.bin')
             text_files = glob.glob(pth)
             for f in text_files:
                 archive_file.add(f, os.path.join(directory,os.path.split(f)[1]))
             
             pth = os.path.join(
-                self.control.Output_dir,directory, "year_cohorts",'*.bin'
+                self.control['Output_dir'],directory, "year_cohorts",'*.bin'
             )
             text_files = glob.glob(pth)
             for f in text_files:
@@ -348,13 +494,13 @@ class ATM(object):
                 )
             if not control['Figures']:
                 continue
-            pth = os.path.join( self.control.Output_dir,directory,'*.png')
+            pth = os.path.join( self.control['Output_dir'],directory,'*.png')
             text_files = glob.glob(pth)
             for f in text_files:
                 archive_file.add(f, os.path.join(directory,os.path.split(f)[1]))
             
             pth = os.path.join(
-                self.control.Output_dir,directory, "year_cohorts",'*.png'
+                self.control['Output_dir'],directory, "year_cohorts",'*.png'
             )
             text_files = glob.glob(pth)
             for f in text_files:
@@ -363,13 +509,13 @@ class ATM(object):
                         directory,"year_cohorts",os.path.split(f)[1]
                     )
                 )
-            pth = os.path.join( self.control.Output_dir,directory,'*.mp4')
+            pth = os.path.join( self.control['Output_dir'],directory,'*.mp4')
             text_files = glob.glob(pth)
             for f in text_files:
                 archive_file.add(f, os.path.join(directory,os.path.split(f)[1]))
             
             pth = os.path.join(
-                self.control.Output_dir,directory, "year_cohorts",'*.mp4'
+                self.control['Output_dir'],directory, "year_cohorts",'*.mp4'
             )
             text_files = glob.glob(pth)
             for f in text_files:
@@ -381,18 +527,17 @@ class ATM(object):
         archive_file.close()
             
             
-    def on_screen(self, start_time, end_time):
-        """print results on screan
+    def to_screen(self, start_time, end_time):
+        """print results on screen
         
         Parameters
         ----------
         start_time: datetime.datetime
         end_time: datetime.datetime
         """
-        r = results.construnct_results(self, start_time, end_time)
-        print r
+        self.logger.add(results.as_string(self, start_time, end_time), 'info')
     
-    def on_file(self,name, start_time, end_time):
+    def to_file(self,name, start_time, end_time):
         """save results to file
         
         Parameters
@@ -400,9 +545,9 @@ class ATM(object):
         start_time: datetime.datetime
         end_time: datetime.datetime
         """
-        r = results.construnct_results(self, start_time, end_time)
+        r = results.as_string(self, start_time, end_time)
     
-        path = os.path.join( self.control.Output_dir, 'Archive')
+        path = os.path.join( self.control['Output_dir'], 'Archive')
         try:
             os.makedirs(path)
         except:
@@ -417,22 +562,37 @@ class ATM(object):
         #====================================================
         # Initialization Process
         #====================================================
-        
+
+        mode = ''
+        try: 
+            if self.control['use_jit'] == "yes":
+                self.logger.add("use_jit set to yes, starting precompilation")
+                mode = '_jit'
+                for f in checks.jit_precompile:
+                    f()
+                self.logger.add("finished precompilation")
+            elif self.control['use_jit'] == "cuda":
+                self.logger.add("use_jit set to cuda, starting precompilation")
+                mode = '_cuda'
+                for f in checks.cuda_precompile:
+                    f()
+                self.logger.add("finished precompilation")
+        except KeyError:
+            pass
+
         start_time = datetime.datetime.now()
         
     
-        print '=================================================='
-        print '            Starting the MAIN LOOP '
-        print '=================================================='
+        # '=================================================='
+        # '            Starting the MAIN LOOP '
+        # '=================================================='
 
-
-            
-        self.run_model(self.control.Transition_order)
-
-
-        print '=================================================='
-        print '            Finished the MAIN LOOP '
-        print '=================================================='
+        self.logger.add('===== Starting the MAIN LOOP ======')
+        self.run_model(self.control['Transition_order'], mode)
+        self.logger.add('===== Finished the MAIN LOOP ======')
+        # '=================================================='
+        # '            Finished the MAIN LOOP '
+        # '=================================================='
 
 
         # -------------------
@@ -449,36 +609,51 @@ class ATM(object):
         
         if self.control['Results_onscreen'] or \
                 self.control['Results_onscreen'].lower() == 'yes':
-            self.on_screen(start_time, end_time)
-        if self.control.Archive_simulation or \
-                self.control.Archive_simulation.lower() == 'yes':
-            name = t +'_' +self.control.Simulation_name + '.txt'
-            self.on_file(name, start_time, end_time)
-            
+            self.to_screen(start_time, end_time)
+        if self.control['Archive_simulation'] or \
+                self.control['Archive_simulation'].lower() == 'yes':
+            name = t +'_' +self.control['Simulation_name'] + '.txt'
+            self.to_file(name, start_time, end_time)
+        
         self.save_figures()
 
-        name = t +'_' + self.control.Simulation_name +".tar.gz"
+        name = t +'_' + self.control['Simulation_name'] +".tar.gz"
         self.archive(name)
 
-        print '----------------------------------------'
-        print '        Simulation Complete             '
-        print '----------------------------------------'        
 
-    def run_model(self, cohort_list):
+        self.logger.add('===== Simulation Complete ======')
+        # '----------------------------------------'
+        # '        Simulation Complete             '
+        # '----------------------------------------'        
+
+    def run_model(self, cohort_list, mode = ''):
         """run actual model
         
         Parameters
         ----------
         cohort_list ordered list of cohorsts to run
         """
-        init_year = self.control['initilzation year']
+        self.control['global jit options'] = "yes"
+
+        init_year = self.control['initialization year']
         init_tdd = self.grids.degreedays.thawing[init_year+1]
+
+        pond_types = self.control['_FAST_get_pond_types']
+        lp_types = \
+                pond_types +\
+                self.control['_FAST_get_lake_types']
         
         ## ts zero is initial data state 
         ## ts one is frist year to make chages
+        try:
+            log_ts = self.control['log_each_time_step']
+        except KeyError:
+            log_ts = False
+
         for time in range(1, self.stop):
 
-            print '    at time step: ', time
+            if log_ts:
+                self.logger.add('    at time step: '+ str(time))
             
             current_year = init_year + time
 
@@ -488,9 +663,11 @@ class ATM(object):
     
                 ### Loop through each of the cohort checks for area
                 #~ active_layer_depth.active_layer_depth(self, time, element)
-            self.grids.climate_event.create_climate_events()
+            self.grids.climate_event.create_climate_events(self.logger,log_ts)
                 
-            self.grids.add_time_step()
+            # self.grids.add_time_step()
+            self.grids.increment_time_step()
+            self.grids.area[current_year] = self.grids.area[current_year-1]
             
            
             climate_events.drain_lakes(
@@ -508,54 +685,54 @@ class ATM(object):
             ## set current ice thickness(depth)
             current_fdd = self.grids.degreedays.freezing[current_year]
             self.grids.lake_pond.calc_ice_depth(current_fdd)
-            
+
             ## transition list
             for cohort in cohort_list:
-               
                 cohort_control = cohort + '_Control'
                 try:
                     check_type = \
-                        self.control['Cohorts'][cohort_control]\
+                        self.control['cohorts'][cohort_control]\
                         ['Transition_check_type'].lower()
                 except KeyError as e:
-                    #~ print e    
                     check_type = 'base'
 
                 name = find_canon_name(cohort)
-                checks.check_metadata[check_type](
-                    name,  current_year, self.grids, self.control
-                )
-            
-            lp = self.grids.lake_pond.lake_types + \
-                self.grids.lake_pond.pond_types 
+                
+                try:
+                    checks.check_metadata[check_type + mode](
+                        name,  current_year, self.grids, self.control
+                    )
+                except KeyError:
+                    self.logger.add("using fallback for " + check_type + mode)
+                    checks.check_metadata[check_type](
+                        name,  current_year, self.grids, self.control
+                    )
+
             lake_pond_expansion.expansion(
-                lp, current_year, self.grids, self.control
+                lp_types, current_year, self.grids, self.control
             )
             lake_pond_expansion.infill(
-                self.grids.lake_pond.pond_types, current_year, 
+                pond_types, current_year, 
                 self.grids, self.control
             )
                 
+
+
+
             cohort_end = \
                 self.grids.area.get_all_cohorts_at_time_step().sum(0)
             
             diff = abs(cohort_start - cohort_end)
-            
+           
             #~ ## check mass balance, MOVE to function?
             if (diff > 0.1).any():
-                import pickle
                 
-                with open('err.pkl','wb') as e:
-                    pickle.dump(self.grids, e )
+                # with open('err.pkl','wb') as e:
+                #     pickle.dump(self.grids, e )
                 
                 location = np.where(diff > 0.1)[0]
-                print ('Mass Balance chage greater thatn 10 % in '
-                        ''+ str(len(location)) + ' cells ')
-                
-                
-                print location
-                print 'start: ', cohort_start[location[0]]
-                print 'end: ', cohort_end[location[0]]
+                self.logger.add('Mass Balance change greater thatn 10 % in '
+                        ''+ str(len(location)) + ' cells ', 'error')
                 
                 sys.exit()
                 
@@ -564,17 +741,14 @@ class ATM(object):
                 self.grids.area.check_mass_balance()
                 self.grids.area.check_mass_balance(current_year - init_year)
             except area_grid.MassBalanceError as e:
-                #~ print e
                 if str(e) == 'mass balance problem 1':
-                    print 'mass has been added'
-                    print 'start: ', cohort_start.sum()
-                    print 'end: ', cohort_end.sum()
+                    self.logger.add('mass has been added', 'error')
                     for cohort in sorted(self.grids.area.key_to_index):
                         if cohort.find('--') != -1:
                             continue
                             
-                        s = self.grids.area[init_year,cohort].sum()
-                        e = self.grids.area[current_year,cohort].sum()
+                        s = self.grids.area[cohort, init_year,].sum()
+                        e = self.grids.area[cohort, current_year].sum()
                         
                         if s == e:
                             d = 'equal'
@@ -582,34 +756,49 @@ class ATM(object):
                             d = 'growth'
                         else:
                             d = 'reduction'
-                        print cohort, 'start:', s, 'end:', e, d
+                        self.logger.add(
+                            cohort + 'start:'+ s+ 'end:'+ e+ d, 
+                            'error'
+                        )
                 else:
-                    print 'mass has been removed'
+                    self.logger.add('mass has been removed')
                 sys.exit()
                         
-                
-    
         
-        
-        print 'start: ', cohort_start.sum()
-        print 'end: ', cohort_end.sum()
-        for cohort in sorted(self.grids.area.key_to_index):
-            if cohort.find('--') != -1:
-                continue
+        ### debug stuff
+        # print 'start: ', cohort_start.sum()
+        # print 'end: ', cohort_end.sum()
+        # for cohort in sorted(self.grids.area.key_to_index):
+        #     if cohort.find('--') != -1:
+        #         continue
                 
-            s = self.grids.area[init_year,cohort].sum()
-            e = self.grids.area[current_year,cohort].sum()
+        #     s = self.grids.area[cohort, init_year].sum()
+        #     e = self.grids.area[cohort, current_year].sum()
             
-            if s == e:
-                d = 'equal'
-            elif s < e:
-                d = 'growth'
-            else:
-                d = 'reduction'
-            print cohort, 'start:', s, 'end:', e, d
+        #     if s == e:
+        #         d = 'equal'
+        #     elif s < e:
+        #         d = 'growth'
+        #     else:
+        #         d = 'reduction'
+        #     print cohort, 'start:', s, 'end:', e, d
+
+    def __del__(self):
+        """
+        destructor
+        """
+    
+        # print(self.control['save_log_to'])
+        try:
+            if self.control['save_log_to']:
+                self.logger.save(self.control['save_log_to'], False)
+        except KeyError:
+            pass
             
 #_______________________________________________________________________________
 
 ## runs model from comand line
 if __name__ == "__main__":
-    Variable = ATM(sys.argv[1])
+    Variable = ATM(sys.argv[1], Logger(None, also_print=True))
+    # del(Variable)
+

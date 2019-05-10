@@ -4,10 +4,10 @@ Stack Rasters
 
 tools for stacking rasters into multitemporal data
 """
-try:
-    from atm_io import raster
-except ImportError:
-    from ..atm_io import raster
+# try:
+from atm.images import raster
+# except ImportError:
+#     from ..atm_io import raster
 
 import numpy as np
 

@@ -1,0 +1,167 @@
+#================================================================
+#              START MODEL CONTROL FILE
+#================================================================
+
+
+#================================================================
+# INFORMATION NEEDED TO SET UP THE SIMULATION DIRECTORIES
+#================================================================
+# Simulation Area (which code to run): .
+#       [barrow, arctic_coast, tanana, yukon, AIEM, ngee]
+Simulation_area: Barrow
+#----------------------------------------------------------------
+# Specify location of computer code on local computer
+Run_dir: /Users/rawser/atm/atm_data/
+#----------------------------------------------------------------
+# Data Input and Output Directories
+Input_dir: /Users/rawser/atm/atm_data/Input/Barrow/
+Output_dir: ./Output/Barrow_test/
+Control_dir: ./example_control_files/barrow_random/
+#----------------------------------------------------------------
+# Name of "Notes Files" containing additional information
+#   -- "Blank" is an empty file.
+#~ Notes_file: 2015_August_24_ForCathy
+#----------------------------------------------------------------
+
+#================================================================
+# INFORMATION NEEDED FOR RESULTS OUTPUT AND ARCHIVING
+#================================================================
+# Show Results Summary on Computer Screen
+Results_onscreen: Yes
+#----------------------------------------------------------------
+# Is the simulation archived (Yes, No)? If 'Yes     archive name.
+Archive_simulation: Yes
+Simulation_name: Historical_1901-2006
+#----------------------------------------------------------------
+# File Name Containing Archiving Information
+#---------------------------------------------------------------
+Archive_data: 00_archive_data.yaml
+    
+#----------------------------------------------------------------
+# TEST CODE CONTROL (short simulations for testing purposes)
+Test_code: yes
+Test_code_duration: 10
+
+
+#================================================================
+# INFORMATION NEEDED TO RUN SIMULATION
+#================================================================
+
+# where does the model start at?
+initialization_year: 1900
+start_year: 1901
+
+#----------------------------------------------------------------
+# Model resolution [meters]
+X_model_resolution: 1000.
+Y_model_resolution: 1000.
+
+# Information needed to initialize the model
+Initialize_Control: 00_Initialize_Control.yaml ## rename initialization figures?
+
+# File Name Containing Meteorologic Data Parameters & Variables
+Met_Control: 00_Met_Control.yaml
+#----------------------------------------------------------------
+# File Names Containing Terrestrial Cohort Parameters & Variables
+#    Note that Terrestial Control location should be located
+#    in the ../Input/Simulation (Barrow,Tanana, etc) directory
+#------------------------------------------------------------------------
+Terrestrial_Control: 00_Terrestrial_Control.yaml
+
+#~ Landcover: 
+    # Flag to read & write geotiff files for landcover information
+    #~ Read_Geotiff: Yes # Not implmented
+    #~ Write_Geotiff: No # Not implmented
+Initial_Cohort_List: 00_Barrow_Initial_Cohort_List.yaml
+
+Lake_Pond_Control: 00_Lake_Pond_Control.yaml
+    
+Transition_order:
+    - Meadow_WT_Y     
+    - Meadow_WT_M     
+    - Meadow_WT_O
+    - LCP_WT_Y
+    - LCP_WT_M
+    - LCP_WT_O
+    - CLC_WT_Y
+    - CLC_WT_M
+    - CLC_WT_O
+    - FCP_WT_Y
+    - FCP_WT_M
+    - FCP_WT_O
+    - HCP_WT_Y
+    - HCP_WT_M
+    - HCP_WT_O
+    - Ponds_WT_Y
+    - Ponds_WT_M
+    - Ponds_WT_O
+    - LargeLakes_WT_Y
+    - LargeLakes_WT_M     
+    - LargeLakes_WT_O
+    - MediumLakes_WT_Y
+    - MediumLakes_WT_M     
+    - MediumLakes_WT_O
+    - SmallLakes_WT_Y
+    - SmallLakes_WT_M     
+    - SmallLakes_WT_O
+
+
+#========================================================================
+#cohort and transition contol
+#========================================================================
+Cohorts:
+    #~ Wet_NPG_Control: 00_Wet_NPG_Control.yaml
+    #~ Wet_LCP_Control: 00_Wet_LCP_Control.yaml
+    #~ Wet_CLC_Control: 00_Wet_CLC_Control.yaml
+    #~ Wet_FCP_Control: 00_Wet_FCP_Control.yaml
+    #~ Wet_HCP_Control: 00_Wet_HCP_Control.yaml
+    # Below are terrestrial cohorts to be used in the new Barrow/ACP products (2 June 2016)
+    CLC_WT_M_Control: 00_CLC_WT_M_Control.yaml
+    CLC_WT_O_Control: 00_CLC_WT_O_Control.yaml
+    CLC_WT_Y_Control: 00_CLC_WT_Y_Control.yaml
+    CoastalWaters_WT_O_Control: 00_CoastalWaters_WT_O_Control.yaml
+    DrainedSlope_WT_M_Control: 00_DrainedSlope_WT_M_Control.yaml
+    DrainedSlope_WT_O_Control: 00_DrainedSlope_WT_O_Control.yaml
+    DrainedSlope_WT_Y_Control: 00_DrainedSlope_WT_Y_Control.yaml
+    FCP_WT_M_Control: 00_FCP_WT_M_Control.yaml
+    FCP_WT_O_Control: 00_FCP_WT_O_Control.yaml
+    FCP_WT_Y_Control: 00_FCP_WT_Y_Control.yaml
+    HCP_WT_M_Control: 00_HCP_WT_M_Control.yaml
+    HCP_WT_O_Control: 00_HCP_WT_O_Control.yaml
+    HCP_WT_Y_Control: 00_HCP_WT_Y_Control.yaml
+    LCP_WT_M_Control: 00_LCP_WT_M_Control.yaml
+    LCP_WT_O_Control: 00_LCP_WT_O_Control.yaml
+    LCP_WT_Y_Control: 00_LCP_WT_Y_Control.yaml
+    Meadow_WT_M_Control: 00_Meadow_WT_M_Control.yaml
+    Meadow_WT_O_Control: 00_Meadow_WT_O_Control.yaml
+    Meadow_WT_Y_Control: 00_Meadow_WT_Y_Control.yaml
+    NoData_WT_O_Control: 00_NoData_WT_O_Control.yaml
+    SandDunes_WT_M_Control: 00_SandDunes_WT_M_Control.yaml
+    SandDunes_WT_O_Control: 00_SandDunes_WT_O_Control.yaml
+    SandDunes_WT_Y_Control: 00_SandDunes_WT_Y_Control.yaml
+    SaturatedBarrens_WT_M_Control: 00_SaturatedBarrens_WT_M_Control.yaml
+    SaturatedBarrens_WT_O_Control: 00_SaturatedBarrens_WT_O_Control.yaml
+    SaturatedBarrens_WT_Y_Control: 00_SaturatedBarrens_WT_Y_Control.yaml
+    Shrubs_WT_O_Control: 00_Shrubs_WT_O_Control.yaml
+    Urban_WT_O_Control: 00_Urban_WT_O_Control.yaml
+    #----------------------------------------------------------------
+    # File Name Containing Lake/Pond/River Parameters & Variables
+    LargeLakes_WT_M_Control: 00_LargeLakes_WT_M_Control.yaml
+    LargeLakes_WT_O_Control: 00_LargeLakes_WT_O_Control.yaml
+    LargeLakes_WT_Y_Control: 00_LargeLakes_WT_Y_Control.yaml
+    MediumLakes_WT_M_Control: 00_MediumLakes_WT_M_Control.yaml
+    MediumLakes_WT_O_Control: 00_MediumLakes_WT_O_Control.yaml
+    MediumLakes_WT_Y_Control: 00_MediumLakes_WT_Y_Control.yaml
+    SmallLakes_WT_M_Control: 00_SmallLakes_WT_M_Control.yaml
+    SmallLakes_WT_O_Control: 00_SmallLakes_WT_O_Control.yaml
+    SmallLakes_WT_Y_Control: 00_SmallLakes_WT_Y_Control.yaml
+    Ponds_WT_M_Control: 00_Ponds_WT_M_Control.yaml
+    Ponds_WT_O_Control: 00_Ponds_WT_O_Control.yaml
+    Ponds_WT_Y_Control: 00_Ponds_WT_Y_Control.yaml
+    Rivers_WT_M_Control: 00_Rivers_WT_M_Control.yaml
+    Rivers_WT_O_Control: 00_Rivers_WT_O_Control.yaml
+    Rivers_WT_Y_Control: 00_Rivers_WT_Y_Control.yaml
+
+#================================================================
+# END CONTROL FILE
+#================================================================

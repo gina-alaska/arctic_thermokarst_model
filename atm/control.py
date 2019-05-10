@@ -5,13 +5,14 @@ Control
 for manageing control confguration in the ATM
 
 """
-from atm_io import control_file
+# from atm.io import control_file
 import os
 
 from cohorts import find_canon_name
 from grids.ice_grid import ICE_TYPES
 
 import yaml
+
 
 class ControlKeyError (Exception):
     """Raised if key being set is in control dict"""
@@ -25,264 +26,207 @@ class ControlSetError (Exception):
 class ControlInvalidRequest (Exception):
     """Raised if control value requested is bad"""
 
-class Control(object):
+
+class ControlInitFailure (Exception):
+    """Raised if control initialization fails"""
+
+class Control(dict):
     """ Class doc """
-    
-    def __init__ (self, main_control_file):
-        """class for managing  control configuration
-        
+
+    def __init__(self, arg, **kwargs):
+        """Function Docs 
         Parameters
         ----------
-        main_control_file: path
-            path to main control file
-            
-        Attributes
-        ----------
-        init_control: dict
-            initial control values read from the Control files
-        new_control:
-            control values set at runtime
-        """
-        self.init_control = self.load({}, main_control_file)
-        
-        #~ from pprint import pprint
-        #~ pprint(self.init_control)
-        
-        self.new_control = {}
-        
-        if not os.path.exists(self['data path']):
-            os.makedirs(self['data path'])
-        
-    def load (self, control, in_file):
-        """Reads control files, recursivly
-        
-        Parameters
-        ----------
-        control: dict
-            control dict to update
-        in_file:
-            file to read values from
-            
-        Raises
-        ------
-        ControlPathError
-            if paths are not found
-            
         Returns
         -------
-        dict or list
         """
-        with open(in_file, 'r') as cf:
-            control = yaml.load(cf)
-            
-        #~ control_dir = control['Control_dir']
-        run_dir = control['Run_dir']
-        if not os.path.exists(control['Control_dir']):
-            path = os.path.join(run_dir, control['Control_dir'])
-            if os.path.exists(path):
-                control['Control_dir'] = path
+        optional = {
+            "logger": None,
+        }
+        optional.update(kwargs)
+
+        self.logger = optional['logger']
+
+        if type(arg) is str:
+            with open(arg,'r') as in_file:
+                arg = yaml.load(in_file)
+        elif not type(arg) is dict:
+            raise ControlInitFailure(
+                "The main argument was not a file name, or a dictionary"
+            )
+        super(Control , self).__init__(arg, **kwargs)
         
-        control_dir = control['Control_dir']
+        self.update(self.expand_sub_configs(self))
+        self['cohorts'].update(self.expand_sub_configs(self['cohorts']))
         
-        
-        if not os.path.exists(control['Input_dir']):
-            path = os.path.join(run_dir, control['Input_dir'])
-            if os.path.exists(path):
-                control['Input_dir'] = path
-        if not os.path.exists(control['Output_dir']):
-            path = os.path.join(run_dir, control['Output_dir'])
-            if os.path.exists(path):
-                control['Output_dir'] = path
-       
-        #~ print control['Control_dir']
-        #~ print control['Input_dir']
-        #~ print control['Output_dir']
-        #~ import sys
-        #~ sys.exit(0)
-        
-        
-        with open(os.path.join(
-            control_dir, control['Archive_data']
-        )) as cf:
-            control['Archive_data'] = yaml.load(cf)
-        
-        with open(os.path.join(
-            control_dir, control['Initialize_Control']
-        )) as cf:
-            control['Initialize_Control'] = yaml.load(cf)
-        
-        with open(os.path.join(
-            control_dir, control['Initial_Cohort_List']
-        )) as cf:
-            control['Initial_Cohort_List'] = yaml.load(cf)
-        
-        with open(os.path.join(
-            control_dir, control['Met_Control']
-        )) as cf:
-            control['Met_Control'] = yaml.load(cf)
-        
-        with open(os.path.join(
-            control_dir, control['Terrestrial_Control']
-        )) as cf:
-            control['Terrestrial_Control'] = yaml.load(cf)
-       
-        with open(os.path.join(
-            control_dir, control['Lake_Pond_Control']
-        )) as cf:
-            control['Lake_Pond_Control'] = yaml.load(cf)
-        
-        for key in control['Cohorts']:
-            try:
-                with open(
-                    os.path.join(control_dir, control['Cohorts'][key])
-                ) as cf:
-                    control['Cohorts'][key] = yaml.load(cf)
-            except IOError:
-                pass
-        
-        return control
-        
-        
-    def __getitem__ (self, key):
-        """get item function
-        
-        Parameters
-        ----------
-        key: str or other
-        
-        Raises
-        ------
-        KeyError
-            key not found in init_control or new_control
-        
-        Returns
-        -------
-        returns value
-        """
-        if key.replace(' ', '_') in self.init_control.keys():
-            return self.init_control[key.replace(' ', '_')]
-        elif key.replace(' ', '_') in self.new_control.keys():
-            return self.new_control[key.replace(' ', '_')]
-        
-        ## special cases
-        elif key == 'target resolution':
-            return self.get_target_resoloution()
-        ## special cases
-        elif key == 'area data':
-            return self.get_area_rasters()
-        elif key == 'init ald':
-            return self.get_initial_ald()
-        elif key == 'init ice':
-            return self.get_initial_ice_content()
-        elif key == 'porosities':
-            return self.get_porosities()
-        elif key == 'PL factors':
-            return self.get_pl_factors()
-        elif key == 'cohort ice slopes':
-            return self.get_ice_slope_coefficients()
-        elif key == 'pond types':
-            return self.get_pond_types()
-        elif key == 'lake types':
-            return self.get_lake_types()
-        elif key == 'pond depth range':
-            return self.get_pond_depth_range()
-        elif key == 'ice depth alpha range':
-            return self.get_ice_depth_alpha_range()
-        elif key == 'lake depth range':
-            return self.get_lake_depth_range()
-        elif key == 'pickle path':
-            return os.path.join(self['Output_dir'], 'runtime_data')
-        elif key == 'data path':
-            return os.path.join(self['Output_dir'], 'runtime_data')
-        elif key == 'climate block range':
-            return self.get_climate_block_size_range()
-        else:
-            raise KeyError, 'Key "' + str(key) + '" is invalid'
-            
-    __getattr__ = __getitem__
-    
-    def __setitem__ (self, key, value):
-        """sets an item in new_control
-        
-        Parameters
-        ----------
-        key:
-            key in new control
-        value:
-            value to set
-        
-        Raises
-        ------
-        ControlSetError
-        """
-        if key in self.init_control.keys():
-            raise ControlSetError, "cannot overwrite initial control values"
-        else:
-            self.new_control[key.replace(' ','_')] = value
-        
-    def get_target_resoloution (self):
-        """Get model target resoloution
-        
-        Returns
-        -------
-        tuple, 
-            (y_resoloution, x_resoloution)
-        """
-        return (self.Y_model_resolution, self.X_model_resolution)
-   
-    def get_initial_ald (self):
-        """Get init ald range
-        
-        Returns
-        -------
-        tuple, 
-            (lower bound, upper bound)
-        """
-        return (self.Terrestrial_Control['ALD_Distribution_Lower_Bound'],
-                self.Terrestrial_Control['ALD_Distribution_Upper_Bound'])
-    
-    def get_initial_ice_content (self):
-        """Get init ice contet, currently returns types of ice
-        
-        Returns
-        -------
-        tuple, 
-            types of ice 
-        """
-        return ICE_TYPES 
-        
-    def get_area_rasters (self):
-        """Gets input area raster file paths
-        
-        Returns
-        -------
-        List:
-            paths to input rasters
-        """
-        #~ print self.Initial_Cohort_List
-        return [
-            os.path.join(self.Input_dir, f) for f in self.Initial_Cohort_List
+        self['initial area data'] = [
+            os.path.join(
+                self['Input_dir'],tif
+            ) 
+            for tif in self['initial area data']
         ]
         
+        self.find_model_length()
 
-    def get_porosities (self):
-        """Gets porosities
+        try:
+            self['start year']
+        except KeyError:
+            self['start year'] = self['initialization year'] + 1
+            if self.logger:
+                self.logger.add('Set start year to initialization year + 1')
+
+        self.init_keys = self.keys()
+        self.is_key = lambda k: k in self.keys()
+        self.is_added_key = lambda k: (True if self.is_key(k) else None) \
+            and not k in self.init_keys
+
+        ## Fast Access Special Tags
+        self.fast_table = {
+            "_FAST_get_pl_factors": self.get_protective_layer_factors,
+            "_FAST_get_cohorts": self.get_cohorts,
+            "_FAST_get_ice_slope_coefficients": self.get_ice_slope_coefficients,
+            "_FAST_get_pond_types": self.get_pond_types,
+            "_FAST_get_lake_types": self.get_lake_types,
+            "_FAST_get_pond_types": self.get_pond_types,
+            "_FAST_get_pond_depth_range": self.get_pond_depth_range,
+            "_FAST_get_lake_depth_range": self.get_lake_depth_range,
+            "_FAST_get_ice_depth_alpha_range": self.get_ice_depth_alpha_range,
+            "_FAST_get_climate_block_range": self.get_climate_block_size_range,
+            "_FAST_get_get_porosities": self.get_porosities,
+        }
+
+    def __getitem__ (self, key):
+        """
+        """
         
+        
+
+        if "_FAST_" == key[:6]:
+            return self.fast_table[key]()
+
+        return super(Control , self).__getitem__(key)
+    
+    def __setitem__ (self, key, value):
+        """
+        """
+        if "_FAST_" == key[:6]:
+            raise KeyError("'_FAST_' keys are reserved, and read only")
+
+        super(Control , self).__setitem__(key, value)
+
+    def expand_sub_configs (self, to_expand):
+        """if any dict key retruns a yaml file try to open it and expand the  
+        config dict
+        Parameters
+        ----------
         Returns
         -------
-        List:
-            dict of porosities
         """
-        p = {}
-        for key in self.init_control['Cohorts']:
-            try:
-                p[find_canon_name(key.replace('_Control', ''))] = \
-                    self.init_control['Cohorts'][key]['porosity']
-            except:
-                pass
-        return p
         
-    def get_pl_factors (self):
+        control_dir = self['Control_dir']
+        for key in to_expand.keys():
+            val = to_expand[key]
+            if type(val) is str and val.lower()[-4:] in ['yaml', '.yml']:
+                
+                fn = to_expand[key]
+
+                # is it in the control_dir?
+                if os.path.exists(os.path.join(control_dir, fn)):
+                    in_file = open(os.path.join(control_dir, fn),'r')
+                # is in cwd
+                elif os.path.exists(os.path.join(fn)):
+                    in_file = open(os.path.join(fn),'r')
+                else:
+                    if self.logger:
+                        msg = (
+                            "File: " + fn + " could not be found in "
+                            "Control_dir, or current working directory"
+                        )
+                        self.logger.add(msg, "error", __file__, __name__ )
+                    continue # FILE DNE
+                    
+                to_expand[key] = yaml.load(in_file)
+                try:
+                    to_expand[key].update(
+                        self.expand_sub_configs(to_expand[key])
+                    )
+                except AttributeError as e:
+                    pass
+                
+        return to_expand
+
+    def find_model_length(self):
+        """Function Docs 
+        Parameters
+        ----------
+        Returns
+        -------
+        """
+        try: 
+            self['model length']
+        except KeyError:
+            self['model length'] = 'auto'
+
+
+        if self['model length'] == 'auto':
+            ## add other places where 'auto' should occuer like "no key"
+            ## read FDD length. read TDD length, take minimum
+            if self.logger:
+                self.logger.add(
+                    "model length not provided, attempting to calculate",
+                    in_file= __file__
+                    )
+            met = self['Met_Control']
+            files = [met['FDD_file'], met['TDD_file']]
+            min_len = 1000000000  # really big
+            data_limiting_file = 'Default Max'
+            d_dir = self['Input_dir']
+            for file in files:
+                m_old = min_len
+                try:
+                    with open(os.path.join(d_dir,file), 'r') as fd:
+                        met_cfg = yaml.load(fd)
+                        min_len = min(met_cfg['num_timesteps'], min_len)
+                except (IOError, TypeError):
+                    if self.logger:
+                        self.logger.add(
+                            "Could not load a file: " + file,   
+                            in_file= __file__, at = __name__
+                        )
+                        
+                if m_old != min_len:
+                    data_limiting_file = file
+            
+            self['model length'] = min_len
+            if self.logger:
+                self.logger.add(
+                    "model length is determined to be " + str(min_len) +\
+                    " because of num_timesteps in " + data_limiting_file,
+                    in_file= __file__
+                    )
+
+    #     def get_target_resoloution (self):
+#         """Get model target resoloution
+        
+#         Returns
+#         -------
+#         tuple, 
+#             (y_resoloution, x_resoloution)
+#         """
+#         return (self.Y_model_resolution, self.X_model_resolution)
+   
+#     def get_initial_ald (self):
+#         """Get init ald range
+        
+#         Returns
+#         -------
+#         tuple, 
+#             (lower bound, upper bound)
+#         """
+#         return (self.Terrestrial_Control['ALD_Distribution_Lower_Bound'],
+#                 self.Terrestrial_Control['ALD_Distribution_Upper_Bound'])
+                
+    def get_protective_layer_factors (self):
         """Gets protecetive layer factors
         
         Returns
@@ -291,14 +235,24 @@ class Control(object):
             dict of protecetive layer factors
         """
         keys = [
-            key for key in self.Terrestrial_Control if key.find('PLF') != -1
+            key for key in self['Terrestrial_Control'] if key.find('PLF') != -1
         ]
         
         return {
             find_canon_name(key.replace('_PLF','')): 
-                self.Terrestrial_Control[key] for key in keys
+                self['Terrestrial_Control'][key] for key in keys
         }
+    
+    def get_cohorts(self):
+        """Return a list of cohort names
         
+        Retruns
+        -------
+        list
+            list of cannon cohort names
+        """
+        return [c.replace('_Control', '') for c in self['cohorts']]
+
     def get_ice_slope_coefficients (self):
         """Gets Ice slope coefficients for each cohort each type of ice 
         
@@ -307,17 +261,20 @@ class Control(object):
         Dict
         """
         cohorts = {}
-        for key in self.init_control['Cohorts']:
+        for key in self.get_cohorts():
             coeff = {}
             try:
-                
                 for ice in ICE_TYPES:
-                    coeff[ice] = self.init_control['Cohorts'][key]['ice_slope_' + ice]
-                cohorts[find_canon_name(key.replace('_Control', ''))] = coeff
-            except:
+                    # print self['cohorts'][key+'_Control']
+                    coeff[ice] = \
+                        self['cohorts'][key+'_Control']['ice_slope_' + ice]
+                cohorts[key] = coeff
+            except TypeError:
+                pass
+            except KeyError:
                 pass
         return cohorts
-        
+
     def get_pond_types (self):
         """gets pond types
         
@@ -327,15 +284,12 @@ class Control(object):
             list of all canon cohort names used with 'pond' present
         """
         cohorts = []
-        for key in self.init_control['Cohorts']:
+        for key in self.get_cohorts():
             if key.lower() == 'lake_pond_control':
                 continue
-            try:
-                name = find_canon_name(key.replace('_Control', ''))
-                if name.lower().find('pond') != -1:
-                    cohorts.append(name)
-            except:
-                pass
+            name = key # + '_Control'
+            if name.lower().find('pond') != -1:
+                cohorts.append(name)
         return cohorts
         
     def get_lake_types (self):
@@ -347,15 +301,12 @@ class Control(object):
             list of all canon cohort names used with 'lake' present
         """
         cohorts = []
-        for key in self.init_control['Cohorts']:
+        for key in self.get_cohorts():
             if key.lower() == 'lake_pond_control':
                 continue
-            try:
-                name = find_canon_name(key.replace('_Control', ''))
-                if name.lower().find('lake') != -1:
-                    cohorts.append(name)
-            except:
-                pass
+            name = key #+ '_Control'
+            if name.lower().find('lake') != -1:
+                cohorts.append(name)
         return cohorts
         
     def get_pond_depth_range(self):
@@ -366,16 +317,16 @@ class Control(object):
         tuple: (min,max)
             range, if the range is specified as uniform, sets min == max
         """
-        #~ print self.Lake_Pond_Control
-        if self.Lake_Pond_Control['Pond_Distribution'].lower() == 'uniform':
+        #~ print self['Lake_Pond_Control']
+        if self['Lake_Pond_Control']['Pond_Distribution'].lower() == 'uniform':
             return (
-                self.Lake_Pond_Control['Uniform_Pond_Depth'], 
-                self.Lake_Pond_Control['Uniform_Pond_Depth']
+                self['Lake_Pond_Control']['Uniform_Pond_Depth'], 
+                self['Lake_Pond_Control']['Uniform_Pond_Depth']
             )
-        elif self.Lake_Pond_Control['Pond_Distribution'].lower() == 'random':
+        elif self['Lake_Pond_Control']['Pond_Distribution'].lower() == 'random':
             return (
-                self.Lake_Pond_Control['Lower_Pond_Depth'], 
-                self.Lake_Pond_Control['Upper_Pond_Depth']
+                self['Lake_Pond_Control']['Lower_Pond_Depth'], 
+                self['Lake_Pond_Control']['Upper_Pond_Depth']
             )
         else:
             raise ControlInvalidRequest , "cannot get pond depth range"
@@ -388,19 +339,19 @@ class Control(object):
         tuple: (min,max)
             range, if the range is specified as uniform, sets min == max
         """
-        if self.Lake_Pond_Control['Lake_Distribution'].lower() == 'uniform':
+        if self['Lake_Pond_Control']['Lake_Distribution'].lower() == 'uniform':
             return (
-                self.Lake_Pond_Control['Uniform_Lake_Depth'], 
-                self.Lake_Pond_Control['Uniform_Lake_Depth']
+                self['Lake_Pond_Control']['Uniform_Lake_Depth'], 
+                self['Lake_Pond_Control']['Uniform_Lake_Depth']
             )
-        elif self.Lake_Pond_Control['Lake_Distribution'].lower() == 'random':
+        elif self['Lake_Pond_Control']['Lake_Distribution'].lower() == 'random':
             return (
-                self.Lake_Pond_Control['Lower_Lake_Depth'], 
-                self.Lake_Pond_Control['Upper_Lake_Depth']
+                self['Lake_Pond_Control']['Lower_Lake_Depth'], 
+                self['Lake_Pond_Control']['Upper_Lake_Depth']
             )
         else:
             raise ControlInvalidRequest, "cannot get lake depth range"
-    
+
     def get_ice_depth_alpha_range(self):
         """gets ice depth coefficient range
         
@@ -409,21 +360,21 @@ class Control(object):
         tuple: (min,max)
             range, if the range is specified as uniform, sets min == max
         """
-        if self.Lake_Pond_Control['ice_thickness_distribution'].lower() ==\
+        if self['Lake_Pond_Control']['ice_thickness_distribution'].lower() ==\
             'uniform':
             return (
-                self.Lake_Pond_Control['ice_thickness_uniform_alpha'], 
-                self.Lake_Pond_Control['ice_thickness_uniform_alpha']
+                self['Lake_Pond_Control']['ice_thickness_uniform_alpha'], 
+                self['Lake_Pond_Control']['ice_thickness_uniform_alpha']
             )
-        elif self.Lake_Pond_Control['ice_thickness_distribution'].lower() ==\
+        elif self['Lake_Pond_Control']['ice_thickness_distribution'].lower() ==\
             'random':
             return (
-                self.Lake_Pond_Control['Lower_ice_thickness_alpha'], 
-                self.Lake_Pond_Control['Upper_ice_thickness_alpha']
+                self['Lake_Pond_Control']['Lower_ice_thickness_alpha'], 
+                self['Lake_Pond_Control']['Upper_ice_thickness_alpha']
             )
         else:
             raise ControlInvalidRequest, "cannot get ice depth alpha range"
-            
+
     def get_climate_block_size_range (self):
         """
         """
@@ -437,6 +388,22 @@ class Control(object):
                 int(self['Met_Control']['climate_blocks']),
                 int(self['Met_Control']['climate_blocks'])
             )
+
+    def get_porosities (self):
+        """Gets porosities
         
-        
+        Returns
+        -------
+        List:
+            dict of porosities
+        """
+        p = {}
+        for key in self.get_cohorts():
+            try:
+                p[key] = self['cohorts'][key + '_Control']['porosity']
+            except TypeError:
+                pass
+            except KeyError:
+                pass
+        return p
         

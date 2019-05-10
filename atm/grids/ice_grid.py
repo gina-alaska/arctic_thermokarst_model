@@ -7,22 +7,45 @@ import numpy as np
 import copy
 from constants import ROW, COL
 
-try:
-    from atm_io import binary, image
-except ImportError:
-    from ..atm_io import binary, image
+# try:
+from atm.images import binary
+# except ImportError:
+#     from ..io import binary, image
+
+from multigrids import Grid, common, figures
+import matplotlib.pyplot as plt
 
 ICE_TYPES = ('poor', 'pore', 'wedge', 'massive')
 
-class IceGrid(object):
+config_ex = {
+    'grid_shape': (10,10),
+    'cohort ice slopes': 
+        {'HCP':{'poor':.25, 'pore':.5, 'wedge':.75, 'massive':1.0},
+            'FCP':{'poor':25, 'pore':5, 'wedge':75, 'massive':100},
+            'CLC':{'poor':1, 'pore':1, 'wedge':2, 'massive':3},
+            'LCP':{'poor':2, 'pore':4, 'wedge':6, 'massive':8},
+            'POND':{'poor':.2, 'pore':.4, 'wedge':.6, 'massive':.8}
+            },
+    'init ice': ICE_TYPES,
+    'AOI mask': np.ones((10,10)) == np.ones((10,10))
+}
+config_ex['AOI mask'][:5] = False
+
+
+class IceGrid(Grid):
     """ Ice grid object """
     
-    def __init__ (self, config):
+    def __init__ (self, *args, **kwargs):
         """Represents Ice quality for each grid element
         
         Parameters
         ----------
-        config: dict
+        *args: list
+            List of required arguments, containing exactly 1 argument
+            the config dictionary or string file name of yaml file
+            containing config
+        **kwargs: dict
+            Dictionary of key word arguments. Place holder for later extension.
         
         Attributes
         ----------
@@ -36,23 +59,52 @@ class IceGrid(object):
         shape: tuple
             (row dimension, column dimension)
         """
+        config = args[0]  
+        if type(args[0]) is str:
+            super(DrainageGrid , self).__init__(*args, **kwargs)
+        else:
+            args = [
+                config['grid_shape'][ROW], 
+                config['grid_shape'][COL]
+            ]
+
+            kwargs = copy.deepcopy(config) 
+            kwargs['data_type'] = 'object'
+            kwargs['dataset_name'] = 'Ice Grid'
+            kwargs['mode'] = 'r+'
+            super(IceGrid , self).__init__(*args, **kwargs)
+
+            # threshold = config['Terrestrial_Control']\
+            #     ['Drainage_Efficiency_Random_Value']
+            # eff = config['Terrestrial_Control']\
+            #     ['Drainage_Efficiency_Distribution']
+            init_ice = ICE_TYPES##config['init ice']
+            self.config['cohort_coeffs'] = \
+                config['_FAST_get_ice_slope_coefficients']
+            # print self.config['cohort_coeffs']
+            self.config['AOI mask'] = config['AOI mask']
+            self.config['ice types'] = ICE_TYPES
+            self.grids = self.initialize_grid(
+                self.shape, init_ice, self.config['AOI mask']
+            )
+        self.grid = self.grids
         
-        shape = config['shape']
+        # shape = config['shape']
         #~ cohort_list = config['cohort list']
-        init_ice = config ['init ice']
+        # init_ice = config ['init ice']
         
-        ## setup soil properties
-        self.aoi_mask = config['AOI mask']
+        # ## setup soil properties
+        # self.aoi_mask = config['AOI mask']
         
-        self.cohort_coeffs = config['cohort ice slopes']
+        # self.cohort_coeffs = config['cohort ice slopes']
         
-        self.grid = self.setup_grid ( 
-            shape, 
-            init_ice, 
-            self.aoi_mask, 
-        )
+        # self.grid = self.setup_grid ( 
+        #     shape, 
+        #     init_ice, 
+        #     self.aoi_mask, 
+        # )
         
-        self.shape = shape
+        # self.shape = shape
         
     def __getitem__ (self, key):
         """Gets ICE or PL or PL for a cohort
@@ -98,7 +150,7 @@ class IceGrid(object):
         raise NotImplementedError, 'cannot set ICE arrays once initilized'
         
         
-    def setup_grid (self, shape, init_ice, aoi_mask):
+    def initialize_grid (self, shape, init_ice, aoi_mask):
         """
         
         Parameters
@@ -141,8 +193,6 @@ class IceGrid(object):
             aoi_mask = grid == grid
         
         grid[ aoi_mask.flatten() == False ] = 'none'
-        
-        
         return grid
     
     def read_grid (self, init_ice):
@@ -184,33 +234,47 @@ class IceGrid(object):
         grid[grid == 'pore'] = 2
         grid[grid == 'wedge'] = 3
         grid[grid == 'massive'] = 4
-        return grid.astype(int)   
-    
-        
-    def figure (self, filename):
-        """saves figure for ice slope distrobution
-        
-        Parameters
-        ----------
-        filename: path
-            file to save
+        return grid.astype(int)  
+
+    def save_figure (
+            self, filename, figure_func=figures.default, figure_args={}
+        ):
         """
-        image.save_img(
-            self.as_numbers(), 
-            filename, 
-            'Ground Ice Content',
-            cmap = 'bone',
-            vmin = 0,
-            vmax = 4
-        )
-    
-    def binary (self, filename):
-        """save a binary representation
-        
-        Parameters
-        ----------
-        filename: path
-            file to save
         """
-        binary.save_bin(self.as_numbers(), filename)
+        super(Grid , self).save_figure(None, filename, figure_func, figure_args, data = self.as_numbers())
+
+
+    def show_figure (self, figure_func=figures.default, figure_args={}):
+        """
+        """
+        super(Grid , self).show_figure(None, figure_func, figure_args, data = self.as_numbers()) 
+
+    # def figure (self, filename, **kwargs):
+    #     """save a figure
+        
+    #     Parameters
+    #     ----------
+    #     filename: path
+    #         file to save
+    #     """
+    #     temp = copy.deepcopy(self.grids)
+    #     self.grid = self.as_numbers()
+    #     limits = common.load_or_use_default(kwargs,'limits',(0,4))
+    #     cmap = common.load_or_use_default(kwargs,'cmap','jet')
+    #     dtype = common.load_or_use_default(kwargs, 'type', float)
+    #     kwargs['limits'] = limits
+    #     kwargs['cmap'] = plt.get_cmap(cmap, 5)
+    #     kwargs['dtype'] = dtype 
+    #     super(IceGrid , self).figure(filename, **kwargs)
+    #     self.grid = temp
+    
+    # def binary (self, filename):
+    #     """save a binary representation
+        
+    #     Parameters
+    #     ----------
+    #     filename: path
+    #         file to save
+    #     """
+    #     binary.save_bin(self.as_numbers(), filename)
         

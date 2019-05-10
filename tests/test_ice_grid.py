@@ -12,26 +12,7 @@ class TestIceGridClass_random(unittest.TestCase):
     def setUp(self):
         """setup class for tests 
         """
-        
-        
-        config = {
-            'shape': (10,10),
-            'cohort ice slopes': 
-                {'HCP':{'poor':.25, 'pore':.5, 'wedge':.75, 'massive':1.0},
-                 'FCP':{'poor':25, 'pore':5, 'wedge':75, 'massive':100},
-                 'CLC':{'poor':1, 'pore':1, 'wedge':2, 'massive':3},
-                 'LCP':{'poor':2, 'pore':4, 'wedge':6, 'massive':8},
-                 'POND':{'poor':.2, 'pore':.4, 'wedge':.6, 'massive':.8}
-                 },
-            'init ice': ice_grid.ICE_TYPES,
-            
-        }
-        config['AOI mask'] = \
-            np.ones(config['shape']) == np.ones(config['shape'])
-        config['AOI mask'][:5] = False
-        
-        
-        self.ice = ice_grid.IceGrid(config)
+        self.ice = ice_grid.IceGrid(ice_grid.config_ex)
     
     def test_init(self):
         """test init results are correct
@@ -51,24 +32,10 @@ class TestIceGridClass_uniform(unittest.TestCase):
     def setUp(self):
         """setup class for tests
         """
-        
-        
-        config = {
-            'shape': (10,10),
-            'cohort ice slopes': 
-                {'HCP':{'poor':.25, 'pore':.5, 'wedge':.75, 'massive':1.0},
-                 'FCP':{'poor':25, 'pore':5, 'wedge':75, 'massive':100},
-                 'CLC':{'poor':1, 'pore':1, 'wedge':2, 'massive':3},
-                 'LCP':{'poor':2, 'pore':4, 'wedge':6, 'massive':8},
-                 'POND':{'poor':.2, 'pore':.4, 'wedge':.6, 'massive':.8}
-                 },
-            'init ice': ice_grid.ICE_TYPES[:1],
-            
-        }
-        config['AOI mask'] = \
-            np.ones(config['shape']) == np.ones(config['shape'])
-        
-        self.ice = ice_grid.IceGrid(config)
+        cfg = ice_grid.config_ex 
+        cfg['mask'] = None
+        cfg['init ice'] = cfg['init ice'][:1]
+        self.ice = ice_grid.IceGrid(cfg)
 
     def test_init(self):
         """test init results are correct

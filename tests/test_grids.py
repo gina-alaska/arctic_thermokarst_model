@@ -31,13 +31,13 @@ class TestGrids(unittest.TestCase):
         config = {
             ## cohort grid
             'target resolution': (1000,1000),
-            'initilzation year': 1900,
+            'initialization year': 1900,
             'start year': 1901,
             'area data': files,
             
             ## ald & poi
-            'cohort list': n,# ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
-            'init ald': (.3,.3),
+            'cohorts': n,# ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
+            'Initial ALD': (.3,.3),
             
             ## ice
             'cohort ice slopes': 
@@ -71,6 +71,7 @@ class TestGrids(unittest.TestCase):
             },
             
             'climate block range': (5,25),
+            'model length': 15,
             
             #~ 'start year': 1901,
             #~ 'data path': './',
@@ -84,8 +85,8 @@ class TestGrids(unittest.TestCase):
         }
     
         ## ald & poi & ice
-        config['porosities'] = {k: 1 for k in config['cohort list']}
-        config['PL factors'] = {k: 1 for k in config['cohort list']}
+        config['porosities'] = {k: 1 for k in config['cohorts']}
+        config['PL factors'] = {k: 1 for k in config['cohorts']}
         #~ config['AOI mask'] = \
             #~ np.ones(config['shape']) == np.ones(config['shape'])
         
