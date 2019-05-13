@@ -14,9 +14,9 @@ import math
 from multigrids import MultiGrid
 
 try:
-    from images import binary, image, raster
+    from images import  raster
 except ImportError:
-    from ..images import binary, image, raster
+    from ..images import raster
 
 try:
     from ..grids.constants import ROW,COL

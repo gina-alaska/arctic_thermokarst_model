@@ -13,12 +13,6 @@ try:
 except ImportError:
     from ..cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
     
-    
-    
-# try:
-from atm.images import binary, raster
-# except ImportError:
-#     from ..atm_io import binary, image, raster
 
 try:
     from tools import read_raster_layers

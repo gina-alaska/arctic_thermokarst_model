@@ -7,11 +7,6 @@ import numpy as np
 import copy
 from constants import ROW, COL
 
-# try:
-from atm.images import binary
-# except ImportError:
-#     from ..io import binary, image
-
 from multigrids import Grid, common, figures
 import matplotlib.pyplot as plt
 
@@ -239,42 +234,36 @@ class IceGrid(Grid):
     def save_figure (
             self, filename, figure_func=figures.default, figure_args={}
         ):
+        """Saves a figure of the grid
+
+        Parameters
+        ----------
+        filename: path
+            output filename
+        figure_func: function
+            function that creates a mitplotlib figure. Takes two arguments: 
+                data: np.array like(n x m) image data, 
+                new_fig_args: configuration dict for figure_func
+        figure_args: dict
+            configuration dict for figure_func
         """
-        """
-        super(Grid , self).save_figure(None, filename, figure_func, figure_args, data = self.as_numbers())
+        super(Grid , self).save_figure(
+            None, filename, figure_func, figure_args, data = self.as_numbers()
+        )
 
 
     def show_figure (self, figure_func=figures.default, figure_args={}):
-        """
-        """
-        super(Grid , self).show_figure(None, figure_func, figure_args, data = self.as_numbers()) 
+        """Shows a figure of the grid
 
-    # def figure (self, filename, **kwargs):
-    #     """save a figure
-        
-    #     Parameters
-    #     ----------
-    #     filename: path
-    #         file to save
-    #     """
-    #     temp = copy.deepcopy(self.grids)
-    #     self.grid = self.as_numbers()
-    #     limits = common.load_or_use_default(kwargs,'limits',(0,4))
-    #     cmap = common.load_or_use_default(kwargs,'cmap','jet')
-    #     dtype = common.load_or_use_default(kwargs, 'type', float)
-    #     kwargs['limits'] = limits
-    #     kwargs['cmap'] = plt.get_cmap(cmap, 5)
-    #     kwargs['dtype'] = dtype 
-    #     super(IceGrid , self).figure(filename, **kwargs)
-    #     self.grid = temp
-    
-    # def binary (self, filename):
-    #     """save a binary representation
-        
-    #     Parameters
-    #     ----------
-    #     filename: path
-    #         file to save
-    #     """
-    #     binary.save_bin(self.as_numbers(), filename)
-        
+        Parameters
+        ----------
+        figure_func: function
+            function that creates a mitplotlib figure. Takes two arguments: 
+                data: np.array like(n x m) image data, 
+                new_fig_args: configuration dict for figure_func
+        figure_args: dict
+            configuration dict for figure_func
+        """
+        super(Grid , self).show_figure(
+            None, figure_func, figure_args, data = self.as_numbers()
+        ) 

@@ -12,13 +12,6 @@ try:
     from cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
 except ImportError:
     from ..cohorts import find_canon_name, DISPLAY_COHORT_NAMES 
-    
-    
-    
-# try:
-from atm.images import binary, raster
-# except ImportError:
-#     from ..io import binary, image, raster
 
 from multigrids import TemporalMultiGrid, common
 import copy
@@ -252,24 +245,3 @@ class LakePondGrid (TemporalMultiGrid):
         self['ice_depth', self.current_year()] = ((
             self.ice_depth_constants * np.sqrt(-1. * fdd)
         )/100.)
-            
-    def depth_figure(self, cohort, filename, time_step = -1):
-        """Save lake depth figures
-        
-        Parameters
-        ----------
-        cohort: str
-            lake pond type
-        filename: path
-            file to save
-        time_step: int 
-            time step to save
-        """
-        # raise Stand
-        if time_step == -1:
-            time_step = self.current_year()
-        title = 'Inital Depth \n' + DISPLAY_COHORT_NAMES[cohort] 
-        cohort_data = self[cohort+'_depth', time_step]
-        image.save_img(cohort_data, filename, title,  cbar_extend = 'max') 
-        
-        
