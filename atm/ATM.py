@@ -276,9 +276,9 @@ class ATM(object):
             pass
         
         self.logger.add("    -- Dominant Cohort Figure")
-        if self.control['Terrestrial_Control']['Figure']:
-            dc_data = self.grids.area.create_dominate_cohort_dataset()
-            fig_args = {
+        dc_data = self.grids.area.create_dominate_cohort_dataset()
+        dc_frames = []
+        fig_args = {
                 'title': '',
                 'cbar_extend': 'max',
                 "categories": sorted(dc_data.cohort_list),
@@ -286,8 +286,8 @@ class ATM(object):
                 'cmap': 'viridis', 
                 'ax_labelsize': 5 ,  
                 }
-
-
+        if self.control['Terrestrial_Control']['Figure']:
+            
             for year in range(start_year, start_year + self.stop-1):
                 fig_args['title'] = 'Dominant Cohort -' + str(year)
                 dc_data.save_figure(
@@ -299,9 +299,34 @@ class ATM(object):
                     figures.categorical, 
                     fig_args
                 )
-                
-            # vid = self.control['Terrestrial_Control']['Movie']
-            # self.grids.area.dominate_cohort_timeseries( dom_path, vid)
+                dc_frames.append(
+                    os.path.join(
+                        dom_path,
+                        'Dominant_Cohort_'+ str(year) + '.png'
+                    )
+                )
+        if self.control['Terrestrial_Control']['Movie']:
+            dom_path = os.path.join( outdir, 'All_cohorts')
+            clip_args = {
+                'figure_args': fig_args,
+            }
+            outfile = os.path.join(dom_path, 'dominate-cohort-time-series.mp4')
+            if dc_frames != []:
+                clip_args['frames list'] = dc_frames
+                # print frames
+                # complete = dc_data.save_clip(outfile, clip_args=clip_args)
+            else:
+                clip_args['end_ts'] = self.stop
+            complete = dc_data.save_clip(outfile, clip_args=clip_args)
+            
+            if complete:
+                self.logger.add(
+                    "       -- Clip output success"
+                )
+            else:
+                self.logger.add(
+                    "       --  Clip output failed"
+                )
             
         
         
