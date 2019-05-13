@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.5.1] - unreleased 
+
+## [0.5.0] - 2019-05-10
+### Added 
+- multgird library 
+- options for JIT compilation
+
+### updated
+- way data is stored at runtime using the multigrids library
+- logging
+
+### changed
+- a lot of other cleanup
+
+
 ## [0.4.3] - 2018-03-07
 ### added 
 - run_atm.sh, to lauch conda environment and atm model in one step
