@@ -320,16 +320,10 @@ class ATM(object):
             complete = dc_data.save_clip(outfile, clip_args=clip_args)
             
             if complete:
-                self.logger.add(
-                    "       -- Clip output success"
-                )
+                self.logger.add("       -- Clip output success")
             else:
-                self.logger.add(
-                    "       --  Clip output failed"
-                )
+                self.logger.add("       --  Clip output failed")
             
-        
-        
         
         self.logger.add( "  -- Met Figures" )
         self.logger.add( "    -- Degree Days")
