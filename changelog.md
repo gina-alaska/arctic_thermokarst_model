@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.5.1] - unreleased 
+### Added
+- save_grids method to atm.grids.grids.ModelGrids
+- descriptions and dataset_names to grids created by atm.grids.grids.ModelGrids
+- config options for configuring which grids are saved at runtime
+- config options to skip all figure generation at runtime 
+- archive log message
 
 ## [0.5.0] - 2019-05-10
 ### Added 

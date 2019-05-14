@@ -462,7 +462,10 @@ class ATM(object):
                     ))
         
         archive_file.add(self.control['Control_dir'], 'Control_Files')
-        archive_file.add(self.control['Control_dir'], 'runtime_data')
+        archive_file.add(
+            os.path.join(self.control['Output_dir'], 'runtime-data'),
+            'runtime-data'
+        )
         
         for directory in os.listdir(self.control['Output_dir']):
             if directory == 'Archive':
@@ -615,11 +618,18 @@ class ATM(object):
             name = t +'_' +self.control['Simulation_name'] + '.txt'
             self.to_file(name, start_time, end_time)
         
-        self.save_figures()
+        if not self.control['skip_all_figures']:
+            self.save_figures()
 
+        grid_path = os.path.join(self.control['Output_dir'], 'runtime-data')
+        os.makedirs(grid_path)
+        self.grids.save_grids(grid_path, self.control['save_runtime_data'])
+
+
+        
         name = t +'_' + self.control['Simulation_name'] +".tar.gz"
+        self.logger.add("Creating archive:" + name)
         self.archive(name)
-
 
         self.logger.add('===== Simulation Complete ======')
         # '----------------------------------------'
