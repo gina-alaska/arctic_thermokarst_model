@@ -694,6 +694,7 @@ class ATM(object):
                         self.control['cohorts'][cohort_control]\
                         ['Transition_check_type'].lower()
                 except KeyError as e:
+                    print e
                     check_type = 'base'
 
                 name = find_canon_name(cohort)

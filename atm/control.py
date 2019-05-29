@@ -59,11 +59,11 @@ class Control(dict):
         self.update(self.expand_sub_configs(self))
         self['cohorts'].update(self.expand_sub_configs(self['cohorts']))
         
-        self['initial area data'] = [
+        self['Initial_Area_data'] = [
             os.path.join(
                 self['Input_dir'],tif
             ) 
-            for tif in self['initial area data']
+            for tif in self['Initial_Area_data']
         ]
         
         self.find_model_length()

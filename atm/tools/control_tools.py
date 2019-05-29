@@ -18,6 +18,8 @@ example = {
     "seprate_archive_data": True,
     "seprate_init_area_data": True,
     "cohorts": ["cohort1", "cohort2", "cohort3"],
+    "transition-order": ["cohort1", "cohort2", "cohort3"],
+    "cohort-area-files": ["cohort1.tiff", "cohort2.tiff", "cohort3.tiff"],
     "init-dist-fig": True,
     "norm-dist-fig": True,
     "init-age-fig": True,
@@ -237,7 +239,7 @@ def add_simulation_setup(settings):
     -------
     string
     """
-    s = Template(
+    s = \
 """
 #================================================================
 # INFORMATION NEEDED TO RUN SIMULATION
@@ -261,9 +263,35 @@ target resolution: [1000, 1000]
 #       data
 Initial_Area_data: 00_Cohort_List.yaml
 
+#----------------------------------------------------------------
+#   Met_Control: 
+#       Name of met control file
+#   Terrestrial_Control: 
+#       Name of Terrestrial control file
+#   Lake_Pond_Control: 
+#       Name of Lake/Pond control file
+Met_Control: 00_Met_Control.yaml
+Terrestrial_Control: 00_Terrestrial_Control.yaml
+Lake_Pond_Control: 00_Lake_Pond_Control.yaml
+
+#----------------------------------------------------------------
+#   Transition_order: list
+#      cohort transition order
+Transition_order:
 """
-    )
-    return s.substitute()
+    for c in settings['transition-order']:
+        s += "    - " + c +"\n"
+    s += '\n'
+
+    s += add_break_line({'symbol':'-', 'len':64})
+    s += "#  cohort:\n"
+    s += "#    cohort control settings\n"
+    s += 'cohorts:\n'
+    
+    for c in settings['cohort-transitions']:
+        s += "    " + c +"_Control: 01_" + c +"_Control.yaml\n"
+
+    return Template(s).substitute()
 
 def add_archive_header(settings):
     """add header for archive data
@@ -392,8 +420,8 @@ def add_init_area_data_body(settings):
     string
     """
     s = ""
-    for cohort in settings["cohorts"]:
-        s += "- " + cohort + ".tif\n"
+    for cohort in settings["cohort-area-files"]:
+        s += "- " + cohort + "\n"
 
     return s
 
@@ -550,7 +578,7 @@ def generate_lake_pond (settings):
     s += '#   Upper_ice_thickness_alpha: \n'
     s += '#     Boundaries for random distribution\n'
     s += 'ice_thickness_distribution: Random\n'
-    s += 'ice_thickness_uniform_alpha: 2.4: 3.5\n'
+    s += 'ice_thickness_uniform_alpha: 2.4\n'
     s += 'Lower_ice_thickness_alpha: 2.2\n'
     s += 'Upper_ice_thickness_alpha: 5.0\n\n'
 
@@ -592,10 +620,10 @@ def generate_terrestrial(settings):
     s += add_yaml_notes(settings)
     s += add_break_line({'symbol':'-', 'len':64})
     s += "#   Ice Distribution settings\n"
-    s += "#     Ice_Distribution: String\n"
-    s += "#         'poor', 'pore', 'wedge', or 'massive'\n"
+    # s += "#     Ice_Distribution: String\n"
+    # s += "#         'poor', 'pore', 'wedge', or 'massive'\n"
     s += "#     Ice_Distribution_Figure: bool\n"
-    s += "Ice_Distribution: $icedist \n"
+    # s += "Ice_Distribution: $icedist \n"
     s += "Ice_Distribution_Figure: Yes \n\n"
     s += add_break_line({'symbol':'-', 'len':64})
     s += "#   Drainage Efficiency Settings\n"
@@ -640,7 +668,7 @@ def generate_terrestrial(settings):
     s += "Figure: Yes\n"
     s += "Movie: Yes\n"   
     return Template(s).substitute(
-        icedist=settings['ice-distribution'],
+        # icedist=settings['ice-distribution'],
         draineff=settings['drainage-efficiency']
     )
 
