@@ -8,7 +8,7 @@ POI: probability of instantiation
 import numpy as np
 import os
 
-from constants import ROW, COL
+from .constants import ROW, COL, create_deepcopy
 
 import copy
 
@@ -62,7 +62,7 @@ class POIGrid (TemporalMultiGrid):
                 len(grid_names), config['model length']
             ]
 
-            kwargs = copy.deepcopy(config) 
+            kwargs = create_deepcopy(config) 
             kwargs['data_type'] = 'float32'
             kwargs['mode'] = 'r+'
             kwargs['grid_names'] = grid_names

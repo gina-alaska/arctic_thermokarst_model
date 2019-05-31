@@ -6,15 +6,15 @@ object to manage all grid objects
 """
 
 import numpy as np
-from area_grid import AreaGrid
-from ald_grid import ALDGrid
-from poi_grid import POIGrid
-from ice_grid import IceGrid
-from lake_pond_grid import LakePondGrid
-from drainage_grid import DrainageGrid
-from climate_event_grid import ClimateEventGrid
+from .area_grid import AreaGrid
+from .ald_grid import ALDGrid
+from .poi_grid import POIGrid
+from .ice_grid import IceGrid
+from .lake_pond_grid import LakePondGrid
+from .drainage_grid import DrainageGrid
+from .climate_event_grid import ClimateEventGrid
 
-from met_grid import DegreeDayGrids
+from .met_grid import DegreeDayGrids
 import os
 
 class ModelGrids (object):
@@ -58,10 +58,10 @@ class ModelGrids (object):
         config['data_type'] = np.float32
         self.area = AreaGrid(config,logger = self.logger)
         self.logger.add('performing post AREA setup')
-        self.shape = self.area.grid_shape
+        self.shape = self.area.config['grid_shape']
         self.aoi = self.area.area_of_interest()
         config['shape'] = self.shape
-        config['grid_shape'] = self.area.grid_shape
+        config['grid_shape'] = self.area.config['grid_shape']
         config['AOI mask'] = self.aoi
         config['cohort list'] = self.area.get_cohort_list()
         self.logger.add('loading ALD')
@@ -173,7 +173,7 @@ class ModelGrids (object):
         if key.lower() == 'climate event':
             return self.climate_event
         
-        raise KeyError, 'could not find grid'
+        raise KeyError('Could not find grid given name: ' + key)
         
         
         

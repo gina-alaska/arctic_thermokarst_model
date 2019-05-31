@@ -8,11 +8,6 @@ import numpy as np
 
 from numba import cuda
 
-from debug import DEBUG
-if DEBUG:
-    import llvmlite.binding as llvm
-    llvm.set_option('', '--debug-only=loop-vectorize')
-
 
 @cuda.jit
 def update_depth(new, depth_grid, elapsed_ts, depth_factor, mask):

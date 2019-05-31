@@ -49,7 +49,7 @@ class Control(dict):
 
         if type(arg) is str:
             with open(arg,'r') as in_file:
-                arg = yaml.load(in_file)
+                arg = yaml.load(in_file, Loader=yaml.Loader)
         elif not type(arg) is dict:
             raise ControlInitFailure(
                 "The main argument was not a file name, or a dictionary"
@@ -145,7 +145,7 @@ class Control(dict):
                         self.logger.add(msg, "error", __file__, __name__ )
                     continue # FILE DNE
                     
-                to_expand[key] = yaml.load(in_file)
+                to_expand[key] = yaml.load(in_file, Loader=yaml.Loader)
                 try:
                     to_expand[key].update(
                         self.expand_sub_configs(to_expand[key])
@@ -185,7 +185,7 @@ class Control(dict):
                 m_old = min_len
                 try:
                     with open(os.path.join(d_dir,file), 'r') as fd:
-                        met_cfg = yaml.load(fd)
+                        met_cfg = yaml.load(fd, Loader=yaml.Loader)
                         min_len = min(met_cfg['num_timesteps'], min_len)
                 except (IOError, TypeError):
                     if self.logger:
@@ -329,7 +329,7 @@ class Control(dict):
                 self['Lake_Pond_Control']['Upper_Pond_Depth']
             )
         else:
-            raise ControlInvalidRequest , "cannot get pond depth range"
+            raise ControlInvalidRequest("cannot get pond depth range")
             
     def get_lake_depth_range(self):
         """gets lake depth range
@@ -350,7 +350,7 @@ class Control(dict):
                 self['Lake_Pond_Control']['Upper_Lake_Depth']
             )
         else:
-            raise ControlInvalidRequest, "cannot get lake depth range"
+            raise ControlInvalidRequest("cannot get lake depth range")
 
     def get_ice_depth_alpha_range(self):
         """gets ice depth coefficient range
@@ -373,7 +373,7 @@ class Control(dict):
                 self['Lake_Pond_Control']['Upper_ice_thickness_alpha']
             )
         else:
-            raise ControlInvalidRequest, "cannot get ice depth alpha range"
+            raise ControlInvalidRequest("cannot get ice depth alpha range")
 
     def get_climate_block_size_range (self):
         """

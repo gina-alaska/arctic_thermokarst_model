@@ -5,7 +5,7 @@ import yaml
 from . import common, figures
 import matplotlib.pyplot as plt
 
-import clip
+from . import clip
 
 class TemporalMultiGrid (MultiGrid):
     """ A class to represent a set of multiple related grids of the same 
@@ -40,7 +40,7 @@ class TemporalMultiGrid (MultiGrid):
         """ Class initializer """
         if type(args[0]) is str:
             with open(args[0], 'r') as f:
-                self.num_timesteps = yaml.load(f)['num_timesteps']  
+                self.num_timesteps = yaml.load(f, Loader=yaml.Loader)['num_timesteps']  
             super(TemporalMultiGrid , self).__init__(*args, **kwargs)
         else:
             self.num_timesteps = args[3]
@@ -110,7 +110,7 @@ class TemporalMultiGrid (MultiGrid):
         ## this key is used to access the data at the end 
         ## of the function. it is modied based on key
         # print self.grid_name_map
-        # print key,  self.start_timestep
+        # print key,  self.config['start_timestep']
         access_key = [slice(None,None) for i in range(3)]
         if common.is_grid(key):
             # print 'a'
@@ -119,31 +119,31 @@ class TemporalMultiGrid (MultiGrid):
         elif common.is_grid_with_range(key):
             # print 'b'
             access_key[0] = slice(
-                key[1].start - self.start_timestep,
-                key[1].stop - self.start_timestep
+                key[1].start - self.config['start_timestep'],
+                key[1].stop - self.config['start_timestep']
             )
             access_key[1] = self.get_grid_number(key[0])
         elif common.is_grid_with_index(key):
             # print 'c'
-            access_key[0] = key[1] - self.start_timestep
+            access_key[0] = key[1] - self.config['start_timestep']
             ac_1 = self.get_grid_number(key[0])
             if type(ac_1) is slice:
                 ac_1 = ac_1.start
             access_key[1] = ac_1
         elif type(key) is int:
             # print 'd'
-            access_key = key - self.start_timestep
+            access_key = key - self.config['start_timestep']
         # elif type(key) is slice: TODO NEED some changes to implement this
         #                               but it's not very important to do
         #     access_key = slice(
-        #         key.start - self.start_timestep,
-        #         key.stop - self.start_timestep
+        #         key.start - self.config['start_timestep'],
+        #         key.stop - self.config['start_timestep']
         #     )
         else:
             raise KeyError( 'Not a key for Temporal Multi Grid: '+ str(key))
         # print 'key', access_key, type(access_key)
         # print access_key
-        return self.grids.reshape(self.real_shape)[access_key]
+        return self.grids.reshape(self.config['real_shape'])[access_key]
 
     def __setitem__ (self ,key, value):
         """ Set item function
@@ -171,17 +171,17 @@ class TemporalMultiGrid (MultiGrid):
             # print key
             # print 'b'
             access_key[0] = slice(
-                key[1].start - self.start_timestep,
-                key[1].stop - self.start_timestep
+                key[1].start - self.config['start_timestep'],
+                key[1].stop - self.config['start_timestep']
             )
             access_key[1] = self.get_grid_number(key[0])
         elif common.is_grid_with_index(key):
             # print 'c'
-            access_key[0] = key[1] - self.start_timestep
+            access_key[0] = key[1] - self.config['start_timestep']
             access_key[1] = self.get_grid_number(key[0])
         elif type(key) is int:
             # print 'd'
-            access_key = key - self.start_timestep
+            access_key = key - self.config['start_timestep']
         else:
             raise KeyError( 'Not a key for Temporal Multi Grid: '+ str(key))
         
@@ -208,7 +208,7 @@ class TemporalMultiGrid (MultiGrid):
         np.array
             1d if flat, 2d otherwise.
         """
-        shape = self.memory_shape[-1] if flat else self.grid_shape
+        shape = self.memory_shape[-1] if flat else self.config['grid_shape']
         return self.get_grid_over_time(
             grid_id, time_step, time_step+1
         ).reshape(shape)
@@ -234,10 +234,10 @@ class TemporalMultiGrid (MultiGrid):
             2d if flat, 3d otherwise.
         """
         if not start is None:
-            start += self.start_timestep
+            start += self.config['start_timestep']
         if not stop is None:
-            stop += self.start_timestep
-        rows, cols = self.grid_shape[0], self.grid_shape[1]
+            stop += self.config['start_timestep']
+        rows, cols = self.config['grid_shape'][0], self.config['grid_shape'][1]
         if start is None and stop is None:
             shape = (self.num_timesteps, rows, cols )
             if flat:
@@ -263,7 +263,7 @@ class TemporalMultiGrid (MultiGrid):
         new_grid: np.array like
             Grid to set. must be able to reshape to grid_shape.
         """
-        time_step += self.start_timestep
+        time_step += self.config['start_timestep']
         self[grid_id, time_step] = new_grid
 
     def set_grid_over_time(self, grid_id, start, stop, new_grids):
@@ -279,9 +279,9 @@ class TemporalMultiGrid (MultiGrid):
             Grids to set. shape must match grids being accessed. 
         """
         if not start is None:
-            start += self.start_timestep
+            start += self.config['start_timestep']
         if not stop is None:
-            stop += self.start_timestep
+            stop += self.config['start_timestep']
         self[grid_id, start:stop] = new_grids
 
     def increment_time_step (self):
@@ -299,7 +299,7 @@ class TemporalMultiGrid (MultiGrid):
             msg = 'The timestep could not be incremented, because the ' +\
                 'end of the period has been reached.'
             raise common.IncrementTimeStepError(msg)
-        self.grids[self.timestep][:] = self.grids[self.timestep-1][:] 
+        self.grids[self.config['timestep']][:] = self.grids[self.config['timestep']-1][:] 
         self.current_grids = self.grids[self.config['timestep']]
         
         return self.current_timestep()
@@ -312,7 +312,7 @@ class TemporalMultiGrid (MultiGrid):
         int
             year of last time step in model
         """
-        return self.start_timestep + self.config['timestep']
+        return self.config['start_timestep'] + self.config['timestep']
 
     def save_figure(
             self, grid_id, ts, filename, figure_func=figures.default, figure_args={}, data=None

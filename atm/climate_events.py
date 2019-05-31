@@ -9,7 +9,6 @@ def drain_lakes (drain_to, year, grids, control):
         #~ grids.lake_pond.lake_type + grids.lake_pond.ponds_types
         
     shape = grids.shape
-    # print shape
     lakes = np.zeros(shape)
 
     pond_types = control['_FAST_get_pond_types']

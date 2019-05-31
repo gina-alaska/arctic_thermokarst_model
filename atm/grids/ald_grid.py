@@ -7,7 +7,7 @@ and PL (or pl) to Protective layer
 """
 import numpy as np
 
-from constants import ROW, COL
+from .constants import ROW, COL, create_deepcopy
 
 
 import copy
@@ -84,7 +84,7 @@ class ALDGrid(TemporalMultiGrid):
             len(grid_names), config['model length']
         ]
 
-        kwargs = copy.deepcopy(config) 
+        kwargs = create_deepcopy(config) 
         # kwargs['data_type'] = 'float'
         kwargs['mode'] = 'r+'
         kwargs['grid_names'] = grid_names
@@ -123,19 +123,19 @@ class ALDGrid(TemporalMultiGrid):
         # self.ald_grid = [ self.init_ald_grid ]
         # self.pl_grid = [ self.init_pl_grid ]
         
-        self.ald_constants = np.zeros(self.grid_shape)
+        self.ald_constants = np.zeros(self.config['grid_shape'])
     
     def setup_grids(self, config):
         """ Function doc """
         
         grids = np.zeros(
-            [self.num_grids, self.grid_shape[0]* self.grid_shape[1]]
+            [self.config['num_grids'], self.config['grid_shape'][0]* self.config['grid_shape'][1]]
         )
 
         # print config['Terrestrial_Control']['Initial ALD']
         if type(config['Terrestrial_Control']['Initial ALD']) in [tuple, list]:
             grids[0] = random_grid(
-                self.grid_shape, 
+                self.config['grid_shape'], 
                 config['Terrestrial_Control']['Initial ALD'][0],
                 config['Terrestrial_Control']['Initial ALD'][1], 
                 config['AOI mask']
@@ -192,7 +192,7 @@ class ALDGrid(TemporalMultiGrid):
             requested grid, each grid will match the shape attribute
         """
         if key == 'PL' or 'PL' in key:
-            raise NotImplementedError, 'get all PL ts not implemented'
+            raise NotImplementedError('get all PL timesteps not implemented')
         return super(ALDGrid , self).__getitem__(key)
         
     def __setitem__ (self, key, value):
@@ -219,7 +219,7 @@ class ALDGrid(TemporalMultiGrid):
         if type(key) is str:
             raise NotImplementedError('Cannot set layers for entire timeframe')
         if type(key) is str and 'PL' in key:
-            raise NotImplementedError, 'PL key not implemented'
+            raise NotImplementedError('PL key not implemented')
         return super(ALDGrid , self).__setitem__(key, value)
     def setup_ald_constants (self, degree_days):
         """Initialize the ALD constant array
@@ -236,7 +236,7 @@ class ALDGrid(TemporalMultiGrid):
         
         self.ald_constants = (
             self.init_ald_grid.flatten() / degree_days
-        ).reshape(self.grid_shape)
+        ).reshape(self.config['grid_shape'])
     
     def read_grid (self, init_ald):
         """Read init ald from file or object"""
@@ -291,7 +291,7 @@ class ALDGrid(TemporalMultiGrid):
         grid: np.array
             2D array with shape matching shape attribute
         """
-        if grid.shape != self.grid_shape:
+        if grid.shape != self.config['grid_shape']:
             raise StandardError('grid shapes do not match')
         self['ALD', time_step+self.start_year] = grid.flatten()
         
@@ -340,7 +340,7 @@ class ALDGrid(TemporalMultiGrid):
         grid: np.array
             2d array that can has shape equal to  self.shape
         """
-        if data.shape != self.grid_shape:
+        if data.shape != self.config['grid_shape']:
             raise StandardError('grid shapes do not match')
         self[cohort, time_step+self.start_year] = data.flatten()
         
@@ -380,7 +380,7 @@ class ALDGrid(TemporalMultiGrid):
         np.array
             the ald grid
         """ 
-        shape = self.grid_shape
+        shape = self.config['grid_shape']
         if flat:
             shape = shape[0] * shape[1]
         return (self.init_ald_grid.flatten() * \
@@ -391,7 +391,6 @@ def test (files):
     """
     mask = np.ones([5, 10])
     mask[:,5:] = 0
-    print mask
     config = {
         'target resolution': (1000,1000),
         'grid_shape': [5, 10],

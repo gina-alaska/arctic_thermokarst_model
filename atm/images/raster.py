@@ -187,7 +187,7 @@ def clip_raster (in_raster, out_raster, extent):
         out_raster, in_raster, projWin = extent, 
         format='GTiff', outputType=gdal.GDT_Float32 
     ) 
-    print tiff
+    # printtiff
     tiff.GetRasterBand(1).FlushCache()
     tiff.FlushCache()
     return True

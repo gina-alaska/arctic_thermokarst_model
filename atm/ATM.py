@@ -206,7 +206,7 @@ class ATM(object):
         if self.control['Terrestrial_Control']['Ice_Distribution_Figure']:
             fig_args = {
                 'title': 'Ground Ice Content',
-                "categories": ['none'] + [t for t in self.grids.ice.ice_types],
+                "categories": ['none'] + [t for t in self.grids.ice.config['ice types']],
                 'vmin': 0, 'vmax': 4,
             }
             self.grids.ice.save_figure( 
@@ -281,7 +281,7 @@ class ATM(object):
         fig_args = {
                 'title': '',
                 'cbar_extend': 'max',
-                "categories": sorted(dc_data.cohort_list),
+                "categories": sorted(dc_data.config['cohort list']),
                 # 'vmin': 0, 'vmax': 4,
                 'cmap': 'viridis', 
                 'ax_labelsize': 5 ,  
@@ -818,22 +818,22 @@ class ATM(object):
                         
         
         ### debug stuff
-        # print 'start: ', cohort_start.sum()
-        # print 'end: ', cohort_end.sum()
-        # for cohort in sorted(self.grids.area.key_to_index):
-        #     if cohort.find('--') != -1:
-        #         continue
+        print('start: ', cohort_start.sum())
+        print( 'end: ', cohort_end.sum())
+        for cohort in sorted(self.grids.area.key_to_index):
+            if cohort.find('--') != -1:
+                continue
                 
-        #     s = self.grids.area[cohort, init_year].sum()
-        #     e = self.grids.area[cohort, current_year].sum()
+            s = self.grids.area[cohort, init_year].sum()
+            e = self.grids.area[cohort, current_year].sum()
             
-        #     if s == e:
-        #         d = 'equal'
-        #     elif s < e:
-        #         d = 'growth'
-        #     else:
-        #         d = 'reduction'
-        #     print cohort, 'start:', s, 'end:', e, d
+            if s == e:
+                d = 'equal'
+            elif s < e:
+                d = 'growth'
+            else:
+                d = 'reduction'
+            print (cohort, 'start:', s, 'end:', e, d)
 
     def __del__(self):
         """
@@ -844,7 +844,7 @@ class ATM(object):
         try:
             if self.control['save_log_to']:
                 self.logger.save(self.control['save_log_to'], False)
-        except KeyError:
+        except (KeyError, AttributeError):
             pass
             
 #_______________________________________________________________________________

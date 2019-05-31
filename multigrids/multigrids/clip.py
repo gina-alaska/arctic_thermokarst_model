@@ -15,7 +15,7 @@ try:
 except ImportError:
     mpe = None
 
-import figures
+from . import figures
 
 class CilpError(Exception):
     """Raised for errors in clip generation
@@ -73,7 +73,7 @@ def default(filename, data, new_clip_args):
     clip = mpe.ImageSequenceClip(files, fps=5)
     clip.write_videofile(
         filename, 
-        progress_bar = clip_args['progress bar'], 
+        # progress_bar = clip_args['progress bar'], 
         verbose = clip_args['verbose']
     )
 

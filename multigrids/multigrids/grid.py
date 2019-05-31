@@ -56,7 +56,7 @@ class Grid (MultiGrid):
         super(Grid , self).__init__(*args, **kwargs)
         
         self.grid = self.grids
-        self.shape = self.grid_shape
+        self.shape = self.config['grid_shape']
         try:
             del self.config['grid_name_map']
         except KeyError:
@@ -110,7 +110,7 @@ class Grid (MultiGrid):
         np.array
             1d if flat, 2d otherwise.
         """
-        shape = self.real_shape if not flat else self.memory_shape
+        shape = self.config['real_shape'] if not flat else self.memory_shape
         return self[:,:].reshape(shape)
 
     def __getitem__(self, key): 
@@ -126,8 +126,8 @@ class Grid (MultiGrid):
         np.array like, or value of type data_type
         """
         if key is None:
-            return self.grid.reshape(self.real_shape)
-        return self.grid.reshape(self.real_shape)[key]
+            return self.grid.reshape(self.config['real_shape'])
+        return self.grid.reshape(self.config['real_shape'])[key]
 
     def save_figure (
             self, filename, figure_func=figures.default, figure_args={}
@@ -178,7 +178,7 @@ class Grid (MultiGrid):
         
 
         # figures.save_figure(
-        #     data.reshape(self.grid_shape) , 
+        #     data.reshape(self.config['num_grids']) , 
         #     filename, 
         #     figure_name ,
         #     cmap = cmap,

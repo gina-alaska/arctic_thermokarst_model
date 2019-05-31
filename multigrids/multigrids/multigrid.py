@@ -122,40 +122,40 @@ class MultiGrid (object):
         if hasattr(self, 'grids'):
             del(self.grids)
 
-    def __getattr__(self, attr):
-        """get attribute, allows access to config dictionary values
-        as class attributes 
+    # def __getattr__(self, attr):
+    #     """get attribute, allows access to config dictionary values
+    #     as class attributes 
 
-        Paramaters
-        ----------
-        attr: str
-            attribute. spaces in this paramater are replaced with '_' if 
-            the space version of the attribute is not found.
+    #     Paramaters
+    #     ----------
+    #     attr: str
+    #         attribute. spaces in this paramater are replaced with '_' if 
+    #         the space version of the attribute is not found.
 
-        Raises
-        ------
-        AttributeError:
-            if Attribute is not found.
+    #     Raises
+    #     ------
+    #     AttributeError:
+    #         if Attribute is not found.
 
-        Returns
-        -------
-        value of attribute
-        """
-        if not hasattr(self, 'config'):
-            raise MultigridConfigError( "config dictionary not found" )
-        # try:
-        if attr == 'config':
-            return self.config
-        elif attr in self.config and attr != 'config'  and attr != 'config':
-            return self.config[attr]
-        elif attr.replace('_',' ') in self.config and attr != 'config':
-            return self.config[attr.replace('_',' ')]
-        else:
-            s = "'" + self.__class__.__name__ + \
-                "' object has no attribute '" + attr + "'"
-            raise AttributeError, s
-        # except(AttributeError) as e:
-        #     return 'not attr'
+    #     Returns
+    #     -------
+    #     value of attribute
+    #     """
+    #     # if not hasattr(self, 'config'):
+    #     #     raise MultigridConfigError( "config dictionary not found" )
+    #     # try:
+    #     if attr == 'config':
+    #         return self.config
+    #     elif attr in self.config and attr != 'config'  and attr != 'config':
+    #         return self.config[attr]
+    #     elif attr.replace('_',' ') in self.config and attr != 'config':
+    #         return self.config[attr.replace('_',' ')]
+    #     else:
+    #         s = "'" + self.__class__.__name__ + \
+    #             "' object has no attribute '" + attr + "'"
+    #         raise AttributeError(s)
+    #     # except(AttributeError) as e:
+    #     #     return 'not attr'
         
     def __repr__ (self):
         """Get string representation of object
@@ -166,7 +166,7 @@ class MultiGrid (object):
         """
         # print 'something'
         try: 
-            return str(self.grids.reshape(self.real_shape))
+            return str(self.grids.reshape(self.config['real_shape']))
         except AttributeError:
             return "object not initialized"
         
@@ -182,12 +182,12 @@ class MultiGrid (object):
         Returns
         -------
         np.array like
-            Grid from the multigrid with the shape self.grid_shape
+            Grid from the multigrid with the shape self.config['grid_shape']
         
         """
         if type(key) in (str,):
             key = self.get_grid_number(key)
-        return self.grids.reshape(self.real_shape)[key].reshape(self.grid_shape)
+        return self.grids.reshape(self.config['real_shape'])[key].reshape(self.config['grid_shape'])
 
     def __setitem__(self, key, value):
         """Set item function
@@ -198,7 +198,7 @@ class MultiGrid (object):
             A grid named in the grid_names list, and grid_name_map, or
         A int index for one of the grids.
         value: np.array like
-            Grid that is set. Should have shape of self.grid_shape.
+            Grid that is set. Should have shape of self.config['grid_shape'].
         """
         if type(key) in (str,):
             key = self.get_grid_number(key)
@@ -312,7 +312,7 @@ class MultiGrid (object):
             array to be used as internal memory.
         """
         with open(file) as conf_text:
-            config = yaml.load(conf_text)
+            config = yaml.load(conf_text, Loader=yaml.Loader)
         config['cfg_path'] = os.path.split(file)[0]
         config['memory_shape'] = self.get_memory_shape(config)
         config['real_shape'] = self.get_real_shape(config)
@@ -480,7 +480,7 @@ class MultiGrid (object):
         int
             gird id
         """
-        return grid_id if type(grid_id) is int else self.grid_name_map[grid_id]
+        return grid_id if type(grid_id) is int else self.config['grid_name_map'][grid_id]
     
     def get_grid(self, grid_id, flat = True):
         """Get a grid
@@ -512,7 +512,7 @@ class MultiGrid (object):
         new_grid: np.array like
             Grid to set. must be able to reshape to grid_shape.
         """
-        self[grid_id] = new_grid.reshape(self.grid_shape)
+        self[grid_id] = new_grid.reshape(self.config['grid_shape'])
 
     def save_figure(
             self, grid_id, filename, figure_func=figures.default, figure_args={}, data=None

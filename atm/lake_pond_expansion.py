@@ -47,7 +47,9 @@ def infill ( ponds, year, grids, control):
     pond_area = np.zeros(shape)
     
     for p in ponds:
+        
         pond_area += grids.area[ p, year ]
+        # print(pond_area)
     
     change_pond_area = np.logical_and(pond_area > 0,  pond_area < 1)   
     

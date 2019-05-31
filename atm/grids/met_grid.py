@@ -105,7 +105,7 @@ class DegreeDayGrids (object):
         elif freeze_or_thaw.lower() in ['thaw', 'tdd', 'heating']:
             return self.thawing[year]
         else:
-            raise KeyError, "key did not match tdd of fdd"
+            raise KeyError("key did not match tdd or fdd")
         
         
             

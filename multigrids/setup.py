@@ -11,7 +11,7 @@ config = {
     'download_url': multigrids.__url__,
     'author_email': 'rwspicer@alaska.edu',
     'version': multigrids.__version__,
-    'install_requires': ['numpy','pyyaml'],
+    'install_requires': ['numpy','pyyaml', 'moviepy'],
     'packages': find_packages(),
     'scripts': [],
     'package_data': {},

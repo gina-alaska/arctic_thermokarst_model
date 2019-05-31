@@ -5,8 +5,7 @@ import yaml
 import os
 
 from . import common
-
-import clip
+from . import clip
 
 class TemporalGrid (MultiGrid):
     """ A class to represent a grid over a fixed period of time,
@@ -43,7 +42,7 @@ class TemporalGrid (MultiGrid):
 
         if type(args[0]) is str:
             with open(args[0], 'r') as f:
-                self.num_timesteps = yaml.load(f)['num_timesteps']  
+                self.num_timesteps = yaml.load(f, Loader=yaml.Loader)['num_timesteps']  
             super(TemporalGrid , self).__init__(*args, **kwargs)
         else:
             self.num_timesteps = args[2]
@@ -94,8 +93,8 @@ class TemporalGrid (MultiGrid):
         if type(key) in (str,):
             key = self.get_grid_number(key)
         else:
-            key -= self.start_timestep
-        return self.grids.reshape(self.real_shape)[key].reshape(self.grid_shape)
+            key -= self.config['start_timestep']
+        return self.grids.reshape(self.config['real_shape'])[key].reshape(self.config['grid_shape'])
 
     def get_grids_at_keys(self,keys):
         """return the grids for the given keys
@@ -109,7 +108,7 @@ class TemporalGrid (MultiGrid):
         -------
         np.array
         """
-        select = np.zeros([len(keys), self.grid_shape[0],self.grid_shape[1] ] )
+        select = np.zeros([len(keys), self.config['grid_shape'][0],self.config['grid_shape'][1] ] )
         c = 0
         for k in keys:
             select[c] = self[k]
@@ -181,7 +180,7 @@ class TemporalGrid (MultiGrid):
         """
         """
     
-        data = self.grids.reshape(self.real_shape)
+        data = self.grids.reshape(self.config['real_shape'])
       
         try:
             clip_generated = clip_func(filename, data, clip_args)
@@ -197,4 +196,4 @@ class TemporalGrid (MultiGrid):
         int
             year of last time step in model
         """
-        return self.start_timestep + self.config['timestep']
+        return self.config['start_timestep'] + self.config['timestep']

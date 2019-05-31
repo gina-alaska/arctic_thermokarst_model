@@ -18,10 +18,10 @@ try:
 except ImportError:
     from ..images import raster
 
-try:
-    from ..grids.constants import ROW,COL
-except ValueError, ImportError:
-    ROW,COL = 0, 1
+# try:
+from atm.grids.constants import ROW,COL
+# except (ValueError, ImportError) as e:
+#     ROW,COL = 0, 1
 
 try:
     from cohorts import find_canon_name, DISPLAY_COHORT_NAMES 

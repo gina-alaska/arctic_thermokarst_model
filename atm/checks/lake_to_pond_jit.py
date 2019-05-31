@@ -8,7 +8,7 @@ import numpy as np
 
 from numba import jit
 
-from debug import DEBUG, PARALLEL
+from .debug import DEBUG, PARALLEL
 if DEBUG:
     import llvmlite.binding as llvm
     llvm.set_option('', '--debug-only=loop-vectorize')

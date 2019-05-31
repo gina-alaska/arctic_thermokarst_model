@@ -4,17 +4,17 @@ checks
 
 Transition function metadata
 """
-import poi_based
-import lake_to_pond
-import pond_to_lake
+from . import poi_based
+from . import lake_to_pond
+from . import pond_to_lake
 
-import poi_based_jit
-import lake_to_pond_jit 
-import pond_to_lake_jit
+from . import poi_based_jit
+from . import lake_to_pond_jit 
+from . import pond_to_lake_jit
 
-import poi_based_cuda
-import lake_to_pond_cuda
-import pond_to_lake_cuda
+from . import poi_based_cuda
+from . import lake_to_pond_cuda
+from . import pond_to_lake_cuda
 
 
 # table of transition functions

@@ -4,7 +4,7 @@
 import os
 # import pickle
 import numpy as np
-from constants import ROW, COL
+from .constants import ROW, COL, create_deepcopy
 import matplotlib.pyplot as plt
 import copy
 from multigrids import TemporalGrid, figures, common
@@ -60,7 +60,7 @@ class ClimateEventGrid (TemporalGrid):
                 config['model length']
             ]
 
-            kwargs = copy.deepcopy(config) 
+            kwargs = create_deepcopy(config) 
             kwargs['data_type'] = 'bool'
             kwargs['mode'] = 'r+'
             kwargs['start_timestep'] = int(config['start year'])
@@ -73,7 +73,7 @@ class ClimateEventGrid (TemporalGrid):
             )
             self.config['climate_block_range'] = \
                 config['_FAST_get_climate_block_range']
-        self.grid = self.grids[self.timestep]
+        self.grid = self.grids[self.config['timestep']]
         
     def get_grid (self, time_step = -1, flat = True):
         """Get met grid at ts
@@ -91,7 +91,7 @@ class ClimateEventGrid (TemporalGrid):
             Met gird for given time step
         """
         if time_step == -1:
-            time_step = self.start_year + self.timestep
+            time_step = self.config['start_year'] + self.config['timestep']
         # shape = self.shape
         grid = self[time_step]
         if flat:
@@ -102,19 +102,19 @@ class ClimateEventGrid (TemporalGrid):
         """Creates climate events 
         """
         block_size = np.random.randint(
-            self.climate_block_range[0],
-            self.climate_block_range[1]
+            self.config['climate_block_range'][0],
+            self.config['climate_block_range'][1]
         )
         
-        for row in range(0, self.grid_shape[ROW], block_size):
-            for col in range(0, self.grid_shape[COL], block_size):
+        for row in range(0, self.config['grid_shape'][ROW], block_size):
+            for col in range(0, self.config['grid_shape'][COL], block_size):
                 climate_event = np.random.uniform(0.0, 1.0)
                 
-                if not climate_event <= self.probability:
+                if not climate_event <= self.config['probability']:
                     continue
                 ## climate envent occuts in block
                 if logger and log_ce:
                     logger.add("     A climate event occurred")
-                self.grid.reshape(self.grid_shape)\
+                self.grid.reshape(self.config['grid_shape'])\
                     [row:row+block_size, col:col+block_size] = True
         return block_size

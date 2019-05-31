@@ -13,7 +13,7 @@ import numpy as np
 #     from ..atm_io import binary, image
 
 from multigrids import Grid, common, figures
-from constants import ROW, COL
+from .constants import ROW, COL, create_deepcopy
 import copy
 
 import matplotlib.pyplot as plt
@@ -64,7 +64,7 @@ class DrainageGrid (Grid):
                 config['grid_shape'][COL]
             ]
 
-            kwargs = copy.deepcopy(config) 
+            kwargs = create_deepcopy(config) 
             kwargs['data_type'] = 'object'
             kwargs['dataset_name'] = 'Drainage efficiency'
             kwargs['mode'] = 'r+'
@@ -119,7 +119,7 @@ class DrainageGrid (Grid):
         valid_input = ['above', 'below', 'random']
         if not efficiency in valid_input:
             msg = 'Efficiency Type not in ' + str(valid_input)
-            raise DrainageTypeInvalid, msg
+            raise DrainageTypeInvalid(msg)
         
         grid = np.random.random(shape).flatten()
         

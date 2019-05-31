@@ -5,7 +5,7 @@ ice_grid
 """
 import numpy as np
 import copy
-from constants import ROW, COL
+from .constants import ROW, COL, create_deepcopy
 
 from multigrids import Grid, common, figures
 import matplotlib.pyplot as plt
@@ -63,7 +63,7 @@ class IceGrid(Grid):
                 config['grid_shape'][COL]
             ]
 
-            kwargs = copy.deepcopy(config) 
+            kwargs = create_deepcopy(config) 
             kwargs['data_type'] = 'object'
             kwargs['dataset_name'] = 'Ice Grid'
             kwargs['mode'] = 'r+'
@@ -142,7 +142,7 @@ class IceGrid(Grid):
         NotImplementedError:
             if key is str
         """
-        raise NotImplementedError, 'cannot set ICE arrays once initilized'
+        raise NotImplementedError('cannot set ICE arrays once initialized')
         
         
     def initialize_grid (self, shape, init_ice, aoi_mask):
@@ -192,7 +192,9 @@ class IceGrid(Grid):
     
     def read_grid (self, init_ice):
         """Read init ice from file or object"""
-        raise NotImplementedError
+        raise NotImplementedError(
+            'Framework does not currently support reading Ice Grid '
+        )
         
     def get_ice_slope_grid(self, cohort, flat = True):
         """Get the ice content coefficient values for a cohort
@@ -204,7 +206,7 @@ class IceGrid(Grid):
         flat: bool
             reshaps grid to shape if False
         """
-        coeffs = self.cohort_coeffs[cohort]
+        coeffs = self.config["cohort_coeffs"][cohort]
         coeffs['none'] = 0
         grid = copy.deepcopy(self.grid)
         for c in coeffs:
