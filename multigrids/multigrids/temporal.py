@@ -5,6 +5,8 @@ import yaml
 from . import common, figures
 import matplotlib.pyplot as plt
 
+import clip
+
 class TemporalMultiGrid (MultiGrid):
     """ A class to represent a set of multiple related grids of the same 
     dimensions, over a fixed period of time. Implemented using numpy arrays.
@@ -338,10 +340,26 @@ class TemporalMultiGrid (MultiGrid):
         if not 'title' in figure_args:
             figure_args['title'] = self.dataset_name
             if not grid_id is None:
-                figure_args['title' ] += ' ' + str( grid_id )
+                figure_args['title'] += ' ' + str( grid_id )
         fig = figure_func(data, figure_args)
         plt.show()
         plt.close()
+
+    def save_clip(
+            self, grid_id, filename, clip_func=clip.default, clip_args={}
+        ):
+        """
+        """
+        if not grid_id is None:
+            data = self[grid_id]
+            data = data.reshape(data.shape[0], data.shape[2], data.shape[3])
+        else:
+            data = None
+        try:
+            clip_generated = clip_func(filename, data, clip_args)
+        except clip.CilpError:
+            return False
+        return clip_generated
 
 
 def dumb_test():

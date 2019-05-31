@@ -276,9 +276,9 @@ class ATM(object):
             pass
         
         self.logger.add("    -- Dominant Cohort Figure")
-        if self.control['Terrestrial_Control']['Figure']:
-            dc_data = self.grids.area.create_dominate_cohort_dataset()
-            fig_args = {
+        dc_data = self.grids.area.create_dominate_cohort_dataset()
+        dc_frames = []
+        fig_args = {
                 'title': '',
                 'cbar_extend': 'max',
                 "categories": sorted(dc_data.cohort_list),
@@ -286,8 +286,8 @@ class ATM(object):
                 'cmap': 'viridis', 
                 'ax_labelsize': 5 ,  
                 }
-
-
+        if self.control['Terrestrial_Control']['Figure']:
+            
             for year in range(start_year, start_year + self.stop-1):
                 fig_args['title'] = 'Dominant Cohort -' + str(year)
                 dc_data.save_figure(
@@ -299,12 +299,31 @@ class ATM(object):
                     figures.categorical, 
                     fig_args
                 )
-                
-            # vid = self.control['Terrestrial_Control']['Movie']
-            # self.grids.area.dominate_cohort_timeseries( dom_path, vid)
+                dc_frames.append(
+                    os.path.join(
+                        dom_path,
+                        'Dominant_Cohort_'+ str(year) + '.png'
+                    )
+                )
+        if self.control['Terrestrial_Control']['Movie']:
+            dom_path = os.path.join( outdir, 'All_cohorts')
+            clip_args = {
+                'figure_args': fig_args,
+            }
+            outfile = os.path.join(dom_path, 'dominate-cohort-time-series.mp4')
+            if dc_frames != []:
+                clip_args['frames list'] = dc_frames
+                # print frames
+                # complete = dc_data.save_clip(outfile, clip_args=clip_args)
+            else:
+                clip_args['end_ts'] = self.stop
+            complete = dc_data.save_clip(outfile, clip_args=clip_args)
             
-        
-        
+            if complete:
+                self.logger.add("       -- Clip output success")
+            else:
+                self.logger.add("       --  Clip output failed")
+            
         
         self.logger.add( "  -- Met Figures" )
         self.logger.add( "    -- Degree Days")
@@ -387,8 +406,7 @@ class ATM(object):
         for control in sorted(self.control['cohorts']):
             if type(self.control['cohorts'][control]) is str:
                 continue
-            if not self.control['cohorts'][control]['Figures']:
-                continue
+            
             
             cohort = '_'.join(control.split('_')[:-1])
             path = os.path.join(outdir, cohort, 'year_cohorts')
@@ -396,7 +414,7 @@ class ATM(object):
                 os.makedirs(path)
             except:
                 pass
-            vid = self.control['cohorts'][control]['Movie']
+            
             self.logger.add( "    -- " + cohort + " Figures/Video")
             fig_args = {
                 'title': '',
@@ -406,19 +424,53 @@ class ATM(object):
                 'vmax': 1,
                 }
 
+            frames = []
+            if self.control['cohorts'][control]['Figures']:
+                for year in range(start_year, start_year + self.stop-1):
+                    fig_args['title'] = \
+                        DISPLAY_COHORT_NAMES[cohort] +' - ' + str(year)
+                    fname = \
+                        os.path.join(
+                            path, 
+                            cohort + '_Fractional_Area_'+ str(year)+'.png'
+                        )
+                    self.grids.area.save_figure(
+                        cohort, year, fname, figures.default, fig_args
+                    )
+                    frames.append(fname)
+            
+            clip_args = {
+                'figure_args': fig_args,
+            }
+            if self.control['cohorts'][control]['Movie']:
+                if frames != []:
+                    clip_args['frames list'] = frames
+                    # print frames
+                    path = os.path.join(outdir, cohort)
+                    complete = self.grids.area.save_clip(
+                        None,
+                        os.path.join(path, cohort + '_Fractional_Area.mp4'),
+                        clip_args=clip_args
+                    )
+                else:
+                    path = os.path.join(outdir, cohort)
+                    clip_args['end_ts'] = self.stop
+                    complete = self.grids.area.save_clip(
+                        cohort,
+                        os.path.join(path, cohort + '_Fractional_Area.mp4'),
+                        clip_args=clip_args
+                    )
+                    
 
-            for year in range(start_year, start_year + self.stop-1):
-                fig_args['title'] = \
-                    DISPLAY_COHORT_NAMES[cohort] +' - ' + str(year)
-                self.grids.area.save_figure(
-                    cohort, year, 
-                    os.path.join(path, cohort + '_Fractional_Area_'+ str(year)),
-                    figures.default, 
-                    fig_args
-                )
-                
+                if complete:
+                    self.logger.add(
+                        "       -- " + cohort + " Clip output success"
+                    )
+                else:
+                    self.logger.add(
+                        "       -- " + cohort + " Clip output failed"
+                    )
 
-            # self.grids.area.save_cohort_timeseries(cohort, path, vid)
 
 
             

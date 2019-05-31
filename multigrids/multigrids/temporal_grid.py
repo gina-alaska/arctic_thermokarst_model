@@ -6,6 +6,8 @@ import os
 
 from . import common
 
+import clip
+
 class TemporalGrid (MultiGrid):
     """ A class to represent a grid over a fixed period of time,
     Implemented using numpy arrays.
@@ -174,6 +176,18 @@ class TemporalGrid (MultiGrid):
         self.grid = self.grids[self.timestep]
         
         return self.current_timestep()
+
+    def save_clip(self, filename, clip_func=clip.default, clip_args={}):
+        """
+        """
+    
+        data = self.grids.reshape(self.real_shape)
+      
+        try:
+            clip_generated = clip_func(filename, data, clip_args)
+        except clip.CilpError:
+            return False
+        return clip_generated
     
     def current_timestep (self):
         """gets current timestep adjused for start_timestep

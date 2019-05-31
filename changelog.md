@@ -2,9 +2,14 @@
 All notable changes to this project will be documented in this file.
 
 ## [0.5.1] - unreleased 
+### added 
+- clip generation to TemporalMultigrid
+- clip generation to TemporalGrid
+- restored atm clip output for fractional cohorts
+- restored atm clip output for dominate cohort time series
 
 ## [0.5.0] - 2019-05-10
-### Added 
+### added 
 - multgird library 
 - options for JIT compilation
 
