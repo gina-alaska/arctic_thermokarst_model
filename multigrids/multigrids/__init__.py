@@ -1,5 +1,4 @@
-__url__ = ""
-__version__ = "0.1.0"
+from .__metadata__ import *
 
 from .multigrid import MultiGrid
 from .temporal import TemporalMultiGrid

@@ -15,6 +15,8 @@ import copy
 import sys
 import matplotlib.pyplot as plt
 
+from .__metadata__ import __version__
+
 from . import figures
 
 from .common import load_or_use_default, GridSizeMismatchError
@@ -113,7 +115,11 @@ class MultiGrid (object):
         if type(args[0]) is str:
             # print('load')
             init_func = self.load
+
+        
         self.config, self.grids = init_func(*args, **kwargs)
+        self.config['multigrids_version'] =  __version__
+
 
     def __del__ (self):
         """deconstructor for class"""
@@ -524,7 +530,7 @@ class MultiGrid (object):
         # data[np.logical_not(self.mask)] = np.nan
         
         if not 'title' in figure_args:
-            figure_args['title'] = self.dataset_name 
+            figure_args['title'] = self.config["dataset_name"] 
             if not grid_id is None:
                 figure_args['title' ]+= ' ' + str( grid_id )
         fig = figure_func(data, figure_args)
@@ -538,7 +544,7 @@ class MultiGrid (object):
             data = self[grid_id].astype(float)
         # data[np.logical_not(self.mask)] = np.nan
         if not 'title' in figure_args:
-            figure_args['title'] = self.dataset_name
+            figure_args['title'] = self.config["dataset_name"] 
             if not grid_id is None:
                 figure_args['title' ] += ' ' + str( grid_id )
         fig = figure_func(data, figure_args)
@@ -558,7 +564,7 @@ class MultiGrid (object):
         for grid in grids:
             filename = os.path.join(
                 dirname, 
-                (self.dataset_name + '_' + str(grid) + '.png').replace(' ','_')
+                (self.config["dataset_name"]  + '_' + str(grid) + '.png').replace(' ','_')
             )
             self.save_figure(grid, filename, figure_func, figure_args)
 
@@ -596,7 +602,7 @@ class MultiGrid (object):
         for grid in grids:
             filename = os.path.join(
                 dirname, 
-                (self.dataset_name + '_' + grid + '.tif').replace(' ','_')
+                (self.config["dataset_name"]  + '_' + grid + '.tif').replace(' ','_')
             )
             self.save_as_geotiff(filename, grid, **kwargs)
 
