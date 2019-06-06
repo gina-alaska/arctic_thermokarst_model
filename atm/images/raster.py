@@ -10,6 +10,8 @@ import numpy as np
 ROW, COL = 0,1
 import math
 
+import matplotlib.pyplot as plt
+
 # raster metadata named tuple
 #
 # See Also
@@ -191,3 +193,61 @@ def clip_raster (in_raster, out_raster, extent):
     tiff.GetRasterBand(1).FlushCache()
     tiff.FlushCache()
     return True
+
+
+def convert_to_figure(raster_name, figure_name, title = "", cmap = 'viridis', 
+        ticks = None, tick_labels=None, vmin=None,vmax=None
+    ):
+    """Converts a raster file to a figure with colorbar and title
+
+    Parameters
+    ----------
+    raster_name: path
+        raster file
+    figure_name: path
+        output figure file
+    title: str, default ""
+    cmap: str or matplotlib colormap, default 'viridis'
+    ticks: list, defaults None
+        where the colorbat ticks are placed
+    tick_labes: list, defaults None
+        optional labels for the colorbar ticks
+    vmin: Float or Int
+    vmax: Float or Int
+        min and max values to plot
+    """
+    data, md = load_raster(raster_name)
+    imgplot = plt.matshow(data, cmap = cmap, vmin=vmin, vmax=vmax) 
+    # imgplot.axes.get_xaxis().set_visible(False)
+    # imgplot.axes.get_yaxis().set_visible(False)
+    imgplot.axes.axis('off')
+    cbar = plt.colorbar(shrink = .9, drawedges=False,  ticks=ticks) #[-1, 0, 1]
+    # fig.colorbar(cax)
+    if tick_labels:
+        cbar.set_ticklabels(tick_labels)
+        plt.clim(-0.5, len(tick_labels) - .5)
+    plt.title(title, y=1.2)
+    plt.savefig(figure_name, bbox_inches='tight')
+    plt.close()
+
+
+## examples
+# --- ## numerical 
+# raster.convert_to_figure( 
+#     'atm_ns_potential_initialization_areas_full_winter_precipitation/1901-1950/2003_precip_gtavg.tif', 
+#     'winter-2003-2004-full-winter-precip.jpg', 
+#     'Winter (Oct-Mar) 2003-2004 Departure From Average Precipitation', 
+#     cmap="Greens",  
+# ) 
+
+# --- ## categorical         
+# raster.convert_to_figure( 
+#     'atm_ns_potential_initialization_areas_full_winter_precipitation/1901-1950/2003_precip_gtavg.tif', 
+#     'winter-2003-2004-full-winter-precip.jpg', 
+#     'Winter (Oct-Mar) 2003-2004 Departure From Average Precipitation', 
+#     cmap=plt.cm.get_cmap("Greens", 4),  
+#     ticks=[0,1,2,3],  
+#     vmin=0, 
+#     vmax=3,  
+#     tick_labels=['<= Average', '> Average', '> 1 Std. Dev.', '> 2 Std. Dev.'] 
+# )                

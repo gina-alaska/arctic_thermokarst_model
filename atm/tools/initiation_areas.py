@@ -1,10 +1,10 @@
 """
-Initialization Areas 
---------------------
+initiation Areas tools
+----------------------
 
-initialization_areas.py
+initiation_areas.py
 
-Tools to help find areas were thermokarst initialization is likely 
+Tools to help find areas were thermokarst initiation is likely 
 
 """
 from atm.images import raster
@@ -208,15 +208,15 @@ def calc_winter_precip_avg (precip, years='all'):
 
 
 
-def find_initialization_areas (precip, tdd, fdd, directory, years = 'all', 
+def find_initiation_areas (precip, tdd, fdd, directory, years = 'all', 
         winter_precip_func = calc_winter_precip_avg
     ):
     """Creates raster outputs of the Initialization Areas.
 
-    These initialization areas rasters are calculated based on a given winter
+    These initiation areas rasters are calculated based on a given winter
     and the following summer. Basically if the winter is warmer than average
     with high precipitation (early or full) is higher than average, followed 
-    by a warmer than average summer then the likelihood for initialization is
+    by a warmer than average summer then the likelihood for initiation is
     higher.
 
     Parameters
@@ -301,38 +301,42 @@ def find_initialization_areas (precip, tdd, fdd, directory, years = 'all',
     os.makedirs(os.path.join(directory, years))
     
     for idx in range(fdd.grids.shape[0]):
+
+        # current year values
         c_fdd = fdd.grids[idx].reshape(shape)
         c_tdd = tdd.grids[idx].reshape(shape)
         c_precip = winter_precip[idx].reshape(shape)
 
+        # grids for mapping deviation 
         fdd_grid[::] = c_fdd - c_fdd
         tdd_grid[::] = c_tdd - c_tdd
         precip_grid[::] = c_precip - c_precip
+
+        # for  deviation grids:
+        #   0 means <= average
+        #   1 means > average
+        #   2 means > 1 std. deviation. 
+        #   2 means > 2 std. deviations. 
         for s in [0, 1, 2]:
             fdd_grid[c_fdd > (fdd_avg + s * fdd_std)] = s + 1  
             tdd_grid[c_tdd > (tdd_avg + s * tdd_std)] = s + 1 
             precip_grid[
                 c_precip > (winter_precip_avg + s * winter_precip_std)
             ] = s + 1 
-            # show(fdd_grid)
-            # show(tdd_grid)
-            # show(precip_grid)
-            # show(trigger)
-
-        trigger = warm_winter + (tdd_grid)
-        
-        # show(fdd_grid, str(1901 + idx) + 'fdd')
-        # show(tdd_grid, str(1901 + idx) +'tdd')
-        # show(precip_grid, str(1901 + idx) +'winter precip')
-        # show(trigger, str(1901 + idx) +'trigger')
 
 
+        # calculate the initiation map
+        # 'warm winters' (high precip + high temps) + hot summers = higher initiation 
+        initiation = warm_winter + (tdd_grid)
+
+        # save rastes
         yr = str(int(start)+idx)
-        raster.save_raster(os.path.join(directory, years, yr + '_initialization_areas.tif'), trigger, transform, projection)
+        raster.save_raster(os.path.join(directory, years, yr + '_initialization_areas.tif'), initiation, transform, projection)
         raster.save_raster(os.path.join(directory, years, yr + '_precip_gtavg.tif'), precip_grid, transform, projection)
         raster.save_raster(os.path.join(directory, years, yr + '_fdd_gtavg.tif'), fdd_grid, transform, projection)
         raster.save_raster(os.path.join(directory, years, yr + '_tdd_gtavg.tif'), tdd_grid, transform, projection)
 
+        # high precip + high temps 
         warm_winter = (fdd_grid)+ precip_grid
 
     return winter_precip_avg, winter_precip_std, tdd_avg, tdd_std, fdd_avg, fdd_std
