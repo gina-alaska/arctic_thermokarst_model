@@ -57,6 +57,11 @@ class ModelGrids (object):
         self.logger.add('loading AREA')
         config['data_type'] = np.float32
         self.area = AreaGrid(config,logger = self.logger)
+        self.area.config['dataset_name'] = 'Area Data'
+        self.area.config['description'] = \
+            """Area Data contains fractional cohort data for each year the ATM
+            was run. 
+            """
         self.logger.add('performing post AREA setup')
         self.shape = self.area.config['grid_shape']
         self.aoi = self.area.area_of_interest()
@@ -66,14 +71,38 @@ class ModelGrids (object):
         config['cohort list'] = self.area.get_cohort_list()
         self.logger.add('loading ALD')
         self.ald = ALDGrid(config,logger = self.logger)
+        self.ald.config['dataset_name'] = 'ALD Data'
+        self.ald.config['description'] = \
+            """ALD Data contains ALD, and Protective Layer data for each year 
+            the ATM was run.
+            """
         self.logger.add('loading POI')
         self.poi = POIGrid(config,logger = self.logger)
+        self.poi.config['dataset_name'] = 'POI Data'
+        self.poi.config['description'] = \
+            """POI Data contains Poi data for each year the ATM was run. 
+            """
         self.logger.add('loading ICE')
         self.ice = IceGrid(config,logger = self.logger)
+        self.ice.config['dataset_name'] = 'Ice Data'
+        self.ice.config['description'] = \
+            """
+            Ice Data contains the ice content grid for the ATM model run
+            """
         self.logger.add('loading LAKE POND')
         self.lake_pond = LakePondGrid(config,logger = self.logger)
+        self.lake_pond.config['dataset_name'] = 'Lake Pond Data'
+        self.lake_pond.config['description'] = \
+            """Lake-Pond Data contains Lake and Pond depth and count data for 
+            each year the ATM was run. 
+            """
         self.logger.add('loading CLIMATE EVENT')
         self.climate_event = ClimateEventGrid(config,logger = self.logger)
+        self.climate_event.config['dataset_name'] = 'Climate Event Data'
+        self.climate_event.config['description'] = \
+            """Climate Event Data contains climate event data for each 
+            year the ATM was run. 
+            """
         ## TODO:redo masks here
         # for lpt  in config['pond types'] + config['lake types']:
         #     #~ print lpt
@@ -81,6 +110,10 @@ class ModelGrids (object):
         #     self.lake_pond.apply_mask(lpt, mask)
         self.logger.add('loading DRAINGAGE')
         self.drainage = DrainageGrid(config,logger = self.logger)
+        self.drainage.config['dataset_name'] = 'Drainage Data'
+        self.drainage.config['description'] = """
+        Drainage contains the drainage grid for the ATM model run
+        """
         
         self.logger.add('loading DEGREE DAY')
         self.degreedays = DegreeDayGrids(
@@ -104,20 +137,6 @@ class ModelGrids (object):
             number timesteps, based on length of degree day arrays
         """
         return self.degreedays.thawing.num_timesteps
-        
-    # def add_time_step(self, zeros = False):
-    #     """add a time step for all grids where nessary/possible
-        
-    #     Parameters
-    #     ----------
-    #     zeros: bool
-    #         if set to true data is set as all zeros
-    #     """
-    #     self.area.add_time_step(zeros)
-    #     self.ald.add_time_step(zeros)
-    #     self.poi.add_time_step(zeros)
-    #     self.lake_pond.increment_time_step()
-    #     self.climate_event.increment_time_step()
         
     def increment_time_step(self):
         """Increment time step for all temporal grids
@@ -175,6 +194,67 @@ class ModelGrids (object):
         
         raise KeyError('Could not find grid given name: ' + key)
         
+    def save_grids(self, out_path, new_options={}):
+        """save all grids
+
+        Parameters
+        ----------
+        out_path: path
+            directory to save grids in
+        new_options: dict
+            keys are "area", "ald", "climate_event", "drainage", "ice", 
+            "lake_pond", "poi", "met"
+            Values are boolean and indicate which grids to save, all are saved
+            by default.
+
+
+        
+        """
+        options = {
+            "area": True,
+            "ald": True,
+            "climate_event": True,
+            "drainage": True,
+            "ice": True,
+            "lake_pond": True,
+            "poi": True,
+            # "met": True,
+        }
+        options.update(new_options)
+
+        self.logger.add('Saving Grid Data')
+
+        if options['area']:
+            self.logger.add('   Saving AreaGrid')
+            self.area.save(os.path.join(out_path, 'area.yaml'))
+        if options['ald']:
+            self.logger.add('   Saving ALDGrid')
+            self.ald.save(os.path.join(out_path, 'ald.yaml'))
+        if options['climate_event']:
+            self.logger.add('   Saving ClimateEventGrid')
+            self.climate_event.save(
+                os.path.join(out_path, 'climate_event.yaml')
+            )
+        if options['drainage']:
+            self.logger.add('   Saving DrainageGrid')
+            self.drainage.save(os.path.join(out_path, 'drainage.yaml'))
+        if options['ice']:
+            self.logger.add('   Saving IceGrid')
+            self.ice.save(os.path.join(out_path, 'ice.yaml'))
+        if options['lake_pond']:
+            self.logger.add('   Saving LakePondGrid')
+            self.lake_pond.save(os.path.join(out_path, 'lake_pond.yaml'))
+        if options['poi']:
+            self.logger.add('   Saving POIGrid')
+            self.poi.save(os.path.join(out_path, 'poi.yaml'))
+        # if options['met']:
+        #     self.logger.add('   Saving Met girds')
+        #     self.degreedays.freezing.save(
+        #         os.path.join(out_path, 'met_freezing.yaml')
+        #     )
+        #     self.degreedays.thawing.save(
+        #         os.path.join(out_path, 'met_thawing.yaml')
+        #     )
         
         
     
