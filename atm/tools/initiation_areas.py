@@ -209,7 +209,7 @@ def calc_winter_precip_avg (precip, years='all'):
 
 
 def find_initiation_areas (precip, tdd, fdd, directory, years = 'all', 
-        winter_precip_func = calc_winter_precip_avg
+        winter_precip_type = 'full'
     ):
     """Creates raster outputs of the Initialization Areas.
 
@@ -232,9 +232,9 @@ def find_initiation_areas (precip, tdd, fdd, directory, years = 'all',
     years: str
         Range of years to calculate averages over. 
         'all' or 'start-end' ie '1901-1950'.
-    winter_precip_func: function
-        The function to use for calculating the winter precipitation.
-        Either calc_winter_precip_avg or calc_early_winter_precip_avg
+    winter_precip_type: str
+        'early', 'full' or 'both'
+
         
 
     Returns
@@ -247,10 +247,15 @@ def find_initiation_areas (precip, tdd, fdd, directory, years = 'all',
     # Fist line gets the average and standard diveation for the desired range
     # of years. The second and third lines gets the full winter 
     # precipitation data.
-    winter_precip_avg, winter_precip_std, winter_precip = \
-        winter_precip_func(precip, years) 
-    winter_precip  = winter_precip_func(precip, 'all') 
-    winter_precip = winter_precip[2] 
+    full_winter_precip_avg, full_winter_precip_std, full_winter_precip = \
+        calc_winter_precip_avg(precip, years) 
+    full_winter_precip  = calc_winter_precip_avg(precip, 'all') 
+    full_winter_precip = full_winter_precip[2] 
+
+    early_winter_precip_avg, early_winter_precip_std, full_winter_precip = \
+        calc_early_winter_precip_avg(precip, years) 
+    early_winter_precip  = calc_early_winter_precip_avg(precip, 'all') 
+    early_winter_precip = early_winter_precip[2] 
     
 
     ## get the degree day averages and standard dilations. 
@@ -271,9 +276,13 @@ def find_initiation_areas (precip, tdd, fdd, directory, years = 'all',
     transform = precip.config['raster_metadata'].transform
     projection = precip.config['raster_metadata'].projection
 
+    os.makedirs(os.path.join(directory, years))
     raster.save_raster(
-        os.path.join(directory, years + '_precip_winter_avg.tif'), 
-        winter_precip_avg, transform, projection)
+        os.path.join(directory, years + '_precip_full_winter_avg.tif'), 
+        full_winter_precip_avg, transform, projection)
+    raster.save_raster(
+        os.path.join(directory, years + '_precip_early_winter_avg.tif'), 
+        early_winter_precip_avg, transform, projection)
     raster.save_raster(
         os.path.join(directory, years + '_fdd_avg.tif'),
         fdd_avg, transform, projection
@@ -292,25 +301,33 @@ def find_initiation_areas (precip, tdd, fdd, directory, years = 'all',
     tdd_grid = np.zeros(shape)  
     tdd_grid[::] = np.nan
 
-    precip_grid = np.zeros(shape)  
-    precip_grid[::] = np.nan
+    full_precip_grid = np.zeros(shape)  
+    full_precip_grid[::] = np.nan
+
+    early_precip_grid = np.zeros(shape)  
+    early_precip_grid[::] = np.nan
 
     warm_winter = np.zeros(shape)  
     warm_winter[::] = np.nan
 
-    os.makedirs(os.path.join(directory, years))
+    
+
+    _max = -10
+    _min = 20
     
     for idx in range(fdd.grids.shape[0]):
 
         # current year values
         c_fdd = fdd.grids[idx].reshape(shape)
         c_tdd = tdd.grids[idx].reshape(shape)
-        c_precip = winter_precip[idx].reshape(shape)
+        c_full_precip = precip[idx].reshape(shape)
+        c_early_precip = precip[idx].reshape(shape)
 
         # grids for mapping deviation 
         fdd_grid[::] = c_fdd - c_fdd
         tdd_grid[::] = c_tdd - c_tdd
-        precip_grid[::] = c_precip - c_precip
+        full_precip_grid[::] = c_full_precip  - c_full_precip 
+        early_precip_grid[::] = c_early_precip  - c_early_precip 
 
         # for  deviation grids:
         #   0 means <= average
@@ -320,26 +337,42 @@ def find_initiation_areas (precip, tdd, fdd, directory, years = 'all',
         for s in [0, 1, 2]:
             fdd_grid[c_fdd > (fdd_avg + s * fdd_std)] = s + 1  
             tdd_grid[c_tdd > (tdd_avg + s * tdd_std)] = s + 1 
-            precip_grid[
-                c_precip > (winter_precip_avg + s * winter_precip_std)
+            full_precip_grid[
+                c_full_precip  > (full_winter_precip_avg + s * full_winter_precip_std)
+            ] = s + 1 
+            early_precip_grid[
+                c_full_precip  > (early_winter_precip_avg + s * early_winter_precip_std)
             ] = s + 1 
 
 
         # calculate the initiation map
         # 'warm winters' (high precip + high temps) + hot summers = higher initiation 
         initiation = warm_winter + (tdd_grid)
+        _min = min(_min, np.nanmin(initiation))
+        _max = max(_max, np.nanmax(initiation))
+        
 
         # save rastes
         yr = str(int(start)+idx)
         raster.save_raster(os.path.join(directory, years, yr + '_initialization_areas.tif'), initiation, transform, projection)
-        raster.save_raster(os.path.join(directory, years, yr + '_precip_gtavg.tif'), precip_grid, transform, projection)
+        raster.save_raster(os.path.join(directory, years, yr + '_full_precip_gtavg.tif'), full_precip_grid, transform, projection)
+        raster.save_raster(os.path.join(directory, years, yr + '_early_precip_gtavg.tif'), early_precip_grid, transform, projection)
         raster.save_raster(os.path.join(directory, years, yr + '_fdd_gtavg.tif'), fdd_grid, transform, projection)
         raster.save_raster(os.path.join(directory, years, yr + '_tdd_gtavg.tif'), tdd_grid, transform, projection)
 
         # high precip + high temps 
-        warm_winter = (fdd_grid)+ precip_grid
+        if winter_precip_type == 'full':
+            warm_winter = (fdd_grid) + full_precip_grid
+        elif winter_precip_type == 'early':
+            warm_winter = (fdd_grid) + early_precip_grid
+        elif winter_precip_type == 'both':
+            warm_winter = (fdd_grid) + full_precip_grid + early_precip_grid
+        else:
+            m = "Argument winter_precip_type must be 'early', 'full', or 'both'"
+            raise TypeError(m)
 
-    return winter_precip_avg, winter_precip_std, tdd_avg, tdd_std, fdd_avg, fdd_std
+    print(_min,_max)
+    return full_winter_precip_avg, full_winter_precip_std, early_winter_precip_avg, early_winter_precip_std, tdd_avg, tdd_std, fdd_avg, fdd_std
 
    
 
