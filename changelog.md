@@ -1,7 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.5.1] - unreleased 
+## [0.6.0] - unreleased 
+### changed
+- base code now uses Python 3 
+- control file keys changed:
+  - 'initial area data' became 'Initial_Area_data'
+  - 'initial ALD' became 'Initial_ALD_range'
+  - 'target resolution' became 'Target_resolution'
+  - 'initialization year' became 'initialization_year'
+  
 ### added 
 - clip generation to TemporalMultigrid
 - clip generation to TemporalGrid
@@ -12,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - config options for configuring which grids are saved at runtime
 - config options to skip all figure generation at runtime 
 - archive log message
+- command line tool for generating control files
 
 ## [0.5.0] - 2019-05-10
 ### added 

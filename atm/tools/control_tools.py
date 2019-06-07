@@ -246,7 +246,7 @@ def add_simulation_setup(settings):
 #================================================================
 
 # where does the model start at?
-initialization year: 1900
+initialization_year: 1900
 start_year: 1901
 
 #----------------------------------------------------------------
@@ -255,7 +255,7 @@ start_year: 1901
 # Y_model_resolution: 1000.
 
 ## target resloution [Y, X]
-target resolution: [1000, 1000]
+Target_resolution: [1000, 1000]
 
 #----------------------------------------------------------------
 #   Initial_Area_data:

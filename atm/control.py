@@ -71,9 +71,9 @@ class Control(dict):
         try:
             self['start year']
         except KeyError:
-            self['start year'] = self['initialization year'] + 1
+            self['start year'] = self['initialization_year'] + 1
             if self.logger:
-                self.logger.add('Set start year to initialization year + 1')
+                self.logger.add('Set start year to initialization_year + 1')
 
         self.init_keys = self.keys()
         self.is_key = lambda k: k in self.keys()

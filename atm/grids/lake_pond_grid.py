@@ -28,7 +28,7 @@ config_ex = {
     'lake depth range' : (.3, 5),
     
     'ice depth alpha range': (2.31, 2.55),
-    'initialization year': 1900,
+    'initialization_year': 1900,
     'model length': 5
     
     
@@ -96,7 +96,7 @@ class LakePondGrid (TemporalMultiGrid):
             kwargs['mode'] = 'r+'
             kwargs['grid_names'] = grid_names
             super(LakePondGrid , self).__init__(*args, **kwargs)
-            self.config['start_year'] = int(config['initialization year'])
+            self.config['start_year'] = int(config['initialization_year'])
             self.config['start_timestep'] = self.config['start_year']
 
              

@@ -93,13 +93,13 @@ class ALDGrid(TemporalMultiGrid):
         init_grids = self.setup_grids(config)
 
         self.grids[0,:] = init_grids
-        self.config['start_year'] = int(config['initialization year'])
+        self.config['start_year'] = int(config['initialization_year'])
         self.config['start_timestep'] = self.config['start_year']
 
         # shape = config['shape']
         # cohort_list = config['cohort list']
         # init_ald = config ['init ald']
-        # self.start_year = config ['initialization year']
+        # self.start_year = config ['initialization_year']
         
         # ## setup soil properties
         self.porosity = config['_FAST_get_get_porosities']
@@ -397,7 +397,7 @@ def test (files):
     config = {
         'target resolution': (1000,1000),
         'grid_shape': [5, 10],
-        'initialization year': 1900,
+        'initialization_year': 1900,
         'area data': files,
         'model length': 100,
         'Initial ALD': (.9, 1),

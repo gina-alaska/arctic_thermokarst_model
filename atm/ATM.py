@@ -697,7 +697,7 @@ class ATM(object):
         """
         self.control['global jit options'] = "yes"
 
-        init_year = self.control['initialization year']
+        init_year = self.control['initialization_year']
         init_tdd = self.grids.degreedays.thawing[init_year+1]
 
         pond_types = self.control['_FAST_get_pond_types']
@@ -756,7 +756,7 @@ class ATM(object):
                         self.control['cohorts'][cohort_control]\
                         ['Transition_check_type'].lower()
                 except KeyError as e:
-                    print e
+                    # print e
                     check_type = 'base'
 
                 name = find_canon_name(cohort)
@@ -829,22 +829,22 @@ class ATM(object):
                         
         
         ### debug stuff
-        print('start: ', cohort_start.sum())
-        print( 'end: ', cohort_end.sum())
-        for cohort in sorted(self.grids.area.key_to_index):
-            if cohort.find('--') != -1:
-                continue
+        # print('start: ', cohort_start.sum())
+        # print( 'end: ', cohort_end.sum())
+        # for cohort in sorted(self.grids.area.key_to_index):
+        #     if cohort.find('--') != -1:
+        #         continue
                 
-            s = self.grids.area[cohort, init_year].sum()
-            e = self.grids.area[cohort, current_year].sum()
+        #     s = self.grids.area[cohort, init_year].sum()
+        #     e = self.grids.area[cohort, current_year].sum()
             
-            if s == e:
-                d = 'equal'
-            elif s < e:
-                d = 'growth'
-            else:
-                d = 'reduction'
-            print (cohort, 'start:', s, 'end:', e, d)
+        #     if s == e:
+        #         d = 'equal'
+        #     elif s < e:
+        #         d = 'growth'
+        #     else:
+        #         d = 'reduction'
+        #     print (cohort, 'start:', s, 'end:', e, d)
 
     def __del__(self):
         """

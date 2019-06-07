@@ -51,8 +51,8 @@ def get_example_config( data_dir ):
     """
     files = [ os.path.join(data_dir, f) for f in os.listdir( data_dir )] 
     config_ex = {
-        'target resolution': (1000,1000),
-        'initialization year': 1900,
+        'Target_resolution': (1000,1000),
+        'initialization_year': 1900,
         'Initial_Area_data': files,
         'model length': 100
     }
@@ -117,7 +117,7 @@ class AreaGrid(TemporalMultiGrid):
             super(AreaGrid , self).__init__(*args, **kwargs)
         else:
             input_rasters = config['Initial_Area_data'] 
-            target_resolution = config['target resolution']
+            target_resolution = config['Target_resolution']
 
             logger = None
             if 'logger' in kwargs:
@@ -155,7 +155,7 @@ class AreaGrid(TemporalMultiGrid):
 
             self.key_to_index = grid_name_map_with_ages
         
-            self.config['start_year'] = int(config['initialization year'])
+            self.config['start_year'] = int(config['initialization_year'])
             self.config['resolution'] = target_resolution
 
         self.config['start_timestep'] = self.config['start_year']
@@ -588,8 +588,8 @@ def test (files):
     """
     """
     config = {
-        'target resolution': (1000,1000),
-        'initialization year': 1900,
+        'Target_resolution': (1000,1000),
+        'initialization_year': 1900,
         'initial area data': files,
         'model length': 100
     }
