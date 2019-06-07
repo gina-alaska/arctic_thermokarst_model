@@ -75,16 +75,16 @@ def as_string(atm_obj, start_time, end_time):
     string +=  '-' * short_divider+ nl
     string +=  '   Meteorologic Data Information   '+ nl
     string +=  '-' * short_divider+ nl
-    if atm_obj.control['Met_Control']['met_distribution'].lower() == 'point':
-        string +=  'Point meteorologic data is used.'+ nl
-    else:
-        string +=  'Meteorologic data is distributed.'+ nl
-    string +=  'Meteorologic Data File: '+ str(atm_obj.control['Met_Control']['met_file_distributed'])+ nl
-    if atm_obj.control['Met_Control']['degree_day_method'].lower() == 'read':
-        string +=  'Degree Days read from files: ' + atm_obj.control['Met_Control']['TDD_file'] +' and '+atm_obj.control['Met_Control']['FDD_file']+ nl
-    else:
-        string +=  'Degree Days calculated during simulation.'+ nl
-    string +=  ' '+ nl
+    # if atm_obj.control['Met_Control']['met_distribution'].lower() == 'point':
+    #     string +=  'Point meteorologic data is used.'+ nl
+    # else:
+    #     string +=  'Meteorologic data is distributed.'+ nl
+    # string +=  'Meteorologic Data File: '+ str(atm_obj.control['Met_Control']['met_file_distributed'])+ nl
+    # if atm_obj.control['Met_Control']['degree_day_method'].lower() == 'read':
+    #     string +=  'Degree Days read from files: ' + atm_obj.control['Met_Control']['TDD_file'] +' and '+atm_obj.control['Met_Control']['FDD_file']+ nl
+    # else:
+    #     string +=  'Degree Days calculated during simulation.'+ nl
+    # string +=  ' '+ nl
 
     string +=  'Outputs:'+ nl
     if atm_obj.control['Met_Control']['Degree_Day_Output']:
@@ -95,7 +95,7 @@ def as_string(atm_obj, start_time, end_time):
     string +=  '-' * short_divider+ nl
     string +=  '   General Terrestrial Information   '+ nl
     string +=  '-' * short_divider+ nl
-    string +=  'Ground Ice Distribution: '+atm_obj.control['Terrestrial_Control']['Ice_Distribution']+ nl
+    # string +=  'Ground Ice Distribution: '+atm_obj.control['Terrestrial_Control']['Ice_Distribution']+ nl
     string +=  'Drainage Efficiency Distribution: '+ atm_obj.control['Terrestrial_Control']['Drainage_Efficiency_Distribution']+ nl
     string +=  'Initial Active Layer Depth Distribution: '+atm_obj.control['Terrestrial_Control']['ALD_Distribution']+ nl
     string +=  ' '+ nl

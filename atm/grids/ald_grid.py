@@ -132,17 +132,20 @@ class ALDGrid(TemporalMultiGrid):
             [self.config['num_grids'], self.config['grid_shape'][0]* self.config['grid_shape'][1]]
         )
 
-        # print config['Terrestrial_Control']['Initial ALD']
-        if type(config['Terrestrial_Control']['Initial ALD']) in [tuple, list]:
+        # print config['Terrestrial_Control']['Initial_ALD_range']
+        if type(config['Terrestrial_Control']['Initial_ALD_range']) in [tuple, list]:
             grids[0] = random_grid(
                 self.config['grid_shape'], 
-                config['Terrestrial_Control']['Initial ALD'][0],
-                config['Terrestrial_Control']['Initial ALD'][1], 
+                # config['Terrestrial_Control']['Initial ALD'][0],
+                # config['Terrestrial_Control']['Initial ALD'][1], 
+                # self.grid_shape, 
+                config['Terrestrial_Control']['Initial_ALD_range'][0],
+                config['Terrestrial_Control']['Initial_ALD_range'][1], 
                 config['AOI mask']
             )
         else:
             grids[0] = self.read_grid(
-                config['Terrestrial_Control']['Initial ALD']
+                config['Terrestrial_Control']['Initial_ALD_range']
             )
 
         pl_factors = config['_FAST_get_pl_factors']#.get_protective_layer_factors()#['PL factors']

@@ -53,7 +53,7 @@ def get_example_config( data_dir ):
     config_ex = {
         'target resolution': (1000,1000),
         'initialization year': 1900,
-        'initial area data': files,
+        'Initial_Area_data': files,
         'model length': 100
     }
     return config_ex
@@ -116,7 +116,7 @@ class AreaGrid(TemporalMultiGrid):
         if type(config) is str:
             super(AreaGrid , self).__init__(*args, **kwargs)
         else:
-            input_rasters = config['initial area data'] 
+            input_rasters = config['Initial_Area_data'] 
             target_resolution = config['target resolution']
 
             logger = None
