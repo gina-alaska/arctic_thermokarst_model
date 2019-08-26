@@ -196,7 +196,7 @@ def clip_raster (in_raster, out_raster, extent):
 
 
 def convert_to_figure(raster_name, figure_name, title = "", cmap = 'viridis', 
-        ticks = None, tick_labels=None, vmin=None,vmax=None
+        ticks = None, tick_labels=None, vmin=None,vmax=None, save=True
     ):
     """Converts a raster file to a figure with colorbar and title
 
@@ -216,7 +216,10 @@ def convert_to_figure(raster_name, figure_name, title = "", cmap = 'viridis',
     vmax: Float or Int
         min and max values to plot
     """
-    data, md = load_raster(raster_name)
+    if type(raster_name) is str:
+        data, md = load_raster(raster_name)
+    else:
+        data = raster_name
     imgplot = plt.matshow(data, cmap = cmap, vmin=vmin, vmax=vmax) 
     # imgplot.axes.get_xaxis().set_visible(False)
     # imgplot.axes.get_yaxis().set_visible(False)
@@ -227,7 +230,10 @@ def convert_to_figure(raster_name, figure_name, title = "", cmap = 'viridis',
         cbar.set_ticklabels(tick_labels)
         plt.clim(-0.5, len(tick_labels) - .5)
     plt.title(title, y=1.2)
-    plt.savefig(figure_name, bbox_inches='tight')
+    if save:
+        plt.savefig(figure_name, bbox_inches='tight')
+    else:
+        plt.show()
     plt.close()
 
 

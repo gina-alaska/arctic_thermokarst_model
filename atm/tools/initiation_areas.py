@@ -112,6 +112,7 @@ def calc_early_winter_precip_avg (precip, years='all'):
     winter_precip: np.array [M x N x Num_Years]
         maps of early winter precipitation for each year
     """
+    # precip.grids = np.array(precip.grids)
     keys = precip.config['grid_name_map'].keys()
     oct_keys = sorted([k for k in keys if k[-2:]=='10'])
     nov_keys = sorted([k for k in keys if k[-2:]=='11'])
@@ -160,6 +161,7 @@ def calc_winter_precip_avg (precip, years='all'):
     winter_precip: np.array [M x N x Num_Years]
         maps of winter precipitation for each year
     """
+    # precip.grids = np.array(precip.grids)
     keys = precip.config['grid_name_map'].keys()
     oct_keys = sorted([k for k in keys if k[-2:]=='10'])
     nov_keys = sorted([k for k in keys if k[-2:]=='11'])
@@ -320,8 +322,8 @@ def find_initiation_areas (precip, tdd, fdd, directory, years = 'all',
         # current year values
         c_fdd = fdd.grids[idx].reshape(shape)
         c_tdd = tdd.grids[idx].reshape(shape)
-        c_full_precip = precip[idx].reshape(shape)
-        c_early_precip = precip[idx].reshape(shape)
+        c_full_precip = full_winter_precip[idx].reshape(shape)
+        c_early_precip = early_winter_precip[idx].reshape(shape)
 
         # grids for mapping deviation 
         fdd_grid[::] = c_fdd - c_fdd
@@ -362,10 +364,13 @@ def find_initiation_areas (precip, tdd, fdd, directory, years = 'all',
 
         # high precip + high temps 
         if winter_precip_type == 'full':
+            print('using full winter')
             warm_winter = (fdd_grid) + full_precip_grid
         elif winter_precip_type == 'early':
+            print('using early winter')
             warm_winter = (fdd_grid) + early_precip_grid
         elif winter_precip_type == 'both':
+            print('using full and early winter')
             warm_winter = (fdd_grid) + full_precip_grid + early_precip_grid
         else:
             m = "Argument winter_precip_type must be 'early', 'full', or 'both'"
@@ -510,8 +515,8 @@ def find_initiation_areas_2 (precip, tdd, fdd, directory, years = 'all',
         # current year values
         c_fdd = fdd.grids[idx].reshape(shape)
         c_tdd = tdd.grids[idx].reshape(shape)
-        c_full_precip = precip[idx].reshape(shape)
-        c_early_precip = precip[idx].reshape(shape)
+        c_full_precip = full_winter_precip[idx].reshape(shape)
+        c_early_precip = early_winter_precip[idx].reshape(shape)
 
         # grids for mapping deviation 
         fdd_grid[::] = c_fdd - c_fdd
