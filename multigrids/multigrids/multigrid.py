@@ -607,15 +607,18 @@ class MultiGrid (object):
             self.config['start_timestep'] + self.config['num_timesteps']
         )
 
-    def get_as_ml_features(self, grid, mask = None ):
+    def get_as_ml_features(self, grid, mask = None, train_range=None ):
         """Get the data in a way that can be used in ML methods
         """
         features = []
         if mask is None:
             mask = np.ones(self.config['grid_shape'])
-            mask = mask != mask
+            mask = mask == mask
 
-        for ts in self.get_range():
+        if train_range is None:
+            train_range = self.get_range()
+
+        for ts in train_range:
             if grid is None:
                 temp = np.array(self[ts])
             else:
@@ -628,7 +631,7 @@ class MultiGrid (object):
         """Clip the desired extent from the multigrid. Returns a new 
         Multigrid with the smaller extent.
         """
-
+        raise NotImplementedError('This needs to be implemented eventually')
 
         
 
