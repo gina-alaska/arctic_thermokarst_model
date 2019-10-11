@@ -12,7 +12,7 @@ from .constants import ROW, COL, create_deepcopy
 
 import copy
 
-from multigrids import TemporalMultiGrid
+from multigrids import TemporalMultiGrid, common
 
 def random_grid (shape, minimum, maximum, mask = None):
         """create a random ALD grid
@@ -261,7 +261,7 @@ class ALDGrid(TemporalMultiGrid):
             ald at time step
         """
         if time_step == -1:
-            time_step = self.timestep
+            time_step = self.config['timestep']
         return self.get_grid('ALD', time_step, flat)
         
     def get_ald (self, flat = True):
@@ -295,8 +295,8 @@ class ALDGrid(TemporalMultiGrid):
             2D array with shape matching shape attribute
         """
         if grid.shape != self.config['grid_shape']:
-            raise StandardError('grid shapes do not match')
-        self['ALD', time_step+self.start_year] = grid.flatten()
+            raise common.GridSizeMismatchError('grid shapes do not match')
+        self['ALD', time_step + self.config['start_year'] ] = grid.flatten()
         
     def get_pl_at_time_step (self, time_step, cohort = None, flat = True):
         """gets All PL layers at at a time step
@@ -345,7 +345,7 @@ class ALDGrid(TemporalMultiGrid):
         """
         if data.shape != self.config['grid_shape']:
             raise StandardError('grid shapes do not match')
-        self[cohort, time_step+self.start_year] = data.flatten()
+        self[cohort, time_step + self.config['start_year']] = data.flatten()
         
         
     def add_time_step (self, zeros = False):
@@ -360,10 +360,10 @@ class ALDGrid(TemporalMultiGrid):
         # self..append(copy.deepcopy(self.ald_grid[-1]))
         # self.pl_grid.append(copy.deepcopy(self.pl_grid[-1]))
         
-        self.timestep += 1
-        self.grids[self.timestep, : ] = self.grids[self.timestep - 1, : ] 
+        self.config['timestep'] += 1
+        self.grids[self.config['timestep'], : ] = self.grids[self.config['timestep'] - 1, : ] 
         if zeros:
-            self.grids[self.timestep, : ]  = 0
+            self.grids[self.config['timestep'], : ]  = 0
             
     
     def calc_ald(self, init_tdd, current_tdd, flat = True):

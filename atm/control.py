@@ -8,8 +8,15 @@ for manageing control confguration in the ATM
 # from atm.io import control_file
 import os
 
-from cohorts import find_canon_name
-from grids.ice_grid import ICE_TYPES
+try: 
+    from .cohorts import find_canon_name
+except(ImportError):
+    from cohorts import find_canon_name
+
+try:
+    from .grids.ice_grid import ICE_TYPES
+except(ImportError):
+    from grids.ice_grid import ICE_TYPES
 
 import yaml
 

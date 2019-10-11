@@ -208,7 +208,9 @@ class TemporalMultiGrid (MultiGrid):
         np.array
             1d if flat, 2d otherwise.
         """
-        shape = self.memory_shape[-1] if flat else self.config['grid_shape']
+        shape = \
+            self.config['memory_shape'][-1] \
+            if flat else self.config['grid_shape']
         return self.get_grid_over_time(
             grid_id, time_step, time_step+1
         ).reshape(shape)

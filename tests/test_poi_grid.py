@@ -2,10 +2,11 @@
 """
 from context import atm
 from atm.grids import poi_grid
+from atm import control
 
 import unittest
 import numpy as np
-
+from config_example import config_ex
   
 
 class TestPOIGridClass(unittest.TestCase):
@@ -15,24 +16,23 @@ class TestPOIGridClass(unittest.TestCase):
         """setup class for tests
         """
         
-        
-        config = {
+        config = config_ex
+        config.update({
             'grid_shape': (10,10),
-            'cohorts': ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
             'model length': 100,
-            'initialization year': 1900
-        }
+        })
         config['AOI mask'] = \
             np.ones(config['grid_shape']) == np.ones(config['grid_shape'])
         
+        config = control.Control(config)
         self.POI = poi_grid.POIGrid(config)
     
     def test_init(self):
         """test init results are correct
         """
-        self.assertEqual( (10,10), self.POI.grid_shape )
+        self.assertEqual( (10,10), self.POI.config['grid_shape']  )
         self.assertTrue( 
-            (np.zeros(self.POI.grid_shape ).flatten() == \
+            (np.zeros(self.POI.config['grid_shape'] ).flatten() == \
             self.POI.grids[0]).all()
         )
         
