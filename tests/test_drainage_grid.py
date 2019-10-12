@@ -3,7 +3,11 @@
 
 import unittest
 from context import atm
+from config_example import config_ex
+
+
 from atm.grids import drainage_grid
+from atm import control
 
 import os
 import numpy as np
@@ -13,14 +17,18 @@ class TestDrainageGridClass(unittest.TestCase):
     def setUp(self):
         """setup class for tests 
         """
-        config = drainage_grid.config_ex
+        config = config_ex
+        config.update({
+            'grid_shape': (10,10),
+            'model length': 100,
+        })
+        config['AOI mask'] = \
+            np.ones(config['grid_shape']) == np.ones(config['grid_shape'])
+    
+
         
-        config['pickle path'] = 'test_pickles'
-        try:
-            os.makedirs(config['pickle path'])
-        except:
-            pass
-        
+        config['Control_dir'] =  './'
+        config = control.Control(config)
         self.drainage = drainage_grid.DrainageGrid(config)
     
     def tearDown(self):
@@ -68,7 +76,11 @@ class TestDrainageGridClass(unittest.TestCase):
         """
         path = './'
         
-        self.drainage.figure(os.path.join(path,'drainage.png'))
+        self.drainage.save_figure(os.path.join(path,'drainage.png'),
+            figure_args={
+                'title':'test'
+            }
+        )
         # self.drainage.binary(os.path.join(path,'drainage.bin'))
         
         self.assertTrue(os.path.isfile(os.path.join(path,'drainage.png')))

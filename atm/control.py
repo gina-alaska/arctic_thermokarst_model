@@ -8,8 +8,15 @@ for manageing control confguration in the ATM
 # from atm.io import control_file
 import os
 
-from cohorts import find_canon_name
-from grids.ice_grid import ICE_TYPES
+try: 
+    from .cohorts import find_canon_name
+except(ImportError):
+    from cohorts import find_canon_name
+
+try:
+    from .grids.ice_grid import ICE_TYPES
+except(ImportError):
+    from grids.ice_grid import ICE_TYPES
 
 import yaml
 
@@ -59,11 +66,11 @@ class Control(dict):
         self.update(self.expand_sub_configs(self))
         self['cohorts'].update(self.expand_sub_configs(self['cohorts']))
         
-        self['initial area data'] = [
+        self['Initial_Area_data'] = [
             os.path.join(
                 self['Input_dir'],tif
             ) 
-            for tif in self['initial area data']
+            for tif in self['Initial_Area_data']
         ]
         
         self.find_model_length()
@@ -71,9 +78,9 @@ class Control(dict):
         try:
             self['start year']
         except KeyError:
-            self['start year'] = self['initialization year'] + 1
+            self['start year'] = self['initialization_year'] + 1
             if self.logger:
-                self.logger.add('Set start year to initialization year + 1')
+                self.logger.add('Set start year to initialization_year + 1')
 
         self.init_keys = self.keys()
         self.is_key = lambda k: k in self.keys()

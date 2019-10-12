@@ -1,12 +1,15 @@
 """test ald Grid class
 """
 from context import atm
+from config_example import config_ex
+
 from atm.grids import ald_grid
+from atm import control
 
 import unittest
 import numpy as np
 
-  
+from multigrids import common  
 
 class TestALDGridClass(unittest.TestCase):
     """test the ALDGrid class
@@ -15,34 +18,39 @@ class TestALDGridClass(unittest.TestCase):
         """setup class for tests
         """
         
-        
-        config = {
+        config = config_ex
+        config.update({
             'grid_shape': (10,10),
-            'cohorts': ['HCP','FCP','CLC','LCP','POND'], ## replace with canon names
-            'Initial ALD': (.3,.3),
-            'initialization year': 1900,
             'model length': 100,
-        }
-        
-        config['porosities'] = {k: 1 for k in config['cohorts']}
-        config['PL factors'] = {k: 1 for k in config['cohorts']}
+        })
+      
         config['AOI mask'] = \
             np.ones(config['grid_shape']) == np.ones(config['grid_shape'])
         
+
+        config = control.Control(config)
+
         self.ALD = ald_grid.ALDGrid(config)
     
     def test_init(self):
         """test init results are correct
         """
-        self.assertEqual( (10,10), self.ALD.grid_shape )
+        self.assertEqual( (10,10), self.ALD.config['grid_shape'] )
+        shape = self.ALD.config['grid_shape']
         self.assertTrue( 
-            (np.random.uniform(.3,.3, self.ALD.grid_shape ).flatten() == \
-            self.ALD.init_ald_grid).all()
+            np.isclose(
+                np.random.uniform(.3,.3, shape).flatten(),
+                self.ALD.init_ald_grid
+            ).all()
         )
+
         self.assertTrue( 
-            (np.random.uniform(.3,.3, self.ALD.grid_shape ).flatten() == \
-            self.ALD.init_pl_grid[0]).all()
+            np.isclose(
+                np.random.uniform(.3,.3, shape).flatten(),
+                self.ALD.init_pl_grid[0]
+            ).all()
         )
+        
 
     def test_getters(self):
         """ test other get functions """ 
@@ -93,7 +101,7 @@ class TestALDGridClass(unittest.TestCase):
             self.ALD['PL', 'BAD']
             
         with self.assertRaises(KeyError):
-            self.ALD['HCP', 'BAD']
+            self.ALD['HCP_WT_Y', 'BAD']
         
         with self.assertRaises(KeyError):
             self.ALD[1, 'BAD']
@@ -119,12 +127,12 @@ class TestALDGridClass(unittest.TestCase):
             (new_grid != self.ALD.get_ald_at_time_step(0, False)).all()
         )
         
-        self.ALD.set_pl_cohort_at_time_step('HCP', 1, new_grid)
+        self.ALD.set_pl_cohort_at_time_step('HCP_WT_Y', 1, new_grid)
         self.assertTrue(
-            (new_grid == self.ALD['HCP',1901]).all()
+            (new_grid == self.ALD['HCP_WT_Y',1901]).all()
         )
 
-        with self.assertRaises(StandardError):
+        with self.assertRaises(common.GridSizeMismatchError):
             self.ALD.set_ald_at_time_step(2, np.ones((2,2)))
         
         # with self.assertRaises(IndexError):
@@ -138,9 +146,9 @@ class TestALDGridClass(unittest.TestCase):
         self.assertTrue((self.ALD['ALD',1901] == 1).all())
         # self.assertTrue((self.ALD['PL',1901] == 1).all())
         
-        self.ALD['LCP', 1901] = np.zeros((10,10)) + 5
+        self.ALD['LCP_WT_Y', 1901] = np.zeros((10,10)) + 5
         
-        self.assertTrue((self.ALD['LCP', 1901] == 5).all())
+        self.assertTrue((self.ALD['LCP_WT_Y', 1901] == 5).all())
         # self.assertFalse((self.ALD['PL',1901] == 1).all())
         
         with self.assertRaises(NotImplementedError):
@@ -160,7 +168,7 @@ class TestALDGridClass(unittest.TestCase):
             self.ALD['PL', 'BAD'] = np.zeros((10,10))
             
         with self.assertRaises(KeyError):
-            self.ALD['HCP', 'BAD'] = np.zeros((10,10))
+            self.ALD['HCP_WT_Y', 'BAD'] = np.zeros((10,10))
         
         with self.assertRaises(KeyError):
             self.ALD[1, 'BAD']
@@ -185,7 +193,8 @@ class TestALDGridClass(unittest.TestCase):
         self.ALD.setup_ald_constants(10)
         
         self.assertTrue(
-            (self.ALD.init_ald_grid/10 == self.ALD.ald_constants).all()
+            (np.isclose(self.ALD.init_ald_grid/10,
+                self.ALD.ald_constants.flatten())).all()
         )
         
         
@@ -193,7 +202,8 @@ class TestALDGridClass(unittest.TestCase):
         self.ALD.setup_ald_constants(tdd)
         
         self.assertTrue(
-            (self.ALD.init_ald_grid/tdd == self.ALD.ald_constants).all()
+            (np.isclose(self.ALD.init_ald_grid/tdd, 
+            self.ALD.ald_constants.flatten())).all()
         )
         
         

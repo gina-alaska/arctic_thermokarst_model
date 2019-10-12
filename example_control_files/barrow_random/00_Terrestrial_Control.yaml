@@ -17,7 +17,7 @@ ALD_Distribution: random
 # ALD_Distribution_Lower_Bound: 0.3
 # ALD_Distribution_Upper_Bound: 0.75
 ## (min, max) initial ald values
-Initial ALD: [.3, .75]
+Initial_ALD_range: [.3, .75]
 
 
 #------------------------------------------------------------

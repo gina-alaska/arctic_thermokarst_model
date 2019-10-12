@@ -606,6 +606,39 @@ class MultiGrid (object):
             )
             self.save_as_geotiff(filename, grid, **kwargs)
 
+    def get_range(self):
+        """get the range of time steps"""
+        return range(
+            self.config['start_timestep'], 
+            self.config['start_timestep'] + self.config['num_timesteps']
+        )
+
+    def get_as_ml_features(self, grid, mask = None, train_range=None ):
+        """Get the data in a way that can be used in ML methods
+        """
+        features = []
+        if mask is None:
+            mask = np.ones(self.config['grid_shape'])
+            mask = mask == mask
+
+        if train_range is None:
+            train_range = self.get_range()
+
+        for ts in train_range:
+            if grid is None:
+                temp = np.array(self[ts])
+            else:
+                temp = np.array(self[grid, ts])
+            temp[np.logical_not(mask)] = np.nan
+            features += list(temp[mask])
+        return np.array(features)
+
+    def clip_grids(self, extent):
+        """Clip the desired extent from the multigrid. Returns a new 
+        Multigrid with the smaller extent.
+        """
+        raise NotImplementedError('This needs to be implemented eventually')
+
         
 
 def create_example():
