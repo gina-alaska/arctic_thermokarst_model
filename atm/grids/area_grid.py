@@ -350,11 +350,6 @@ class AreaGrid(TemporalMultiGrid):
             0 <= # < len(grid)
         data: np.ndarray
             2D array with shape matching shape attribute
-            
-        Raises
-        ------
-        StandardError
-            bad shape
         """
         self[cohort, time_step + self.config['start_year']] = data
 
@@ -389,62 +384,6 @@ class AreaGrid(TemporalMultiGrid):
             a grid of booleans where true elements are in AOI, false are not
         """
         return (self.total_fractional_area(time_step) > 0.0).reshape(self.shape)
-        
-    def save_cohort_at_time_step (self, cohort, path, filename, title = '', 
-            time_step = -1, bin_only = True, binary_pixels = False, 
-            cbar_extend = 'neither', colormap = 'viridis'
-        ):
-        """save a in image representing a cohort at a time step
-        
-        Parameters
-        ----------
-        cohort: str
-            cannon cohort name
-        path: path
-            path to save figures at
-        filename: str
-            name of file without extension
-        title: str, optional
-            title for png figure
-        timestep: int, optional
-            timestep to save defaults to -1
-        bin_only: bool, defaults True
-            only saves numpy binary image represntation if true 
-        binary_pixels: Bool, defaults False
-            if true converts all pixels > 0 to 1.
-        cbar_extend: str
-            max, min, or neither
-        colormap: str
-            matplotlib color map
-        
-        
-        returns 
-        -------
-        str:
-            base file name
-        """
-        cohort_data = self.get_cohort_at_time_step(
-            cohort, time_step, flat = False
-        )
-        #~ print binary_pixels
-        if binary_pixels:
-            ## see if cohort is present or not
-            cohort_data = copy.deepcopy(cohort_data)
-            cohort_data[cohort_data>0] = 1
-            #~ print cohort_data
-        #~ self.ts_to_year(time_step)
-        year = 'TEMP_YEAR'
-        #~ filename = f
-        bin_path = os.path.join(path, filename + '.bin')
-        binary.save_bin(cohort_data, bin_path)
-        if not bin_only:
-            img_path = os.path.join(path, filename + '.png')
-            image.save_img(
-                cohort_data, img_path, title, cmap = colormap,
-                cbar_extend = cbar_extend
-                ) 
-            
-        return filename
         
     def save_init_age_figure (self, cohort, path): 
         """save the init age figure
