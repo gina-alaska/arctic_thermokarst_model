@@ -110,7 +110,8 @@ class Grid (MultiGrid):
         np.array
             1d if flat, 2d otherwise.
         """
-        shape = self.config['real_shape'] if not flat else self.memory_shape
+        shape = self.config['real_shape'] if not flat else \
+            self.config['memory_shape']
         return self[:,:].reshape(shape)
 
     def __getitem__(self, key): 
