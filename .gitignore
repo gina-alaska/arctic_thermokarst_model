@@ -5,3 +5,4 @@ tests/example_data
 *.egg-info*
 __pycache__/
 .ipynb_checkpoints/
+Output/

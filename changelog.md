@@ -3,13 +3,14 @@ All notable changes to this project will be documented in this file.
 
 ## [0.6.0] - unreleased 
 ### changed
-- base code now uses Python 3 
+- base code now uses Python 3, see environment3.yml
 - control file keys changed:
   - 'initial area data' became 'Initial_Area_data'
   - 'initial ALD' became 'Initial_ALD_range'
   - 'target resolution' became 'Target_resolution'
   - 'initialization year' became 'initialization_year'
-  
+- updated testing code
+
 ### added 
 - clip generation to TemporalMultigrid
 - clip generation to TemporalGrid
