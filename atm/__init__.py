@@ -9,7 +9,7 @@ __credits__    = [
     "Jen Delamere",
 ]
 __license__    = "MIT"
-__version__    = "0.5.1-dev"
+__version__    = "0.6.0"
 __codeurl__    = \
     'https://github.com/gina-alaska/arctic_thermokarst_model/tree/tree/' + \
     __version__

@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [0.6.0] - unreleased 
+## [0.6.0] - 2019-10-12
 ### changed
 - base code now uses Python 3, see environment3.yml
 - control file keys changed:
