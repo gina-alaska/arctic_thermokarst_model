@@ -6,40 +6,40 @@ from atm import control
 import unittest
 import os
 
+from config_example import config_ex
+
 class TestIOControlFile_dict_style (unittest.TestCase):
     """test the Control class, uses example barrow uniform
     """
     def setUp(self):
         """setup"""
         
-        abspath = os.path.abspath(__file__)
-        dname = os.path.dirname(abspath)
-        dname =  os.path.dirname(dname)
-        pth = os.path.join(dname,
-                'example_control_files','Control_barrow.yaml'
-                )
-        self.control = control.Control(pth)
+        # abspath = os.path.abspath(__file__)
+        # dname = os.path.dirname(abspath)
+        # dname =  os.path.dirname(dname)
+        # pth = os.path.join(dname,
+        #         'example_control_files','Control_barrow.yaml'
+        #         )
+        self.control = control.Control(config_ex)
         
             
     def test_object (self):
         """
         """
-        self.assertIs(type(self.control.init_control), dict)
-        self.assertIs(type(self.control['Initial_Cohort_List'] ), list)
+        self.assertIs(type(self.control['Initial_Area_data'] ), list)
         #~ print self.control['Met_Control']
             
     def test_get(self):
         """test get items"""
         
-        self.assertIs(type(self.control['Initial_Cohort_List'] ), list)
-        self.assertIs(type(self.control.Initial_Cohort_List ), list)
+        self.assertIs(type(self.control['Initial_Area_data'] ), list)
         self.assertIs(
-            type(self.control['Cohorts']['SaturatedBarrens_WT_Y_Control'] ), 
+            type(self.control['cohorts']['CLC_WT_Y_Control'] ), 
             dict
         )
         self.assertIs(
             type(self.control[
-                'Cohorts']['CLC_WT_Y_Control']['Parameters'
+                'cohorts']['CLC_WT_Y_Control']['Parameters'
             ] ),
             dict
         )
@@ -58,8 +58,8 @@ class TestIOControlFile_dict_style (unittest.TestCase):
             
     def test_set(self):
         """ test set items """
-        with self.assertRaises(control.ControlSetError):
-            self.control['Initial_Cohort_List'] = 10
+        # with self.assertRaises(control.ControlSetError):
+        #     self.control['Initial_Area_data'] = 10
             
         self.control['z'] = 10
         self.assertEqual(10, self.control['z'])
