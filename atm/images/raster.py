@@ -173,7 +173,7 @@ def mask_layer(layer, mask, mask_value = np.nan):
     layer[mask] = mask_value
     return layer
 
-def clip_raster (in_raster, out_raster, extent):
+def clip_raster (in_raster, out_raster, extent, datatpye=gdal.GDT_Float32):
     """Clip a raster to extent
     
     Parameters:
@@ -187,7 +187,7 @@ def clip_raster (in_raster, out_raster, extent):
 
     tiff = gdal.Translate(
         out_raster, in_raster, projWin = extent, 
-        format='GTiff', outputType=gdal.GDT_Float32 
+        format='GTiff', outputType=datatpye
     ) 
     # printtiff
     tiff.GetRasterBand(1).FlushCache()

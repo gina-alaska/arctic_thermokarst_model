@@ -11,9 +11,11 @@ from copy import deepcopy
 
 from datetime import datetime
 
-from ..grids.constants import ROW, COL
+from atm.grids.constants import ROW, COL
 
-from stack_rasters import load_and_stack
+from .stack_rasters import load_and_stack
+
+from multigrids.temporal_grid import TemporalGrid
 
 def calc_degree_days(day_array, temp_array, expected_roots = None):
     """Calc degree days (thawing, and freezing)
@@ -35,14 +37,14 @@ def calc_degree_days(day_array, temp_array, expected_roots = None):
     """
     spline = interpolate.UnivariateSpline(day_array, temp_array)
     if not expected_roots is None and len(spline.roots()) != expected_roots:
-        print  len(spline.roots())
+        print (len(spline.roots()))
         i = 1
         while len(spline.roots()) != expected_roots:
             spline.set_smoothing_factor(i)
             i+= 1
             #print len(spline.roots())
             if i >50:
-                print 'expected roots is not the same as spline.roots()'
+                print ('expected roots is not the same as spline.roots()')
                 return np.zeros(115) - np.inf,np.zeros(115) - np.inf
 
     tdd = []
@@ -143,7 +145,7 @@ def calc_gird_degree_days (
     for idx in  indices: # flatted area grid index
         while len(active_children()) >= num_process:
             continue
-        print 'calculating degree days for element ', idx
+        print ('calculating degree days for element ', idx)
         if (temp_grid[:,idx] == -9999).all():
             w_lock.acquire()
             tdd_grid[:,idx] = np.nan
@@ -210,6 +212,16 @@ def create_day_array (dates):
         days.append((date - init).days)
         
     return days
+
+def npmm_to_mg (npmm, rows, cols, ts, cfg={}):
+    """convert a numpy memory map file (npmm) to a Temporal grid (mg)
+    """
+    grid = TemporalGrid(rows, cols, ts)
+    grid.config.update(cfg)
+    grid.grids[:] = npmm.reshape(ts, rows*cols)[:]
+    return grid
+
+
     
     
 def utility ():
@@ -218,9 +230,11 @@ def utility ():
     
     Flags
     -----
-    --temperature_file: path
+    --monthly_temperature_list_file: path
         a file containg an ordered list of paths to monthly temperature rasters
         one per line
+    --temperature_file: path
+        path to store temp temperature memmap at
     --fdd_file: path
         name of Freezing Degree-days file to create
     --tdd_file: path
@@ -234,7 +248,7 @@ def utility ():
     Note this utility will not work if there are missing months
 
     """
-    import clite 
+    from . import clite 
     
     try:
         arguments = clite.CLIte([
@@ -247,12 +261,13 @@ def utility ():
             ['--num_process',]
         
         )
-    except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError):
-        print utility.__doc__
+    except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError) as E:
+        print (E)
+        print(utility.__doc__)
         return
 
 
-    print 'Seting up input...'
+    print('Seting up input...')
     init_date = datetime.strptime(arguments['--start_date'], '%Y-%m')
     
     current_year = init_date.year
@@ -276,7 +291,7 @@ def utility ():
     days = create_day_array( dates )
     
     
-    print 'Stacking temprerature data...'
+    print('Stacking temprerature data...')
     temperatures, shape = load_and_stack(files, arguments['--temperature_file'])
     
     n_months = len(temperatures)
@@ -291,7 +306,7 @@ def utility ():
     )
     
     
-    dd_shape = ((n_months / 12) , shape[0] * shape[1])
+    dd_shape = ((n_months // 12) , shape[0] * shape[1])
     fdd = np.memmap(
         arguments['--fdd_file'], dtype='float32', mode='w+', shape= dd_shape
     )
@@ -299,7 +314,7 @@ def utility ():
         arguments['--tdd_file'], dtype='float32', mode='w+', shape= dd_shape
     )
     
-    print 'Calculating Degree-days... this will take some time'
+    print('Calculating Degree-days... this will take some time')
     calc_gird_degree_days(days, temperatures, tdd, fdd, shape, num_process = NP)
     
 

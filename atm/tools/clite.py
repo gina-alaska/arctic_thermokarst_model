@@ -76,7 +76,7 @@ class CLIte (object):
                 self.args[flag] = True
         if not set(mandatory) <= set(self.args.keys()) or \
             not set(self.args.keys()) <= set(self.flags):
-            raise CLIteMandatoryError, "Invalid mandatory flags"
+            raise CLIteMandatoryError("Invalid mandatory flags")
             
         
         if len(types) != 0:
@@ -86,7 +86,7 @@ class CLIte (object):
                 except ValueError:
                     msg = 'Type of argument ' + flag + \
                         ' must be ' + str(types[flag]) + '.'
-                    raise CLIteTypeError, msg
+                    raise CLIteTypeError (msg)
                 except KeyError:
                     pass
             
@@ -113,7 +113,7 @@ class CLIte (object):
             if key in self.flags:
                 return None
             else:
-                raise KeyError, key
+                raise KeyError(key)
         
         
         
@@ -124,13 +124,13 @@ if __name__ == "__main__":
     try:
         test = CLIte(['--a','--b'],['--c'],
             types = {'--a':int, '--b': float, '--c':str})
-        print type(test['--a']), test['--a']
-        print type(test['--b']), test['--b']
-        print type(test['--c']), test['--c']
+        print (type(test['--a']), test['--a'])
+        print (type(test['--b']), test['--b'])
+        print (type(test['--c']), test['--c'])
     except  CLIteMandatoryError:
-        print "Valid flags are: --a, --b, and --c(optional)"
+        print ("Valid flags are: --a, --b, and --c(optional)")
     except  CLIteTypeError as E:
-        print E
+        print (E)
         
     
     

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.6.1] - 2019-11-01
+### Changed
+- updated tools code for python 3
+- data type in  raster.clip_raster can be set.
+
 ## [0.6.0] - 2019-10-12
 ### changed
 - base code now uses Python 3, see environment3.yml

@@ -36,6 +36,7 @@ def load_precip_data(precip_dir, start_year, end_year):
     ----------
     precip_dir: path
         directory contains the raster files in the format "**MM_YYYY.tif"
+        The "SNAP naming convention"
     start_year: int
         start year of rasters to load
     end_year: int
@@ -207,6 +208,104 @@ def calc_winter_precip_avg (precip, years='all'):
     winter_avg =  winter_precip.mean(0)
     winter_std =  winter_precip.std(0)
     return winter_avg, winter_std, winter_precip
+
+def sum_precip(monthly, months, years='all'):
+    """Calculate the average and standard diveation for winter 
+    precipitation. Winter consists of October - March
+
+    Parameters
+    ----------
+    monthly: multigrids.temporal_gird.TemporalGrid
+        monthly precip data
+    years: str
+        Range of years to calculate average over. 
+        'all' or 'start-end' ie '1901-1950'.
+    
+    Returns
+    ------- 
+    winter_precip: np.array [M x N x Num_Years]
+        maps of winter precipitation for each year
+    """
+    # precip.grids = np.array(precip.grids)
+    keys = monthly.config['grid_name_map'].keys()
+
+    find = lambda x: sorted( [k for k in keys if k[-2:]=='{:0>2}'.format(x)])
+    monthly_keys = {
+        x: find(x) for x in range(1, 13)
+        }     
+
+    pad = 1 - max([m//12 for m in months])
+
+    if years != 'all':
+        try:
+            start, end = years.split('-')
+        except AttributeError:
+            start, end = years[0], years[1]
+        start, end = int(start), int(end)
+    else:
+        start = min([int(x.split('-')[0])for x in keys]) 
+        end = max([int(x.split('-')[0])for x in keys]) 
+    
+
+    month_filter = lambda m, y, ks: [k for k in ks[m] if k[:4] == str(y)]
+    months_filtered = {}
+    for year in range(start, end+pad):
+        for mon in months:
+            if mon < 1:
+                raise IndexError ("Months cannot be less then 1")
+            adj_mon = mon
+            adj_year = year
+            while adj_mon > 12:
+                adj_mon -= 12
+                adj_year += 1
+
+            try:
+                months_filtered[mon] +=  month_filter(
+                    adj_mon, adj_year, monthly_keys
+                ) 
+            except KeyError:
+                months_filtered[mon] = month_filter(
+                    adj_mon, adj_year, monthly_keys
+                )
+    
+    precip_sum = None
+    for mon in months_filtered:
+        try:
+            precip_sum += monthly.get_grids_at_keys(months_filtered[mon])
+        except TypeError:
+            precip_sum = monthly.get_grids_at_keys(months_filtered[mon])
+
+    return precip_sum
+
+def create_precip_sum_multigrid(monthly, months, start, end, 
+    title='summed precip', units='mm', description=None, raster_metadata=None,
+    other={}):
+    """
+    """
+    precip = sum_precip(
+        monthly, months, str(start) + '-' + str(end)
+    )
+    precip_grid = temporal_grid.TemporalGrid(
+        precip.shape[1], precip.shape[2], precip.shape[0]
+    )
+    precip_grid.grids[:] = precip.reshape(
+        precip.shape[0], precip.shape[1] * precip.shape[2]
+    ) 
+
+    precip_grid.config['units'] = units
+    precip_grid.config['dataset_name'] = title
+    precip_grid.config['description'] = description
+    if description is None:
+        precip_grid.config['description'] = \
+            title + '. For months =' + str(months) 
+    
+    precip_grid.config['mean'] = precip.mean(0)
+    precip_grid.config['std. dev.'] = precip.std(0)
+    precip_grid.config['start_timestep'] = start 
+    precip_grid.config['raster_metadata'] = raster_metadata
+    precip_grid.config.update(other)
+
+    return precip_grid
 
 
 
