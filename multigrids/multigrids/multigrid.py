@@ -574,9 +574,11 @@ class MultiGrid (object):
         """
         if gdal is None:
             raise IOError("gdal not found: cannot save tif")
-
-        transform = kwargs['transform']
-        projection = kwargs['projection']
+        try:
+            transform = self.config['raster_metadata'].transform
+            projection = self.config['raster_metadata'].projection
+        except KeyError:
+            raise IOError("gdal not found: cannot save tif")
         datatype = gdal.GDT_Float32
 
         data = self[grid_id].astype(np.float32)
@@ -595,14 +597,28 @@ class MultiGrid (object):
     def save_all_as_geotiff(self, dirname, **kwargs):
         """save all grid as a tiff file
         """
-        grids = self.grid_name_map
+        grids = self.config['grid_name_map']
         if grids == {}:
-            grids = range(self.num_grids)
+            grids = range(self.config['num_timesteps'])
 
+        try:
+            if self.config['start_timestep'] != 0:
+                grids = range(
+                    self.config['start_timestep'], 
+                    self.config['start_timestep']+self.config['num_timesteps']
+                )
+        except KeyError:
+            pass
+
+        if 'base_filename' in kwargs:
+            bfn = kwargs['base_filename']
+        else:        
+            bfn = self.config["dataset_name"] 
+        
         for grid in grids:
             filename = os.path.join(
                 dirname, 
-                (self.config["dataset_name"]  + '_' + grid + '.tif').replace(' ','_')
+                (bfn + '_' + str(grid) + '.tif').replace(' ','_')
             )
             self.save_as_geotiff(filename, grid, **kwargs)
 
@@ -638,6 +654,81 @@ class MultiGrid (object):
         Multigrid with the smaller extent.
         """
         raise NotImplementedError('This needs to be implemented eventually')
+
+    def get_grids_at_keys(self, keys):
+        """return the grids for the given keys
+
+        Parameters
+        ----------
+        keys: list
+            list of grids
+        
+        Returns
+        -------
+        np.array
+        """
+        select = np.zeros([ 
+            len(keys), 
+            self.config['grid_shape'][0],
+            self.config['grid_shape'][1]
+        ])
+        c = 0
+        for k in keys:
+            select[c] = self[k]
+            c += 1
+        return select
+
+    def calc_statistics_for (self, keys, stat_fucn=np.mean, axis = 0):
+        """Calculate the statstics for a given substet of grids
+
+        Parameters
+        ----------
+        keys: list
+            list of keys into the multigrid
+        """
+        data = self.get_grids_at_keys(keys)
+        return stat_fucn(data, axis)
+
+    def clone(self):
+        """
+        """
+        new = copy.deepcopy(self)
+        
+        tmp = mkdtemp()
+        filename = os.path.join(tmp, 'temp.dat')
+
+        grids = np.memmap(
+            filename, 
+            dtype=new.config['data_type'], 
+            mode='w+', 
+            shape=new.config['memory_shape']
+        )           
+        del grids
+       
+        new.grids = np.memmap(
+            filename, 
+            dtype=new.config['data_type'], 
+            mode='r+', 
+            shape=new.config['memory_shape']
+        )
+
+        new.grids[:] = self.grids[:]
+
+        new.config['filename'] = None
+        new.config['dataset_name'] = 'Clone-of-' + new.config['dataset_name']
+
+        
+        return new
+
+    def apply_function (self, func):
+        """
+        """
+        new = self.clone()
+        for grid in range(len(new.grids)): 
+            # print(grid) 
+            # print(new.grids[grid])
+            new.grids[grid][:] = func(self.grids[grid])
+        return new
 
         
 

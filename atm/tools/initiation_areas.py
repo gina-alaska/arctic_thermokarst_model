@@ -8,7 +8,7 @@ Tools to help find areas were thermokarst initiation is likely
 
 """
 from atm.images import raster
-from multigrids import temporal_grid
+from multigrids import temporal_grid, multigrid
 import glob
 import numpy as np
 import os 
@@ -673,3 +673,83 @@ def find_initiation_areas_2 (precip, tdd, fdd, directory, years = 'all',
 
     print(_min,_max)
     return full_winter_precip_avg, full_winter_precip_std, early_winter_precip_avg, early_winter_precip_std, tdd_avg, tdd_std, fdd_avg, fdd_std
+
+
+def find_initiation_areas_vpdm(grid_dict, mean_bounds):
+    """variable percent difference method for finding potential
+    thermokarst initiation areas. Allows differnet variables to 
+    be specified. 
+
+    Parameters
+    ----------
+    grid_dict: dict of TemporalGrids
+        keys should be variable names. all temporal grids need ts_offset in
+    their configuration, this is used to determine which years data is used
+    relative to the current timestamp being assemble.
+
+    Returns
+    -------
+    ia_grid: 
+        TemporalGrid of initiation areas.
+    means: dict
+        dict of means
+    deviations: dict
+        dict of standard deviations
+    """
+    grid_list = list(grid_dict.values()) 
+    rows, cols = grid_list[0].config['grid_shape']
+    time_steps = grid_list[0].config['num_timesteps']
+
+    ia_grid = temporal_grid.TemporalGrid(rows, cols, time_steps)
+    start = grid_list[0].config['start_timestep']
+    end = start + time_steps
+
+    ia_grid.config['start_timestep'] = start
+
+
+
+    means = {}
+    deviations = {}
+
+    # calculate means and std. deviations
+    years = range(mean_bounds[0], mean_bounds[1]+1)
+    # print (grid_dict)
+    for name, var in grid_dict.items():
+        # print(var, name)
+        means[name] = var.calc_statistics_for(years)
+        deviations[name] = var.calc_statistics_for(years, np.std)
+
+   
+    for year in range(start, end):
+        temp = np.zeros([rows, cols])
+        ia_year = year
+        for name, var in grid_dict.items():
+            offset_year = year + var.config['ts_offset']
+            ia_year = max(ia_year, offset_year)
+            # print (name, year, offset_year)
+            try:
+                pd = (
+                    (var[offset_year] - means[name])/ np.abs(means[name])
+                ) * 100
+                temp += pd
+            except IndexError:
+                # temp[:] = -9999 * len(grid_dict)
+                break
+            
+        ia_grid[ia_year][:] = temp / len(grid_dict)
+
+    stats_names = []
+    for name in grid_dict:
+        stats_names += [name+'-mean', name+'-std-dev']
+
+
+    stats_grid = multigrid.MultiGrid(
+        rows, cols, len(stats_names), grid_names=stats_names
+    )
+
+    for name in grid_dict:
+        stats_grid[name + '-mean'][:] = means[name]
+        stats_grid[name + '-std-dev'][:] = deviations[name]
+    
+
+    return ia_grid, stats_grid
