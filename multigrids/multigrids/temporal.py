@@ -45,10 +45,10 @@ class TemporalMultiGrid (MultiGrid):
         else:
             self.num_timesteps = args[3]
             super(TemporalMultiGrid , self).__init__(*args, **kwargs)
-        self.config['num_timesteps'] = self.num_timesteps
-        self.config['timestep'] = 0
-        self.config['start_timestep'] = \
-            common.load_or_use_default(kwargs, 'start_timestep', 0)
+            self.config['num_timesteps'] = self.num_timesteps
+            self.config['timestep'] = 0
+            self.config['start_timestep'] = \
+                common.load_or_use_default(kwargs, 'start_timestep', 0)
         self.current_grids = self.grids[0]
 
     def get_memory_shape (self,config):
@@ -362,6 +362,33 @@ class TemporalMultiGrid (MultiGrid):
         except clip.CilpError:
             return False
         return clip_generated
+
+    def get_as_ml_features(self, mask = None, train_range = None):
+        """TemporalMultiGrid version of get_as_ml_features,
+
+        Parameters
+        ----------
+        mask: np.array
+            2d array of boolean values where true indicates data to get from
+            the 2d array mask is applied to 
+        train_range: list like, or None(default)
+            [int, int], min an max years to get the features from the temporal 
+            multigrid
+
+        """
+        features = [ [] for g in range(self.config['num_grids']) ]
+        if mask is None:
+            mask = self.config['mask']
+        
+        if train_range is None:
+            train_range = self.get_range()
+        
+        for ts in train_range:
+            for grid, gnum in self.config['grid_name_map'].items():
+                features[gnum] += list(self[grid, ts][mask])
+
+            
+        return np.array(features)
 
 
 def dumb_test():
