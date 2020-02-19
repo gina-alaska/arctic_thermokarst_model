@@ -340,7 +340,7 @@ class TemporalMultiGrid (MultiGrid):
             data = self[grid_id, ts].astype(float)
         # data[np.logical_not(self.AOI_mask)] = np.nan
         if not 'title' in figure_args:
-            figure_args['title'] = self.dataset_name
+            figure_args['title'] = self.config['dataset_name']
             if not grid_id is None:
                 figure_args['title'] += ' ' + str( grid_id )
         fig = figure_func(data, figure_args)
@@ -389,6 +389,59 @@ class TemporalMultiGrid (MultiGrid):
 
             
         return np.array(features)
+
+    def create_subset(self, subset_grids):
+        """creates a multigrid containting only the subset_girds
+
+        parameters
+        ----------
+        subset_grids: list
+        """
+        subset = super().create_subset(subset_grids)
+        subset.config['start_timestep'] = self.config['start_timestep']
+        subset.config['timestep'] = self.config['start_timestep']
+        
+
+        return subset
+        
+
+    def create_subset(self, subset_grids):
+        """creates a multigrid containting only the subset_girds
+
+        parameters
+        ----------
+        subset_grids: list
+        """
+        rows = self.config['grid_shape'][0]
+        cols = self.config['grid_shape'][1]
+        num_ts = self.config['num_timesteps']
+        n_grids = len(subset_grids)
+        subset = TemporalMultiGrid(rows, cols, n_grids, num_ts,
+            grid_names = subset_grids,
+            data_type=self.config['data_type'],
+            mask = self.config['mask'],
+            
+        )
+
+        try:
+            subset.config['description'] = \
+                self.config['description'] + ' Subset.'
+        except KeyError:
+            subset.config['description'] = 'Unknown subset.'
+        
+        try:
+            subset.config['dataset_name'] = \
+                self.config['dataset_name'] + ' Subset.'
+        except KeyError:
+            subset.config['dataset_name'] = 'Unknown subset.'
+
+        subset.config['start_timestep'] = self.config['start_timestep']
+        subset.config['timestep'] = self.config['timestep']
+        
+        for idx, grid in enumerate(subset_grids):
+            subset[grid][:] = self[grid][:]
+
+        return subset
 
 
 def dumb_test():

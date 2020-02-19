@@ -86,7 +86,12 @@ def calc_and_store  (
     tdd, fdd  = calc_degree_days(day_array, temp_array, expected_roots)
     lock.acquire()
     tdd_grid[:,index] = tdd
-    fdd_grid[:,index] = [fdd[0]] + fdd ## add frist value equal to second value
+    ## FDD array is not long enough (len(tdd) - 1) on its own, so we use the 
+    # first winter value twice this works because the the spline curves are
+    # created will always have a first root going from positive to negative
+    # This works for northern alaska and should not be assumed else where.
+    ##
+    fdd_grid[:,index] = [fdd[0]] + fdd 
     lock.release()
 
 
@@ -249,7 +254,14 @@ def utility ():
 
     """
     from . import clite 
-    
+    ##python calc_degree_days_utility.py 
+    # --monthly_temperature_list_file=/Users/rwspicer/classes/masters-project/sp_temp_file_list.txt 
+    # --temperature_file=/Users/rwspicer/classes/masters-project/sp_temperatures.memmap
+    # --fdd_file=/Users/rwspicer/classes/masters-project/fdd.memmap 
+    # --tdd_file=/Users/rwspicer/classes/masters-project/tdd.memmap 
+    # --start_date=1901-01 
+    # --num_process=4
+
     try:
         arguments = clite.CLIte([
             '--monthly_temperature_list_file',

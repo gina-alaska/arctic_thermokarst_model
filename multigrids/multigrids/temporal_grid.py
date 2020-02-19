@@ -93,7 +93,9 @@ class TemporalGrid (MultiGrid):
         if type(key) in (str,):
             key = self.get_grid_number(key)
         else:
+            # print (key)
             key -= self.config['start_timestep']
+            # print (key,self.config['start_timestep'])
         return self.grids.reshape(self.config['real_shape'])[key].reshape(self.config['grid_shape'])
 
     # def get_grids_at_keys(self,keys):
@@ -197,3 +199,19 @@ class TemporalGrid (MultiGrid):
             year of last time step in model
         """
         return self.config['start_timestep'] + self.config['timestep']
+
+    def create_subset(self, subset_grids):
+        """creates a multigrid containting only the subset_girds
+
+        parameters
+        ----------
+        subset_grids: list
+        """
+        subset = super().create_subset(subset_grids)
+        
+        subset.config['start_timestep'] = subset_grids[0]
+        subset.config['timestep'] = subset_grids[0]
+        
+
+        return subset
+        

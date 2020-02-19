@@ -62,6 +62,7 @@ class CLIte (object):
         
         """
         self.flags = mandatory + optional
+        print(self.flags)
         self.args = {}
         
         if '-h' in sys.argv[1:] or '--help' in sys.argv[1:]:
@@ -74,9 +75,9 @@ class CLIte (object):
             except ValueError:
                 flag = item.split('=')[0]
                 self.args[flag] = True
-        if not set(mandatory) <= set(self.args.keys()) or \
-            not set(self.args.keys()) <= set(self.flags):
-            raise CLIteMandatoryError("Invalid mandatory flags")
+        # if not set(mandatory) <= set(self.args.keys()) or \
+        #     not set(self.args.keys()) <= set(self.flags):
+        #     raise CLIteMandatoryError("Invalid mandatory flags")
             
         
         if len(types) != 0:

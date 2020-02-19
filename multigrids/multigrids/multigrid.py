@@ -730,6 +730,40 @@ class MultiGrid (object):
             new.grids[grid][:] = func(self.grids[grid])
         return new
 
+    def create_subset(self, subset_grids):
+        """creates a multigrid containting only the subset_girds
+
+        parameters
+        ----------
+        subset_grids: list
+        """
+        rows = self.config['grid_shape'][0]
+        cols = self.config['grid_shape'][1]
+        n_grids = len(subset_grids)
+        subset = MultiGrid(rows, cols, n_grids, 
+            grid_names = subset_grids,
+            data_type=self.config['data_type'],
+            mask = self.config['mask'],
+            
+        )
+
+        try:
+            subset.config['description'] = \
+                self.config['description'] + ' Subset.'
+        except KeyError:
+            subset.config['description'] = 'Unknown subset.'
+        
+        try:
+            subset.config['dataset_name'] = \
+                self.config['dataset_name'] + ' Subset.'
+        except KeyError:
+            subset.config['dataset_name'] = 'Unknown subset.'
+
+        
+        for idx, grid in enumerate(subset_grids):
+            subset[idx][:] = self[grid][:]
+
+        return subset
         
 
 def create_example():
