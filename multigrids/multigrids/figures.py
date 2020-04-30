@@ -31,7 +31,8 @@ def default(data, new_fig_args):
         "vmin": None,
         "vmax": None,
         "shrink": .75,
-        "mask": None
+        "mask": None,
+        "show_cb": True,
         }
     fig_args.update(new_fig_args)
 
@@ -45,12 +46,13 @@ def default(data, new_fig_args):
         vmin = fig_args["vmin"],
         vmax = fig_args["vmax"]
     )
-    cb = plt.colorbar(
-        # ticks = range(len(fig_args["categories"])), 
-        orientation = fig_args["orientation"],
-        extend =  fig_args["cbar_extend"],
-        shrink = fig_args["shrink"]
-    )
+    if fig_args['show_cb']:
+        cb = plt.colorbar(
+            # ticks = range(len(fig_args["categories"])), 
+            orientation = fig_args["orientation"],
+            extend =  fig_args["cbar_extend"],
+            shrink = fig_args["shrink"]
+        )
     plt.title(fig_args['title'], wrap = True)
     return imgplot
 

@@ -1,6 +1,6 @@
 """
-CLIte
------
+CLI Lib
+-------
 
 Simple python cli wrapper
 
@@ -14,24 +14,24 @@ Split from imiq-database python utilities: 2017-08-18
 """
 import sys
 
-class CLIteTypeError(Exception):
-    """CLIte type error, raised if type is wrong for a provided flag
+class CLILibTypeError(Exception):
+    """CLILib type error, raised if type is wrong for a provided flag
     """
     pass
     
-class CLIteMandatoryError(Exception):
-    """CLIte mandatory flag error, raised if all of the mandatory flags 
+class CLILibMandatoryError(Exception):
+    """CLILib mandatory flag error, raised if all of the mandatory flags 
     are not present
     """
     pass
     
-class CLIteHelpRequestedError(Exception):
-    """CLIte help requested error, raised if -h or --help is provied in the 
+class CLILibHelpRequestedError(Exception):
+    """CLILib help requested error, raised if -h or --help is provied in the 
     lsit of flags
     """
     pass
 
-class CLIte (object):
+class CLI (object):
     """ This class will act as a simple CLI utility """
     
     def __init__ (self, mandatory, optional = [], types = {}):
@@ -57,7 +57,7 @@ class CLIte (object):
             
         raises
         ------
-        CLIteHelpRequestedError 
+        CLILibHelpRequestedError 
             if -h or --help are provided in list of flags
         
         """
@@ -66,7 +66,7 @@ class CLIte (object):
         self.args = {}
         
         if '-h' in sys.argv[1:] or '--help' in sys.argv[1:]:
-            raise CLIteHelpRequestedError
+            raise CLILibHelpRequestedError
         
         for item in sys.argv[1:]:
             try:
@@ -77,7 +77,7 @@ class CLIte (object):
                 self.args[flag] = True
         # if not set(mandatory) <= set(self.args.keys()) or \
         #     not set(self.args.keys()) <= set(self.flags):
-        #     raise CLIteMandatoryError("Invalid mandatory flags")
+        #     raise CLILibMandatoryError("Invalid mandatory flags")
             
         
         if len(types) != 0:
@@ -87,7 +87,7 @@ class CLIte (object):
                 except ValueError:
                     msg = 'Type of argument ' + flag + \
                         ' must be ' + str(types[flag]) + '.'
-                    raise CLIteTypeError (msg)
+                    raise CLILibTypeError (msg)
                 except KeyError:
                     pass
             
@@ -123,14 +123,14 @@ class CLIte (object):
 if __name__ == "__main__":
     """ example utility """
     try:
-        test = CLIte(['--a','--b'],['--c'],
+        test = CLI(['--a','--b'],['--c'],
             types = {'--a':int, '--b': float, '--c':str})
         print (type(test['--a']), test['--a'])
         print (type(test['--b']), test['--b'])
         print (type(test['--c']), test['--c'])
-    except  CLIteMandatoryError:
+    except  CLILibMandatoryError:
         print ("Valid flags are: --a, --b, and --c(optional)")
-    except  CLIteTypeError as E:
+    except  CLILibTypeError as E:
         print (E)
         
     

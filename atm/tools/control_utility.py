@@ -1,5 +1,5 @@
 import control_tools
-import clite 
+import CLILib 
 from datetime import datetime
 from pandas import read_csv
 import os
@@ -34,7 +34,7 @@ def utility ():
     """
     """
     try:
-        arguments = clite.CLIte([
+        arguments = CLILib.CLI([
             '--main-control-file-name',
             '--control-dir',
             '--cohort-table',
@@ -44,7 +44,7 @@ def utility ():
             '--fdd-file',
             ],    
         )
-    except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError):
+    except (CLILib.CLILibHelpRequestedError, CLILib.CLILibMandatoryError):
         print utility.__doc__
         return
 

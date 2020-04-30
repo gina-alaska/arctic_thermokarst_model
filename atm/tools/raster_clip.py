@@ -49,16 +49,16 @@ def clip_rasters (in_dir, out_dir, extent, ext = '.tif'):
 def tool():
     """Command line tool for calling clip_rasters
     """
-    import clite
+    import CLILib
     try:
-        arguments = clite.CLIte([
+        arguments = CLILib.CLI([
             '--input-dir',
             '--output-dir',
             '--extent'
             ],
             ['--extension']
         )
-    except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError):
+    except (CLILib.CLILibHelpRequestedError, CLILib.CLILibMandatoryError):
         print tool.__doc__
         return
 

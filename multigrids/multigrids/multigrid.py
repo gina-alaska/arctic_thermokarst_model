@@ -575,8 +575,12 @@ class MultiGrid (object):
         if gdal is None:
             raise IOError("gdal not found: cannot save tif")
         try:
-            transform = self.config['raster_metadata'].transform
-            projection = self.config['raster_metadata'].projection
+            if type(self.config['raster_metadata']) is dict:
+                transform = self.config['raster_metadata']['transform']
+                projection = self.config['raster_metadata']['projection']
+            else: # old raster metadata fromat
+                transform = self.config['raster_metadata'].transform
+                projection = self.config['raster_metadata'].projection
         except KeyError:
             raise IOError("gdal not found: cannot save tif")
         datatype = gdal.GDT_Float32

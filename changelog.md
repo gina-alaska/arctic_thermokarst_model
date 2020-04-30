@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [0.6.2] - 2020-04-30
+### Changed
+- documentation updates
+- cli tools name
+### Fixed
+- Bug in cli tools
+### removed
+- hidden vscode dir
+
+
 ## [0.6.1] - 2019-11-01
 ### Changed
 - updated tools code for python 3

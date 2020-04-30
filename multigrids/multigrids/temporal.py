@@ -379,11 +379,15 @@ class TemporalMultiGrid (MultiGrid):
         features = [ [] for g in range(self.config['num_grids']) ]
         if mask is None:
             mask = self.config['mask']
+
+        # print (mask)
         
         if train_range is None:
             train_range = self.get_range()
-        
+        # print (train_range)
+
         for ts in train_range:
+            # print(ts)
             for grid, gnum in self.config['grid_name_map'].items():
                 features[gnum] += list(self[grid, ts][mask])
 

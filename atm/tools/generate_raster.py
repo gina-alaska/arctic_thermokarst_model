@@ -220,14 +220,14 @@ def utility ():
         'float', 'float64', 'int', or 'byte'
     """
     try:
-        from utilitools import clite 
+        from utilitools import CLILib 
         try:
-            arguments = clite.CLIte(
+            arguments = CLILib.CLI(
                 ['--in_shapefile', '--out_name', '--metadata', '--out_path'],
                 ['--single_raster', '--type']
             
             )
-        except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError):
+        except (CLILib.CLILibHelpRequestedError, CLILib.CLILibMandatoryError):
             print utility.__doc__
             return
         

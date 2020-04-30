@@ -252,18 +252,20 @@ def utility ():
         
     Note this utility will not work if there are missing months
 
-    """
-    from . import clite 
-    ##python calc_degree_days_utility.py 
-    # --monthly_temperature_list_file=/Users/rwspicer/classes/masters-project/sp_temp_file_list.txt 
-    # --temperature_file=/Users/rwspicer/classes/masters-project/sp_temperatures.memmap
-    # --fdd_file=/Users/rwspicer/classes/masters-project/fdd.memmap 
-    # --tdd_file=/Users/rwspicer/classes/masters-project/tdd.memmap 
-    # --start_date=1901-01 
-    # --num_process=4
+    Example Call
+    ------------
+    python calc_degree_days_utility.py 
+        --monthly_temperature_list_file=./temp_file_list.txt 
+        --temperature_file=./data/sp_temperatures.memmap
+        --fdd_file=./data/fdd.memmap --tdd_file=./data/t/tdd.memmap 
+        --start_date=1901-01 --num_process=4
 
+
+    """
+    from . import CLILib 
+   
     try:
-        arguments = clite.CLIte([
+        arguments = CLILib.CLI([
             '--monthly_temperature_list_file',
             '--temperature_file',
             '--fdd_file', 
@@ -273,7 +275,7 @@ def utility ():
             ['--num_process',]
         
         )
-    except (clite.CLIteHelpRequestedError, clite.CLIteMandatoryError) as E:
+    except (CLILib.CLILibHelpRequestedError, CLILib.CLILibMandatoryError) as E:
         print (E)
         print(utility.__doc__)
         return
