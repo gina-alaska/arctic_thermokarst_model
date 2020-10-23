@@ -91,7 +91,9 @@ def calc_and_store  (
     # created will always have a first root going from positive to negative
     # This works for northern alaska and should not be assumed else where.
     ##
-    fdd_grid[:,index] = [fdd[0]] + fdd 
+    fdd_grid[:,index] =  fdd + [fdd[-1]]  
+                                        # I.E. if last year of data is 2015, the 
+                                        # fdd for 2015 is set to fdd for 2014
     lock.release()
 
 
