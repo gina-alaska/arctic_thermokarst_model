@@ -76,10 +76,12 @@ def save_raster(filename, data, transform, projection,
     raster = write_driver.Create(
         filename, data.shape[1], data.shape[0], 1, datatype
     )
-    raster.SetGeoTransform(transform)  
+    if not transform is None:
+        raster.SetGeoTransform(transform)  
     outband = raster.GetRasterBand(1)  
     outband.WriteArray(data) 
-    raster.SetProjection(projection) 
+    if not projection is None:
+        raster.SetProjection(projection) 
     outband.FlushCache()  
     raster.FlushCache()      
 
