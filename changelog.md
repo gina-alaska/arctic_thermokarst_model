@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [unreleased]
+### Added
+
+### Changed
+
+### Fixed
+- bug fix for tools.calc_degree_days.calc_and_store edge cases with freezing  
+  degree days
+
 ## [0.6.3] - 2020-04-30
 ### Changed
 - documentation updates
