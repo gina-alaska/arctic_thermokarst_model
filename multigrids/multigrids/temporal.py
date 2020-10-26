@@ -286,9 +286,16 @@ class TemporalMultiGrid (MultiGrid):
             stop += self.config['start_timestep']
         self[grid_id, start:stop] = new_grids
 
-    def increment_time_step (self):
+    def increment_time_step (self, carry_data_forward = True):
         """Increment time_step, for current_girds.
         
+        Parameters
+        ----------
+        carry_data_forward: Bool, default True
+            If True data from previous timestep is set to data of current
+            timestep when timestep is increpmented. This is the historic, and
+            default behavior of the function.
+
         Returns 
         -------
         int 
@@ -301,7 +308,10 @@ class TemporalMultiGrid (MultiGrid):
             msg = 'The timestep could not be incremented, because the ' +\
                 'end of the period has been reached.'
             raise common.IncrementTimeStepError(msg)
-        self.grids[self.config['timestep']][:] = self.grids[self.config['timestep']-1][:] 
+
+        if carry_data_forward:
+            self.grids[self.config['timestep']][:] = \
+                self.grids[self.config['timestep']-1][:] 
         self.current_grids = self.grids[self.config['timestep']]
         
         return self.current_timestep()

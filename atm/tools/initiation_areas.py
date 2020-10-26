@@ -674,6 +674,26 @@ def find_initiation_areas_2 (precip, tdd, fdd, directory, years = 'all',
     print(_min,_max)
     return full_winter_precip_avg, full_winter_precip_std, early_winter_precip_avg, early_winter_precip_std, tdd_avg, tdd_std, fdd_avg, fdd_std
 
+def _calc_vpdm_cptki_for_year(grid_dict, means, shape):
+    """
+    """
+    rows, cols = shape
+    temp = np.zeros([rows, cols])
+    # ia_year = year
+    for name, var in grid_dict.items():
+        # offset_year = year + var.config['ts_offset']
+        # ia_year = max(ia_year, offset_year)
+        # print (name, year, offset_year)
+        try:
+            pd = (
+                (var - means[name])/ np.abs(means[name])
+            ) * 100
+            temp += pd
+        except IndexError:
+            # temp[:] = -9999 * len(grid_dict)
+            break
+        
+    return temp / len(grid_dict)
 
 def find_initiation_areas_vpdm(grid_dict, mean_bounds):
     """variable percent difference method for finding potential
@@ -721,22 +741,31 @@ def find_initiation_areas_vpdm(grid_dict, mean_bounds):
 
    
     for year in range(start, end):
-        temp = np.zeros([rows, cols])
-        ia_year = year
+
+        offset_year = year + var.config['ts_offset']
+        ts_grids = {}
         for name, var in grid_dict.items():
-            offset_year = year + var.config['ts_offset']
-            ia_year = max(ia_year, offset_year)
-            # print (name, year, offset_year)
-            try:
-                pd = (
-                    (var[offset_year] - means[name])/ np.abs(means[name])
-                ) * 100
-                temp += pd
-            except IndexError:
-                # temp[:] = -9999 * len(grid_dict)
-                break
+            ts_grid[name] = var[offset_year]
+
+        
+        # temp = np.zeros([rows, cols])
+        # ia_year = year
+        # for name, var in grid_dict.items():
+        #     offset_year = year + var.config['ts_offset']
+        #     ia_year = max(ia_year, offset_year)
+        #     # print (name, year, offset_year)
+        #     try:
+        #         pd = (
+        #             (var[offset_year] - means[name])/ np.abs(means[name])
+        #         ) * 100
+        #         temp += pd
+        #     except IndexError:
+        #         # temp[:] = -9999 * len(grid_dict)
+        #         break
             
-        ia_grid[ia_year][:] = temp / len(grid_dict)
+        ia_grid[ia_year][:] = _calc_vpdm_cptki_for_year(
+            ts_grid, means, (rows, cols)
+        )
 
     stats_names = []
     for name in grid_dict:

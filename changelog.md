@@ -3,14 +3,25 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 ### Added
+- climate priming grid 
 
 ### Changed
+- images.raster.save_raster now supports None for projection and transform 
+  arguments
+- multigrids.temporal.TemporalGrid.increment timestep has carry_data_forward
+  argument to indicate if data from precious timestep should be set to current
+  time step. Default behavior (carry_data_forward=True) remains the same.
+- tools.initiation_areas.py refactored to support calculating a single 
+  timestep of climate priming values at a time
+
 
 ### Fixed
 - bug fix for tools.calc_degree_days.calc_and_store edge cases with freezing  
   degree days
 
 ## [0.6.3] - 2020-04-30
+
+## [0.6.2] - 2020-04-30
 ### Changed
 - documentation updates
 - cli tools name
