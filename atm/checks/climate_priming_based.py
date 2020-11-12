@@ -66,49 +66,57 @@ def transition (name, year, grids, control):
     # static Rate 
 
     
-    ## find 'x'
-    x = np.zeros(grids.shape)
-    x[current_cell_mask] = (
-        grids.ald['ALD', year] / grids.ald[name ,year]
-    )[current_cell_mask] - 1
 
-    ## caclualte POI
-    fn = functions.table[cohort_config['POI_Function'].lower()]
     
-    POI_above = np.zeros(grids.shape)
-    POI_above[current_cell_mask] = fn(
-        x, cohort_config['Parameters']['above']
-    )[current_cell_mask]
-    
-    POI_below  = np.zeros(grids.shape)
-    POI_below[current_cell_mask] = fn(
-        x, cohort_config['Parameters']['below']
-    )[current_cell_mask]
-    
-    POI = POI_below 
-    above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'
-    POI[above_idx] = POI_above[above_idx]
+    # ## find 'x'
+    # x = np.zeros(grids.shape)
+    # x[current_cell_mask] = (
+    #     grids.ald['ALD', year] / grids.ald[name ,year]
+    # )[current_cell_mask] - 1
 
-    ## update cumulative POI
-    grids.poi[name, year] = grids.poi[name, year-1] + POI
-    ### POI where ALD < PL, reset cumulative POI to 0
-    grids.poi[name, year][np.logical_not( current_cell_mask )] = 0.0
+    # ## caclualte POI
+    # fn = functions.table[cohort_config['POI_Function'].lower()]
+    
+    # POI_above = np.zeros(grids.shape)
+    # POI_above[current_cell_mask] = fn(
+    #     x, cohort_config['Parameters']['above']
+    # )[current_cell_mask]
+    
+    # POI_below  = np.zeros(grids.shape)
+    # POI_below[current_cell_mask] = fn(
+    #     x, cohort_config['Parameters']['below']
+    # )[current_cell_mask]
+    
+    # POI = POI_below 
+    # above_idx = grids.drainage.grid.reshape(grids.shape) == 'above'
+    # POI[above_idx] = POI_above[above_idx]
 
-    ## change PL[year] if ALD > PL
-    porosity = grids.ald.porosity[name]
-    grids.ald[name, year ][ current_cell_mask ] = (
-        grids.ald[name, year-1 ] + \
-        (grids.ald['ALD', year] - grids.ald[name, year-1 ] ) * porosity
-    )[ current_cell_mask ] 
+    # ## update cumulative POI
+    # grids.poi[name, year] = grids.poi[name, year-1] + POI
+    # ### POI where ALD < PL, reset cumulative POI to 0
+    # grids.poi[name, year][np.logical_not( current_cell_mask )] = 0.0
+
+    # ## change PL[year] if ALD > PL
+    # porosity = grids.ald.porosity[name]
+    # grids.ald[name, year ][ current_cell_mask ] = (
+    #     grids.ald[name, year-1 ] + \
+    #     (grids.ald['ALD', year] - grids.ald[name, year-1 ] ) * porosity
+    # )[ current_cell_mask ] 
 
     ## use POI to find rate of transtion
-    max_rot = cohort_config['max_terrain_transition']
+    # max_rot = cohort_config['max_terrain_transition']
 
-    rate_of_transition = \
-        grids.poi[name, year] * ice_slope.reshape(grids.shape) * max_rot
-    rate_of_transition[ rate_of_transition > max_rot ] = max_rot
-    ## calculate chage
+    # rate_of_transition = \
+    #     grids.poi[name, year] * ice_slope.reshape(grids.shape) * max_rot
+    # rate_of_transition[ rate_of_transition > max_rot ] = max_rot
+    # ## calculate chage
+
+
+    rate_of_transition = cohort_config['transition_rate']
+
     change = rate_of_transition * grids.area[name, year]
+
+
 
     
     ## if change is bigger than area available
@@ -125,7 +133,5 @@ def transition (name, year, grids, control):
     grids.area[name + '--0', year][cohort_present_mask ] = \
         (current - change)[cohort_present_mask ]
 
-    # print grids.area[name, year-1].flatten()[157]
-    # print grids.area[name, year].flatten()[157]
 
     
