@@ -750,7 +750,17 @@ class ATM(object):
 
             ## UPDATE climate Priming grid
             if self.control.is_climate_priming_method_used():
-                self.grids.climate_priming.update() # HOW will this work?
+                if self.control['preload_climate_priming']
+                    cp_variables = {}
+                else:
+                    raise NotImplementedError (
+                        "Using Dynamic climate priming data not yet implemented"
+                    )
+
+                self.grids.climate_priming.calculate_active_areas(
+                    year = current_year, 
+                    cp_variables = cp_variables
+                ) 
 
 
             ## transition list

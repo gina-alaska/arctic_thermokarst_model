@@ -45,6 +45,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
             'initiation_threshold': 25, 
             'termination_threshold': -25, 
             'preload_climate_priming': False, 
+            'max_active_time': 20,
         })
         config['AOI mask'] = \
             np.ones(config['grid_shape']) == np.ones(config['grid_shape'])
@@ -147,7 +148,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         }
 
         self.climate_priming.increment_time_step(carry_data_forward=False)
-        self.climate_priming.calculate_climate_priming(
+        self.climate_priming.calculate_active_areas(
             cp_variables=cp_variables
         )
         
@@ -189,7 +190,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         }
 
         self.climate_priming.increment_time_step(carry_data_forward=False)
-        self.climate_priming.calculate_climate_priming(
+        self.climate_priming.calculate_active_areas(
             cp_variables=cp_variables
         )
         
@@ -227,7 +228,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         }
 
         self.climate_priming.increment_time_step(carry_data_forward=False)
-        self.climate_priming.calculate_climate_priming(
+        self.climate_priming.calculate_active_areas(
             cp_variables=cp_variables
         )
         
@@ -265,7 +266,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         }
 
         self.climate_priming.increment_time_step(carry_data_forward=False)
-        self.climate_priming.calculate_climate_priming(
+        self.climate_priming.calculate_active_areas(
             cp_variables=cp_variables
         )
         
@@ -305,7 +306,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         }
 
         self.climate_priming.increment_time_step(carry_data_forward=False)
-        self.climate_priming.calculate_climate_priming(
+        self.climate_priming.calculate_active_areas(
             cp_variables=cp_variables
         )
         
@@ -349,7 +350,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         }
 
         self.climate_priming.increment_time_step(carry_data_forward=False)
-        self.climate_priming.calculate_climate_priming(
+        self.climate_priming.calculate_active_areas(
             cp_variables=cp_variables
         )
         
@@ -375,7 +376,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         comp_val = 25
 
         self.climate_priming.increment_time_step(carry_data_forward=False)
-        self.climate_priming.calculate_climate_priming(
+        self.climate_priming.calculate_active_areas(
             cp_variables=cp_variables
         )
 
@@ -387,7 +388,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
         )
 
 
-    def test_calculate_climate_priming(self):
+    def test_calculate_active_areas(self):
 
         # test_get_predisposition_value_map does necessary testing
         self.test_get_predisposition_value_map()
@@ -396,7 +397,7 @@ class TestClimatePrimingGridClass(unittest.TestCase):
                 climate_priming_grid.CalculateClimatePrimingError
                 ):
             self.climate_priming.increment_time_step(carry_data_forward=False)
-            self.climate_priming.calculate_climate_priming(
+            self.climate_priming.calculate_active_areas(
                 {}
             )
 

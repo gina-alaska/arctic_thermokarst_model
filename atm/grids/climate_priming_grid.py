@@ -88,6 +88,8 @@ class ClimatePrimingGrid (TemporalMultiGrid):
 
             self.config['predisposition_map'] = None
 
+            self.config['max_active_time'] = config['max_active_time']
+
             self.config['initiation_threshold'] = config['initiation_threshold']
             self.config['termination_threshold'] = \
                                                  config['termination_threshold']
@@ -141,17 +143,16 @@ class ClimatePrimingGrid (TemporalMultiGrid):
 
         self.config['stable_climate_averages'] = climate_average_dict
 
-    def get_active_map(self, year=None):
+    def get_active_map(self, year=None, as_type=bool):
         """
         """
         if year is None:
             year = self.current_timestep()
 
         if year > self.config['start_timestep']:
-            return self['active_areas', year].astype(bool)
+            return self['active_areas', year].astype(as_type)
         else:
-             
-            return np.zeros(self.config['grid_shape']) != 0
+            return np.zeros(self.config['grid_shape']).astype(as_type)
 
     def get_stable_map(self, year=None):
         """
@@ -210,7 +211,7 @@ class ClimatePrimingGrid (TemporalMultiGrid):
         
         return current 
             
-    def calculate_climate_priming(self, year = None, cp_variables = {}):
+    def calculate_active_areas(self, year = None, cp_variables = {}):
 
         if year is None:
             year = self.current_timestep()
@@ -239,6 +240,8 @@ class ClimatePrimingGrid (TemporalMultiGrid):
         
 
         a_or_i = np.logical_or(last_a, current_i)
+
+
         not_t = np.logical_not(current_t)
         current_a = np.logical_and(a_or_i, not_t) # new current active
 
@@ -260,6 +263,14 @@ class ClimatePrimingGrid (TemporalMultiGrid):
 
 
         # print (current_a)
-        self['active_areas', year]= 0
-        self['active_areas', year][current_a] = 1
+        self['active_areas', year] = self.get_active_map(year - 1, as_type=int)
+        self['active_areas', year][current_a] += 1
+        self['active_areas', year][current_t] = 0 # stop due to extreme "cold"
+
+        compeleted = self['active_areas', year] > self.config['max_active_time']
+
+        self['active_areas', year][compeleted ] = 0
+
+
+        
        

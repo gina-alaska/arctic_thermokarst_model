@@ -53,15 +53,18 @@ def transition (name, year, grids, control):
     ### where is ald >= PL
     # pl_breach_mask = grids.ald['ALD', year] >= grids.ald[name, year]
 
-    primed_area = grids.climate_primed
+    active_areas = grids.climate_priming['active_areas', year]
     
     ### cells where change may occur
     current_cell_mask = np.logical_and(
         np.logical_and(
             model_area_mask, cohort_present_mask
         ),  
-        primed_area
+        active_areas
     )
+
+    # static Rate 
+
     
     ## find 'x'
     x = np.zeros(grids.shape)

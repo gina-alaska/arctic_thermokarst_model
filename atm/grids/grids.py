@@ -147,7 +147,11 @@ class ModelGrids (object):
         """
         for grid in self.get_grid_list():
             try:
-                self[grid].increment_time_step()
+                if grid == 'climate priming':
+                    ## don't carry data froward for climate priming
+                    self[grid].increment_time_step(False)
+                else:
+                    self[grid].increment_time_step()
             except AttributeError:
                 pass
 
