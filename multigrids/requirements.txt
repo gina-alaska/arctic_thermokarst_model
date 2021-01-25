@@ -1,4 +1,0 @@
-numpy
-pyymal
-moviepy
-gdal # optional
