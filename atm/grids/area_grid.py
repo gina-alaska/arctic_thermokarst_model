@@ -51,7 +51,7 @@ def get_example_config( data_dir ):
     """
     files = [ os.path.join(data_dir, f) for f in os.listdir( data_dir )] 
     config_ex = {
-        'Target_resolution': (1000,1000),
+        'target_resolution': (1000,1000),
         'initialization_year': 1900,
         'Initial_Area_data': files,
         'model length': 100
@@ -117,7 +117,7 @@ class AreaGrid(TemporalMultiGrid):
             super(AreaGrid , self).__init__(*args, **kwargs)
         else:
             input_rasters = config['Initial_Area_data'] 
-            target_resolution = config['Target_resolution']
+            target_resolution = config['target_resolution']
 
             logger = None
             if 'logger' in kwargs:
@@ -527,7 +527,7 @@ def test (files):
     """
     """
     config = {
-        'Target_resolution': (1000,1000),
+        'target_resolution': (1000,1000),
         'initialization_year': 1900,
         'initial area data': files,
         'model length': 100

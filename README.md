@@ -8,8 +8,8 @@ Run `conda env create -f environment3yml` to set up the environment.
 
 If you don't need to change the environment, or run the tests skip to Running the model
 
-## Changes to the anaconda envenvironment
-Use `source activate atm-env` to start using the environemnt, and `source deactivate` to stop using it.
+## Changes to the anaconda environment
+Use `conda activate atm-env` to start using the environment, and `conda deactivate` to stop using it.
 When the environment is active you can install new packages for the code to use, and run the code directly via python. 
 
 For more information on anconada environments see [Managing environments](https://conda.io/docs/user-guide/tasks/manage-environments.html)
