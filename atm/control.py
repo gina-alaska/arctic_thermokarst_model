@@ -70,9 +70,9 @@ class Control(dict):
             os.path.join(
                 self['Input_dir'],tif
             ) 
-            for tif in self['Initial_Area_data']
+            for tif in self['Initial_area_data']
         ]
-        
+
         self.find_model_length()
 
         try:

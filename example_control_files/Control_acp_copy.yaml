@@ -15,8 +15,8 @@ Run_dir: <add path>
 #----------------------------------------------------------------
 # Data Input and Output Directories
 #Input_dir: ../acp_area_data_scaled
-Input_dir: /Volumes/toshi-stati/acp-area-data/
-Output_dir: ./Output/acp_test
+Input_dir: /Volumes/eadu/data/V1/atm-input/ACP/tiff32/
+Output_dir: ./Output/acp_test_20210121
 Control_dir: ./example_control_files/Control_files_acp/
 
 use_jit: 'yes'
@@ -51,13 +51,13 @@ Test_code_duration: 2
 #================================================================
 
 # where does the model start at?
-initialization year: 1900
+initialization_year: 1900
 start_year: 1901
 
 #----------------------------------------------------------------
 # Model resolution [meters]
 ## target resloution [Y, X]
-target resolution: [1000, 1000]
+target_resolution: [1000, 1000]
 
 
 # Information needed to initialize the model
@@ -76,7 +76,7 @@ Terrestrial_Control: 00_Terrestrial_Control.yaml
     # Flag to read & write geotiff files for landcover information
     #~ Read_Geotiff: Yes # Not implmented
     #~ Write_Geotiff: No # Not implmented
-initial area data: 00_ACP_Initial_Cohort_List.yaml
+Initial_area_data: 00_ACP_Initial_Cohort_List.yaml
 
 Lake_Pond_Control: 00_Lake_Pond_Control.yaml
     
