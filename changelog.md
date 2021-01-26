@@ -22,8 +22,6 @@ All notable changes to this project will be documented in this file.
 - tools.initiation_areas.py refactored to support calculating a single 
   timestep of climate priming values at a time
 
-### Fixed
-
 
 ## [0.6.2] - 2020-04-30
 ### Changed

@@ -748,6 +748,21 @@ class ATM(object):
             current_fdd = self.grids.degreedays.freezing[current_year]
             self.grids.lake_pond.calc_ice_depth(current_fdd)
 
+            ## UPDATE climate Priming grid
+            if self.control.is_climate_priming_method_used():
+                if self.control['preload_climate_priming']
+                    cp_variables = {}
+                else:
+                    raise NotImplementedError (
+                        "Using Dynamic climate priming data not yet implemented"
+                    )
+
+                self.grids.climate_priming.calculate_active_areas(
+                    year = current_year, 
+                    cp_variables = cp_variables
+                ) 
+
+
             ## transition list
             for cohort in cohort_list:
                 cohort_control = cohort + '_Control'
