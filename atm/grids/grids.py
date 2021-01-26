@@ -13,6 +13,7 @@ from .ice_grid import IceGrid
 from .lake_pond_grid import LakePondGrid
 from .drainage_grid import DrainageGrid
 from .climate_event_grid import ClimateEventGrid
+from .climate_priming_grid import ClimatePrimingGrid
 
 from .met_grid import DegreeDayGrids
 import os
@@ -127,6 +128,9 @@ class ModelGrids (object):
         self.ald.setup_ald_constants(
             self.degreedays.thawing[config['start year']]
         )
+
+        self.logger.add('loading CLIMATE PRIMING')
+        self.climate_priming = ClimatePrimingGrid(config, logger = self.logger)
         
     def get_max_time_steps (self):
         """Get the max number of model timesteps possible
@@ -156,7 +160,8 @@ class ModelGrids (object):
         """
         return [
             'area', 'ald', 'poi', 'ice', 'lake pond',
-            'drainage', 'degree-day','climate event'
+            'drainage', 'degree-day','climate event',
+            'climate priming',
         ]
     
     def __getitem__ (self, key):
@@ -191,6 +196,8 @@ class ModelGrids (object):
             return self.degreedays
         if key.lower() == 'climate event':
             return self.climate_event
+        if key.lower() == 'climate priming':
+            return self.climate_priming
         
         raise KeyError('Could not find grid given name: ' + key)
         
@@ -218,6 +225,7 @@ class ModelGrids (object):
             "ice": True,
             "lake_pond": True,
             "poi": True,
+            "climate_priming": True,
             # "met": True,
         }
         options.update(new_options)
@@ -255,6 +263,12 @@ class ModelGrids (object):
         #     self.degreedays.thawing.save(
         #         os.path.join(out_path, 'met_thawing.yaml')
         #     )
+        if options['climate priming']:
+            self.logger.add('   Saving POIGrid')
+            self.climate_priming.save(
+                os.path.join(out_path, 'climate_priming.yaml')
+            )
+
         
         
     
