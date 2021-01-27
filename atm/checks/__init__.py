@@ -23,7 +23,7 @@ check_metadata = {
     'poi': poi_based.transition,
     'pond_to_lake': pond_to_lake.transition,
     'lake_to_pond': lake_to_pond.transition,
-    'climate_priming': climate_priming_based,
+    'climate_priming': climate_priming_based.transition,
 
     'poi_jit': poi_based_jit.transition,
     'pond_to_lake_jit': pond_to_lake_jit.transition,

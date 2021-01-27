@@ -98,7 +98,7 @@ class ModelGrids (object):
             each year the ATM was run. 
             """
         self.logger.add('loading CLIMATE EVENT')
-        self.climate_event = ClimateEventGrid(config,logger = self.logger)
+        self.climate_event = ClimateEventGrid(config, logger = self.logger)
         self.climate_event.config['dataset_name'] = 'Climate Event Data'
         self.climate_event.config['description'] = \
             """Climate Event Data contains climate event data for each 
@@ -267,8 +267,9 @@ class ModelGrids (object):
         #     self.degreedays.thawing.save(
         #         os.path.join(out_path, 'met_thawing.yaml')
         #     )
-        if options['climate priming']:
-            self.logger.add('   Saving POIGrid')
+        if options['climate_priming']:
+            self.logger.add('   Saving ClimatePrimingGrid')
+
             self.climate_priming.save(
                 os.path.join(out_path, 'climate_priming.yaml')
             )

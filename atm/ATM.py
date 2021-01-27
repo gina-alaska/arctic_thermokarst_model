@@ -750,7 +750,7 @@ class ATM(object):
 
             ## UPDATE climate Priming grid
             if self.control.is_climate_priming_method_used():
-                if self.control['preload_climate_priming']
+                if self.control['preload_climate_priming']:
                     cp_variables = {}
                 else:
                     raise NotImplementedError (

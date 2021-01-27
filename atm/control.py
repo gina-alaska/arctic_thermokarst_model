@@ -162,6 +162,22 @@ class Control(dict):
                 
         return to_expand
 
+    def is_climate_priming_method_used(self):
+        """
+        Returns
+        -------
+        Returns True if any cohort transition is set to climate_priming
+        """
+        for cohort in self['cohorts']:
+            try:
+                if self['cohorts'][cohort]['Transition_check_type'] == \
+                        "climate_priming":
+                    return True
+            except TypeError:
+                pass
+            
+        return False
+
     def find_model_length(self):
         """Function Docs 
         Parameters

@@ -88,11 +88,11 @@ class ClimatePrimingGrid (TemporalMultiGrid):
 
             self.config['predisposition_map'] = None
 
-            self.config['max_active_time'] = config['max_active_time']
+            self.config['max_active_time'] = float(config['max_active_time'])
 
-            self.config['initiation_threshold'] = config['initiation_threshold']
+            self.config['initiation_threshold'] = float(config['initiation_threshold'])
             self.config['termination_threshold'] = \
-                                                 config['termination_threshold']
+                                                float(config['termination_threshold'])
 
             self.config['stable_climate_averages'] = None
 
@@ -105,14 +105,19 @@ class ClimatePrimingGrid (TemporalMultiGrid):
         #     msg += "'preload_climate_priming' is False"
         #     raise StaticClimatePrimingError(msg)
         # pass
-        data = tools.tiffs_to_array(
-            in_dir
-            # file_name_structure='*.tif', 
-            # sort_func=sorted, 
-            # verbose=False
-        )
+        if os.path.isfile(in_dir):
+            data = np.memmap(in_dir, dtype=self.config['data_type'], mode='r')
+        else: 
+            data = tools.tiffs_to_array(
+                in_dir
+                # file_name_structure='*.tif', 
+                # sort_func=sorted, 
+                # verbose=False
+            )
 
-        self.grids[:,0,:] = data[:].reshape(self.grids[:,0,:].shape )
+        print(data.shape)
+        print(self.config['grid_shape'])
+        self.grids[:,0,:] = data[:108*50*67].reshape(self.grids[:,0,:].shape )
 
     def load_predisposition_map(self, map_raster):
         """

@@ -2,7 +2,8 @@
 # Form of Probability of Initiation (Sigmoid, Sigmoid2, linear,
 #   Hill)
 #----------------------------------------------------------
-Transition_check_type: POI
+Transition_check_type: climate_priming
+transition_rate: .01
 POI_Function: Sigmoid2
 transitions_to: FCP_WT_M
 # ============================================================
