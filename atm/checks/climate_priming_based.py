@@ -53,7 +53,9 @@ def transition (name, year, grids, control):
     ### where is ald >= PL
     # pl_breach_mask = grids.ald['ALD', year] >= grids.ald[name, year]
 
-    active_areas = grids.climate_priming['active_areas', year]
+    active_areas = grids.climate_priming.get_active_map(year)
+
+    
     
     ### cells where change may occur
     current_cell_mask = np.logical_and(
@@ -113,25 +115,48 @@ def transition (name, year, grids, control):
 
 
     rate_of_transition = cohort_config['transition_rate']
+    if rate_of_transition == 0:
+        return 
 
     change = rate_of_transition * grids.area[name, year]
+    
+    # this is probably not strictly needed, but...
+    change[np.logical_not(current_cell_mask)] = 0
 
+    ## DEBUG PLOTS
+    # fig, ax = plt.subplots(2,2)
+    # aa = ax[0][0].imshow(active_areas.astype(int))
+    # ccm = ax[0][1].imshow(current_cell_mask.astype(int))
+    # c = ax[1][0].imshow(change)
+    # fig.colorbar(aa, ax=ax[0][0])
+    # fig.colorbar(ccm, ax=ax[0][1])
+    # fig.colorbar(c, ax=ax[1][0])
+    # plt.show()
 
-
+   
     
     ## if change is bigger than area available
     ## TODO: handle age buckets
     current = grids.area[name, year]
-    change[np.logical_and(cohort_present_mask, change > current )] = \
-        current [np.logical_and(cohort_present_mask, change > current )]
+    change[np.logical_and(current_cell_mask, change > current )] = \
+        current [np.logical_and(current_cell_mask, change > current )]
+    
+
     
     ## apply change
     transitions_to = cohort_config['transitions_to']
-    grids.area[ transitions_to + '--0', year][cohort_present_mask ] = \
-        (grids.area[transitions_to, year] + change)[cohort_present_mask ]
+    grids.area[ transitions_to + '--0', year][current_cell_mask ] = \
+        (grids.area[transitions_to, year] + change)[current_cell_mask ]
 
-    grids.area[name + '--0', year][cohort_present_mask ] = \
-        (current - change)[cohort_present_mask ]
+   
+    ## DEBUG log
+    # total = change[current_cell_mask].sum()
+
+    # with open('transition_log.csv', 'a') as fd:
+    #     fd.write(str(year) + ',' + str(total) + '\n')
+
+    grids.area[name + '--0', year][current_cell_mask] = \
+        (current - change)[current_cell_mask]
 
 
     
