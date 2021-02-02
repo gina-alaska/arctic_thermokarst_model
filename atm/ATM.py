@@ -776,6 +776,16 @@ class ATM(object):
 
                 name = find_canon_name(cohort)
                 
+                if check_type is None or check_type.lower() == 'none':
+                    if time == 1:
+                        self.logger.add(
+                            "No transition check indicated for cohort: %s" % cohort
+                        )
+                        self.logger.add(
+                            "Alaways skipping transition check for cohort: %s" % cohort
+                        )
+                    continue
+
                 try:
                     checks.check_metadata[check_type + mode](
                         name,  current_year, self.grids, self.control
